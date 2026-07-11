@@ -347,7 +347,10 @@ async function generateContentWithFallback(params: { contents: string | any[] })
   const modelsToTry = [
     "gemini-2.0-flash",
     "gemini-2.0-flash-lite",
-    "gemini-2.5-flash-lite-preview-06-17"
+    "gemini-1.5-flash",
+    "gemini-1.5-flash-8b",
+    "gemini-1.5-pro",
+    "gemini-2.0-pro-exp-02-05"
   ];
 
   let lastError: any = null;
