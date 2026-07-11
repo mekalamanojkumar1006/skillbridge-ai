@@ -106,7 +106,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }: SignupPagePro
         <span>Return to Main</span>
       </button>
 
-      <div className="w-full max-w-md mx-auto relative bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl p-8 shadow-2xl z-10">
+      <div className="w-full max-w-md mx-auto relative neomorph-card p-8 z-10">
         <div className="text-center mb-8">
           <div className="inline-flex items-center space-x-2 mb-2">
             <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg shadow-md shadow-blue-500/10 flex items-center justify-center">
@@ -150,7 +150,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }: SignupPagePro
                 placeholder="Antigravity"
                 required
                 disabled={loading}
-                className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 text-slate-200"
+                className="w-full neomorph-inset-input pl-10 pr-4 py-3 text-sm focus:outline-none text-slate-200"
               />
             </div>
           </div>
@@ -170,7 +170,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }: SignupPagePro
                 placeholder="you@example.com"
                 required
                 disabled={loading}
-                className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 text-slate-200"
+                className="w-full neomorph-inset-input pl-10 pr-4 py-3 text-sm focus:outline-none text-slate-200"
               />
             </div>
           </div>
@@ -190,7 +190,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }: SignupPagePro
                 placeholder="••••••••••••"
                 required
                 disabled={loading}
-                className="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-10 py-3 text-sm focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 text-slate-200"
+                className="w-full neomorph-inset-input pl-10 pr-10 py-3 text-sm focus:outline-none text-slate-200"
               />
               <button
                 type="button"
@@ -205,7 +205,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }: SignupPagePro
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-2 py-3 bg-blue-600 hover:bg-blue-500 shadow-xl shadow-blue-600/20 rounded-xl font-bold text-sm text-white transition duration-200 flex items-center justify-center space-x-2"
+            className="w-full mt-2 py-3 neomorph-button-primary font-bold text-sm text-white flex items-center justify-center space-x-2"
           >
             {loading ? (
               <span className="flex items-center space-x-2">
@@ -224,7 +224,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess }: SignupPagePro
             type="button"
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full mt-3 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white rounded-xl text-sm font-semibold transition duration-200 flex items-center justify-center space-x-2"
+            className="w-full mt-3 py-3 neomorph-button text-slate-300 hover:text-white text-sm font-semibold flex items-center justify-center space-x-2"
           >
             <svg className="w-4 h-4 mr-1.5" viewBox="0 0 24 24">
               <path

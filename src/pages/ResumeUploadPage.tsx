@@ -131,9 +131,9 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate }
         </button>
       </div>
 
-      <div className="w-full max-w-2xl bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl p-8 relative shadow-2xl z-10">
+      <div className="w-full max-w-2xl neomorph-card p-8 relative z-10">
         <div className="flex items-center space-x-3 mb-6">
-          <div className="p-2.5 bg-white/5 border border-white/10 rounded-xl">
+          <div className="p-2.5 neomorph-inset-input">
             <Upload className="w-5 h-5 text-blue-400 animate-pulse" />
           </div>
           <div>
@@ -160,7 +160,7 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate }
               !usePasteMode ? "border-blue-500 text-blue-400" : "border-transparent text-slate-500 hover:text-slate-300"
             }`}
           >
-            File Upload (.txt / .pdf)
+            Upload File (.TXT, .MD)
           </button>
           <button
             onClick={() => {
@@ -171,72 +171,58 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate }
               usePasteMode ? "border-blue-500 text-blue-400" : "border-transparent text-slate-500 hover:text-slate-300"
             }`}
           >
-            Paste Text Profile
+            Direct Text Paste
           </button>
         </div>
 
         <form onSubmit={handleFormSubmit} className="space-y-6">
           {!usePasteMode ? (
-            <div>
-              {/* Drag & Drop Area */}
-              <div
-                onDragEnter={handleDrag}
-                onDragOver={handleDrag}
-                onDragLeave={handleDrag}
-                onDrop={handleDrop}
-                className={`border-2 border-dashed rounded-2xl p-10 text-center transition duration-200 cursor-pointer flex flex-col items-center justify-center min-h-[220px] ${
-                  isDragActive
-                    ? "border-blue-500 bg-blue-950/10"
-                    : file
-                    ? "border-emerald-500/50 bg-emerald-950/5"
-                    : "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/[0.08]"
-                }`}
-                onClick={handleBrowseClick}
-              >
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileInput}
-                  accept=".txt,.pdf"
-                  className="hidden"
-                />
-
+            /* File Dropzone */
+            <div
+              onDragEnter={handleDrag}
+              onDragOver={handleDrag}
+              onDragLeave={handleDrag}
+              onDrop={handleDrop}
+              onClick={handleBrowseClick}
+              className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition duration-200 ${
+                isDragActive
+                  ? "border-blue-500 bg-blue-950/10 text-white"
+                  : "border-white/10 hover:border-white/20 text-slate-400"
+              }`}
+            >
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileInput}
+                accept=".txt,.md"
+                className="hidden"
+              />
+              <div className="flex flex-col items-center space-y-3">
+                <div className="p-3 bg-white/5 border border-white/10 rounded-2xl text-blue-400 shadow-md">
+                  <FileText className="w-6 h-6" />
+                </div>
                 {file ? (
-                  <>
-                    <div className="p-4 bg-emerald-950/40 border border-emerald-800/30 text-emerald-400 rounded-full mb-3">
-                      <FileText className="w-8 h-8" />
-                    </div>
-                    <span className="text-sm font-semibold text-slate-200 block max-w-md truncate">{file.name}</span>
-                    <span className="text-xs text-slate-500 block mt-1 font-mono">
-                      {(file.size / 1024).toFixed(1)} KB &bull; Click or drop another to replace
-                    </span>
-                  </>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-200 font-mono">{file.name}</p>
+                    <p className="text-[10px] text-slate-500 mt-1 font-mono">
+                      {(file.size / 1024).toFixed(1)} KB &bull; Click to swap
+                    </p>
+                  </div>
                 ) : (
-                  <>
-                    <div className="p-4 bg-white/5 border border-white/10 text-slate-400 rounded-full mb-3">
-                      <Upload className="w-8 h-8" />
-                    </div>
-                    <span className="text-sm font-bold text-slate-300">
-                      Drag & drop your resume file here
-                    </span>
-                    <span className="text-xs text-slate-500 mt-1 font-mono">
-                      Supports Plain Text (.txt) or PDF (.pdf) format
-                    </span>
-                    <button
-                      type="button"
-                      className="mt-4 px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/10 text-xs text-slate-300 font-semibold rounded-lg transition duration-200"
-                    >
-                      Browse Files
-                    </button>
-                  </>
+                  <div>
+                    <p className="text-sm font-semibold text-slate-200 leading-relaxed font-sans">
+                      {isDragActive ? "Drop the resume here..." : "Drag & drop your resume file here"}
+                    </p>
+                    <p className="text-[10px] text-slate-500 mt-1.5 font-sans leading-relaxed">
+                      Supports plain text (.txt) and markdown (.md) resume files up to 2MB
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
           ) : (
+            /* Direct Text Paste Area */
             <div>
-              <label className="block text-xs font-mono text-slate-400 uppercase tracking-wider mb-2">
-                Paste Plain Text Resume
-              </label>
               <div className="relative">
                 <textarea
                   value={pastedText}
@@ -244,7 +230,7 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate }
                   placeholder="Paste your complete resume details here, including Name, Skills, Work Experience, Education history, and contact information..."
                   rows={8}
                   disabled={loading}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 text-slate-200 font-sans leading-relaxed resize-y"
+                  className="w-full neomorph-inset-input px-4 py-3 text-sm focus:outline-none text-slate-200 font-sans leading-relaxed resize-y"
                 />
                 <button
                   type="button"
@@ -278,7 +264,7 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate }
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 bg-blue-600 hover:bg-blue-500 shadow-xl shadow-blue-600/20 text-white rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center space-x-2"
+            className="w-full py-3.5 neomorph-button-primary text-white font-bold text-sm flex items-center justify-center space-x-2"
           >
             {loading ? (
               <span className="flex items-center space-x-2">

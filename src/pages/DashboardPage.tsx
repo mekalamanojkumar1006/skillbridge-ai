@@ -750,8 +750,8 @@ export default function DashboardPage({
             onNavigateBack={() => setActiveTab("overview")}
           />
         ) : !resume ? (
-          <div className="min-h-[50vh] flex flex-col items-center justify-center text-center p-8 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl shadow-xl max-w-xl mx-auto my-12 relative z-10">
-            <div className="p-4 bg-white/5 border border-white/10 text-blue-400 rounded-full mb-4">
+          <div className="min-h-[50vh] flex flex-col items-center justify-center text-center p-8 neomorph-card max-w-xl mx-auto my-12 relative z-10">
+            <div className="p-4 neomorph-inset-input text-blue-400 mb-4">
               <FileText className="w-10 h-10 animate-bounce" />
             </div>
             <h2 className="text-xl font-extrabold tracking-tight text-white">No Active Resume Loaded</h2>
@@ -760,7 +760,7 @@ export default function DashboardPage({
             </p>
             <button
               onClick={() => onNavigate("upload")}
-              className="mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-xs font-mono tracking-wider uppercase font-bold rounded-xl text-white shadow-xl shadow-blue-600/20 transition duration-200"
+              className="mt-6 px-6 py-3 neomorph-button-primary text-xs font-mono tracking-wider uppercase font-bold text-white"
             >
               Parse Profile Resume
             </button>
@@ -791,7 +791,7 @@ export default function DashboardPage({
                   </div>
                   <button
                     onClick={() => onNavigate("upload")}
-                    className="px-4 py-2 border border-white/10 bg-white/5 hover:bg-white/10 text-xs font-mono uppercase tracking-wider text-slate-300 hover:text-white rounded-xl transition duration-200"
+                    className="px-4 py-2 neomorph-button text-xs font-mono uppercase tracking-wider text-slate-300 hover:text-white"
                   >
                     Replace Resume
                   </button>
@@ -804,7 +804,7 @@ export default function DashboardPage({
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5 }}
-                    className="p-6 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl flex flex-col justify-between"
+                    className="p-6 neomorph-card flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex justify-between items-start">
@@ -847,7 +847,7 @@ export default function DashboardPage({
                   </motion.div>
 
                   {/* Summary & Core Profile */}
-                  <div className="lg:col-span-2 p-6 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl flex flex-col justify-between">
+                  <div className="lg:col-span-2 p-6 neomorph-card flex flex-col justify-between">
                     <div>
                       <h2 className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-2">
                         Synthesized Profile
@@ -893,7 +893,7 @@ export default function DashboardPage({
                 {/* Extracted Work History & Suggestions Split Panel */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Quality Coach Feedback */}
-                  <div className="p-6 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl space-y-4">
+                  <div className="p-6 neomorph-card space-y-4">
                     <div className="flex items-center justify-between border-b border-white/5 pb-3">
                       <h3 className="text-xs font-mono text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
                         <TrendingUp className="w-4 h-4 text-emerald-400" />
@@ -966,7 +966,7 @@ export default function DashboardPage({
                   </div>
 
                   {/* Work Experience Timeline */}
-                  <div className="p-6 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl space-y-4">
+                  <div className="p-6 neomorph-card space-y-4">
                     <div className="flex items-center justify-between border-b border-white/5 pb-3">
                       <h3 className="text-xs font-mono text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
                         <Briefcase className="w-4 h-4 text-blue-400" />
@@ -1002,7 +1002,7 @@ export default function DashboardPage({
                 </div>
 
                 {/* Recommended Opportunities Section with Live Database Explorer */}
-                <div className="p-8 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl space-y-6">
+                <div className="p-8 neomorph-card space-y-6">
                   <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 border-b border-white/5 pb-6">
                     <div>
                       <h2 className="text-lg font-black text-white flex items-center space-x-2">
@@ -1016,7 +1016,7 @@ export default function DashboardPage({
 
                     {/* Mode selector and Actions */}
                     <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-                      <div className="bg-white/5 p-1 rounded-xl border border-white/10 flex space-x-1">
+                      <div className="neomorph-inset-input p-1 flex space-x-1">
                         <button
                           onClick={() => setOppsViewMode("matched")}
                           className={`px-3 py-1.5 rounded-lg text-xs font-mono tracking-wider uppercase transition-all duration-200 flex items-center space-x-1.5 ${
@@ -1045,7 +1045,7 @@ export default function DashboardPage({
                         <button
                           onClick={handleCalculateOpps}
                           disabled={calculatingOpps || loadingOpps}
-                          className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-blue-800 disabled:opacity-50 text-white text-xs font-mono uppercase tracking-wider font-bold rounded-xl transition duration-200 shadow-lg shadow-blue-600/20 shrink-0 ml-auto lg:ml-0"
+                          className="flex items-center space-x-2 px-4 py-2 neomorph-button-primary disabled:opacity-50 text-white text-xs font-mono uppercase tracking-wider font-bold shrink-0 ml-auto lg:ml-0"
                         >
                           <RefreshCw className={`w-4 h-4 ${(calculatingOpps || loadingOpps) ? "animate-spin" : ""}`} />
                           <span>{calculatingOpps ? "Matching..." : "Recalculate Matches"}</span>
@@ -1325,7 +1325,7 @@ export default function DashboardPage({
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Input Job Description */}
-                  <form onSubmit={handleAtsScan} className="p-6 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl flex flex-col justify-between space-y-4 min-h-[400px]">
+                  <form onSubmit={handleAtsScan} className="p-6 neomorph-card flex flex-col justify-between space-y-4 min-h-[400px]">
                     <div className="space-y-2">
                       <label className="block text-xs font-mono text-slate-400 uppercase tracking-wider">
                         Target Job Description
@@ -1336,21 +1336,21 @@ export default function DashboardPage({
                         placeholder="Paste the target job description here to analyze matched and missing core keywords..."
                         rows={10}
                         required
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500/50 text-slate-300 font-sans leading-relaxed resize-none"
+                        className="w-full neomorph-inset-input px-4 py-3 text-sm focus:outline-none text-slate-300 font-sans leading-relaxed resize-none"
                       />
                     </div>
 
                     <button
                       type="submit"
                       disabled={scanningAts}
-                      className="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-xs font-mono uppercase tracking-wider font-bold rounded-xl text-white shadow-xl shadow-blue-600/20 transition duration-200"
+                      className="w-full py-3.5 neomorph-button-primary text-xs font-mono uppercase tracking-wider font-bold text-white"
                     >
                       {scanningAts ? "Scanning Keywords against ATS..." : "Analyze ATS Compatibility"}
                     </button>
                   </form>
 
                   {/* ATS Results Output */}
-                  <div className="p-6 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl space-y-6 min-h-[400px] flex flex-col justify-between">
+                  <div className="p-6 neomorph-card space-y-6 min-h-[400px] flex flex-col justify-between">
                     {scanningAts ? (
                       <div className="flex-1 flex flex-col items-center justify-center space-y-2">
                         <div className="w-8 h-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />

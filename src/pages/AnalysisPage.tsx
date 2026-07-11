@@ -153,7 +153,7 @@ export default function AnalysisPage({ user, resume, onNavigate }: AnalysisPageP
         {/* Synthesis Profile Breakdown */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Quality Analysis side card */}
-          <div className="p-6 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl flex flex-col justify-between space-y-6">
+          <div className="p-6 neomorph-card flex flex-col justify-between space-y-6">
             <div>
               <h2 className="text-xs font-mono text-slate-400 uppercase tracking-wider">
                 Initial Quality Score
@@ -229,7 +229,7 @@ export default function AnalysisPage({ user, resume, onNavigate }: AnalysisPageP
           </div>
 
           {/* Parsed content list */}
-          <div className="lg:col-span-2 p-6 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl space-y-6">
+          <div className="lg:col-span-2 p-6 neomorph-card space-y-6">
             <h2 className="text-xs font-mono text-slate-400 uppercase tracking-wider border-b border-white/5 pb-3">
               Extracted Profile Records
             </h2>
@@ -293,7 +293,7 @@ export default function AnalysisPage({ user, resume, onNavigate }: AnalysisPageP
         </div>
 
         {/* ATS score match evaluation section */}
-        <div className="p-8 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl space-y-6">
+        <div className="p-8 neomorph-card space-y-6">
           {calculatingAts ? (
             <div className="h-72 flex flex-col items-center justify-center space-y-4 text-center">
               <div className="w-12 h-12 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin" />
@@ -502,7 +502,7 @@ export default function AnalysisPage({ user, resume, onNavigate }: AnalysisPageP
 
         {/* Quality improvements suggestions card */}
         {qualityAnalysis && (
-          <div className="p-6 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl space-y-4">
+          <div className="p-6 neomorph-card space-y-4">
             <h3 className="text-xs font-mono text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
               <Sparkles className="w-4 h-4 text-purple-400" />
               <span>Recommended Enhancements to Implement</span>
