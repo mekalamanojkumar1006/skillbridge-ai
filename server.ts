@@ -610,137 +610,129 @@ app.post("/api/analysis/quality/:resume_id", async (req, res) => {
     // Use raw resume text content when available for better assessment accuracy
     const resumeText = resumeData.content || JSON.stringify(resumeData.parsedData || {});
 
-    const prompt = `You are an expert ATS (Applicant Tracking System) Resume Evaluator acting as a Senior Technical Recruiter with 10+ years of hiring experience.
+    const prompt = `You are an expert ATS (Applicant Tracking System) Resume Evaluator and Technical Recruiter.
 
-Your task: Evaluate the resume below and assign a REALISTIC, ACCURATE score. The score must reflect true resume quality — not be artificially lowered.
-
-====================================================
-CRITICAL SCORING CALIBRATION (Read carefully)
-====================================================
-Use these REAL-WORLD benchmarks to calibrate your scores:
-
-STRONG FRESHER/STUDENT RESUME (score 82–92):
-✓ Has full contact info (phone, email, LinkedIn, GitHub)
-✓ Clear professional summary with target role
-✓ 3–5 relevant technical projects with quantified outcomes
-✓ Internship or on-campus leadership experience
-✓ Relevant certifications (IBM, Google, AWS, etc.)
-✓ Good GPA (7.5+ / 10)
-✓ Modern AI/ML or web tech skills
-
-OUTSTANDING RESUME (score 92–100):
-✓ Production-level projects with live demos or GitHub
-✓ Strong internship at known company
-✓ Hackathon wins or research papers
-✓ Perfect ATS formatting
-
-AVERAGE RESUME (score 70–80):
-✗ Missing GitHub or LinkedIn
-✗ No quantified outcomes in projects
-✗ Weak or vague summary
-✗ Few or generic skills
-
-WEAK RESUME (score below 70):
-✗ Missing contact sections
-✗ No projects or experience
-✗ Formatting issues (tables, graphics)
-✗ Irrelevant skills
+Evaluate the resume below using the following weighted scoring system.
+Do NOT assign random or fixed scores. Every deduction must have a specific, named reason.
+Do NOT reward or penalize based on assumptions — evaluate only what is present in the resume text.
 
 ====================================================
-MANDATORY RULES:
+ATS RESUME SCORING RULES (100 Points)
 ====================================================
-• NEVER assign a score below what is justified by evidence.
-• If the resume has GitHub, LinkedIn, email, phone, location → give 10/10 for Contact Information.
-• If the resume has 3–4 AI/ML projects with quantified outcomes → give 16–19/20 for Projects.
-• If the resume has IBM certification, Google Ambassador role, hackathons → give 5/5 for Certifications.
-• If the resume has Python, ML, NLP, OpenCV, AWS, REST APIs, Git → give 9–10/10 for Technical Skills.
-• If the summary mentions target role + key tech + quantified impact → give 9–10/10 for Professional Summary.
-• Every deduction MUST have a specific, named reason. No vague deductions allowed.
-• If resume is a strong student/fresher resume, the score MUST be 82–92.
-• Do NOT penalize students for not having full-time experience — internships and projects count heavily.
 
-====================================================
-SCORING CRITERIA (100 Points)
-====================================================
 1. ATS Formatting (20 Points)
-   - Single-column, standard headings, consistent font, no tables/graphics, ATS-parseable
-   - 18–20 = Excellent (clean, minimal, standard headings)
-   - 14–17 = Good
+Evaluate:
+• Single-column layout
+• Standard section headings (Education, Experience, Skills, Projects, etc.)
+• Proper spacing and alignment
+• Readable fonts — no decorative or unusual fonts
+• No tables, text boxes, graphics, or excessive icons
+• Consistent formatting throughout
+Scoring: 18–20 = Excellent | 14–17 = Good | 10–13 = Average | Below 10 = Poor
 
 2. Contact Information (10 Points)
-   - Full Name, Email, Phone, LinkedIn, GitHub, Location
-   - All present = 10/10
+Check for: Full Name, Professional Email, Phone Number, LinkedIn Profile, GitHub Profile, Location.
+Deduct 1–2 points for each missing important field.
+All 6 present = 10/10. Missing GitHub or LinkedIn = deduct 2 each.
 
 3. Professional Summary (10 Points)
-   - Target role + relevant tech + quantified impact + concise writing
-   - Strong summary with all elements = 9–10/10
+Evaluate:
+• Clear career objective
+• Target role mentioned
+• Relevant technical skills
+• Industry-specific keywords
+• Concise and impactful writing
+No summary or vague summary = 3–5. Good summary = 7–8. Excellent = 9–10.
 
 4. Technical Skills (10 Points)
-   - Coverage of languages, frameworks, databases, cloud, tools, AI/ML
-   - Broad modern stack = 9–10/10
+Evaluate relevance and coverage of: Programming Languages, Frameworks, Databases, Cloud Platforms, Version Control, Development Tools, AI/ML Technologies, APIs.
+Reward modern and in-demand technologies.
+1–3 skills only = 3–5. Good coverage = 7–8. Excellent broad modern stack = 9–10.
 
 5. Work Experience (10 Points)
-   - Internships, campus roles, leadership with bullet points and metrics
-   - 2 relevant experiences with quantified impact = 7–9/10
+Evaluate: Relevant experience, technical responsibilities, action verbs, quantified achievements, internship quality, leadership.
+No experience = 0–3. One internship with bullets = 5–7. Two+ roles with quantified impact = 8–10.
+Do NOT penalize students for not having full-time jobs — quality internships and leadership roles count.
 
 6. Projects (20 Points)
-   - Complexity, tech stack used, outcomes, GitHub links, real-world relevance
-   - 4 AI/ML projects with % improvements = 16–18/20
+Evaluate: Project complexity, real-world relevance, technologies used, quantified outcomes, problem solved, GitHub link, live demo, proper description.
+0 projects = 0. 1 basic project = 5–8. 2–3 good projects = 10–14. 4+ strong projects with % outcomes and GitHub = 16–20.
+Reward quantified results (e.g., "improved accuracy by 25%") and GitHub/demo links highly.
 
 7. Education (5 Points)
-   - Degree, institution, expected graduation year, CGPA
-   - Present and relevant = 4–5/5
+Evaluate: Degree type, university name, graduation year, CGPA/percentage.
+All present with good CGPA (7.5+/10) = 5. Missing details or low GPA = 3–4.
 
 8. Certifications & Achievements (5 Points)
-   - IBM/Google/AWS certs, hackathons, coding competitions
-   - Multiple certs + hackathons = 5/5
+Evaluate: Industry certifications (IBM, Google, AWS, Microsoft), hackathons, coding competitions, research papers.
+0 = 0. 1 basic cert = 2. Multiple strong certs + hackathons = 5.
 
 9. ATS Keywords (10 Points)
-   - Role-specific: Python, ML, NLP, TensorFlow, FastAPI, Docker, Git, REST APIs
-   - High coverage = 8–10/10
+Extract the target job role from the resume, then score based on how many role-specific keywords are present.
+AI Engineer keywords: Python, Machine Learning, Deep Learning, TensorFlow, PyTorch, NLP, OpenCV, Hugging Face, LangChain, RAG, FastAPI, Docker, AWS, Git, REST APIs
+Software Engineer keywords: Java, Python, C++, DSA, OOP, SQL, Git, REST APIs, React, Node.js, System Design
+Data Analyst keywords: SQL, Excel, Python, Tableau, Power BI, Pandas, NumPy, Statistics
+Frontend Developer keywords: HTML, CSS, JavaScript, React, TypeScript, Redux, Tailwind CSS
+Backend Developer keywords: Node.js, Express, Java, Spring Boot, Python, FastAPI, Django, SQL, MongoDB
+Score based on keyword relevance and density, not just keyword count.
+0–3 keywords = 2–4. Good match = 6–8. Excellent match = 9–10.
 
 ====================================================
-Output — Return ONLY this JSON (no markdown, no explanation):
+SCORE INTERPRETATION
+====================================================
+95–100 → Outstanding Resume
+90–94  → Excellent Resume
+85–89  → Strong Resume
+75–84  → Good Resume
+60–74  → Needs Improvement
+Below 60 → Major Improvements Required
+
+====================================================
+IMPORTANT RULES:
+====================================================
+• NEVER generate arbitrary or fixed scores.
+• Justify every deduction with a specific reason.
+• Reward quantified achievements (%, numbers, impact).
+• Reward strong technical projects with GitHub/live demo links.
+• Consider role-specific keywords — not generic keyword matching.
+• Maintain consistent scoring across similar resumes.
+• If the resume is strong, assign a realistic high score (85–95+), not an artificially low one.
+• Do NOT penalize students for lack of full-time experience — evaluate internship and project quality instead.
+• Do NOT suggest improvements for skills/technologies already present in the resume.
+
+====================================================
+Output — Return ONLY valid raw JSON (no markdown, no explanation outside JSON):
 ====================================================
 {
-  "qualityScore": 88,
+  "qualityScore": <number 0-100, sum of all breakdown scores>,
   "breakdown": {
-    "formatting": 18,
-    "contactInfo": 10,
-    "summary": 9,
-    "skills": 9,
-    "experience": 8,
-    "projects": 17,
-    "education": 5,
-    "certifications": 5,
-    "keywords": 7
+    "formatting": <0-20>,
+    "contactInfo": <0-10>,
+    "summary": <0-10>,
+    "skills": <0-10>,
+    "experience": <0-10>,
+    "projects": <0-20>,
+    "education": <0-5>,
+    "certifications": <0-5>,
+    "keywords": <0-10>
   },
-  "strengths": [
-    "Complete contact info with GitHub and LinkedIn",
-    "4 AI/ML projects with quantified outcomes (20–35% improvements)",
-    "IBM Data Analyst certification and Google Ambassador role"
-  ],
+  "strengths": ["<specific strength 1>", "<specific strength 2>", "<specific strength 3>"],
   "improvements": [
-    { "text": "Add TensorFlow or PyTorch to skills section for AI Engineer roles", "impact": 2 },
-    { "text": "Add live demo links or deployed URLs for projects", "impact": 1 }
+    { "text": "<specific actionable improvement>", "impact": <estimated points gain 1-5> }
   ],
-  "formatting": [
-    "Ensure consistent bullet style throughout sections"
-  ],
+  "formatting": ["<specific formatting observation>"],
   "companyCompatibility": {
-    "tcsInfosysWipro": "92+/100",
-    "accentureCapgemini": "90+/100",
-    "deloitte": "89–92/100",
-    "productCompanies": "85–89/100",
-    "amazon": "82–87/100",
-    "microsoft": "80–86/100",
-    "google": "78–84/100"
+    "tcsInfosysWipro": "<XX–XX/100>",
+    "accentureCapgemini": "<XX–XX/100>",
+    "deloitte": "<XX–XX/100>",
+    "productCompanies": "<XX–XX/100>",
+    "amazon": "<XX–XX/100>",
+    "microsoft": "<XX–XX/100>",
+    "google": "<XX–XX/100>"
   },
-  "verdict": "Strong fresher resume for AI Engineer and Data Analyst roles. Quantified project outcomes, IBM certification, and Google Ambassador experience position this candidate well for both internships and entry-level roles. Adding TensorFlow/PyTorch and live project links would push the score to 92+.",
-  "missingSkills": ["TensorFlow", "PyTorch", "FastAPI", "Docker"]
+  "verdict": "<Recruiter-style summary: why the resume received this score, whether it suits internship or full-time roles, and highest-impact improvements>",
+  "missingSkills": ["<skill not in resume but relevant to target role>"]
 }
-
-IMPORTANT: Do not suggest skills already present in the resume.
 
 Resume Text to Evaluate:
 ${resumeText}`;
@@ -828,63 +820,108 @@ app.post("/api/analysis/ats-score", async (req, res) => {
     const resumeData = resumeSnap.data();
     const resumeText = resumeData.content || JSON.stringify(resumeData.parsedData || {});
 
-    const prompt = `You are an advanced ATS (Applicant Tracking System) Resume Evaluator and Senior Technical Recruiter with 10+ years of hiring experience.
+    const prompt = `You are an expert ATS (Applicant Tracking System) Resume Evaluator and Technical Recruiter.
+
 Analyze the resume below against the provided target job description.
+Do NOT assign random or fixed scores. Every deduction must have a specific, named reason.
+Evaluate only what is actually present in the resume.
 
 ====================================================
-CRITICAL SCORING CALIBRATION:
+ATS RESUME SCORING RULES (100 Points)
 ====================================================
-• Strong fresher/student resumes (with GitHub, LinkedIn, 3–4 AI/ML projects with % outcomes, IBM/Google cert, hackathon experience, good GPA) MUST score 82–92.
-• Outstanding resumes (live demos, known company internship, research papers) score 92–100.
-• Average resumes (no GitHub, vague summaries, no quantified outcomes) score 70–80.
-• Weak resumes (missing contact, no projects) score below 70.
-• NEVER lower a score without a specific, named reason.
-• Resumes with quantified project outcomes (e.g., "20% improvement", "35% reduction") MUST receive high project scores (16–19/20).
-• Resumes with IBM, Google, AWS certifications MUST receive 5/5 for Certifications.
-• Resumes with full contact info (Name, Email, Phone, LinkedIn, GitHub) MUST receive 10/10 for Contact Information.
 
-Calculate the score based on: resume structure, ATS compatibility, keyword match against job description, technical skills, relevant projects, quantified achievements, education, certifications, work experience, and missing sections.
+1. ATS Formatting (20 Points)
+Evaluate: Single-column layout, standard section headings, proper spacing, readable fonts, no tables/text boxes/graphics/excessive icons, consistent formatting.
+Scoring: 18–20 = Excellent | 14–17 = Good | 10–13 = Average | Below 10 = Poor
 
-Return ONLY a valid JSON object matching the schema below (with no extra markdown code block formatting besides valid raw JSON):
+2. Contact Information (10 Points)
+Check: Full Name, Professional Email, Phone Number, LinkedIn Profile, GitHub Profile, Location.
+Deduct 1–2 points for each important missing field. All 6 present = 10/10.
+
+3. Professional Summary (10 Points)
+Evaluate: Clear career objective, target role mentioned, relevant technical skills, industry keywords, concise writing.
+No/vague summary = 3–5. Good = 7–8. Excellent = 9–10.
+
+4. Technical Skills (10 Points)
+Evaluate coverage of: Programming Languages, Frameworks, Databases, Cloud Platforms, Version Control, Dev Tools, AI/ML, APIs.
+1–3 skills = 3–5. Good coverage = 7–8. Broad modern stack = 9–10.
+
+5. Work Experience (10 Points)
+Evaluate: Relevant experience, technical responsibilities, action verbs, quantified achievements, internship quality, leadership.
+No experience = 0–3. One internship with bullets = 5–7. 2+ roles with quantified impact = 8–10.
+Do NOT penalize students for lacking full-time jobs — quality internships count.
+
+6. Projects (20 Points)
+Evaluate: Project complexity, real-world relevance, tech stack, quantified outcomes, problem solved, GitHub link, live demo, description quality.
+0 projects = 0. 1 basic project = 5–8. 2–3 good = 10–14. 4+ strong projects with % outcomes + GitHub = 16–20.
+Reward quantified results and GitHub/demo links heavily.
+
+7. Education (5 Points)
+Evaluate: Degree, university, graduation year, CGPA/percentage.
+All present, good CGPA (7.5+) = 5. Missing details or low GPA = 3–4.
+
+8. Certifications & Achievements (5 Points)
+Evaluate: IBM/Google/AWS/Microsoft certs, hackathons, coding competitions, research papers.
+0 = 0. 1 basic cert = 2. Multiple strong certs + hackathons = 5.
+
+9. ATS Keywords (10 Points)
+Match resume keywords against the provided job description AND role-specific keyword lists:
+AI Engineer: Python, ML, Deep Learning, TensorFlow, PyTorch, NLP, OpenCV, Hugging Face, LangChain, RAG, FastAPI, Docker, AWS, Git, REST APIs
+Software Engineer: Java, Python, C++, DSA, OOP, SQL, Git, REST APIs, React, Node.js, System Design
+Data Analyst: SQL, Excel, Python, Tableau, Power BI, Pandas, NumPy, Statistics
+Frontend Developer: HTML, CSS, JavaScript, React, TypeScript, Redux, Tailwind CSS
+Backend Developer: Node.js, Express, Java, Spring Boot, Python, FastAPI, Django, SQL, MongoDB
+0–3 keywords matched = 2–4. Good match = 6–8. Excellent relevance = 9–10.
+
+====================================================
+SCORE INTERPRETATION
+====================================================
+95–100 → Outstanding | 90–94 → Excellent | 85–89 → Strong
+75–84 → Good | 60–74 → Needs Improvement | Below 60 → Major Improvements Required
+
+====================================================
+RULES:
+====================================================
+• NEVER generate arbitrary scores. Justify every deduction.
+• Reward quantified achievements, GitHub links, live demos.
+• Use role-specific keyword matching — not generic.
+• Maintain consistent scoring across similar resumes.
+• Strong resumes must receive realistic high scores (85–95+).
+• Do NOT suggest improvements for skills already present in the resume.
+
+====================================================
+Return ONLY valid raw JSON (no markdown, no explanation outside JSON):
+====================================================
 {
-  "score": 91,
+  "score": <number 0-100, exact sum of all breakdown scores>,
   "breakdown": {
-    "formatting": 19,
-    "contactInfo": 10,
-    "summary": 9,
-    "skills": 10,
-    "experience": 8,
-    "projects": 18,
-    "education": 5,
-    "certifications": 5,
-    "keywords": 7
+    "formatting": <0-20>,
+    "contactInfo": <0-10>,
+    "summary": <0-10>,
+    "skills": <0-10>,
+    "experience": <0-10>,
+    "projects": <0-20>,
+    "education": <0-5>,
+    "certifications": <0-5>,
+    "keywords": <0-10>
   },
-  "strengths": [
-    "ATS-friendly layout",
-    "Strong AI/Data Science skills matched with target role",
-    "Quantified achievements using STAR method"
-  ],
+  "strengths": ["<specific strength matched to resume>"],
   "improvements": [
-    { "text": "Add GitHub project links", "impact": 2 },
-    { "text": "Include modern AI keywords like TensorFlow, FastAPI, Docker, LangChain, RAG, Hugging Face", "impact": 2 },
-    { "text": "Strengthen technical experience", "impact": 2 },
-    { "text": "Add one production-level AI project", "impact": 2 }
+    { "text": "<specific actionable improvement not already in resume>", "impact": <1-5> }
   ],
   "companyCompatibility": {
-    "tcsInfosysWipro": "95+/100",
-    "accentureCapgemini": "93+/100",
-    "startups": "92–95/100",
-    "productCompanies": "88–92/100",
-    "amazon": "85–90/100",
-    "microsoft": "84–89/100",
-    "google": "80–86/100"
+    "tcsInfosysWipro": "<XX–XX/100>",
+    "accentureCapgemini": "<XX–XX/100>",
+    "deloitte": "<XX–XX/100>",
+    "productCompanies": "<XX–XX/100>",
+    "amazon": "<XX–XX/100>",
+    "microsoft": "<XX–XX/100>",
+    "google": "<XX–XX/100>"
   },
-  "verdict": "This resume is well-structured and highly suitable for AI Engineer, Data Scientist, Machine Learning Engineer, and Software Engineer internship roles. With a few improvements such as additional AI keywords, project links, and one more production-ready project, it can reach an ATS score of 95–97.",
-  "keywordsMatched": ["TypeScript", "React", "Node.js"],
-  "missingKeywords": ["AWS", "Kubernetes", "GraphQL"]
+  "verdict": "<Recruiter-style summary: why this score, internship vs full-time suitability, highest-impact improvements>",
+  "keywordsMatched": ["<keyword found in both resume and job description>"],
+  "missingKeywords": ["<role-specific keyword missing from resume>"]
 }
-
-Do not suggest improvements if they already exist in the resume. Keep suggestions brief and actionable.
 
 Resume Content:
 ${resumeText}
