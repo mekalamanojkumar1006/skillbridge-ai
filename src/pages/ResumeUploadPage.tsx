@@ -145,20 +145,18 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate }
               setUsePasteMode(false);
               setError(null);
             }}
-            className={`pb-3 text-xs sm:text-sm font-mono uppercase tracking-wider font-bold border-b-2 px-4 transition duration-200 ${
-              !usePasteMode ? "border-blue-500 text-blue-400" : "border-transparent text-slate-500 hover:text-slate-300"
-            }`}
+            className={`pb-3 text-xs sm:text-sm font-mono uppercase tracking-wider font-bold border-b-2 px-4 transition duration-200 ${!usePasteMode ? "border-blue-500 text-blue-400" : "border-transparent text-slate-500 hover:text-slate-300"
+              }`}
           >
-            Upload File (.TXT, .MD)
+            Upload File (.PDF, .DOCX)
           </button>
           <button
             onClick={() => {
               setUsePasteMode(true);
               setError(null);
             }}
-            className={`pb-3 text-xs sm:text-sm font-mono uppercase tracking-wider font-bold border-b-2 px-4 transition duration-200 ${
-              usePasteMode ? "border-blue-500 text-blue-400" : "border-transparent text-slate-500 hover:text-slate-300"
-            }`}
+            className={`pb-3 text-xs sm:text-sm font-mono uppercase tracking-wider font-bold border-b-2 px-4 transition duration-200 ${usePasteMode ? "border-blue-500 text-blue-400" : "border-transparent text-slate-500 hover:text-slate-300"
+              }`}
           >
             Direct Text Paste
           </button>
@@ -173,11 +171,10 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate }
               onDragLeave={handleDrag}
               onDrop={handleDrop}
               onClick={handleBrowseClick}
-              className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition duration-200 ${
-                isDragActive
+              className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition duration-200 ${isDragActive
                   ? "border-blue-500 bg-blue-950/10 text-white"
                   : "border-white/10 hover:border-white/20 text-slate-400"
-              }`}
+                }`}
             >
               <input
                 type="file"

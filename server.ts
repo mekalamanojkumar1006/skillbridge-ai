@@ -31,8 +31,9 @@ const PORT = 3000;
 
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
 
 // In-memory fallback database for sandboxed environments or restrictive permission sets
 const inMemoryStore: Record<string, Record<string, any>> = {};
@@ -344,9 +345,9 @@ function cleanAndParseJSON(text: string) {
 // Helper to call generateContent with model fallbacks to handle high demand / overloaded errors
 async function generateContentWithFallback(params: { contents: string | any[] }) {
   const modelsToTry = [
-    "gemini-3.5-flash",
-    "gemini-flash-latest",
-    "gemini-3.1-flash-lite"
+    "gemini-2.0-flash",
+    "gemini-2.0-flash-lite",
+    "gemini-1.5-flash"
   ];
 
   let lastError: any = null;
