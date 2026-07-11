@@ -5,12 +5,22 @@ import { GoogleGenAI } from "@google/genai";
 import admin from "firebase-admin";
 import { getFirestore } from "firebase-admin/firestore";
 import { createServer as createViteServer } from "vite";
-import firebaseConfig from "./firebase-applet-config.json" assert { type: "json" };
 import dotenv from "dotenv";
-import fs from "fs";
-
 // Load environment variables before initializing any SDKs
 dotenv.config();
+
+import localConfig from "./firebase-applet-config.json" assert { type: "json" };
+import fs from "fs";
+
+const firebaseConfig = {
+  apiKey: process.env.VITE_FIREBASE_API_KEY || localConfig.apiKey,
+  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN || localConfig.authDomain,
+  projectId: process.env.VITE_FIREBASE_PROJECT_ID || localConfig.projectId,
+  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET || localConfig.storageBucket,
+  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || localConfig.messagingSenderId,
+  appId: process.env.VITE_FIREBASE_APP_ID || localConfig.appId,
+  firestoreDatabaseId: process.env.VITE_FIREBASE_DATABASE_ID || (localConfig as any).firestoreDatabaseId
+};
 
 const app = express();
 const PORT = 3000;
