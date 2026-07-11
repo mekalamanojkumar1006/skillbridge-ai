@@ -347,7 +347,7 @@ async function generateContentWithFallback(params: { contents: string | any[] })
   const modelsToTry = [
     "gemini-2.0-flash",
     "gemini-2.0-flash-lite",
-    "gemini-1.5-flash"
+    "gemini-2.5-flash-lite-preview-06-17"
   ];
 
   let lastError: any = null;
@@ -362,24 +362,11 @@ async function generateContentWithFallback(params: { contents: string | any[] })
     } catch (error: any) {
       console.warn(`Model ${model} failed:`, error.message || error);
       lastError = error;
-      const msg = (error.message || "").toLowerCase();
-      // If the model is experiencing high demand (503), overloaded (429/503), rate limit, etc, try next model
-      if (
-        msg.includes("demand") ||
-        msg.includes("unavailable") ||
-        msg.includes("resource") ||
-        msg.includes("quota") ||
-        msg.includes("limit") ||
-        error.code === 503 ||
-        error.code === 429
-      ) {
-        continue;
-      }
-      // For any other unexpected transient model errors, we also fallback to be highly available
+      // Always try next model on any error (quota, overload, not found, etc.)
       continue;
     }
   }
-  throw lastError || new Error("All generative AI models are currently overloaded. Please try again in a moment.");
+  throw lastError || new Error("All generative AI models are currently unavailable. Please try again in a moment.");
 }
 
 // ----------------------------------------------------
