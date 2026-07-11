@@ -12,14 +12,16 @@ dotenv.config();
 import localConfig from "./firebase-applet-config.json" assert { type: "json" };
 import fs from "fs";
 
+const trimVal = (val: any) => typeof val === "string" ? val.trim() : val;
+
 const firebaseConfig = {
-  apiKey: process.env.VITE_FIREBASE_API_KEY || localConfig.apiKey,
-  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN || localConfig.authDomain,
-  projectId: process.env.VITE_FIREBASE_PROJECT_ID || localConfig.projectId,
-  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET || localConfig.storageBucket,
-  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || localConfig.messagingSenderId,
-  appId: process.env.VITE_FIREBASE_APP_ID || localConfig.appId,
-  firestoreDatabaseId: process.env.VITE_FIREBASE_DATABASE_ID || (localConfig as any).firestoreDatabaseId
+  apiKey: trimVal(process.env.VITE_FIREBASE_API_KEY || localConfig.apiKey),
+  authDomain: trimVal(process.env.VITE_FIREBASE_AUTH_DOMAIN || localConfig.authDomain),
+  projectId: trimVal(process.env.VITE_FIREBASE_PROJECT_ID || localConfig.projectId),
+  storageBucket: trimVal(process.env.VITE_FIREBASE_STORAGE_BUCKET || localConfig.storageBucket),
+  messagingSenderId: trimVal(process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || localConfig.messagingSenderId),
+  appId: trimVal(process.env.VITE_FIREBASE_APP_ID || localConfig.appId),
+  firestoreDatabaseId: trimVal(process.env.VITE_FIREBASE_DATABASE_ID || (localConfig as any).firestoreDatabaseId)
 };
 
 const app = express();
