@@ -79,7 +79,7 @@ export default function LandingPage({ onNavigate, user }: LandingPageProps) {
   ];
 
   return (
-    <div className="relative min-h-screen bg-[#020204] text-slate-100 selection:bg-blue-500/30 selection:text-white overflow-hidden pb-16">
+    <div className="relative min-h-screen bg-[#0f1016] text-slate-100 selection:bg-blue-500/30 selection:text-white overflow-hidden pb-16">
       {/* Glow Effects */}
       <div className="absolute top-[-150px] left-[-100px] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none"></div>
       <div className="absolute bottom-[-150px] right-[-100px] w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[140px] pointer-events-none"></div>

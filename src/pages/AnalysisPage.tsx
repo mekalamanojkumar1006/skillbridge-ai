@@ -100,7 +100,7 @@ export default function AnalysisPage({ user, resume, onNavigate }: AnalysisPageP
 
   if (!resume) {
     return (
-      <div className="min-h-screen bg-[#020204] text-slate-100 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
+      <div className="min-h-screen bg-[#0f1016] text-slate-100 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
         <div className="absolute top-[-150px] left-[-100px] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none"></div>
         <FileText className="w-12 h-12 text-slate-600 mb-2 animate-bounce relative z-10" />
         <h2 className="text-xl font-bold text-slate-200 relative z-10">No Resume Uploaded</h2>
@@ -115,7 +115,7 @@ export default function AnalysisPage({ user, resume, onNavigate }: AnalysisPageP
   }
 
   return (
-    <div className="min-h-screen bg-[#020204] text-slate-100 py-16 px-6 relative overflow-hidden">
+    <div className="min-h-screen bg-[#0f1016] text-slate-100 py-16 px-6 relative overflow-hidden">
       {/* Visual background glows */}
       <div className="absolute top-[-150px] left-[-100px] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none"></div>
       <div className="absolute bottom-[-150px] right-[-100px] w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[140px] pointer-events-none"></div>

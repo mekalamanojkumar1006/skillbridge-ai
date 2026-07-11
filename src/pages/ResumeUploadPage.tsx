@@ -116,7 +116,7 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate }
   };
 
   return (
-    <div className="min-h-screen bg-[#020204] text-slate-100 flex flex-col justify-center items-center px-6 py-12 relative overflow-hidden">
+    <div className="min-h-screen bg-[#0f1016] text-slate-100 flex flex-col justify-center items-center px-6 py-12 relative overflow-hidden">
       {/* Background glow overlay */}
       <div className="absolute top-[-150px] left-[-100px] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none"></div>
       <div className="absolute bottom-[-150px] right-[-100px] w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[140px] pointer-events-none"></div>
