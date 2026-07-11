@@ -610,117 +610,164 @@ app.post("/api/analysis/quality/:resume_id", async (req, res) => {
     // Use raw resume text content when available for better assessment accuracy
     const resumeText = resumeData.content || JSON.stringify(resumeData.parsedData || {});
 
-    const prompt = `You are an expert ATS (Applicant Tracking System) Resume Evaluator and Technical Recruiter.
+    const prompt = `You are an Expert ATS (Applicant Tracking System) Resume Evaluator, Senior Technical Recruiter, and Hiring Manager.
 
-Evaluate the resume below using the following weighted scoring system.
-Do NOT assign random or fixed scores. Every deduction must have a specific, named reason.
-Do NOT reward or penalize based on assumptions — evaluate only what is present in the resume text.
+Your job is to evaluate resumes exactly like professional ATS tools (Jobscan, Resume Worded, Enhancv).
 
-====================================================
-ATS RESUME SCORING RULES (100 Points)
-====================================================
+========================================
+IMPORTANT RULES
+========================================
+• Never generate random or fixed scores.
+• Never give similar scores to every resume.
+• Every resume must receive a UNIQUE score based on its actual quality.
+• Every deduction must have a clear, specific reason.
+• The final ATS score MUST equal the EXACT sum of all category scores.
+• Evaluate ONLY what exists in the resume text.
+• Never assume missing information.
+• Do not inflate scores.
+• Do not penalize freshers for not having full-time experience.
+• Evaluate internship quality, projects, leadership and technical skills instead.
+• If AI cannot determine a category, assign the minimum justified score.
+
+========================================
+ATS SCORING (100 Points)
+========================================
 
 1. ATS Formatting (20 Points)
-Evaluate:
+Check:
 • Single-column layout
-• Standard section headings (Education, Experience, Skills, Projects, etc.)
-• Proper spacing and alignment
-• Readable fonts — no decorative or unusual fonts
-• No tables, text boxes, graphics, or excessive icons
-• Consistent formatting throughout
-Scoring: 18–20 = Excellent | 14–17 = Good | 10–13 = Average | Below 10 = Poor
+• Standard headings
+• Proper spacing
+• Readable fonts
+• No tables, text boxes, images
+• ATS-compatible formatting
+
+Score:
+18–20 = Excellent
+14–17 = Good
+10–13 = Average
+Below 10 = Poor
+
+Deductions:
+Two-column layout: −4
+Tables: −4
+Images: −3
+Text boxes: −3
+Poor spacing: −2
+Fancy fonts: −2
 
 2. Contact Information (10 Points)
-Check for: Full Name, Professional Email, Phone Number, LinkedIn Profile, GitHub Profile, Location.
-Deduct 1–2 points for each missing important field.
-All 6 present = 10/10. Missing GitHub or LinkedIn = deduct 2 each.
+Check: Name, Professional Email, Phone, LinkedIn, GitHub, Location
+
+Deductions:
+Missing LinkedIn: −2
+Missing GitHub: −2
+Missing Email: −3
+Missing Phone: −3
 
 3. Professional Summary (10 Points)
 Evaluate:
-• Clear career objective
-• Target role mentioned
-• Relevant technical skills
-• Industry-specific keywords
-• Concise and impactful writing
-No summary or vague summary = 3–5. Good summary = 7–8. Excellent = 9–10.
+• Target role clearly stated
+• Career objective
+• Technical keywords relevant to role
+• Concise, impactful writing
+• Relevant skills mentioned
+
+No summary = 0–2. Vague = 3–5. Good = 6–8. Excellent = 9–10.
 
 4. Technical Skills (10 Points)
-Evaluate relevance and coverage of: Programming Languages, Frameworks, Databases, Cloud Platforms, Version Control, Development Tools, AI/ML Technologies, APIs.
-Reward modern and in-demand technologies.
-1–3 skills only = 3–5. Good coverage = 7–8. Excellent broad modern stack = 9–10.
+Evaluate relevance and coverage of:
+Programming Languages, Frameworks, Databases, Cloud Platforms, Tools, Version Control, AI/ML, APIs.
+
+Reward modern, in-demand technologies.
+0–1 skills = 1–3. Basic = 4–6. Good = 7–8. Excellent broad modern stack = 9–10.
 
 5. Work Experience (10 Points)
-Evaluate: Relevant experience, technical responsibilities, action verbs, quantified achievements, internship quality, leadership.
-No experience = 0–3. One internship with bullets = 5–7. Two+ roles with quantified impact = 8–10.
-Do NOT penalize students for not having full-time jobs — quality internships and leadership roles count.
+Evaluate: Technical work, internships, leadership, action verbs, quantified achievements, impact.
+Do NOT penalize freshers for no full-time experience.
+
+No experience at all = 0–3.
+1 internship with relevant bullets = 4–6.
+2+ internships or roles with quantified impact = 7–10.
 
 6. Projects (20 Points)
-Evaluate: Project complexity, real-world relevance, technologies used, quantified outcomes, problem solved, GitHub link, live demo, proper description.
-0 projects = 0. 1 basic project = 5–8. 2–3 good projects = 10–14. 4+ strong projects with % outcomes and GitHub = 16–20.
-Reward quantified results (e.g., "improved accuracy by 25%") and GitHub/demo links highly.
+Evaluate: Complexity, real-world relevance, technologies used, problem solved, metrics, GitHub link, live demo, documentation.
+
+Excellent (4+ production projects, GitHub, live demo, impact metrics): 17–20
+Good (2–3 projects with outcomes and tech detail): 13–16
+Average (2 simple projects, no metrics): 10–12
+Poor (1 basic project, no detail): 5–9
+No projects at all: 0–4
+
+IMPORTANT: If resume has no projects, maximum total score is 60.
 
 7. Education (5 Points)
-Evaluate: Degree type, university name, graduation year, CGPA/percentage.
-All present with good CGPA (7.5+/10) = 5. Missing details or low GPA = 3–4.
+Evaluate: Degree, University name, CGPA/percentage, Graduation Year.
+All present with CGPA 7.5+/10 = 5. Partial info = 3–4. Low GPA or missing = 1–2.
 
 8. Certifications & Achievements (5 Points)
-Evaluate: Industry certifications (IBM, Google, AWS, Microsoft), hackathons, coding competitions, research papers.
-0 = 0. 1 basic cert = 2. Multiple strong certs + hackathons = 5.
+Evaluate: IBM, Google, AWS, Microsoft, Oracle certifications, hackathons, research papers, coding competitions.
+0 = 0. 1 basic cert = 2. Strong certs + hackathons = 4–5.
 
 9. ATS Keywords (10 Points)
-Extract the target job role from the resume, then score based on how many role-specific keywords are present.
-AI Engineer keywords: Python, Machine Learning, Deep Learning, TensorFlow, PyTorch, NLP, OpenCV, Hugging Face, LangChain, RAG, FastAPI, Docker, AWS, Git, REST APIs
-Software Engineer keywords: Java, Python, C++, DSA, OOP, SQL, Git, REST APIs, React, Node.js, System Design
-Data Analyst keywords: SQL, Excel, Python, Tableau, Power BI, Pandas, NumPy, Statistics
-Frontend Developer keywords: HTML, CSS, JavaScript, React, TypeScript, Redux, Tailwind CSS
-Backend Developer keywords: Node.js, Express, Java, Spring Boot, Python, FastAPI, Django, SQL, MongoDB
-Score based on keyword relevance and density, not just keyword count.
-0–3 keywords = 2–4. Good match = 6–8. Excellent match = 9–10.
+Extract the target job role from the resume, then match role-specific keywords.
 
-====================================================
-SCORE INTERPRETATION
-====================================================
-95–100 → Outstanding Resume
-90–94  → Excellent Resume
-85–89  → Strong Resume
-75–84  → Good Resume
-60–74  → Needs Improvement
-Below 60 → Major Improvements Required
+AI Engineer: Python, Machine Learning, Deep Learning, TensorFlow, PyTorch, NLP, OpenCV, Hugging Face, LangChain, RAG, FastAPI, Docker, AWS, Git, REST APIs
+Software Engineer: Java, Python, C++, DSA, OOP, SQL, Git, REST APIs, React, Node.js, System Design
+Data Analyst: SQL, Excel, Python, Tableau, Power BI, Pandas, NumPy, Statistics
+Frontend Developer: HTML, CSS, JavaScript, React, TypeScript, Redux, Tailwind CSS
+Backend Developer: Node.js, Express, Java, Spring Boot, Python, FastAPI, Django, SQL, MongoDB
 
-====================================================
-IMPORTANT RULES:
-====================================================
-• NEVER generate arbitrary or fixed scores.
-• Justify every deduction with a specific reason.
-• Reward quantified achievements (%, numbers, impact).
-• Reward strong technical projects with GitHub/live demo links.
-• Consider role-specific keywords — not generic keyword matching.
-• Maintain consistent scoring across similar resumes.
-• If the resume is strong, assign a realistic high score (85–95+), not an artificially low one.
-• Do NOT penalize students for lack of full-time experience — evaluate internship and project quality instead.
-• Do NOT suggest improvements for skills/technologies already present in the resume.
+Score on keyword RELEVANCE and CONTEXT — not just keyword count.
+0–3 keywords = 2–4. Moderate = 5–7. Strong role-specific match = 8–10.
 
-====================================================
-Output — Return ONLY valid raw JSON (no markdown, no explanation outside JSON):
-====================================================
+========================================
+QUALITY ANCHORS
+========================================
+Outstanding Resume (95–100): Excellent everything — ATS formatting, full contact, strong summary, modern skills, multiple quantified experiences, 4+ production projects with GitHub + live demos + metrics, strong certifications, near-perfect keyword match.
+Excellent Resume (90–94): Near-outstanding with minor gaps.
+Strong Resume (85–89): Strong fresher with good projects, certifications, internships, good keyword coverage.
+Good Resume (75–84): Average fresher — some projects, basic skills, decent formatting.
+Needs Improvement (60–74): Missing sections, weak projects, poor keywords.
+Poor Resume (Below 60): Major gaps — no projects, missing contact, poor formatting.
+
+Cap rules:
+• No projects at all → Maximum total score: 60
+• No skills section → Maximum total score: 55
+• No GitHub → Deduct 2 from contactInfo
+• No LinkedIn → Deduct 2 from contactInfo
+• No Summary → Deduct 3 from summary (minimum 0)
+• Poor formatting → Deduct up to 5 from formatting
+
+========================================
+CRITICAL VERIFICATION
+========================================
+Before returning JSON, verify:
+qualityScore = formatting + contactInfo + summary + skills + experience + projects + education + certifications + keywords
+
+If sum does not match qualityScore, correct qualityScore to match the sum.
+Never return inconsistent totals.
+
+========================================
+Return ONLY valid raw JSON — no markdown, no explanation:
+========================================
 {
-  "qualityScore": <number 0-100, sum of all breakdown scores>,
+  "qualityScore": <exact sum of all breakdown values>,
   "breakdown": {
-    "formatting": <0-20>,
-    "contactInfo": <0-10>,
-    "summary": <0-10>,
-    "skills": <0-10>,
-    "experience": <0-10>,
-    "projects": <0-20>,
-    "education": <0-5>,
-    "certifications": <0-5>,
-    "keywords": <0-10>
+    "formatting": <0–20>,
+    "contactInfo": <0–10>,
+    "summary": <0–10>,
+    "skills": <0–10>,
+    "experience": <0–10>,
+    "projects": <0–20>,
+    "education": <0–5>,
+    "certifications": <0–5>,
+    "keywords": <0–10>
   },
-  "strengths": ["<specific strength 1>", "<specific strength 2>", "<specific strength 3>"],
+  "strengths": ["<specific strength from resume>", "<specific strength>"],
   "improvements": [
-    { "text": "<specific actionable improvement>", "impact": <estimated points gain 1-5> }
+    { "text": "<specific, actionable improvement not already present>", "impact": <1–5> }
   ],
-  "formatting": ["<specific formatting observation>"],
   "companyCompatibility": {
     "tcsInfosysWipro": "<XX–XX/100>",
     "accentureCapgemini": "<XX–XX/100>",
@@ -730,12 +777,14 @@ Output — Return ONLY valid raw JSON (no markdown, no explanation outside JSON)
     "microsoft": "<XX–XX/100>",
     "google": "<XX–XX/100>"
   },
-  "verdict": "<Recruiter-style summary: why the resume received this score, whether it suits internship or full-time roles, and highest-impact improvements>",
-  "missingSkills": ["<skill not in resume but relevant to target role>"]
+  "verdict": "<Recruiter-style paragraph: why this exact score, internship vs full-time suitability, top 2 improvements for biggest impact>",
+  "missingSkills": ["<role-specific skill not found in resume>"]
 }
 
 Resume Text to Evaluate:
 ${resumeText}`;
+
+
 
     const aiResponse = await generateContentWithFallback({
       contents: prompt
@@ -744,17 +793,21 @@ ${resumeText}`;
     const analysisResult = cleanAndParseJSON(aiResponse.text || "{}");
 
     // Standardize structure and add fallback defaults if missing
-    analysisResult.qualityScore = typeof analysisResult.qualityScore === 'number' ? analysisResult.qualityScore : (typeof analysisResult.score === 'number' ? analysisResult.score : 75);
+    // Recalculate qualityScore from breakdown to ensure it always equals the sum
+    const bd = analysisResult.breakdown;
+    if (bd && typeof bd === 'object') {
+      const recalculated = (bd.formatting || 0) + (bd.contactInfo || 0) + (bd.summary || 0) +
+        (bd.skills || 0) + (bd.experience || 0) + (bd.projects || 0) +
+        (bd.education || 0) + (bd.certifications || 0) + (bd.keywords || 0);
+      analysisResult.qualityScore = recalculated;
+    } else {
+      analysisResult.qualityScore = typeof analysisResult.qualityScore === 'number'
+        ? analysisResult.qualityScore
+        : (typeof analysisResult.score === 'number' ? analysisResult.score : 0);
+    }
     analysisResult.breakdown = analysisResult.breakdown || {
-      formatting: Math.min(20, Math.round(analysisResult.qualityScore * 0.2)),
-      contactInfo: 9,
-      summary: Math.min(10, Math.round(analysisResult.qualityScore * 0.1)),
-      skills: Math.min(10, Math.round(analysisResult.qualityScore * 0.1)),
-      experience: Math.min(10, Math.round(analysisResult.qualityScore * 0.1)),
-      projects: Math.min(20, Math.round(analysisResult.qualityScore * 0.2)),
-      education: 4,
-      certifications: 4,
-      keywords: Math.min(10, Math.round(analysisResult.qualityScore * 0.1))
+      formatting: 0, contactInfo: 0, summary: 0, skills: 0, experience: 0,
+      projects: 0, education: 0, certifications: 0, keywords: 0
     };
     analysisResult.strengths = analysisResult.strengths || ["ATS-friendly layout", "Strong technical background"];
     analysisResult.improvements = analysisResult.improvements || [
