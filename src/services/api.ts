@@ -39,11 +39,25 @@ export class ApiService {
     return res.json();
   }
 
-  static async uploadResume(userId: string, fileName: string, content: string) {
+  static async uploadResume(userId: string, fileName: string, contentOrFile: string | File) {
+    let body: any;
+    let headers: Record<string, string> = {};
+
+    if (contentOrFile instanceof File) {
+      const formData = new FormData();
+      formData.append("userId", userId);
+      formData.append("fileName", fileName);
+      formData.append("resume", contentOrFile);
+      body = formData;
+    } else {
+      headers["Content-Type"] = "application/json";
+      body = JSON.stringify({ userId, fileName, content: contentOrFile });
+    }
+
     const res = await fetch(`${this.getBaseUrl()}/api/resumes/upload`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, fileName, content })
+      headers,
+      body
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));

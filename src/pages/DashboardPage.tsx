@@ -1007,302 +1007,154 @@ export default function DashboardPage({
                     <div>
                       <h2 className="text-lg font-black text-white flex items-center space-x-2">
                         <Award className="w-5 h-5 text-blue-400" />
-                        <span>Live Role Database & Recommendations</span>
+                        <span>AI Role Recommendations</span>
                       </h2>
                       <p className="text-xs text-slate-400 mt-1 font-sans">
-                        View raw live data stored in our <strong className="text-emerald-400 font-mono">Firestore</strong> database, or run cosine-similarity skill vector matching.
+                        Personalized career role suggestions matched using our multi-agent capabilities against your profile.
                       </p>
                     </div>
 
-                    {/* Mode selector and Actions */}
-                    <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-                      <div className="neomorph-inset-input p-1 flex space-x-1">
-                        <button
-                          onClick={() => setOppsViewMode("matched")}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-mono tracking-wider uppercase transition-all duration-200 flex items-center space-x-1.5 ${
-                            oppsViewMode === "matched"
-                              ? "bg-blue-600 text-white font-bold"
-                              : "text-slate-400 hover:text-white"
-                          }`}
-                        >
-                          <Award className="w-3.5 h-3.5" />
-                          <span>Matched (Cosine Similarity)</span>
-                        </button>
-                        <button
-                          onClick={() => setOppsViewMode("all")}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-mono tracking-wider uppercase transition-all duration-200 flex items-center space-x-1.5 ${
-                            oppsViewMode === "all"
-                              ? "bg-emerald-600 text-white font-bold"
-                              : "text-slate-400 hover:text-white"
-                          }`}
-                        >
-                          <Database className="w-3.5 h-3.5" />
-                          <span>All Real Jobs in DB</span>
-                        </button>
-                      </div>
-
-                      {oppsViewMode === "matched" && (
-                        <button
-                          onClick={handleCalculateOpps}
-                          disabled={calculatingOpps || loadingOpps}
-                          className="flex items-center space-x-2 px-4 py-2 neomorph-button-primary disabled:opacity-50 text-white text-xs font-mono uppercase tracking-wider font-bold shrink-0 ml-auto lg:ml-0"
-                        >
-                          <RefreshCw className={`w-4 h-4 ${(calculatingOpps || loadingOpps) ? "animate-spin" : ""}`} />
-                          <span>{calculatingOpps ? "Matching..." : "Recalculate Matches"}</span>
-                        </button>
-                      )}
-
-                      {oppsViewMode === "all" && (
-                        <button
-                          onClick={fetchRawOpps}
-                          disabled={loadingRawOpps}
-                          className="flex items-center space-x-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-800 disabled:opacity-50 text-white text-xs font-mono uppercase tracking-wider font-bold rounded-xl transition duration-200 shadow-lg shadow-emerald-600/20 shrink-0 ml-auto lg:ml-0"
-                        >
-                          <RefreshCw className={`w-4 h-4 ${loadingRawOpps ? "animate-spin" : ""}`} />
-                          <span>{loadingRawOpps ? "Refreshing DB..." : "Refresh Database View"}</span>
-                        </button>
-                      )}
+                    <div>
+                      <button
+                        onClick={handleCalculateOpps}
+                        disabled={calculatingOpps || loadingOpps}
+                        className="flex items-center space-x-2 px-4 py-2 neomorph-button-primary disabled:opacity-50 text-white text-xs font-mono uppercase tracking-wider font-bold shrink-0"
+                      >
+                        <RefreshCw className={`w-4 h-4 ${(calculatingOpps || loadingOpps) ? "animate-spin" : ""}`} />
+                        <span>{calculatingOpps ? "Matching..." : "Recalculate Recommendations"}</span>
+                      </button>
                     </div>
                   </div>
 
-                  {oppsViewMode === "matched" ? (
-                    /* MATCHED RECOMMENDATIONS MODE */
-                    calculatingOpps || loadingOpps ? (
-                      <div className="h-64 flex flex-col items-center justify-center space-y-3">
-                        <div className="w-10 h-10 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin" />
-                        <div className="text-center">
-                          <span className="text-xs font-mono text-slate-400 uppercase tracking-widest block">Comparing Skill Vectors</span>
-                          <p className="text-[11px] text-slate-500 mt-1 max-w-xs font-sans">
-                            Generating candidate-to-role intersection indices and calculating cosine similarity coefficients...
-                          </p>
-                        </div>
-                      </div>
-                    ) : recommendedOpps.length > 0 ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {recommendedOpps.map((opp, idx) => (
-                          <motion.div
-                            key={opp.opportunityId || idx}
-                            initial={{ opacity: 0, y: 15 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.4, delay: idx * 0.05 }}
-                            whileHover={{ y: -4, borderColor: "rgba(59, 130, 246, 0.3)", backgroundColor: "rgba(255, 255, 255, 0.02)" }}
-                            className="p-6 bg-white/[0.01] border border-white/5 rounded-2xl flex flex-col justify-between space-y-5 transition duration-300 group"
-                          >
-                            <div className="space-y-3">
-                              <div className="flex justify-between items-start">
-                                <span className={`px-2.5 py-1 rounded text-[10px] font-mono font-bold border ${
-                                  opp.matchScore >= 75
-                                    ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-                                    : opp.matchScore >= 50
-                                    ? "bg-blue-500/10 border-blue-500/20 text-blue-400"
-                                    : "bg-amber-500/10 border-amber-500/20 text-amber-400"
-                                }`}>
-                                  <CountUpText to={opp.matchScore} suffix="% Match Score" />
-                                </span>
-                                <span className="text-[9px] font-mono text-slate-500 uppercase">
-                                  Cosine Sim: {(opp.matchScore / 100).toFixed(2)}
-                                </span>
-                              </div>
-
-                              <div>
-                                <h3 className="text-sm font-bold text-slate-200 group-hover:text-blue-400 transition-colors leading-snug">
-                                  {opp.title}
-                                </h3>
-                                <p className="text-xs text-blue-400 font-mono font-semibold mt-0.5">{opp.company}</p>
-                              </div>
-
-                              <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-slate-400 font-mono">
-                                <span className="flex items-center space-x-1">
-                                  <span className="text-slate-600">&bull;</span>
-                                  <span>{opp.location}</span>
-                                </span>
-                                <span className="flex items-center space-x-1">
-                                  <span className="text-slate-600">&bull;</span>
-                                  <span>{opp.type}</span>
-                                </span>
-                                <span className="flex items-center space-x-1">
-                                  <span className="text-slate-600">&bull;</span>
-                                  <span>{opp.salary}</span>
-                                </span>
-                              </div>
-
-                              <p className="text-xs text-slate-400 font-sans leading-relaxed line-clamp-3">
-                                {opp.description}
-                              </p>
-                            </div>
-
-                            <div className="space-y-3 border-t border-white/5 pt-4">
-                              <div>
-                                <h4 className="text-[9px] font-mono text-emerald-400 uppercase tracking-wider mb-1.5 flex items-center space-x-1">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
-                                  <span>Your Matching Skills ({opp.matchedSkills?.length || 0})</span>
-                                </h4>
-                                <div className="flex flex-wrap gap-1">
-                                  {opp.matchedSkills && opp.matchedSkills.length > 0 ? (
-                                    opp.matchedSkills.slice(0, 5).map((skill: string, i: number) => (
-                                      <span
-                                        key={i}
-                                        className="px-1.5 py-0.5 bg-emerald-950/20 text-emerald-400 rounded text-[9px] font-mono border border-emerald-500/10"
-                                      >
-                                        {skill}
-                                      </span>
-                                    ))
-                                  ) : (
-                                    <span className="text-[9px] text-slate-500 italic">No exact skill overlap</span>
-                                  )}
-                                  {opp.matchedSkills?.length > 5 && (
-                                    <span className="text-[9px] text-slate-500 font-mono self-center">
-                                      +{opp.matchedSkills.length - 5} more
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-
-                              <div>
-                                <h4 className="text-[9px] font-mono text-red-400 uppercase tracking-wider mb-1.5 flex items-center space-x-1">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-red-400 inline-block" />
-                                  <span>Missing Target Skills ({opp.missingSkills?.length || 0})</span>
-                                </h4>
-                                <div className="flex flex-wrap gap-1">
-                                  {opp.missingSkills && opp.missingSkills.length > 0 ? (
-                                    opp.missingSkills.slice(0, 5).map((skill: string, i: number) => (
-                                      <span
-                                        key={i}
-                                        className="px-1.5 py-0.5 bg-red-950/20 text-red-300 rounded text-[9px] font-mono border border-red-500/10"
-                                      >
-                                        {skill}
-                                      </span>
-                                    ))
-                                  ) : (
-                                    <span className="text-[9px] text-emerald-400 italic">Fully aligned!</span>
-                                  )}
-                                  {opp.missingSkills?.length > 5 && (
-                                    <span className="text-[9px] text-slate-500 font-mono self-center">
-                                      +{opp.missingSkills.length - 5} more
-                                    </span>
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          </motion.div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="h-48 flex flex-col items-center justify-center text-center">
-                        <p className="text-xs text-slate-500 font-sans">
-                          No skill-matched opportunities have been evaluated yet.
+                  {calculatingOpps || loadingOpps ? (
+                    <div className="h-64 flex flex-col items-center justify-center space-y-3">
+                      <div className="w-10 h-10 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin" />
+                      <div className="text-center">
+                        <span className="text-xs font-mono text-slate-400 uppercase tracking-widest block">Comparing Skill Vectors</span>
+                        <p className="text-[11px] text-slate-500 mt-1 max-w-xs font-sans">
+                          Generating candidate-to-role intersection indices and calculating matching statistics...
                         </p>
-                        <button
-                          onClick={handleCalculateOpps}
-                          className="mt-3 px-4 py-1.5 bg-white/10 border border-white/10 text-xs font-mono text-slate-300 rounded-lg hover:text-white"
+                      </div>
+                    </div>
+                  ) : recommendedOpps.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {recommendedOpps.map((opp, idx) => (
+                        <motion.div
+                          key={opp.opportunityId || idx}
+                          initial={{ opacity: 0, y: 15 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.4, delay: idx * 0.05 }}
+                          whileHover={{ y: -4, borderColor: "rgba(59, 130, 246, 0.3)", backgroundColor: "rgba(255, 255, 255, 0.02)" }}
+                          className="p-6 bg-white/[0.01] border border-white/5 rounded-2xl flex flex-col justify-between space-y-5 transition duration-300 group"
                         >
-                          Calculate Cosine Matches
-                        </button>
-                      </div>
-                    )
-                  ) : (
-                    /* RAW DATABASE EXPLORER MODE (REAL DATABASE DATA) */
-                    loadingRawOpps ? (
-                      <div className="h-64 flex flex-col items-center justify-center space-y-3">
-                        <div className="w-10 h-10 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin" />
-                        <div className="text-center">
-                          <span className="text-xs font-mono text-slate-400 uppercase tracking-widest block">Reading Live Firestore</span>
-                          <p className="text-[11px] text-slate-500 mt-1 max-w-xs font-sans">
-                            Establishing real-time query cursor and retrieving document schemas directly from the active collection...
-                          </p>
-                        </div>
-                      </div>
-                    ) : allRawOpps.length > 0 ? (
-                      <div className="space-y-4">
-                        <div className="flex justify-between items-center bg-white/[0.01] border border-white/5 p-4 rounded-xl">
-                          <div className="flex items-center space-x-2 text-xs text-slate-400 font-mono">
-                            <Database className="w-4 h-4 text-emerald-400" />
-                            <span>Database collection:</span>
-                            <strong className="text-emerald-400">jobOpportunities</strong>
-                            <span className="text-slate-600">|</span>
-                            <span>Total live documents:</span>
-                            <strong className="text-emerald-400">{allRawOpps.length}</strong>
+                          <div className="space-y-3">
+                            <div className="flex justify-between items-start">
+                              <span className={`px-2.5 py-1 rounded text-[10px] font-mono font-bold border ${
+                                opp.matchScore >= 75
+                                  ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
+                                  : opp.matchScore >= 50
+                                  ? "bg-blue-500/10 border-blue-500/20 text-blue-400"
+                                  : "bg-amber-500/10 border-amber-500/20 text-amber-400"
+                              }`}>
+                                <CountUpText to={opp.matchScore} suffix="% Match Score" />
+                              </span>
+                            </div>
+
+                            <div>
+                              <h3 className="text-sm font-bold text-slate-200 group-hover:text-blue-400 transition-colors leading-snug">
+                                {opp.title}
+                              </h3>
+                              <p className="text-xs text-blue-400 font-mono font-semibold mt-0.5">{opp.company}</p>
+                            </div>
+
+                            <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-slate-400 font-mono">
+                              <span className="flex items-center space-x-1">
+                                <span className="text-slate-600">&bull;</span>
+                                <span>{opp.location}</span>
+                              </span>
+                              <span className="flex items-center space-x-1">
+                                <span className="text-slate-600">&bull;</span>
+                                <span>{opp.type}</span>
+                              </span>
+                              <span className="flex items-center space-x-1">
+                                <span className="text-slate-600">&bull;</span>
+                                <span>{opp.salary}</span>
+                              </span>
+                            </div>
+
+                            <p className="text-xs text-slate-400 font-sans leading-relaxed line-clamp-3">
+                              {opp.description}
+                            </p>
                           </div>
-                          <span className="text-[10px] bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono px-2 py-0.5 rounded uppercase font-bold">
-                            Live Connection Active
-                          </span>
-                        </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                          {allRawOpps.map((opp, idx) => (
-                            <div
-                              key={opp.id || idx}
-                              className="p-6 bg-white/[0.01] hover:bg-white/[0.02] border border-white/5 hover:border-emerald-500/30 rounded-2xl flex flex-col justify-between space-y-5 transition duration-300 group"
-                            >
-                              <div className="space-y-3">
-                                <div className="flex justify-between items-start">
-                                  <span className="px-2.5 py-0.5 bg-emerald-950/20 border border-emerald-500/20 text-emerald-400 rounded text-[9px] font-mono font-bold uppercase tracking-wide">
-                                    Document ID: {opp.id?.substring(0, 8)}...
+                          <div className="space-y-3 border-t border-white/5 pt-4">
+                            <div>
+                              <h4 className="text-[9px] font-mono text-emerald-400 uppercase tracking-wider mb-1.5 flex items-center space-x-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
+                                <span>Your Matching Skills ({opp.matchedSkills?.length || 0})</span>
+                              </h4>
+                              <div className="flex flex-wrap gap-1">
+                                {opp.matchedSkills && opp.matchedSkills.length > 0 ? (
+                                  opp.matchedSkills.slice(0, 5).map((skill: string, i: number) => (
+                                    <span
+                                      key={i}
+                                      className="px-1.5 py-0.5 bg-emerald-950/20 text-emerald-400 rounded text-[9px] font-mono border border-emerald-500/10"
+                                    >
+                                      {skill}
+                                    </span>
+                                  ))
+                                ) : (
+                                  <span className="text-[9px] text-slate-500 italic">No exact skill overlap</span>
+                                )}
+                                {opp.matchedSkills?.length > 5 && (
+                                  <span className="text-[9px] text-slate-500 font-mono self-center">
+                                    +{opp.matchedSkills.length - 5} more
                                   </span>
-                                  <span className="text-[10px] font-mono text-slate-500">
-                                    {opp.type}
-                                  </span>
-                                </div>
-
-                                <div>
-                                  <h3 className="text-sm font-bold text-slate-200 group-hover:text-emerald-400 transition-colors leading-snug">
-                                    {opp.title}
-                                  </h3>
-                                  <p className="text-xs text-emerald-400 font-mono font-semibold mt-0.5">{opp.company}</p>
-                                </div>
-
-                                <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-slate-400 font-mono">
-                                  <span className="flex items-center space-x-1">
-                                    <span className="text-slate-600">&bull;</span>
-                                    <span>{opp.location}</span>
-                                  </span>
-                                  <span className="flex items-center space-x-1">
-                                    <span className="text-slate-600">&bull;</span>
-                                    <span>{opp.salary}</span>
-                                  </span>
-                                </div>
-
-                                <p className="text-xs text-slate-400 font-sans leading-relaxed line-clamp-3">
-                                  {opp.description}
-                                </p>
-                              </div>
-
-                              <div className="space-y-2 border-t border-white/5 pt-4">
-                                <h4 className="text-[9px] font-mono text-slate-400 uppercase tracking-wider flex items-center space-x-1">
-                                  <span>Stored Required Skills ({opp.skills?.length || 0})</span>
-                                </h4>
-                                <div className="flex flex-wrap gap-1">
-                                  {opp.skills && opp.skills.length > 0 ? (
-                                    opp.skills.map((skill: string, i: number) => (
-                                      <span
-                                        key={i}
-                                        className="px-1.5 py-0.5 bg-white/5 text-slate-300 rounded text-[9px] font-mono border border-white/5 hover:border-emerald-500/20 hover:text-emerald-400 transition-colors"
-                                      >
-                                        {skill}
-                                      </span>
-                                    ))
-                                  ) : (
-                                    <span className="text-[9px] text-slate-500 italic">No skills specified</span>
-                                  )}
-                                </div>
+                                )}
                               </div>
                             </div>
-                          ))}
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="h-48 flex flex-col items-center justify-center text-center">
-                        <p className="text-xs text-slate-500 font-sans">
-                          The Firestore database collection is empty or could not be loaded.
-                        </p>
-                        <button
-                          onClick={fetchRawOpps}
-                          className="mt-3 px-4 py-1.5 bg-white/10 border border-white/10 text-xs font-mono text-slate-300 rounded-lg hover:text-white"
-                        >
-                          Refresh Database Connection
-                        </button>
-                      </div>
-                    )
+
+                            <div>
+                              <h4 className="text-[9px] font-mono text-red-400 uppercase tracking-wider mb-1.5 flex items-center space-x-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-red-400 inline-block" />
+                                <span>Missing Target Skills ({opp.missingSkills?.length || 0})</span>
+                              </h4>
+                              <div className="flex flex-wrap gap-1">
+                                {opp.missingSkills && opp.missingSkills.length > 0 ? (
+                                  opp.missingSkills.slice(0, 5).map((skill: string, i: number) => (
+                                    <span
+                                      key={i}
+                                      className="px-1.5 py-0.5 bg-red-950/20 text-red-300 rounded text-[9px] font-mono border border-red-500/10"
+                                    >
+                                      {skill}
+                                    </span>
+                                  ))
+                                ) : (
+                                  <span className="text-[9px] text-emerald-400 italic">Fully aligned!</span>
+                                )}
+                                {opp.missingSkills?.length > 5 && (
+                                  <span className="text-[9px] text-slate-500 font-mono self-center">
+                                    +{opp.missingSkills.length - 5} more
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="h-48 flex flex-col items-center justify-center text-center">
+                      <p className="text-xs text-slate-500 font-sans">
+                        No role recommendations have been calculated yet.
+                      </p>
+                      <button
+                        onClick={handleCalculateOpps}
+                        className="mt-3 px-4 py-1.5 bg-white/10 border border-white/10 text-xs font-mono text-slate-300 rounded-lg hover:text-white"
+                      >
+                        Calculate Recommendations
+                      </button>
+                    </div>
                   )}
                 </div>
               </motion.div>
@@ -1736,6 +1588,306 @@ export default function DashboardPage({
                         <h3 className="text-sm font-bold text-slate-400 font-mono uppercase tracking-wider">Plan Offline</h3>
                         <p className="text-xs text-slate-500 mt-1 max-w-xs font-sans">
                           State your career objectives in the sidebar configuration to build a personalized study roadmap.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Career Roadmap Builder Tab */}
+            {activeTab === "career-roadmap" && (
+              <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                className="space-y-6 animate-fade-in"
+              >
+                <div>
+                  <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white flex items-center space-x-2">
+                    <Sparkles className="w-6 h-6 text-purple-400" />
+                    <span>Career Roadmap Builder</span>
+                  </h1>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Bridge the gap to your dream role with a customized step-by-step career path, including milestones, study resources, and practical projects.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Left Column: Generator Form & Roadmap Selector */}
+                  <div className="space-y-6">
+                    {/* Input form */}
+                    <div className="p-6 neomorph-card space-y-4">
+                      <h2 className="text-xs font-mono text-slate-400 uppercase tracking-wider">
+                        Configure Target Career Path
+                      </h2>
+                      <form onSubmit={handleGenerateCareerRoadmap} className="space-y-4">
+                        <div>
+                          <label className="block text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-2">
+                            Dream Target Role
+                          </label>
+                          <input
+                            type="text"
+                            value={targetPathInput}
+                            onChange={(e) => setTargetPathInput(e.target.value)}
+                            placeholder="e.g. Staff AI Research Engineer, Senior Solutions Architect"
+                            required
+                            className="w-full neomorph-inset-input px-4 py-2.5 text-xs focus:outline-none text-slate-300"
+                          />
+                        </div>
+
+                        <button
+                          type="submit"
+                          disabled={generatingRoadmap}
+                          className="w-full py-3 neomorph-button-primary text-[10px] font-mono uppercase tracking-wider font-bold text-white flex items-center justify-center space-x-2"
+                        >
+                          {generatingRoadmap ? (
+                            <>
+                              <RefreshCw className="w-4 h-4 animate-spin" />
+                              <span>Synthesizing Path...</span>
+                            </>
+                          ) : (
+                            <span>Build Career Roadmap</span>
+                          )}
+                        </button>
+                      </form>
+                    </div>
+
+                    {/* Roadmaps list */}
+                    <div className="p-6 neomorph-card space-y-4">
+                      <h2 className="text-xs font-mono text-slate-400 uppercase tracking-wider">
+                        Saved Roadmaps ({careerRoadmaps.length})
+                      </h2>
+                      {loadingRoadmaps ? (
+                        <div className="py-6 flex items-center justify-center">
+                          <div className="w-6 h-6 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
+                        </div>
+                      ) : careerRoadmaps.length > 0 ? (
+                        <div className="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                          {careerRoadmaps.map((rm) => (
+                            <button
+                              key={rm.id}
+                              onClick={() => setSelectedRoadmap(rm)}
+                              className={`w-full text-left p-3.5 rounded-xl border transition-all duration-200 ${
+                                selectedRoadmap?.id === rm.id
+                                  ? "bg-purple-950/20 border-purple-500/40 text-purple-400"
+                                  : "bg-white/[0.01] border-white/5 hover:border-white/10 text-slate-300 hover:text-white"
+                              }`}
+                            >
+                              <div className="font-bold text-xs">{rm.targetPath}</div>
+                              <div className="text-[9px] text-slate-500 font-mono mt-1">
+                                {new Date(rm.createdAt).toLocaleDateString()}
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="py-6 text-center text-xs text-slate-500 italic">
+                          No roadmaps built yet.
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Right Column: Roadmap Details Display */}
+                  <div className="lg:col-span-2">
+                    {generatingRoadmap ? (
+                      <div className="neomorph-card p-12 flex flex-col items-center justify-center text-center space-y-4 min-h-[400px]">
+                        <div className="w-12 h-12 border-4 border-purple-500/20 border-t-purple-500 rounded-full animate-spin" />
+                        <div>
+                          <h3 className="text-sm font-bold text-slate-200 uppercase tracking-widest font-mono">
+                            Multi-Agent Path Synthesis Active
+                          </h3>
+                          <p className="text-xs text-slate-400 mt-2 max-w-sm leading-relaxed">
+                            Evaluating skill matrices, reading peer transitions, and structuring milestones. This may take up to 20 seconds.
+                          </p>
+                        </div>
+                      </div>
+                    ) : selectedRoadmap ? (
+                      <div className="space-y-6">
+                        {/* Title, Pitch & Industry Outlook */}
+                        <div className="p-6 neomorph-card space-y-4">
+                          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div>
+                              <span className="text-[9px] font-mono text-purple-400 uppercase tracking-wider">
+                                Career Roadmap Goal
+                              </span>
+                              <h2 className="text-xl font-black text-slate-100">
+                                {selectedRoadmap.targetPath}
+                              </h2>
+                            </div>
+
+                            {/* Metrics */}
+                            <div className="flex items-center gap-3">
+                              <div className="px-2.5 py-1 bg-white/5 border border-white/10 rounded-lg text-center shrink-0">
+                                <span className="block text-[8px] text-slate-500 font-mono uppercase">
+                                  Growth
+                                </span>
+                                <span className="text-[10px] font-bold text-emerald-400">
+                                  {selectedRoadmap.industryOutlook?.growth || "N/A"}
+                                </span>
+                              </div>
+                              <div className="px-2.5 py-1 bg-white/5 border border-white/10 rounded-lg text-center shrink-0">
+                                <span className="block text-[8px] text-slate-500 font-mono uppercase">
+                                  Salary Range
+                                </span>
+                                <span className="text-[10px] font-bold text-blue-400">
+                                  {selectedRoadmap.industryOutlook?.salaryRange || "N/A"}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="p-4 bg-purple-950/10 border-l-2 border-purple-500 text-xs text-slate-300 leading-relaxed rounded-r-xl">
+                            <span className="font-bold text-purple-400 block mb-1">Coach's Briefing:</span>
+                            {selectedRoadmap.pitch}
+                          </div>
+                        </div>
+
+                        {/* Skills Breakdown Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {/* Left: Already Possessed */}
+                          <div className="p-6 neomorph-card space-y-4">
+                            <h3 className="text-xs font-mono text-emerald-400 uppercase tracking-wider flex items-center space-x-1.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                              <span>Leveragable Strengths</span>
+                            </h3>
+                            <div className="flex flex-wrap gap-1.5">
+                              {selectedRoadmap.skillsAlreadyPossessed?.map((skill: string, i: number) => (
+                                <span
+                                  key={i}
+                                  className="px-2.5 py-1 bg-emerald-950/20 border border-emerald-900/10 text-emerald-400 rounded text-[10px] font-mono"
+                                >
+                                  {skill}
+                                </span>
+                              )) || <span className="text-xs text-slate-500 italic">No exact overlap identified</span>}
+                            </div>
+                          </div>
+
+                          {/* Right: Gaps To Bridge */}
+                          <div className="p-6 neomorph-card space-y-4">
+                            <h3 className="text-xs font-mono text-purple-400 uppercase tracking-wider flex items-center space-x-1.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-purple-400" />
+                              <span>Critical Skill Gaps</span>
+                            </h3>
+                            <div className="space-y-3">
+                              {selectedRoadmap.skillsToAcquire?.core?.length > 0 && (
+                                <div>
+                                  <span className="text-[9px] font-mono text-slate-500 uppercase">Core</span>
+                                  <div className="flex flex-wrap gap-1 mt-1">
+                                    {selectedRoadmap.skillsToAcquire.core.map((s: string, i: number) => (
+                                      <span key={i} className="px-1.5 py-0.5 bg-blue-950/20 border border-blue-900/10 text-blue-400 rounded text-[9px] font-mono">{s}</span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                              {selectedRoadmap.skillsToAcquire?.advanced?.length > 0 && (
+                                <div>
+                                  <span className="text-[9px] font-mono text-slate-500 uppercase">Advanced</span>
+                                  <div className="flex flex-wrap gap-1 mt-1">
+                                    {selectedRoadmap.skillsToAcquire.advanced.map((s: string, i: number) => (
+                                      <span key={i} className="px-1.5 py-0.5 bg-purple-950/20 border border-purple-900/10 text-purple-400 rounded text-[9px] font-mono">{s}</span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Sequential Milestones */}
+                        <div className="p-6 neomorph-card space-y-6">
+                          <h3 className="text-xs font-mono text-slate-400 uppercase tracking-wider">
+                            Weekly Learning Schedule & Milestones
+                          </h3>
+
+                          <div className="space-y-8">
+                            {selectedRoadmap.milestones?.map((m: any, mIdx: number) => {
+                              const checks = completedMilestones[selectedRoadmap.id] || {};
+                              const isCompleted = checks[mIdx] || false;
+
+                              return (
+                                <div key={mIdx} className="relative pl-8 border-l border-white/10 pb-4">
+                                  {/* Step Circle Indicator */}
+                                  <div className="absolute w-6 h-6 rounded-full bg-[#0f1016] border border-white/15 text-xs font-mono font-bold flex items-center justify-center top-0.5 left-[-12px]">
+                                    {mIdx + 1}
+                                  </div>
+
+                                  <div className="flex justify-between items-start text-xs">
+                                    <div>
+                                      <h4 className="font-bold text-slate-200 text-sm">
+                                        {m.milestoneTitle}
+                                      </h4>
+                                      <span className="text-[10px] font-mono text-purple-400">
+                                        {m.duration}
+                                      </span>
+                                    </div>
+                                    <button
+                                      onClick={() => toggleMilestoneCheck(selectedRoadmap.id, mIdx)}
+                                      className={`px-3 py-1 text-[9px] font-mono uppercase tracking-wider border rounded-lg transition duration-200 ${
+                                        isCompleted
+                                          ? "bg-emerald-950/20 border-emerald-500/40 text-emerald-400"
+                                          : "bg-white/5 border-white/10 text-slate-400 hover:text-white"
+                                      }`}
+                                    >
+                                      {isCompleted ? "Completed ✓" : "Mark Complete"}
+                                    </button>
+                                  </div>
+
+                                  {/* Objectives */}
+                                  <div className="mt-3">
+                                    <span className="text-[9px] font-mono text-slate-500 uppercase">Learning Objectives:</span>
+                                    <ul className="list-disc pl-4 text-xs text-slate-400 space-y-1 mt-1 font-sans">
+                                      {m.learningObjectives?.map((obj: string, oIdx: number) => (
+                                        <li key={oIdx}>{obj}</li>
+                                      ))}
+                                    </ul>
+                                  </div>
+
+                                  {/* Project */}
+                                  {m.practicalProject && (
+                                    <div className="mt-3 p-3 bg-white/[0.01] border border-white/5 rounded-xl space-y-1">
+                                      <span className="text-[8px] font-mono text-purple-400 uppercase tracking-widest block">
+                                        Practical Milestone Project
+                                      </span>
+                                      <div className="text-xs font-bold text-slate-300">
+                                        {m.practicalProject.title}
+                                      </div>
+                                      <p className="text-[10px] text-slate-500 leading-relaxed font-sans">
+                                        {m.practicalProject.description}
+                                      </p>
+                                    </div>
+                                  )}
+
+                                  {/* Resources */}
+                                  {m.recommendedResources?.length > 0 && (
+                                    <div className="mt-3 flex flex-wrap gap-1.5 items-center">
+                                      <span className="text-[9px] font-mono text-slate-500 uppercase">Guides:</span>
+                                      {m.recommendedResources.map((res: string, rIdx: number) => (
+                                        <span
+                                          key={rIdx}
+                                          className="px-2 py-0.5 bg-white/5 border border-white/10 rounded text-[9px] font-mono text-slate-400"
+                                        >
+                                          {res}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="neomorph-card p-12 flex flex-col items-center justify-center text-center space-y-4 min-h-[400px]">
+                        <BookOpen className="w-12 h-12 text-slate-600 mb-2" />
+                        <h3 className="text-base font-extrabold text-slate-300 font-mono uppercase tracking-wider">
+                          No Pathway Loaded
+                        </h3>
+                        <p className="text-xs text-slate-500 max-w-sm font-sans leading-relaxed">
+                          Configure your target job title in the left panel to launch collaborative multi-agent transition planning.
                         </p>
                       </div>
                     )}

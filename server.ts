@@ -2,6 +2,8 @@ import express from "express";
 import path from "path";
 import cors from "cors";
 import { GoogleGenAI } from "@google/genai";
+import multer from "multer";
+import mammoth from "mammoth";
 import admin from "firebase-admin";
 import { getFirestore } from "firebase-admin/firestore";
 import { createServer as createViteServer } from "vite";
@@ -28,7 +30,9 @@ const app = express();
 const PORT = 3000;
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 // In-memory fallback database for sandboxed environments or restrictive permission sets
 const inMemoryStore: Record<string, Record<string, any>> = {};
@@ -449,15 +453,19 @@ app.get("/api/auth/me", async (req, res) => {
 });
 
 // POST /api/resumes/upload
-app.post("/api/resumes/upload", async (req, res) => {
+app.post("/api/resumes/upload", upload.single("resume"), async (req, res) => {
   try {
-    const { userId, fileName, content } = req.body;
-    if (!userId || !content) {
-      return res.status(400).json({ error: "Missing userId or resume content" });
+    let userId = req.body.userId;
+    let fileName = req.body.fileName || "resume.txt";
+    let content = req.body.content || "";
+    let file = req.file;
+
+    if (!userId) {
+      return res.status(400).json({ error: "Missing userId" });
     }
 
-    // AI Resume parsing
-    const prompt = `You are an expert resume parser. Analyze the following resume text and extract the structured information. Return ONLY a valid JSON object with the following schema:
+    let geminiContents: any[] = [];
+    const promptText = `You are an expert resume parser. Analyze the following resume details and extract the structured information. Return ONLY a valid JSON object with the following schema:
 {
   "name": "Candidate Full Name",
   "email": "Candidate email address or empty string",
@@ -480,13 +488,62 @@ app.post("/api/resumes/upload", async (req, res) => {
       "description": "Responsibility and achievement details"
     }
   ]
-}
+}`;
 
-Resume Content:
-${content}`;
+    if (file) {
+      fileName = file.originalname;
+      const ext = fileName.toLowerCase().split(".").pop();
+
+      if (ext === "pdf") {
+        const base64Data = file.buffer.toString("base64");
+        geminiContents = [
+          {
+            inlineData: {
+              data: base64Data,
+              mimeType: "application/pdf"
+            }
+          },
+          {
+            text: promptText
+          }
+        ];
+        content = `[PDF Document: ${fileName}]`;
+      } else if (ext === "docx") {
+        try {
+          const mammothResult = await mammoth.extractRawText({ buffer: file.buffer });
+          content = mammothResult.value;
+          geminiContents = [
+            {
+              text: `${promptText}\n\nResume Content:\n${content}`
+            }
+          ];
+        } catch (docxErr: any) {
+          console.error("Mammoth DOCX extraction failed:", docxErr);
+          return res.status(400).json({ error: "Failed to extract text from Word document: " + docxErr.message });
+        }
+      } else if (ext === "txt" || ext === "md") {
+        content = file.buffer.toString("utf-8");
+        geminiContents = [
+          {
+            text: `${promptText}\n\nResume Content:\n${content}`
+          }
+        ];
+      } else {
+        return res.status(400).json({ error: `Unsupported file type: .${ext}` });
+      }
+    } else {
+      if (!content) {
+        return res.status(400).json({ error: "Missing resume content or file" });
+      }
+      geminiContents = [
+        {
+          text: `${promptText}\n\nResume Content:\n${content}`
+        }
+      ];
+    }
 
     const aiResponse = await generateContentWithFallback({
-      contents: prompt
+      contents: geminiContents
     });
 
     const parsedData = cleanAndParseJSON(aiResponse.text || "{}");
@@ -495,7 +552,7 @@ ${content}`;
     const resumeRef = collection(db, "resumes");
     const docRef = await addDoc(resumeRef, {
       userId,
-      fileName: fileName || "resume.txt",
+      fileName,
       content,
       parsedData,
       createdAt: new Date().toISOString()
@@ -504,7 +561,7 @@ ${content}`;
     res.status(200).json({
       id: docRef.id,
       userId,
-      fileName: fileName || "resume.txt",
+      fileName,
       content,
       parsedData,
       createdAt: new Date().toISOString()

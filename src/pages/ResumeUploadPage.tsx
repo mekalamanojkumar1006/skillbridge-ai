@@ -29,8 +29,10 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate }
   };
 
   const processFile = (selectedFile: File) => {
-    if (selectedFile.type !== "text/plain" && !selectedFile.name.endsWith(".txt") && !selectedFile.name.endsWith(".pdf")) {
-      setError("Only plain text (.txt) and PDF (.pdf) files are supported for instant parsing.");
+    const ext = selectedFile.name.toLowerCase().split('.').pop();
+    const allowedExtensions = ["txt", "md", "pdf", "docx"];
+    if (!allowedExtensions.includes(ext || "")) {
+      setError("Only plain text (.txt), Markdown (.md), PDF (.pdf), and Word (.docx) files are supported.");
       return;
     }
     setError(null);
@@ -60,7 +62,7 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate }
     e.preventDefault();
     setError(null);
 
-    let contentToUpload = "";
+    let dataToUpload: string | File = "";
     let nameToUpload = "resume.txt";
 
     if (usePasteMode) {
@@ -68,7 +70,7 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate }
         setError("Please paste your resume text before submitting.");
         return;
       }
-      contentToUpload = pastedText;
+      dataToUpload = pastedText;
       nameToUpload = "pasted_resume.txt";
     } else {
       if (!file) {
@@ -77,38 +79,25 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate }
       }
       setLoading(true);
       nameToUpload = file.name;
+      dataToUpload = file;
 
-      try {
-        // Read text file content
-        contentToUpload = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = (event) => resolve(event.target?.result as string || "");
-          reader.onerror = (err) => reject(err);
-          reader.readAsText(file);
-        });
-
-        // Simulate upload progress
-        let progress = 0;
-        const interval = setInterval(() => {
-          progress += 25;
-          setUploadProgress(progress);
-          if (progress >= 100) clearInterval(interval);
-        }, 150);
-      } catch (err: any) {
-        setLoading(false);
-        setError("Failed to read the selected file: " + err.message);
-        return;
-      }
+      // Simulate upload progress
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 25;
+        setUploadProgress(progress);
+        if (progress >= 100) clearInterval(interval);
+      }, 150);
     }
 
     setLoading(true);
     try {
-      const result = await ApiService.uploadResume(userId, nameToUpload, contentToUpload);
+      const result = await ApiService.uploadResume(userId, nameToUpload, dataToUpload);
       onUploadSuccess(result);
       onNavigate("analysis");
     } catch (err: any) {
       console.error(err);
-      setError(err.message || "Failed to analyze resume. Please ensure the file contains legible plain text.");
+      setError(err.message || "Failed to analyze resume. Please ensure the file is valid.");
     } finally {
       setLoading(false);
       setUploadProgress(0);
@@ -194,7 +183,7 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate }
                 type="file"
                 ref={fileInputRef}
                 onChange={handleFileInput}
-                accept=".txt,.md"
+                accept=".txt,.md,.pdf,.docx"
                 className="hidden"
               />
               <div className="flex flex-col items-center space-y-3">
@@ -214,7 +203,7 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate }
                       {isDragActive ? "Drop the resume here..." : "Drag & drop your resume file here"}
                     </p>
                     <p className="text-[10px] text-slate-500 mt-1.5 font-sans leading-relaxed">
-                      Supports plain text (.txt) and markdown (.md) resume files up to 2MB
+                      Supports plain text (.txt), Markdown (.md), PDF (.pdf), and Word (.docx) files up to 10MB
                     </p>
                   </div>
                 )}
