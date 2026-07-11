@@ -159,6 +159,39 @@ export class ApiService {
     }
     return res.json();
   }
+  static async getRoadmapProgress(userId: string, careerId: string) {
+    const res = await fetch(`${this.getBaseUrl()}/api/career-roadmap/progress?userId=${encodeURIComponent(userId)}&careerId=${encodeURIComponent(careerId)}`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to load roadmap progress");
+    }
+    return res.json();
+  }
+
+  static async saveRoadmapProgress(userId: string, careerId: string, completedMilestones: number[]) {
+    const res = await fetch(`${this.getBaseUrl()}/api/career-roadmap/progress`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, careerId, completedMilestones })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to save roadmap progress");
+    }
+    return res.json();
+  }
+  static async chatWithMentor(prompt: string) {
+    const res = await fetch(`${this.getBaseUrl()}/api/mentor/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to talk to career mentor");
+    }
+    return res.json();
+  }
 
   static async getInterviewQuestions(resumeId: string) {
     const res = await fetch(`${this.getBaseUrl()}/api/interview/questions?resumeId=${encodeURIComponent(resumeId)}`);

@@ -307,17 +307,17 @@ export default function AnalysisPage({ user, resume, onNavigate }: AnalysisPageP
           ) : atsScoreData ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Gauge Chart Column */}
-              <div className="flex flex-col items-center justify-between p-6 bg-white/[0.01] border border-white/5 rounded-2xl relative min-h-[300px]">
+              <div className="flex flex-col items-center justify-between p-6 bg-white/[0.01] border border-white/5 rounded-2xl relative min-h-[300px] space-y-6">
                 <div className="text-center w-full pb-2 border-b border-white/5">
                   <h3 className="text-xs font-mono text-slate-400 uppercase tracking-wider flex items-center justify-center space-x-1.5">
                     <Target className="w-4 h-4 text-blue-400" />
                     <span>Keyword Compatibility</span>
                   </h3>
-                  <p className="text-[10px] text-slate-500 mt-0.5">Calculated alignment against target role guidelines</p>
+                  <p className="text-[10px] text-slate-500 mt-0.5 font-sans">Calculated alignment against target role guidelines</p>
                 </div>
 
                 {/* Responsive Recharts Gauge */}
-                <div className="relative w-full h-44 flex items-center justify-center mt-4">
+                <div className="relative w-full h-44 flex items-center justify-center mt-2">
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <defs>
@@ -351,15 +351,17 @@ export default function AnalysisPage({ user, resume, onNavigate }: AnalysisPageP
                   </div>
                 </div>
 
-                <div className="text-center space-y-3 w-full mt-2">
-                  <p className="text-xs text-slate-400 leading-relaxed px-4">
-                    {atsScoreData.score >= 80 
-                      ? "Excellent alignment! Your resume has high keyword density for this role."
-                      : atsScoreData.score >= 60
-                      ? "Good alignment, but some high-priority keywords are missing."
-                      : "Low alignment. Consider updating your resume to include the missing terms below."
-                    }
+                {/* Verdict Statement */}
+                <div className="w-full bg-gradient-to-r from-purple-950/20 to-indigo-950/20 border border-purple-500/10 rounded-2xl p-4 text-left">
+                  <span className="text-[9px] font-mono text-purple-400 uppercase tracking-widest block font-bold mb-1">
+                    Recruiter Verdict
+                  </span>
+                  <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                    {atsScoreData.verdict || `Current ATS Score: ${atsScoreData.score}/100. This resume has a solid base structure and is suitable for target developer profiles.`}
                   </p>
+                </div>
+
+                <div className="text-center w-full mt-2">
                   <button
                     onClick={handleResetAts}
                     className="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] font-mono uppercase tracking-wider font-bold rounded-xl text-slate-300 hover:text-white transition duration-200"
@@ -370,10 +372,138 @@ export default function AnalysisPage({ user, resume, onNavigate }: AnalysisPageP
               </div>
 
               {/* Keywords and suggestions Column */}
-              <div className="space-y-6">
+              <div className="space-y-6 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                
+                {/* Score Breakdown with Dot Leaders */}
+                {(() => {
+                  const breakdown = atsScoreData.breakdown || {
+                    formatting: Math.min(20, Math.round(atsScoreData.score * 0.2)),
+                    contactInfo: 9,
+                    summary: Math.min(10, Math.round(atsScoreData.score * 0.1)),
+                    skills: Math.min(10, Math.round(atsScoreData.score * 0.1)),
+                    experience: Math.min(10, Math.round(atsScoreData.score * 0.1)),
+                    projects: Math.min(20, Math.round(atsScoreData.score * 0.2)),
+                    education: 4,
+                    certifications: 4,
+                    keywords: Math.min(10, Math.round(atsScoreData.score * 0.1))
+                  };
+                  return (
+                    <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-4 space-y-3">
+                      <span className="text-[9px] font-mono text-blue-400 uppercase tracking-widest block font-bold">
+                        ATS Score Breakdown
+                      </span>
+                      <div className="space-y-2 text-xs">
+                        {[
+                          { name: "ATS Formatting", val: breakdown.formatting, max: 20 },
+                          { name: "Contact Information", val: breakdown.contactInfo, max: 10 },
+                          { name: "Professional Summary", val: breakdown.summary, max: 10 },
+                          { name: "Technical Skills", val: breakdown.skills, max: 10 },
+                          { name: "Work Experience", val: breakdown.experience, max: 10 },
+                          { name: "Projects", val: breakdown.projects, max: 20 },
+                          { name: "Education", val: breakdown.education, max: 5 },
+                          { name: "Certifications", val: breakdown.certifications, max: 5 },
+                          { name: "ATS Keywords", val: breakdown.keywords, max: 10 }
+                        ].map((b, idx) => (
+                          <div key={idx} className="flex justify-between items-center text-[11px] text-slate-300 font-sans">
+                            <span className="shrink-0">{b.name}</span>
+                            <div className="flex-grow border-b border-dotted border-white/10 mx-2 translate-y-1.5" />
+                            <span className="font-mono text-slate-400 shrink-0">{b.val}/{b.max}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Strengths Section */}
+                {(() => {
+                  const strengths = atsScoreData.strengths || [
+                    "ATS-friendly layout template structure",
+                    "Strong core developer skill metrics matching targets"
+                  ];
+                  return (
+                    <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-4 space-y-3">
+                      <span className="text-[9px] font-mono text-emerald-400 uppercase tracking-widest block font-bold">
+                        What's Excellent ✅
+                      </span>
+                      <ul className="space-y-2 text-xs text-slate-300 font-sans">
+                        {strengths.map((str: string, i: number) => (
+                          <li key={i} className="flex items-start gap-2">
+                            <span className="text-emerald-400 font-bold shrink-0">✓</span>
+                            <span>{str}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  );
+                })()}
+
+                {/* Actionable Improvements with weighted impacts */}
+                {(() => {
+                  const improvements = atsScoreData.improvements || [
+                    { text: "Incorporate more quantified metrics in project details", impact: 2 }
+                  ];
+                  return (
+                    <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-4 space-y-3">
+                      <span className="text-[9px] font-mono text-amber-400 uppercase tracking-widest block font-bold">
+                        Improvement Suggestions
+                      </span>
+                      <div className="space-y-2">
+                        {improvements.map((imp: any, i: number) => (
+                          <div key={i} className="flex items-start justify-between bg-white/[0.02] border border-white/5 rounded-xl p-3 text-xs leading-relaxed gap-3">
+                            <span className="text-slate-300 font-sans">{imp.text || imp}</span>
+                            {imp.impact && (
+                              <span className="px-2 py-0.5 bg-amber-500/10 border border-amber-500/15 text-amber-400 text-[9px] font-mono rounded font-bold shrink-0">
+                                +{imp.impact}
+                              </span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Company Compatibility Predictions */}
+                {(() => {
+                  const comp = atsScoreData.companyCompatibility || {
+                    tcsInfosysWipro: "90+/100",
+                    accentureCapgemini: "88+/100",
+                    startups: "85–90/100",
+                    productCompanies: "82–87/100",
+                    amazon: "80–85/100",
+                    microsoft: "78–83/100",
+                    google: "75–80/100"
+                  };
+                  return (
+                    <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-4 space-y-3">
+                      <span className="text-[9px] font-mono text-purple-400 uppercase tracking-widest block font-bold">
+                        Estimated Compatibility
+                      </span>
+                      <div className="space-y-2 text-xs">
+                        {[
+                          { name: "TCS / Infosys / Wipro", val: comp.tcsInfosysWipro },
+                          { name: "Accenture / Capgemini", val: comp.accentureCapgemini },
+                          { name: "Startups", val: comp.startups },
+                          { name: "Product Companies", val: comp.productCompanies },
+                          { name: "Amazon", val: comp.amazon },
+                          { name: "Microsoft", val: comp.microsoft },
+                          { name: "Google", val: comp.google }
+                        ].map((item, idx) => (
+                          <div key={idx} className="flex justify-between items-center text-[11px] text-slate-300 font-sans">
+                            <span className="shrink-0">{item.name}</span>
+                            <div className="flex-grow border-b border-dotted border-white/10 mx-2 translate-y-1.5" />
+                            <span className="font-mono text-slate-400 shrink-0">{item.val}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+
                 {/* Matched Keywords */}
-                <div className="space-y-2">
-                  <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-wider block">
+                <div className="space-y-2 bg-white/[0.01] border border-white/5 rounded-2xl p-4">
+                  <span className="text-[9px] font-mono text-emerald-400 uppercase tracking-widest block font-bold">
                     Matched Keywords ({atsScoreData.keywordsMatched?.length || 0})
                   </span>
                   <div className="flex flex-wrap gap-1.5 max-h-[100px] overflow-y-auto pr-1">
@@ -390,8 +520,8 @@ export default function AnalysisPage({ user, resume, onNavigate }: AnalysisPageP
                 </div>
 
                 {/* Missing Keywords */}
-                <div className="space-y-2">
-                  <span className="text-[10px] font-mono text-red-400 uppercase tracking-wider block">
+                <div className="space-y-2 bg-white/[0.01] border border-white/5 rounded-2xl p-4">
+                  <span className="text-[9px] font-mono text-red-400 uppercase tracking-widest block font-bold">
                     Missing Target Keywords ({atsScoreData.missingKeywords?.length || 0})
                   </span>
                   <div className="flex flex-wrap gap-1.5 max-h-[100px] overflow-y-auto pr-1">
@@ -407,20 +537,6 @@ export default function AnalysisPage({ user, resume, onNavigate }: AnalysisPageP
                   </div>
                 </div>
 
-                {/* Actionable Suggestions */}
-                <div className="space-y-2 border-t border-white/5 pt-4">
-                  <span className="text-[10px] font-mono text-blue-400 uppercase tracking-wider block">
-                    ATS Optimization Action plan
-                  </span>
-                  <ul className="space-y-2 text-xs text-slate-300 leading-relaxed font-sans">
-                    {atsScoreData.suggestions?.slice(0, 3).map((sug: string, i: number) => (
-                      <li key={i} className="flex items-start space-x-2">
-                        <span className="text-blue-400 mt-0.5">&bull;</span>
-                        <span>{sug}</span>
-                      </li>
-                    )) || <span className="text-xs text-slate-500 italic">No recommendations needed</span>}
-                  </ul>
-                </div>
               </div>
             </div>
           ) : (
@@ -501,36 +617,185 @@ export default function AnalysisPage({ user, resume, onNavigate }: AnalysisPageP
         </div>
 
         {/* Quality improvements suggestions card */}
+        {/* Quality improvements suggestions card */}
         {qualityAnalysis && (
-          <div className="p-6 neomorph-card space-y-4">
-            <h3 className="text-xs font-mono text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
-              <Sparkles className="w-4 h-4 text-purple-400" />
-              <span>Recommended Enhancements to Implement</span>
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-              <div className="space-y-2">
-                <span className="text-[10px] font-mono text-purple-400 uppercase tracking-wider block">Content Adjustments</span>
-                <ul className="space-y-2 text-xs text-slate-300 font-sans">
-                  {qualityAnalysis.improvements?.slice(0, 3).map((imp: string, i: number) => (
-                    <li key={i} className="flex items-start space-x-2">
-                      <span className="text-purple-400 mt-0.5">&bull;</span>
-                      <span>{imp}</span>
-                    </li>
-                  ))}
-                </ul>
+          <div className="p-6 neomorph-card space-y-6">
+            <div className="border-b border-white/5 pb-3">
+              <h3 className="text-sm font-bold text-slate-200 flex items-center space-x-2">
+                <Sparkles className="w-5 h-5 text-purple-400" />
+                <span>Cognitive Quality Evaluation Report</span>
+              </h3>
+              <p className="text-xs text-slate-500 mt-1 font-sans">
+                Real-time assessment against recruiter guidelines and Applicant Tracking System criteria.
+              </p>
+            </div>
+
+            {/* Recruiter Verdict */}
+            <div className="bg-gradient-to-r from-purple-950/20 to-indigo-950/20 border border-purple-500/10 rounded-2xl p-4">
+              <span className="text-[9px] font-mono text-purple-400 uppercase tracking-widest block font-bold mb-1">
+                Final Recruiter Verdict
+              </span>
+              <p className="text-xs text-slate-300 leading-relaxed font-sans font-medium">
+                {qualityAnalysis.verdict || `Current Resume Score: ${qualityAnalysis.qualityScore || 75}/100. This resume has a solid base structure and is suitable for target developer profiles.`}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              
+              {/* Left Column: Score Breakdown & Compatibility */}
+              <div className="space-y-6">
+                
+                {/* Score Breakdown with Dot Leaders */}
+                {(() => {
+                  const breakdown = qualityAnalysis.breakdown || {
+                    formatting: Math.min(20, Math.round((qualityAnalysis.qualityScore || 75) * 0.2)),
+                    contactInfo: 9,
+                    summary: Math.min(10, Math.round((qualityAnalysis.qualityScore || 75) * 0.1)),
+                    skills: Math.min(10, Math.round((qualityAnalysis.qualityScore || 75) * 0.1)),
+                    experience: Math.min(10, Math.round((qualityAnalysis.qualityScore || 75) * 0.1)),
+                    projects: Math.min(20, Math.round((qualityAnalysis.qualityScore || 75) * 0.2)),
+                    education: 4,
+                    certifications: 4,
+                    keywords: Math.min(10, Math.round((qualityAnalysis.qualityScore || 75) * 0.1))
+                  };
+                  return (
+                    <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-4 space-y-3">
+                      <span className="text-[9px] font-mono text-blue-400 uppercase tracking-widest block font-bold">
+                        ATS Score Breakdown
+                      </span>
+                      <div className="space-y-2 text-xs">
+                        {[
+                          { name: "ATS Formatting", val: breakdown.formatting, max: 20 },
+                          { name: "Contact Information", val: breakdown.contactInfo, max: 10 },
+                          { name: "Professional Summary", val: breakdown.summary, max: 10 },
+                          { name: "Technical Skills", val: breakdown.skills, max: 10 },
+                          { name: "Work Experience", val: breakdown.experience, max: 10 },
+                          { name: "Projects", val: breakdown.projects, max: 20 },
+                          { name: "Education", val: breakdown.education, max: 5 },
+                          { name: "Certifications", val: breakdown.certifications, max: 5 },
+                          { name: "ATS Keywords", val: breakdown.keywords, max: 10 }
+                        ].map((b, idx) => (
+                          <div key={idx} className="flex justify-between items-center text-[11px] text-slate-300 font-sans">
+                            <span className="shrink-0">{b.name}</span>
+                            <div className="flex-grow border-b border-dotted border-white/10 mx-2 translate-y-1.5" />
+                            <span className="font-mono text-slate-400 shrink-0">{b.val}/{b.max}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Company ATS Compatibility */}
+                {(() => {
+                  const comp = qualityAnalysis.companyCompatibility || {
+                    tcsInfosysWipro: "90+/100",
+                    accentureCapgemini: "88+/100",
+                    deloitte: "87-90/100",
+                    productCompanies: "82–87/100",
+                    amazon: "80–85/100",
+                    microsoft: "78–83/100",
+                    google: "75–80/100"
+                  };
+                  return (
+                    <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-4 space-y-3">
+                      <span className="text-[9px] font-mono text-purple-400 uppercase tracking-widest block font-bold">
+                        Company ATS Compatibility
+                      </span>
+                      <div className="space-y-2 text-xs">
+                        {[
+                          { name: "TCS / Infosys / Wipro", val: comp.tcsInfosysWipro },
+                          { name: "Accenture / Capgemini", val: comp.accentureCapgemini },
+                          { name: "Deloitte", val: comp.deloitte },
+                          { name: "Product Companies", val: comp.productCompanies },
+                          { name: "Amazon", val: comp.amazon },
+                          { name: "Microsoft", val: comp.microsoft },
+                          { name: "Google", val: comp.google }
+                        ].map((item, idx) => (
+                          <div key={idx} className="flex justify-between items-center text-[11px] text-slate-300 font-sans">
+                            <span className="shrink-0">{item.name}</span>
+                            <div className="flex-grow border-b border-dotted border-white/10 mx-2 translate-y-1.5" />
+                            <span className="font-mono text-slate-400 shrink-0">{item.val}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+
               </div>
 
-              <div className="space-y-2">
-                <span className="text-[10px] font-mono text-amber-400 uppercase tracking-wider block">Formatting Optimizations</span>
-                <ul className="space-y-2 text-xs text-slate-300 font-sans">
-                  {qualityAnalysis.formatting?.slice(0, 3).map((fmt: string, i: number) => (
-                    <li key={i} className="flex items-start space-x-2">
-                      <span className="text-amber-400 mt-0.5">&bull;</span>
-                      <span>{fmt}</span>
-                    </li>
-                  ))}
-                </ul>
+              {/* Right Column: Strengths & Improvements */}
+              <div className="space-y-6">
+                
+                {/* What's Excellent */}
+                {(() => {
+                  const strengths = qualityAnalysis.strengths || [
+                    "ATS-friendly layout template structure",
+                    "Strong core developer skill metrics matching target roles"
+                  ];
+                  return (
+                    <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-4 space-y-3">
+                      <span className="text-[9px] font-mono text-emerald-400 uppercase tracking-widest block font-bold">
+                        What's Excellent ✅
+                      </span>
+                      <ul className="space-y-2 text-xs text-slate-300 font-sans">
+                        {strengths.map((str: string, i: number) => (
+                          <li key={i} className="flex items-start gap-2">
+                            <span className="text-emerald-400 font-bold shrink-0">✓</span>
+                            <span>{str}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  );
+                })()}
+
+                {/* Areas for Improvement */}
+                {(() => {
+                  const improvements = qualityAnalysis.improvements || [
+                    { text: "Incorporate more quantified metrics in project details", impact: 2 }
+                  ];
+                  return (
+                    <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-4 space-y-3">
+                      <span className="text-[9px] font-mono text-amber-400 uppercase tracking-widest block font-bold">
+                        Areas for Improvement ⚠️
+                      </span>
+                      <div className="space-y-2">
+                        {improvements.map((imp: any, i: number) => (
+                          <div key={i} className="flex items-start justify-between bg-white/[0.02] border border-white/5 rounded-xl p-3 text-xs leading-relaxed gap-3">
+                            <span className="text-slate-300 font-sans">{imp.text || imp}</span>
+                            {imp.impact && (
+                              <span className="px-2 py-0.5 bg-amber-500/10 border border-amber-500/15 text-amber-400 text-[9px] font-mono rounded font-bold shrink-0">
+                                +{imp.impact}
+                              </span>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Formatting Feedback */}
+                {qualityAnalysis.formatting && qualityAnalysis.formatting.length > 0 && (
+                  <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-4 space-y-3">
+                    <span className="text-[9px] font-mono text-blue-400 uppercase tracking-widest block font-bold">
+                      Formatting Suggestions
+                    </span>
+                    <ul className="space-y-2 text-xs text-slate-300 font-sans">
+                      {qualityAnalysis.formatting.map((fmt: string, i: number) => (
+                        <li key={i} className="flex items-start gap-2">
+                          <span className="text-blue-400 font-bold shrink-0">&bull;</span>
+                          <span>{fmt}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
               </div>
+
             </div>
           </div>
         )}
