@@ -21,7 +21,7 @@
 
 import { ParsedResume, CategoryScore } from "./types.js";
 import { MAX_SCORES, SKILL_CATEGORIES } from "./constants.js";
-import { normalizeText, clamp } from "./utils.js";
+import { normalizeText, normalizeSkill, getSynonyms, clamp } from "./utils.js";
 
 type SkillCategoryKey = keyof typeof SKILL_CATEGORIES;
 
@@ -32,19 +32,57 @@ export function calculateSkillsScore(
   const normalizedText = normalizeText(resumeText);
 
   // ------------------------------------------------------------------
-  // Build combined skills set from parsedData.skills + raw text scanning
+  // Build combined skills set from parsedData (flat array or nested object)
   // ------------------------------------------------------------------
-  const parsedSkills = (parsedData.skills ?? [])
-    .map((s) => s.toLowerCase().trim());
+  let parsedSkills: string[] = [];
+  if (parsedData.skills) {
+    if (Array.isArray(parsedData.skills)) {
+      parsedSkills = parsedData.skills;
+    } else {
+      // SkillsData object structure: gather from all arrays
+      const sData = parsedData.skills as any;
+      const subArrays = [
+        sData.languages,
+        sData.frameworks,
+        sData.libraries,
+        sData.databases,
+        sData.cloud,
+        sData.devops,
+        sData.aiMlTools,
+        sData.devTools,
+        sData.all
+      ];
+      for (const arr of subArrays) {
+        if (Array.isArray(arr)) {
+          parsedSkills.push(...arr);
+        }
+      }
+    }
+  }
+
+  const normalizedParsedSkills = parsedSkills
+    .map((s) => normalizeSkill(s))
+    .filter((s) => s.length > 0);
 
   // Count which categories have at least one matching skill
   let categoriesFound = 0;
   let totalSkillHits  = 0;
 
-  for (const [, keywords] of Object.entries(SKILL_CATEGORIES) as [SkillCategoryKey, readonly string[]][]) {
-    const hitsInCategory = keywords.filter((kw) =>
-      normalizedText.includes(kw.toLowerCase())
-    );
+  for (const [category, keywords] of Object.entries(SKILL_CATEGORIES) as [SkillCategoryKey, readonly string[]][]) {
+    const hitsInCategory = keywords.filter((kw) => {
+      const normKw = normalizeSkill(kw);
+      const synonyms = getSynonyms(kw);
+
+      // 1. Check raw text using synonyms
+      const textMatch = synonyms.some((syn) => normalizedText.includes(syn.toLowerCase()));
+      if (textMatch) return true;
+
+      // 2. Check normalized parsed skills
+      const parsedMatch = normalizedParsedSkills.some((ps) => {
+        return ps === normKw || synonyms.some((syn) => ps === normalizeSkill(syn));
+      });
+      return parsedMatch;
+    });
 
     if (hitsInCategory.length > 0) {
       categoriesFound++;
@@ -52,10 +90,9 @@ export function calculateSkillsScore(
     }
   }
 
-  // Also count parsed skills that might not match our categories
-  // (helps resumes with unusual or niche technologies)
-  const parsedUniqueSkills = new Set(parsedSkills).size;
-  const effectiveSkillCount = Math.max(totalSkillHits, parsedUniqueSkills);
+  // Also include the normalized unique parsed skills count
+  const uniqueNormalizedSkills = new Set(normalizedParsedSkills);
+  const effectiveSkillCount = Math.max(totalSkillHits, uniqueNormalizedSkills.size);
 
   // ------------------------------------------------------------------
   // Base score from category coverage
@@ -64,30 +101,26 @@ export function calculateSkillsScore(
 
   if (categoriesFound === 0 && effectiveSkillCount === 0) {
     return 0;
-  } else if (categoriesFound <= 1) {
+  } else if (categoriesFound === 1) {
     score = 2;
   } else if (categoriesFound === 2) {
     score = 4;
   } else if (categoriesFound === 3) {
-    score = 5;
-  } else if (categoriesFound === 4) {
     score = 6;
-  } else if (categoriesFound === 5) {
+  } else if (categoriesFound === 4) {
     score = 7;
-  } else if (categoriesFound === 6) {
-    score = 8;
   } else {
-    // All 7+ categories
-    score = 9;
+    // 5+ categories found
+    score = 8;
   }
 
   // ------------------------------------------------------------------
-  // Bonus: raw skill count depth
+  // Bonus: raw skill count depth (depth + variety rewards)
   // ------------------------------------------------------------------
-  if (effectiveSkillCount >= 20) {
+  if (effectiveSkillCount >= 10) {
+    score += 2;
+  } else if (effectiveSkillCount >= 5) {
     score += 1;
-  } else if (effectiveSkillCount >= 10) {
-    score += 0; // No extra bonus; category score already reflects this
   }
 
   return clamp(score, 0, MAX_SCORES.skills);

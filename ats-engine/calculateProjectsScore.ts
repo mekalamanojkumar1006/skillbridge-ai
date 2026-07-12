@@ -100,33 +100,57 @@ export function calculateProjectsScore(
   }
 
   // ------------------------------------------------------------------
-  // Per-project quality signals (scanned from full resume text)
-  // We can't isolate per-project text, so we check globally.
-  // This means a single great project can score well.
+  // Quality bonuses based on project features
   // ------------------------------------------------------------------
+  let hasTechStack = TECH_STACK_PATTERN.test(resumeText);
+  let hasQuantified = QUANTIFIED_PATTERN.test(resumeText);
+  let hasInnovation = /\b(machine learning|nlp|opencv|deep learning|ai|artificial intelligence|neural network|computer vision|tensorflow|pytorch|llm|rag|openai)\b/i.test(resumeText);
+  let hasProblemSolved = PROBLEM_PATTERN.test(resumeText);
+  let hasGitHub = GITHUB_LINK_PATTERN.test(resumeText);
+  let hasLiveDemo = LIVE_DEMO_PATTERN.test(resumeText);
+
+  // Check structured projects data if available
+  if (parsedData.projects && parsedData.projects.length > 0) {
+    for (const p of parsedData.projects) {
+      if (p.techStack && p.techStack.length >= 3) {
+        hasTechStack = true;
+      }
+      if (p.impact || p.metrics) {
+        hasQuantified = true;
+      }
+      if (p.problemSolved) {
+        hasProblemSolved = true;
+      }
+      if (p.githubLink) {
+        hasGitHub = true;
+      }
+      if (p.liveDemo) {
+        hasLiveDemo = true;
+      }
+
+      const projText = `${p.title || ""} ${p.description || ""} ${p.impact || ""} ${(p.techStack || []).join(" ")}`.toLowerCase();
+      if (/\b(machine learning|nlp|opencv|deep learning|ai|artificial intelligence|neural network|computer vision|tensorflow|pytorch|llm|rag|openai)\b/i.test(projText)) {
+        hasInnovation = true;
+      }
+    }
+  }
+
+  // Fallback check for tech stack using simple keywords
+  if (!hasTechStack) {
+    const normalized = normalizeText(resumeText);
+    const techTerms  = ["react", "node", "python", "java", "mongodb", "firebase", "docker", "aws", "opencv", "nlp", "sql"];
+    if (techTerms.filter(t => normalized.includes(t)).length >= 3) {
+      hasTechStack = true;
+    }
+  }
+
   let qualityScore = 0;
-
-  const hasGitHub        = GITHUB_LINK_PATTERN.test(resumeText);
-  const hasLiveDemo      = LIVE_DEMO_PATTERN.test(resumeText);
-  const hasQuantified    = QUANTIFIED_PATTERN.test(resumeText);
-  const hasTechStack     = TECH_STACK_PATTERN.test(resumeText) ||
-    // Simpler fallback: multiple tech keywords near project section
-    (() => {
-      const normalized = normalizeText(resumeText);
-      const techTerms  = ["react", "node", "python", "java", "mongodb", "firebase", "docker", "aws"];
-      return techTerms.filter(t => normalized.includes(t)).length >= 3;
-    })();
-  const hasProblemStatement = PROBLEM_PATTERN.test(resumeText);
-  const hasDocumentation    = DOC_PATTERN.test(resumeText);
-
-  if (hasGitHub)            qualityScore += 2;
-  if (hasLiveDemo)          qualityScore += 2;
-  if (hasQuantified)        qualityScore += 3;
-  if (hasTechStack)         qualityScore += 2;
-  if (hasProblemStatement)  qualityScore += 1;
-  if (hasDocumentation)     qualityScore += 1;
-
-  // Max quality bonus per spec = 11 (2+2+3+2+1+1)
+  if (hasTechStack)     qualityScore += 2;
+  if (hasQuantified)    qualityScore += 2;
+  if (hasInnovation)    qualityScore += 2;
+  if (hasProblemSolved)  qualityScore += 1;
+  if (hasGitHub)        qualityScore += 1;
+  if (hasLiveDemo)      qualityScore += 1;
 
   // ------------------------------------------------------------------
   // Base score from project count
@@ -134,13 +158,13 @@ export function calculateProjectsScore(
   let baseScore: number;
 
   if (projectCount >= 4) {
-    baseScore = 11; // Strong base for 4+ projects
+    baseScore = 10;
   } else if (projectCount === 3) {
-    baseScore = 9;
+    baseScore = 8;
   } else if (projectCount === 2) {
-    baseScore = 7;
+    baseScore = 6;
   } else {
-    baseScore = 5; // 1 project
+    baseScore = 4;
   }
 
   const rawScore = baseScore + qualityScore;

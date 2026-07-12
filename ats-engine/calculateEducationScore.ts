@@ -40,6 +40,12 @@ const CGPA_PATTERN = /\b(\d+(\.\d+)?)\s*(\/\s*10|cgpa|gpa|%|percent|percentage)\
  * Returns null if no CGPA / percentage can be reliably found.
  */
 function extractCGPA(text: string): number | null {
+  // Check for 4.0 scale: e.g., 3.9/4 or 3.9/4.0
+  const scale4Match = text.match(/(\d+(\.\d+)?)\s*\/\s*4(\.0)?/);
+  if (scale4Match) {
+    return parseFloat(scale4Match[1]) * 2.5;
+  }
+
   const match = text.match(/(\d+(\.\d+)?)\s*\/\s*10/);
   if (match) return parseFloat(match[1]);
 
@@ -51,7 +57,14 @@ function extractCGPA(text: string): number | null {
   }
 
   const cgpaMatch = text.match(/cgpa\s*[:\-]?\s*(\d+(\.\d+)?)/i);
-  if (cgpaMatch) return parseFloat(cgpaMatch[1]);
+  if (cgpaMatch) {
+    const val = parseFloat(cgpaMatch[1]);
+    // If the value is <= 4.0, assume it is on a 4.0 scale
+    if (val <= 4.0) {
+      return val * 2.5;
+    }
+    return val;
+  }
 
   return null;
 }

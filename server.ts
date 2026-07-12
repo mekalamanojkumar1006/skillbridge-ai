@@ -482,44 +482,68 @@ app.post("/api/resumes/upload", upload.single("resume"), async (req, res) => {
     }
 
     let geminiContents: any[] = [];
-    const promptText = `You are an expert resume parser. Analyze the following resume details and extract the structured information. Return ONLY a valid JSON object with the following schema:
+    const promptText = `You are an expert resume parser. Reconstruct the full plain text of the resume and extract structured information. Return ONLY a valid JSON object with the following schema:
 {
-  "name": "Candidate Full Name",
-  "email": "Candidate email address or empty string",
-  "phone": "Candidate phone number or empty string",
-  "linkedin": "Candidate LinkedIn profile URL or empty string",
-  "github": "Candidate GitHub profile URL or empty string",
-  "location": "Candidate city and state/country or empty string",
-  "summary": "Short professional summary",
-  "skills": ["Skill 1", "Skill 2", "Skill 3"],
-  "education": [
-    {
-      "institution": "University/Institution Name",
-      "degree": "Degree",
-      "fieldOfStudy": "Field of Study",
-      "duration": "Duration (e.g., 2018 - 2022)",
-      "cgpa": "CGPA or percentage if mentioned, otherwise empty string"
-    }
-  ],
-  "experience": [
-    {
-      "company": "Company Name",
-      "role": "Job Title/Role",
-      "duration": "Duration (e.g., 2022 - Present)",
-      "description": "Responsibility and achievement details"
-    }
-  ],
-  "projects": [
-    {
-      "title": "Project Title",
-      "description": "Project description detailing what was built",
-      "techStack": ["Technology 1", "Technology 2"],
-      "githubLink": "GitHub URL for this project or empty string",
-      "liveDemo": "Live URL / deployed demo link or empty string",
-      "impact": "Quantified impact or metrics if mentioned, otherwise empty string"
-    }
-  ],
-  "certifications": ["Certification Name 1", "Certification Name 2"]
+  "rawText": "Complete, exact reconstructed plain text of the resume with all sections, words, and structural formatting (like line breaks) preserved.",
+  "parsedData": {
+    "name": "Candidate Full Name or empty string",
+    "email": "Candidate email address or empty string",
+    "phone": "Candidate phone number or empty string",
+    "linkedin": "Candidate LinkedIn profile URL or empty string",
+    "github": "Candidate GitHub profile URL or empty string",
+    "portfolio": "Candidate portfolio/website URL or empty string",
+    "location": "Candidate city, state/country or empty string",
+    "summary": "Professional summary or empty string",
+    "skills": {
+      "languages": ["Programming Language 1", "Programming Language 2"],
+      "frameworks": ["Framework 1", "Framework 2"],
+      "libraries": ["Library 1", "Library 2"],
+      "databases": ["Database 1", "Database 2"],
+      "cloud": ["Cloud Platform 1", "Cloud Platform 2"],
+      "devops": ["DevOps tool/practice 1", "DevOps tool/practice 2"],
+      "aiMlTools": ["AI/ML Tool/Framework 1", "AI/ML Tool/Framework 2"],
+      "devTools": ["Development Tool 1", "Development Tool 2"],
+      "all": ["List of all skills normalized and combined"]
+    },
+    "education": [
+      {
+        "institution": "University/Institution Name or empty string",
+        "degree": "Degree (e.g. B.Tech, M.S.) or empty string",
+        "fieldOfStudy": "Field of Study or empty string",
+        "duration": "Duration (e.g., 2018 - 2022) or empty string",
+        "cgpa": "CGPA or percentage (e.g., 9.2 or 80%) or empty string"
+      }
+    ],
+    "experience": [
+      {
+        "company": "Company Name or empty string",
+        "role": "Job Title (e.g. Software Engineer, Google Campus Ambassador) or empty string",
+        "duration": "Duration (e.g., 2022 - Present) or empty string",
+        "description": "Responsibility and achievement details",
+        "isInternship": true/false
+      }
+    ],
+    "projects": [
+      {
+        "title": "Project Title",
+        "description": "Description of project detailing what was built",
+        "techStack": ["Technology 1", "Technology 2"],
+        "impact": "Quantified impact or empty string",
+        "metrics": "Metrics achieved or empty string",
+        "githubLink": "GitHub URL for this project or empty string",
+        "liveDemo": "Live URL / deployed demo link or empty string",
+        "problemSolved": "What problem was solved"
+      }
+    ],
+    "certifications": ["Certification Name 1", "Certification Name 2"],
+    "achievements": {
+      "hackathons": ["Hackathon Name 1"],
+      "researchPapers": ["Paper Title 1"],
+      "awards": ["Award Name 1"]
+    },
+    "volunteerExperience": ["Volunteer Activity 1"],
+    "publications": ["Publication Title 1"]
+  }
 }`;
 
     if (file) {
@@ -578,14 +602,16 @@ app.post("/api/resumes/upload", upload.single("resume"), async (req, res) => {
       contents: geminiContents
     });
 
-    const parsedData = cleanAndParseJSON(aiResponse.text || "{}");
+    const resultObj = cleanAndParseJSON(aiResponse.text || "{}");
+    const parsedData = resultObj.parsedData || {};
+    const extractedContent = resultObj.rawText || content;
 
     // Save parsed resume to Firestore
     const resumeRef = collection(db, "resumes");
     const docRef = await addDoc(resumeRef, {
       userId,
       fileName,
-      content,
+      content: extractedContent,
       parsedData,
       createdAt: new Date().toISOString()
     });
@@ -594,7 +620,7 @@ app.post("/api/resumes/upload", upload.single("resume"), async (req, res) => {
       id: docRef.id,
       userId,
       fileName,
-      content,
+      content: extractedContent,
       parsedData,
       createdAt: new Date().toISOString()
     });
@@ -626,12 +652,32 @@ app.post("/api/analysis/quality/:resume_id", async (req, res) => {
     const resumeText = resumeData.content || JSON.stringify(resumeData.parsedData || {});
     const parsedData = resumeData.parsedData || {};
 
+    // Print the extracted JSON before calculating
+    console.log("=== ATS Extracted Resume JSON ===");
+    console.log(JSON.stringify(parsedData, null, 2));
+
+    // Validation: If parsing fails or lacks essential sections, return error
+    if (!parsedData || Object.keys(parsedData).length === 0 || (!parsedData.name && !parsedData.email && !parsedData.skills && !parsedData.experience && !parsedData.education)) {
+      return res.status(400).json({ error: "Resume parsing failed: invalid or incomplete structured data extracted." });
+    }
+
     // ----------------------------------------------------------------
     // STEP 1: Deterministic ATS Score (TypeScript Rule Engine)
     // No AI involved — same resume ALWAYS produces the same score.
     // ----------------------------------------------------------------
     const atsResult = calculateATSScore(resumeText, parsedData);
     const { score: qualityScore, breakdown, matchedKeywords, missingKeywords, detectedRole } = atsResult;
+
+    // Debug logging
+    console.log("=== ATS Debug Scoring Logs ===");
+    console.log("Extracted Skills:", JSON.stringify(parsedData.skills || []));
+    console.log("Extracted Projects:", JSON.stringify(parsedData.projects || []));
+    console.log("Extracted Certifications:", JSON.stringify(parsedData.certifications || []));
+    console.log("Extracted Experience:", JSON.stringify(parsedData.experience || []));
+    console.log("Extracted Keywords Matched:", JSON.stringify(matchedKeywords));
+    console.log("Category Scores:", JSON.stringify(breakdown));
+    console.log("Final ATS Score:", qualityScore);
+    console.log("===============================");
 
     // ----------------------------------------------------------------
     // STEP 2: Gemini — Explanation ONLY
@@ -779,6 +825,15 @@ app.post("/api/analysis/ats-score", async (req, res) => {
     const resumeText = resumeData.content || JSON.stringify(resumeData.parsedData || {});
     const parsedData = resumeData.parsedData || {};
 
+    // Print the extracted JSON before calculating
+    console.log("=== ATS Extracted Resume JSON ===");
+    console.log(JSON.stringify(parsedData, null, 2));
+
+    // Validation: If parsing fails or lacks essential sections, return error
+    if (!parsedData || Object.keys(parsedData).length === 0 || (!parsedData.name && !parsedData.email && !parsedData.skills && !parsedData.experience && !parsedData.education)) {
+      return res.status(400).json({ error: "Resume parsing failed: invalid or incomplete structured data extracted." });
+    }
+
     // ----------------------------------------------------------------
     // STEP 1: Deterministic ATS Score (TypeScript Rule Engine)
     // Passes jobDescription for JD-specific keyword matching.
@@ -786,6 +841,17 @@ app.post("/api/analysis/ats-score", async (req, res) => {
     // ----------------------------------------------------------------
     const atsEngineResult = calculateATSScore(resumeText, parsedData, jobDescription);
     const { score, breakdown, matchedKeywords, missingKeywords, detectedRole } = atsEngineResult;
+
+    // Debug logging
+    console.log("=== ATS Debug Scoring Logs ===");
+    console.log("Extracted Skills:", JSON.stringify(parsedData.skills || []));
+    console.log("Extracted Projects:", JSON.stringify(parsedData.projects || []));
+    console.log("Extracted Certifications:", JSON.stringify(parsedData.certifications || []));
+    console.log("Extracted Experience:", JSON.stringify(parsedData.experience || []));
+    console.log("Extracted Keywords Matched:", JSON.stringify(matchedKeywords));
+    console.log("Category Scores:", JSON.stringify(breakdown));
+    console.log("Final ATS Score:", score);
+    console.log("===============================");
 
     // ----------------------------------------------------------------
     // STEP 2: Gemini — Explanation ONLY

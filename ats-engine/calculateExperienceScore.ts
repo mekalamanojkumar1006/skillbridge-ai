@@ -69,9 +69,18 @@ export function calculateExperienceScore(
   // Action verb scoring
   // ------------------------------------------------------------------
   let actionVerbCount = 0;
-  for (const verb of ACTION_VERBS) {
-    if (normalizedText.includes(verb.toLowerCase())) {
-      actionVerbCount++;
+  if (experience.length > 0) {
+    const expText = experience.map((exp) => `${exp.role || ""} ${exp.company || ""} ${exp.description || ""}`).join(" ").toLowerCase();
+    for (const verb of ACTION_VERBS) {
+      if (expText.includes(verb.toLowerCase())) {
+        actionVerbCount++;
+      }
+    }
+  } else {
+    for (const verb of ACTION_VERBS) {
+      if (normalizedText.includes(verb.toLowerCase())) {
+        actionVerbCount++;
+      }
     }
   }
 

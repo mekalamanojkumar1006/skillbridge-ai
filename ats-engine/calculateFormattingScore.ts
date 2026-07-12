@@ -82,9 +82,12 @@ export function calculateFormattingScore(resumeText: string): CategoryScore {
   // ------------------------------------------------------------------
   const longLines = lines.filter((line) => line.trim().length > 120);
   const hasExcessiveSpacing = countPattern(resumeText, /(\r?\n\s*){5,}/g) > 0;
-  if (longLines.length >= 3 || hasExcessiveSpacing) {
-    score -= FORMATTING_DEDUCTIONS.poorSpacing;
-    deductions.push("Poor spacing detected (long lines or excessive empty spacing)");
+  if (longLines.length >= 5 || hasExcessiveSpacing) {
+    score -= 2;
+    deductions.push("Poor spacing detected (5+ long lines or excessive empty spacing)");
+  } else if (longLines.length >= 1) {
+    score -= 1;
+    deductions.push("Minor spacing warning (1-4 long lines)");
   }
 
   // ------------------------------------------------------------------

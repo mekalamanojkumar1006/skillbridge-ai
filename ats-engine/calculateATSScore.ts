@@ -58,7 +58,7 @@ export function calculateATSScore(
   const experienceScore    = calculateExperienceScore(safeText, safeData);
   const projectsScore      = calculateProjectsScore(safeText, safeData);
   const educationScore     = calculateEducationScore(safeText, safeData);
-  const certificationScore = calculateCertificationScore(safeText);
+  const certificationScore = calculateCertificationScore(safeText, safeData);
   const keywordResult      = calculateKeywordScore(safeText, safeData, jobDescription);
 
   // ------------------------------------------------------------------

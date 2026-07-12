@@ -24,6 +24,43 @@ export function normalizeText(text: string): string {
     .trim();
 }
 
+const SKILL_NORM_MAP: Record<string, string> = {
+  "reactjs": "react",
+  "react.js": "react",
+  "react js": "react",
+  "node": "node.js",
+  "nodejs": "node.js",
+  "node js": "node.js",
+  "js": "javascript",
+  "ts": "typescript",
+  "ml": "machine learning",
+  "ai": "artificial intelligence",
+  "cv": "computer vision",
+  "open cv": "opencv",
+  "open-cv": "opencv",
+  "github": "github",
+  "powerbi": "power bi",
+  "power-bi": "power bi",
+  "google colab": "colab",
+  "google-colab": "colab",
+  "scikit learn": "scikit-learn",
+  "sklearn": "scikit-learn",
+  "tf": "tensorflow",
+  "amazon web services": "aws",
+  "google cloud platform": "gcp",
+  "google cloud": "gcp",
+  "natural language processing": "nlp",
+  "rest api": "rest api",
+  "rest apis": "rest api",
+  "restful api": "rest api",
+  "restful apis": "rest api"
+};
+
+export function normalizeSkill(skill: string): string {
+  const clean = skill.trim().toLowerCase();
+  return SKILL_NORM_MAP[clean] || clean;
+}
+
 /**
  * Returns the raw lowercase text without stripping — useful when we
  * need to preserve structure (newlines, slashes, etc.) for heuristics.

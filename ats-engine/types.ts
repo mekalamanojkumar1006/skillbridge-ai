@@ -23,6 +23,7 @@ export interface Experience {
   role?: string;
   duration?: string;
   description?: string;
+  isInternship?: boolean;
 }
 
 export interface Project {
@@ -32,6 +33,26 @@ export interface Project {
   githubLink?: string;
   liveDemo?: string;
   impact?: string;
+  metrics?: string;
+  problemSolved?: string;
+}
+
+export interface SkillsData {
+  languages?: string[];
+  frameworks?: string[];
+  libraries?: string[];
+  databases?: string[];
+  cloud?: string[];
+  devops?: string[];
+  aiMlTools?: string[];
+  devTools?: string[];
+  all?: string[];
+}
+
+export interface AchievementsData {
+  hackathons?: string[];
+  researchPapers?: string[];
+  awards?: string[];
 }
 
 /**
@@ -44,13 +65,17 @@ export interface ParsedResume {
   phone?: string;
   linkedin?: string;
   github?: string;
+  portfolio?: string;
   location?: string;
   summary?: string;
-  skills?: string[];
+  skills?: string[] | SkillsData;
   experience?: Experience[];
   projects?: Project[];
   education?: Education[];
   certifications?: string[];
+  achievements?: AchievementsData;
+  volunteerExperience?: string[];
+  publications?: string[];
 }
 
 // ---------------------------------------------------------------------------

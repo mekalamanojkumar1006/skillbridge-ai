@@ -134,10 +134,9 @@ export function calculateSummaryScore(
     score = 5;
   }
 
-  // Keyword bonuses
+  // Keyword bonuses (max +2)
   if (keywordMatches >= 1) score += 1;
   if (keywordMatches >= 2) score += 1;
-  if (keywordMatches >= 3) score += 1;
 
   // Role presence bonus
   if (roleInSummary) score += 1;
