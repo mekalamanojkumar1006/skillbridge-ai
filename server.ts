@@ -343,6 +343,23 @@ function cleanAndParseJSON(text: string) {
   }
 }
 
+// Helper to safely extract flat list of skills from parsedData structure
+function getFlatSkills(skills: any): string[] {
+  if (!skills) return [];
+  if (Array.isArray(skills)) return skills;
+  if (typeof skills === "object") {
+    if (Array.isArray(skills.all)) return skills.all;
+    const result: string[] = [];
+    for (const key of Object.keys(skills)) {
+      if (Array.isArray(skills[key])) {
+        result.push(...skills[key]);
+      }
+    }
+    return Array.from(new Set(result));
+  }
+  return [];
+}
+
 // Helper to call generateContent with model fallbacks to handle high demand / overloaded errors
 async function generateContentWithFallback(params: { contents: string | any[] }) {
   const modelsToTry = [
@@ -1099,7 +1116,7 @@ app.post("/api/skills/gap-analysis", async (req, res) => {
         const data = doc.data();
         if (doc.id !== resumeId) {
           const experience = data.parsedData?.experience || [];
-          const candidateSkills = data.parsedData?.skills || [];
+          const candidateSkills = getFlatSkills(data.parsedData?.skills);
           
           // Map peer experience roles and matching skills
           experience.forEach((exp: any) => {
@@ -1715,7 +1732,7 @@ app.post("/api/opportunities/match", async (req, res) => {
     }
 
     const resumeData = resumeSnap.data();
-    const candidateSkills: string[] = resumeData.parsedData?.skills || [];
+    const candidateSkills = getFlatSkills(resumeData.parsedData?.skills);
 
     // Fallback search of raw resume text for known keywords if empty
     let normalizedCandidateSkills = candidateSkills.map(s => s.trim().toLowerCase()).filter(Boolean);
