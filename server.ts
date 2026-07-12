@@ -12,6 +12,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import localConfig from "./firebase-applet-config.json" assert { type: "json" };
+import { calculateATSScore } from "./ats-engine/calculateATSScore.js";
 import fs from "fs";
 
 const trimVal = (val: any) => typeof val === "string" ? val.trim() : val;
@@ -486,6 +487,9 @@ app.post("/api/resumes/upload", upload.single("resume"), async (req, res) => {
   "name": "Candidate Full Name",
   "email": "Candidate email address or empty string",
   "phone": "Candidate phone number or empty string",
+  "linkedin": "Candidate LinkedIn profile URL or empty string",
+  "github": "Candidate GitHub profile URL or empty string",
+  "location": "Candidate city and state/country or empty string",
   "summary": "Short professional summary",
   "skills": ["Skill 1", "Skill 2", "Skill 3"],
   "education": [
@@ -493,7 +497,8 @@ app.post("/api/resumes/upload", upload.single("resume"), async (req, res) => {
       "institution": "University/Institution Name",
       "degree": "Degree",
       "fieldOfStudy": "Field of Study",
-      "duration": "Duration (e.g., 2018 - 2022)"
+      "duration": "Duration (e.g., 2018 - 2022)",
+      "cgpa": "CGPA or percentage if mentioned, otherwise empty string"
     }
   ],
   "experience": [
@@ -503,7 +508,18 @@ app.post("/api/resumes/upload", upload.single("resume"), async (req, res) => {
       "duration": "Duration (e.g., 2022 - Present)",
       "description": "Responsibility and achievement details"
     }
-  ]
+  ],
+  "projects": [
+    {
+      "title": "Project Title",
+      "description": "Project description detailing what was built",
+      "techStack": ["Technology 1", "Technology 2"],
+      "githubLink": "GitHub URL for this project or empty string",
+      "liveDemo": "Live URL / deployed demo link or empty string",
+      "impact": "Quantified impact or metrics if mentioned, otherwise empty string"
+    }
+  ],
+  "certifications": ["Certification Name 1", "Certification Name 2"]
 }`;
 
     if (file) {
@@ -589,6 +605,8 @@ app.post("/api/resumes/upload", upload.single("resume"), async (req, res) => {
 });
 
 // POST /api/analysis/quality/:resume_id
+// Deterministic ATS scoring: TypeScript engine calculates the score;
+// Gemini is called only to explain the pre-calculated score.
 app.post("/api/analysis/quality/:resume_id", async (req, res) => {
   try {
     const { resume_id } = req.params;
@@ -605,249 +623,135 @@ app.post("/api/analysis/quality/:resume_id", async (req, res) => {
     }
 
     const resumeData = resumeSnap.data();
-
-    // AI Quality Review
-    // Use raw resume text content when available for better assessment accuracy
     const resumeText = resumeData.content || JSON.stringify(resumeData.parsedData || {});
+    const parsedData = resumeData.parsedData || {};
 
-    const prompt = `You are an Expert ATS (Applicant Tracking System) Resume Evaluator, Senior Technical Recruiter, and Hiring Manager.
+    // ----------------------------------------------------------------
+    // STEP 1: Deterministic ATS Score (TypeScript Rule Engine)
+    // No AI involved — same resume ALWAYS produces the same score.
+    // ----------------------------------------------------------------
+    const atsResult = calculateATSScore(resumeText, parsedData);
+    const { score: qualityScore, breakdown, matchedKeywords, missingKeywords, detectedRole } = atsResult;
 
-Your job is to evaluate resumes exactly like professional ATS tools (Jobscan, Resume Worded, Enhancv).
+    // ----------------------------------------------------------------
+    // STEP 2: Gemini — Explanation ONLY
+    // Gemini receives the pre-calculated score + breakdown.
+    // It MUST NOT change the score — only explain it.
+    // ----------------------------------------------------------------
+    const explanationPrompt = `You are an expert resume coach and technical recruiter.
 
-========================================
-IMPORTANT RULES
-========================================
-• Never generate random or fixed scores.
-• Never give similar scores to every resume.
-• Every resume must receive a UNIQUE score based on its actual quality.
-• Every deduction must have a clear, specific reason.
-• The final ATS score MUST equal the EXACT sum of all category scores.
-• Evaluate ONLY what exists in the resume text.
-• Never assume missing information.
-• Do not inflate scores.
-• Do not penalize freshers for not having full-time experience.
-• Evaluate internship quality, projects, leadership and technical skills instead.
-• If AI cannot determine a category, assign the minimum justified score.
-
-========================================
-ATS SCORING (100 Points)
-========================================
-
-1. ATS Formatting (20 Points)
-Check:
-• Single-column layout
-• Standard headings
-• Proper spacing
-• Readable fonts
-• No tables, text boxes, images
-• ATS-compatible formatting
-
-Score:
-18–20 = Excellent
-14–17 = Good
-10–13 = Average
-Below 10 = Poor
-
-Deductions:
-Two-column layout: −4
-Tables: −4
-Images: −3
-Text boxes: −3
-Poor spacing: −2
-Fancy fonts: −2
-
-2. Contact Information (10 Points)
-Check: Name, Professional Email, Phone, LinkedIn, GitHub, Location
-
-Deductions:
-Missing LinkedIn: −2
-Missing GitHub: −2
-Missing Email: −3
-Missing Phone: −3
-
-3. Professional Summary (10 Points)
-Evaluate:
-• Target role clearly stated
-• Career objective
-• Technical keywords relevant to role
-• Concise, impactful writing
-• Relevant skills mentioned
-
-No summary = 0–2. Vague = 3–5. Good = 6–8. Excellent = 9–10.
-
-4. Technical Skills (10 Points)
-Evaluate relevance and coverage of:
-Programming Languages, Frameworks, Databases, Cloud Platforms, Tools, Version Control, AI/ML, APIs.
-
-Reward modern, in-demand technologies.
-0–1 skills = 1–3. Basic = 4–6. Good = 7–8. Excellent broad modern stack = 9–10.
-
-5. Work Experience (10 Points)
-Evaluate: Technical work, internships, leadership, action verbs, quantified achievements, impact.
-Do NOT penalize freshers for no full-time experience.
-
-No experience at all = 0–3.
-1 internship with relevant bullets = 4–6.
-2+ internships or roles with quantified impact = 7–10.
-
-6. Projects (20 Points)
-Evaluate: Complexity, real-world relevance, technologies used, problem solved, metrics, GitHub link, live demo, documentation.
-
-Excellent (4+ production projects, GitHub, live demo, impact metrics): 17–20
-Good (2–3 projects with outcomes and tech detail): 13–16
-Average (2 simple projects, no metrics): 10–12
-Poor (1 basic project, no detail): 5–9
-No projects at all: 0–4
-
-IMPORTANT: If resume has no projects, maximum total score is 60.
-
-7. Education (5 Points)
-Evaluate: Degree, University name, CGPA/percentage, Graduation Year.
-All present with CGPA 7.5+/10 = 5. Partial info = 3–4. Low GPA or missing = 1–2.
-
-8. Certifications & Achievements (5 Points)
-Evaluate: IBM, Google, AWS, Microsoft, Oracle certifications, hackathons, research papers, coding competitions.
-0 = 0. 1 basic cert = 2. Strong certs + hackathons = 4–5.
-
-9. ATS Keywords (10 Points)
-Extract the target job role from the resume, then match role-specific keywords.
-
-AI Engineer: Python, Machine Learning, Deep Learning, TensorFlow, PyTorch, NLP, OpenCV, Hugging Face, LangChain, RAG, FastAPI, Docker, AWS, Git, REST APIs
-Software Engineer: Java, Python, C++, DSA, OOP, SQL, Git, REST APIs, React, Node.js, System Design
-Data Analyst: SQL, Excel, Python, Tableau, Power BI, Pandas, NumPy, Statistics
-Frontend Developer: HTML, CSS, JavaScript, React, TypeScript, Redux, Tailwind CSS
-Backend Developer: Node.js, Express, Java, Spring Boot, Python, FastAPI, Django, SQL, MongoDB
-
-Score on keyword RELEVANCE and CONTEXT — not just keyword count.
-0–3 keywords = 2–4. Moderate = 5–7. Strong role-specific match = 8–10.
+A deterministic ATS scoring engine has already calculated this resume's score.
+Your ONLY job is to explain the score, list strengths and weaknesses, suggest improvements, and estimate company compatibility.
+You MUST NOT change the score or breakdown values. They are final.
 
 ========================================
-QUALITY ANCHORS
+PRE-CALCULATED ATS SCORE (DO NOT MODIFY)
 ========================================
-Outstanding Resume (95–100): Excellent everything — ATS formatting, full contact, strong summary, modern skills, multiple quantified experiences, 4+ production projects with GitHub + live demos + metrics, strong certifications, near-perfect keyword match.
-Excellent Resume (90–94): Near-outstanding with minor gaps.
-Strong Resume (85–89): Strong fresher with good projects, certifications, internships, good keyword coverage.
-Good Resume (75–84): Average fresher — some projects, basic skills, decent formatting.
-Needs Improvement (60–74): Missing sections, weak projects, poor keywords.
-Poor Resume (Below 60): Major gaps — no projects, missing contact, poor formatting.
+Total ATS Score: ${qualityScore}/100
+Detected Role: ${detectedRole}
 
-Cap rules:
-• No projects at all → Maximum total score: 60
-• No skills section → Maximum total score: 55
-• No GitHub → Deduct 2 from contactInfo
-• No LinkedIn → Deduct 2 from contactInfo
-• No Summary → Deduct 3 from summary (minimum 0)
-• Poor formatting → Deduct up to 5 from formatting
+Breakdown:
+• Formatting:      ${breakdown.formatting}/20
+• Contact Info:    ${breakdown.contactInfo}/10
+• Summary:         ${breakdown.summary}/10
+• Skills:          ${breakdown.skills}/10
+• Experience:      ${breakdown.experience}/10
+• Projects:        ${breakdown.projects}/20
+• Education:       ${breakdown.education}/5
+• Certifications:  ${breakdown.certifications}/5
+• Keywords:        ${breakdown.keywords}/10
 
-========================================
-CRITICAL VERIFICATION
-========================================
-Before returning JSON, verify:
-qualityScore = formatting + contactInfo + summary + skills + experience + projects + education + certifications + keywords
-
-If sum does not match qualityScore, correct qualityScore to match the sum.
-Never return inconsistent totals.
+Matched Keywords: ${matchedKeywords.slice(0, 10).join(", ") || "None detected"}
+Missing Keywords: ${missingKeywords.slice(0, 10).join(", ") || "None"}
 
 ========================================
-Return ONLY valid raw JSON — no markdown, no explanation:
+Resume Text:
+========================================
+${resumeText.slice(0, 4000)}
+
+========================================
+Return ONLY valid raw JSON — no markdown:
 ========================================
 {
-  "qualityScore": <exact sum of all breakdown values>,
-  "breakdown": {
-    "formatting": <0–20>,
-    "contactInfo": <0–10>,
-    "summary": <0–10>,
-    "skills": <0–10>,
-    "experience": <0–10>,
-    "projects": <0–20>,
-    "education": <0–5>,
-    "certifications": <0–5>,
-    "keywords": <0–10>
-  },
-  "strengths": ["<specific strength from resume>", "<specific strength>"],
+  "strengths": ["<specific strength observed in the resume>"],
   "improvements": [
-    { "text": "<specific, actionable improvement not already present>", "impact": <1–5> }
+    { "text": "<specific actionable improvement not already present>", "impact": <1-5> }
   ],
   "companyCompatibility": {
-    "tcsInfosysWipro": "<XX–XX/100>",
-    "accentureCapgemini": "<XX–XX/100>",
-    "deloitte": "<XX–XX/100>",
-    "productCompanies": "<XX–XX/100>",
-    "amazon": "<XX–XX/100>",
-    "microsoft": "<XX–XX/100>",
-    "google": "<XX–XX/100>"
+    "tcsInfosysWipro": "<XX-XX/100>",
+    "accentureCapgemini": "<XX-XX/100>",
+    "deloitte": "<XX-XX/100>",
+    "productCompanies": "<XX-XX/100>",
+    "amazon": "<XX-XX/100>",
+    "microsoft": "<XX-XX/100>",
+    "google": "<XX-XX/100>"
   },
-  "verdict": "<Recruiter-style paragraph: why this exact score, internship vs full-time suitability, top 2 improvements for biggest impact>",
+  "verdict": "<Recruiter-style paragraph: explain why this score was given, internship vs full-time suitability, top 2 improvements for biggest score impact>",
   "missingSkills": ["<role-specific skill not found in resume>"]
-}
+}`;
 
-Resume Text to Evaluate:
-${resumeText}`;
-
-
-
-    const aiResponse = await generateContentWithFallback({
-      contents: prompt
-    });
-
-    const analysisResult = cleanAndParseJSON(aiResponse.text || "{}");
-
-    // Standardize structure and add fallback defaults if missing
-    // Recalculate qualityScore from breakdown to ensure it always equals the sum
-    const bd = analysisResult.breakdown;
-    if (bd && typeof bd === 'object') {
-      const recalculated = (bd.formatting || 0) + (bd.contactInfo || 0) + (bd.summary || 0) +
-        (bd.skills || 0) + (bd.experience || 0) + (bd.projects || 0) +
-        (bd.education || 0) + (bd.certifications || 0) + (bd.keywords || 0);
-      analysisResult.qualityScore = recalculated;
-    } else {
-      analysisResult.qualityScore = typeof analysisResult.qualityScore === 'number'
-        ? analysisResult.qualityScore
-        : (typeof analysisResult.score === 'number' ? analysisResult.score : 0);
+    const aiResponse = await generateContentWithFallback({ contents: explanationPrompt });
+    let aiInsights: any = {};
+    try {
+      aiInsights = cleanAndParseJSON(aiResponse.text || "{}");
+    } catch {
+      console.warn("Gemini explanation parsing failed; using fallback insights.");
     }
-    analysisResult.breakdown = analysisResult.breakdown || {
-      formatting: 0, contactInfo: 0, summary: 0, skills: 0, experience: 0,
-      projects: 0, education: 0, certifications: 0, keywords: 0
+
+    // ----------------------------------------------------------------
+    // STEP 3: Assemble final response
+    // qualityScore and breakdown come EXCLUSIVELY from the ATS engine.
+    // ----------------------------------------------------------------
+    const strengths = aiInsights.strengths || ["ATS-compatible resume structure detected", "Technical skills section present"];
+    const improvements = aiInsights.improvements || [{ text: "Add more role-specific keywords to improve keyword match score", impact: 3 }];
+    const companyCompatibility = aiInsights.companyCompatibility || {
+      tcsInfosysWipro: "85-90/100",
+      accentureCapgemini: "82-88/100",
+      deloitte: "80-86/100",
+      productCompanies: "75-82/100",
+      amazon: "72-80/100",
+      microsoft: "70-78/100",
+      google: "68-76/100"
     };
-    analysisResult.strengths = analysisResult.strengths || ["ATS-friendly layout", "Strong technical background"];
-    analysisResult.improvements = analysisResult.improvements || [
-      { text: "Integrate more role-specific tools and technologies", impact: 2 }
-    ];
-    analysisResult.formatting = analysisResult.formatting || [
-      "Keep margins consistent across sections"
-    ];
-    analysisResult.companyCompatibility = analysisResult.companyCompatibility || {
-      tcsInfosysWipro: "90+/100",
-      accentureCapgemini: "88+/100",
-      deloitte: "87–90/100",
-      productCompanies: "82–87/100",
-      amazon: "80–85/100",
-      microsoft: "78–83/100",
-      google: "75–80/100"
-    };
-    analysisResult.verdict = analysisResult.verdict || `Current ATS Score: ${analysisResult.qualityScore}/100. This resume has a good foundation.`;
-    analysisResult.missingSkills = analysisResult.missingSkills || [];
+    const verdict = aiInsights.verdict || `ATS Score: ${qualityScore}/100. This resume was evaluated by a deterministic engine across 9 categories.`;
+    const missingSkills = aiInsights.missingSkills || missingKeywords.slice(0, 8);
+    const formattingTips = ["Ensure consistent spacing between sections", "Use standard section headings for ATS compatibility"];
 
     // Save to Firestore
     const analysisRef = collection(db, "analyses");
     const docRef = await addDoc(analysisRef, {
       resumeId: resume_id,
       userId: userId || resumeData.userId,
-      qualityScore: analysisResult.qualityScore,
-      breakdown: analysisResult.breakdown,
-      strengths: analysisResult.strengths,
-      improvements: analysisResult.improvements,
-      formatting: analysisResult.formatting,
-      companyCompatibility: analysisResult.companyCompatibility,
-      verdict: analysisResult.verdict,
-      missingSkills: analysisResult.missingSkills,
+      qualityScore,
+      score: qualityScore,
+      breakdown,
+      strengths,
+      improvements,
+      formatting: formattingTips,
+      companyCompatibility,
+      verdict,
+      missingSkills,
+      keywordsMatched: matchedKeywords,
+      missingKeywords,
+      detectedRole,
       createdAt: new Date().toISOString()
     });
 
     res.status(200).json({
       id: docRef.id,
       resumeId: resume_id,
-      ...analysisResult,
+      qualityScore,
+      score: qualityScore,
+      breakdown,
+      strengths,
+      improvements,
+      formatting: formattingTips,
+      companyCompatibility,
+      verdict,
+      missingSkills,
+      keywordsMatched: matchedKeywords,
+      missingKeywords,
+      detectedRole,
       createdAt: new Date().toISOString()
     });
   } catch (error: any) {
@@ -857,7 +761,8 @@ ${resumeText}`;
 });
 
 // POST /api/analysis/ats-score
-// POST /api/analysis/ats-score
+// Deterministic ATS scoring: TypeScript engine calculates the score;
+// Gemini is called only to explain the pre-calculated score.
 app.post("/api/analysis/ats-score", async (req, res) => {
   try {
     const { resumeId, jobDescription, userId } = req.body;
@@ -872,174 +777,136 @@ app.post("/api/analysis/ats-score", async (req, res) => {
 
     const resumeData = resumeSnap.data();
     const resumeText = resumeData.content || JSON.stringify(resumeData.parsedData || {});
+    const parsedData = resumeData.parsedData || {};
 
-    const prompt = `You are an expert ATS (Applicant Tracking System) Resume Evaluator and Technical Recruiter.
+    // ----------------------------------------------------------------
+    // STEP 1: Deterministic ATS Score (TypeScript Rule Engine)
+    // Passes jobDescription for JD-specific keyword matching.
+    // No AI involved — same resume + same JD ALWAYS produce the same score.
+    // ----------------------------------------------------------------
+    const atsEngineResult = calculateATSScore(resumeText, parsedData, jobDescription);
+    const { score, breakdown, matchedKeywords, missingKeywords, detectedRole } = atsEngineResult;
 
-Analyze the resume below against the provided target job description.
-Do NOT assign random or fixed scores. Every deduction must have a specific, named reason.
-Evaluate only what is actually present in the resume.
+    // ----------------------------------------------------------------
+    // STEP 2: Gemini — Explanation ONLY
+    // Receives the pre-calculated score + breakdown.
+    // MUST NOT change the score — only explain it.
+    // ----------------------------------------------------------------
+    const explanationPrompt = `You are an expert resume coach and technical recruiter.
 
-====================================================
-ATS RESUME SCORING RULES (100 Points)
-====================================================
+A deterministic ATS scoring engine has already calculated this resume's score against the job description.
+Your ONLY job is to explain the score, list strengths and improvements, and estimate company compatibility.
+You MUST NOT change the score or breakdown values. They are final.
 
-1. ATS Formatting (20 Points)
-Evaluate: Single-column layout, standard section headings, proper spacing, readable fonts, no tables/text boxes/graphics/excessive icons, consistent formatting.
-Scoring: 18–20 = Excellent | 14–17 = Good | 10–13 = Average | Below 10 = Poor
+========================================
+PRE-CALCULATED ATS SCORE (DO NOT MODIFY)
+========================================
+Total ATS Score: ${score}/100
+Detected Role: ${detectedRole}
 
-2. Contact Information (10 Points)
-Check: Full Name, Professional Email, Phone Number, LinkedIn Profile, GitHub Profile, Location.
-Deduct 1–2 points for each important missing field. All 6 present = 10/10.
+Breakdown:
+• Formatting:      ${breakdown.formatting}/20
+• Contact Info:    ${breakdown.contactInfo}/10
+• Summary:         ${breakdown.summary}/10
+• Skills:          ${breakdown.skills}/10
+• Experience:      ${breakdown.experience}/10
+• Projects:        ${breakdown.projects}/20
+• Education:       ${breakdown.education}/5
+• Certifications:  ${breakdown.certifications}/5
+• Keywords:        ${breakdown.keywords}/10
 
-3. Professional Summary (10 Points)
-Evaluate: Clear career objective, target role mentioned, relevant technical skills, industry keywords, concise writing.
-No/vague summary = 3–5. Good = 7–8. Excellent = 9–10.
+Keywords Matched: ${matchedKeywords.slice(0, 10).join(", ") || "None detected"}
+Missing Keywords: ${missingKeywords.slice(0, 10).join(", ") || "None"}
 
-4. Technical Skills (10 Points)
-Evaluate coverage of: Programming Languages, Frameworks, Databases, Cloud Platforms, Version Control, Dev Tools, AI/ML, APIs.
-1–3 skills = 3–5. Good coverage = 7–8. Broad modern stack = 9–10.
+========================================
+Resume Text:
+========================================
+${resumeText.slice(0, 3000)}
 
-5. Work Experience (10 Points)
-Evaluate: Relevant experience, technical responsibilities, action verbs, quantified achievements, internship quality, leadership.
-No experience = 0–3. One internship with bullets = 5–7. 2+ roles with quantified impact = 8–10.
-Do NOT penalize students for lacking full-time jobs — quality internships count.
+========================================
+Job Description:
+========================================
+${jobDescription.slice(0, 1500)}
 
-6. Projects (20 Points)
-Evaluate: Project complexity, real-world relevance, tech stack, quantified outcomes, problem solved, GitHub link, live demo, description quality.
-0 projects = 0. 1 basic project = 5–8. 2–3 good = 10–14. 4+ strong projects with % outcomes + GitHub = 16–20.
-Reward quantified results and GitHub/demo links heavily.
-
-7. Education (5 Points)
-Evaluate: Degree, university, graduation year, CGPA/percentage.
-All present, good CGPA (7.5+) = 5. Missing details or low GPA = 3–4.
-
-8. Certifications & Achievements (5 Points)
-Evaluate: IBM/Google/AWS/Microsoft certs, hackathons, coding competitions, research papers.
-0 = 0. 1 basic cert = 2. Multiple strong certs + hackathons = 5.
-
-9. ATS Keywords (10 Points)
-Match resume keywords against the provided job description AND role-specific keyword lists:
-AI Engineer: Python, ML, Deep Learning, TensorFlow, PyTorch, NLP, OpenCV, Hugging Face, LangChain, RAG, FastAPI, Docker, AWS, Git, REST APIs
-Software Engineer: Java, Python, C++, DSA, OOP, SQL, Git, REST APIs, React, Node.js, System Design
-Data Analyst: SQL, Excel, Python, Tableau, Power BI, Pandas, NumPy, Statistics
-Frontend Developer: HTML, CSS, JavaScript, React, TypeScript, Redux, Tailwind CSS
-Backend Developer: Node.js, Express, Java, Spring Boot, Python, FastAPI, Django, SQL, MongoDB
-0–3 keywords matched = 2–4. Good match = 6–8. Excellent relevance = 9–10.
-
-====================================================
-SCORE INTERPRETATION
-====================================================
-95–100 → Outstanding | 90–94 → Excellent | 85–89 → Strong
-75–84 → Good | 60–74 → Needs Improvement | Below 60 → Major Improvements Required
-
-====================================================
-RULES:
-====================================================
-• NEVER generate arbitrary scores. Justify every deduction.
-• Reward quantified achievements, GitHub links, live demos.
-• Use role-specific keyword matching — not generic.
-• Maintain consistent scoring across similar resumes.
-• Strong resumes must receive realistic high scores (85–95+).
-• Do NOT suggest improvements for skills already present in the resume.
-
-====================================================
-Return ONLY valid raw JSON (no markdown, no explanation outside JSON):
-====================================================
+========================================
+Return ONLY valid raw JSON — no markdown:
+========================================
 {
-  "score": <number 0-100, exact sum of all breakdown scores>,
-  "breakdown": {
-    "formatting": <0-20>,
-    "contactInfo": <0-10>,
-    "summary": <0-10>,
-    "skills": <0-10>,
-    "experience": <0-10>,
-    "projects": <0-20>,
-    "education": <0-5>,
-    "certifications": <0-5>,
-    "keywords": <0-10>
-  },
-  "strengths": ["<specific strength matched to resume>"],
+  "strengths": ["<specific strength from the resume relevant to this JD>"],
   "improvements": [
     { "text": "<specific actionable improvement not already in resume>", "impact": <1-5> }
   ],
   "companyCompatibility": {
-    "tcsInfosysWipro": "<XX–XX/100>",
-    "accentureCapgemini": "<XX–XX/100>",
-    "deloitte": "<XX–XX/100>",
-    "productCompanies": "<XX–XX/100>",
-    "amazon": "<XX–XX/100>",
-    "microsoft": "<XX–XX/100>",
-    "google": "<XX–XX/100>"
+    "tcsInfosysWipro": "<XX-XX/100>",
+    "accentureCapgemini": "<XX-XX/100>",
+    "deloitte": "<XX-XX/100>",
+    "productCompanies": "<XX-XX/100>",
+    "amazon": "<XX-XX/100>",
+    "microsoft": "<XX-XX/100>",
+    "google": "<XX-XX/100>"
   },
-  "verdict": "<Recruiter-style summary: why this score, internship vs full-time suitability, highest-impact improvements>",
-  "keywordsMatched": ["<keyword found in both resume and job description>"],
-  "missingKeywords": ["<role-specific keyword missing from resume>"]
-}
+  "verdict": "<Recruiter-style summary: explain why this score, how well the resume matches the JD, top improvements for biggest keyword impact>"
+}`;
 
-Resume Content:
-${resumeText}
+    const aiResponse = await generateContentWithFallback({ contents: explanationPrompt });
+    let aiInsights: any = {};
+    try {
+      aiInsights = cleanAndParseJSON(aiResponse.text || "{}");
+    } catch {
+      console.warn("Gemini explanation parsing failed; using fallback insights.");
+    }
 
-Target Job Description:
-${jobDescription}`;
-
-    const aiResponse = await generateContentWithFallback({
-      contents: prompt
-    });
-
-    const atsResult = cleanAndParseJSON(aiResponse.text || "{}");
-
-    // Standardize structure and add fallback defaults if missing
-    atsResult.score = typeof atsResult.score === 'number' ? atsResult.score : 75;
-    atsResult.breakdown = atsResult.breakdown || {
-      formatting: Math.min(20, Math.round(atsResult.score * 0.2)),
-      contactInfo: 9,
-      summary: Math.min(10, Math.round(atsResult.score * 0.1)),
-      skills: Math.min(10, Math.round(atsResult.score * 0.1)),
-      experience: Math.min(10, Math.round(atsResult.score * 0.1)),
-      projects: Math.min(20, Math.round(atsResult.score * 0.2)),
-      education: 4,
-      certifications: 4,
-      keywords: Math.min(10, Math.round(atsResult.score * 0.1))
+    // ----------------------------------------------------------------
+    // STEP 3: Assemble final response
+    // score and breakdown come EXCLUSIVELY from the ATS engine.
+    // ----------------------------------------------------------------
+    const strengths = aiInsights.strengths || ["Resume contains relevant technical skills", "ATS-compatible structure detected"];
+    const improvements = aiInsights.improvements || [{ text: "Add more keywords from the job description to increase keyword match score", impact: 3 }];
+    const companyCompatibility = aiInsights.companyCompatibility || {
+      tcsInfosysWipro: "85-90/100",
+      accentureCapgemini: "82-88/100",
+      deloitte: "80-86/100",
+      productCompanies: "75-82/100",
+      amazon: "72-80/100",
+      microsoft: "70-78/100",
+      google: "68-76/100"
     };
-    atsResult.strengths = atsResult.strengths || ["ATS-friendly layout", "Strong technical background"];
-    atsResult.improvements = atsResult.improvements || [
-      { text: "Integrate more role-specific tools and technologies", impact: 2 }
-    ];
-    atsResult.companyCompatibility = atsResult.companyCompatibility || {
-      tcsInfosysWipro: "90+/100",
-      accentureCapgemini: "88+/100",
-      startups: "85–90/100",
-      productCompanies: "82–87/100",
-      amazon: "80–85/100",
-      microsoft: "78–83/100",
-      google: "75–80/100"
-    };
-    atsResult.verdict = atsResult.verdict || `Current ATS Score: ${atsResult.score}/100. This resume has a good foundation but would benefit from further keyword alignments.`;
-    atsResult.keywordsMatched = atsResult.keywordsMatched || [];
-    atsResult.missingKeywords = atsResult.missingKeywords || [];
-    atsResult.suggestions = atsResult.suggestions || atsResult.improvements.map((i: any) => `${i.text} (+${i.impact})`);
+    const verdict = aiInsights.verdict || `ATS Score: ${score}/100. Score calculated deterministically against the provided job description.`;
+    const suggestions = improvements.map((i: any) => `${i.text} (+${i.impact})`);
 
     // Save to Firestore
     const atsRef = collection(db, "atsScores");
     const docRef = await addDoc(atsRef, {
       resumeId,
       userId: userId || resumeData.userId,
-      score: atsResult.score,
-      breakdown: atsResult.breakdown,
-      strengths: atsResult.strengths,
-      improvements: atsResult.improvements,
-      companyCompatibility: atsResult.companyCompatibility,
-      verdict: atsResult.verdict,
-      keywordsMatched: atsResult.keywordsMatched,
-      missingKeywords: atsResult.missingKeywords,
-      suggestions: atsResult.suggestions,
+      score,
+      qualityScore: score,
+      breakdown,
+      strengths,
+      improvements,
+      companyCompatibility,
+      verdict,
+      keywordsMatched: matchedKeywords,
+      missingKeywords,
+      suggestions,
+      detectedRole,
       createdAt: new Date().toISOString()
     });
 
     res.status(200).json({
       id: docRef.id,
       resumeId,
-      ...atsResult,
+      score,
+      qualityScore: score,
+      breakdown,
+      strengths,
+      improvements,
+      companyCompatibility,
+      verdict,
+      keywordsMatched: matchedKeywords,
+      missingKeywords,
+      suggestions,
+      detectedRole,
       createdAt: new Date().toISOString()
     });
   } catch (error: any) {
