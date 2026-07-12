@@ -1060,20 +1060,30 @@ export default function DashboardPage({
                         Identified Tech Stack / Skills
                       </h4>
                       <div className="flex flex-wrap gap-1.5 max-h-[85px] overflow-y-auto pr-1">
-                        {resume.parsedData?.skills && resume.parsedData.skills.length > 0 ? (
-                          resume.parsedData.skills.map((skill: string, idx: number) => (
-                            <span
-                              key={idx}
-                              className="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] font-mono text-slate-300"
-                            >
-                              {skill}
+                        {(() => {
+                          const skillsObj = resume?.parsedData?.skills;
+                          let skillsArr: string[] = [];
+                          if (Array.isArray(skillsObj)) {
+                            skillsArr = skillsObj;
+                          } else if (skillsObj && typeof skillsObj === "object") {
+                            skillsArr = Array.isArray(skillsObj.all) ? skillsObj.all : Object.values(skillsObj).flat().filter((s): s is string => typeof s === "string");
+                          }
+                          if (skillsArr.length > 0) {
+                            return skillsArr.map((skill: string, idx: number) => (
+                              <span
+                                key={idx}
+                                className="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] font-mono text-slate-300"
+                              >
+                                {skill}
+                              </span>
+                            ));
+                          }
+                          return (
+                            <span className="text-xs text-slate-500 font-sans italic">
+                              No structured skills extracted.
                             </span>
-                          ))
-                        ) : (
-                          <span className="text-xs text-slate-500 font-sans italic">
-                            No structured skills extracted.
-                          </span>
-                        )}
+                          );
+                        })()}
                       </div>
                     </div>
                   </div>

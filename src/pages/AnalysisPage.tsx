@@ -250,14 +250,23 @@ export default function AnalysisPage({ user, resume, onNavigate }: AnalysisPageP
               <div>
                 <span className="text-[9px] font-mono text-slate-500 uppercase tracking-wider block mb-1.5">Parsed Skills</span>
                 <div className="flex flex-wrap gap-1.5">
-                  {resume.parsedData?.skills?.map((skill: string, idx: number) => (
-                    <span
-                      key={idx}
-                      className="px-2 py-0.5 bg-white/5 border border-white/10 rounded text-[10px] font-mono text-slate-300"
-                    >
-                      {skill}
-                    </span>
-                  ))}
+                  {(() => {
+                    const skillsObj = resume?.parsedData?.skills;
+                    let skillsArr: string[] = [];
+                    if (Array.isArray(skillsObj)) {
+                      skillsArr = skillsObj;
+                    } else if (skillsObj && typeof skillsObj === "object") {
+                      skillsArr = Array.isArray(skillsObj.all) ? skillsObj.all : Object.values(skillsObj).flat().filter((s): s is string => typeof s === "string");
+                    }
+                    return skillsArr.map((skill: string, idx: number) => (
+                      <span
+                        key={idx}
+                        className="px-2 py-0.5 bg-white/5 border border-white/10 rounded text-[10px] font-mono text-slate-300"
+                      >
+                        {skill}
+                      </span>
+                    ));
+                  })()}
                 </div>
               </div>
 
