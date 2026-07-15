@@ -487,6 +487,109 @@ app.get("/api/auth/me", async (req, res) => {
   }
 });
 
+// Helper to extract technical skills section using case-insensitive regex
+function extractSkillsRegex(text: string): string {
+  const sectionRegex = /(?:technical\s+skills|skills|technical\s+expertise|core\s+competencies|key\s+skills|expertises|skills\s+&\s+technologies)\s*:?\s*[\r\n]+([\s\S]*?)(?:[\r\n]{2,}(?:experience|education|projects|history|employment|professional|certifications|languages|summary|about\s+me|achievements|awards|work\s+history)|\r?\n\s*[A-Z\s]{5,}\s*(?:\r?\n|$))/gi;
+  
+  let sectionContent = "";
+  let match;
+  sectionRegex.lastIndex = 0;
+  while ((match = sectionRegex.exec(text)) !== null) {
+    sectionContent = match[1] || "";
+    if (sectionContent.trim().length > 10) {
+      break;
+    }
+  }
+
+  if (!sectionContent.trim()) {
+    const lines = text.split(/\r?\n/);
+    let inSection = false;
+    const collectedLines: string[] = [];
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      const isHeader = /^(?:technical\s+skills|skills|technical\s+expertise|core\s+competencies|key\s+skills|expertises|skills\s+&\s+technologies)\s*:?$/i.test(line);
+      if (isHeader) {
+        inSection = true;
+        continue;
+      }
+      if (inSection) {
+        if (/^(?:experience|education|projects|history|employment|professional|certifications|languages|summary|about\s+me|achievements|awards|work\s+history|publications)\s*:?$/i.test(line)) {
+          break;
+        }
+        collectedLines.push(lines[i]);
+      }
+    }
+    sectionContent = collectedLines.join("\n");
+  }
+
+  return sectionContent;
+}
+
+// Helper to parse categories of skills from the section text
+function parseGroupedSkills(sectionText: string): Record<string, string[]> {
+  const result: Record<string, string[]> = {
+    programming_languages: [],
+    frontend: [],
+    backend: [],
+    database: [],
+    tools: [],
+    core_concepts: [],
+    ai_ml: []
+  };
+
+  const patterns = [
+    { key: "programming_languages", regex: /(?:programming\s+languages|languages|programming)\s*:?\s*([^\r\n]+(?:[\r\n]+(?!\s*(?:frontend|backend|database|tools|core\s+concepts|additional|ai_ml|ai\s*\/|ml|cloud|devops)\s*:)[^\r\n]+)*)/gi },
+    { key: "frontend", regex: /(?:frontend|front-end|ui)\s*:?\s*([^\r\n]+(?:[\r\n]+(?!\s*(?:programming|languages|backend|database|tools|core\s+concepts|additional|ai_ml|ai\s*\/|ml|cloud|devops)\s*:)[^\r\n]+)*)/gi },
+    { key: "backend", regex: /(?:backend|back-end|servers)\s*:?\s*([^\r\n]+(?:[\r\n]+(?!\s*(?:programming|languages|frontend|database|tools|core\s+concepts|additional|ai_ml|ai\s*\/|ml|cloud|devops)\s*:)[^\r\n]+)*)/gi },
+    { key: "database", regex: /(?:database|databases|storage)\s*:?\s*([^\r\n]+(?:[\r\n]+(?!\s*(?:programming|languages|frontend|backend|tools|core\s+concepts|additional|ai_ml|ai\s*\/|ml|cloud|devops)\s*:)[^\r\n]+)*)/gi },
+    { key: "tools", regex: /(?:tools|dev\s+tools|development\s+tools|technologies|utilities)\s*:?\s*([^\r\n]+(?:[\r\n]+(?!\s*(?:programming|languages|frontend|backend|database|core\s+concepts|additional|ai_ml|ai\s*\/|ml|cloud|devops)\s*:)[^\r\n]+)*)/gi },
+    { key: "core_concepts", regex: /(?:core\s+concepts|concepts|additional|methodologies|concepts\s+&\s+practices)\s*:?\s*([^\r\n]+(?:[\r\n]+(?!\s*(?:programming|languages|frontend|backend|database|tools|ai_ml|ai\s*\/|ml|cloud|devops)\s*:)[^\r\n]+)*)/gi },
+    { key: "ai_ml", regex: /(?:ai_ml|ai\s*\/?\s*ml|artificial\s+intelligence|machine\s+learning|ai\s+tools|aiMlTools)\s*:?\s*([^\r\n]+(?:[\r\n]+(?!\s*(?:programming|languages|frontend|backend|database|tools|core\s+concepts|additional|cloud|devops)\s*:)[^\r\n]+)*)/gi }
+  ];
+
+  patterns.forEach(({ key, regex }) => {
+    regex.lastIndex = 0;
+    const match = regex.exec(sectionText);
+    if (match && match[1]) {
+      const itemsText = match[1];
+      const items = itemsText
+        .split(/[,;\n\r\t•*•]+/)
+        .map(i => i.trim().replace(/^[-•*+]\s*/, ""))
+        .filter(i => i.length > 0 && !i.toLowerCase().includes("skills") && !/^(?:languages|frontend|backend|database|tools|core\s+concepts|ai_ml|ai\s*\/|ml|cloud|devops)$/i.test(i));
+      result[key] = items;
+    }
+  });
+
+  const hasExtractedAny = Object.values(result).some(arr => arr.length > 0);
+  if (!hasExtractedAny && sectionText.trim()) {
+    const allSkills = sectionText
+      .split(/[,;\n\r\t•*•]+/)
+      .map(i => i.trim().replace(/^[-•*+]\s*/, ""))
+      .filter(i => i.length > 1 && !/^(?:technical\s+skills|skills|expertise|key\s+skills|technologies)$/i.test(i));
+
+    allSkills.forEach(skill => {
+      const sLower = skill.toLowerCase();
+      if (/(?:javascript|typescript|python|java|c\+\+|c#|ruby|go|golang|rust|php|swift|kotlin|bash|shell|perl)/.test(sLower)) {
+        result.programming_languages.push(skill);
+      } else if (/(?:react|angular|vue|next\.js|nextjs|tailwind|css|html|sass|svelte|bootstrap|jquery|frontend|front-end)/.test(sLower)) {
+        result.frontend.push(skill);
+      } else if (/(?:node\.js|nodejs|express|nest\.js|nestjs|django|flask|spring|laravel|fastapi|backend|back-end|rails)/.test(sLower)) {
+        result.backend.push(skill);
+      } else if (/(?:postgres|mysql|mongodb|redis|dynamodb|sqlite|sql|oracle|cassandra|database|databases)/.test(sLower)) {
+        result.database.push(skill);
+      } else if (/(?:git|docker|kubernetes|k8s|terraform|ansible|jenkins|github|gitlab|jira|webpack|vite|postman|vscode)/.test(sLower)) {
+        result.tools.push(skill);
+      } else if (/(?:pytorch|tensorflow|keras|openai|gemini|llm|deep\s+learning|nlp|computer\s+vision|machine\s+learning|ai|ml)/.test(sLower)) {
+        result.ai_ml.push(skill);
+      } else {
+        result.core_concepts.push(skill);
+      }
+    });
+  }
+
+  return result;
+}
+
 // POST /api/resumes/upload
 app.post("/api/resumes/upload", upload.single("resume"), async (req, res) => {
   try {
@@ -513,15 +616,13 @@ app.post("/api/resumes/upload", upload.single("resume"), async (req, res) => {
     "location": "Candidate city, state/country or empty string",
     "summary": "Professional summary or empty string",
     "skills": {
-      "languages": ["Programming Language 1", "Programming Language 2"],
-      "frameworks": ["Framework 1", "Framework 2"],
-      "libraries": ["Library 1", "Library 2"],
-      "databases": ["Database 1", "Database 2"],
-      "cloud": ["Cloud Platform 1", "Cloud Platform 2"],
-      "devops": ["DevOps tool/practice 1", "DevOps tool/practice 2"],
-      "aiMlTools": ["AI/ML Tool/Framework 1", "AI/ML Tool/Framework 2"],
-      "devTools": ["Development Tool 1", "Development Tool 2"],
-      "all": ["List of all skills normalized and combined"]
+      "programming_languages": ["Programming Language 1", "Programming Language 2"],
+      "frontend": ["Frontend framework/library 1", "Frontend framework/library 2"],
+      "backend": ["Backend framework/library 1", "Backend framework/library 2"],
+      "database": ["Database/ORM 1", "Database/ORM 2"],
+      "tools": ["Tool/Cloud/DevOps/CICD 1", "Tool/Cloud/DevOps/CICD 2"],
+      "core_concepts": ["Core computer science concept 1", "Core computer science concept 2"],
+      "ai_ml": ["AI/ML Tool/Framework/Model 1", "AI/ML Tool/Framework/Model 2"]
     },
     "education": [
       {
@@ -562,7 +663,13 @@ app.post("/api/resumes/upload", upload.single("resume"), async (req, res) => {
     "volunteerExperience": ["Volunteer Activity 1"],
     "publications": ["Publication Title 1"]
   }
-}`;
+}
+
+Special Instructions:
+- Technical skills must always be extracted under their respective categories. Do not return empty/null categories if the skills exist in the text.
+- Support both PDF and DOCX files.
+- Support section titles like 'TECHNICAL SKILLS' in uppercase or lowercase, with or without colons.
+- Infer appropriate categories from context if the resume lists sub-headings like Programming Languages:, Frontend:, Backend:, Database:, Tools:, Core Concepts:, or similar.`;
 
     if (file) {
       fileName = file.originalname;
@@ -624,6 +731,93 @@ app.post("/api/resumes/upload", upload.single("resume"), async (req, res) => {
     const parsedData = resultObj.parsedData || {};
     const extractedContent = resultObj.rawText || content;
 
+    // Logging: Print the raw extracted resume text
+    console.log("=== RAW EXTRACTED RESUME TEXT ===\n", extractedContent);
+
+    // Regex extraction fallback / enrichment
+    const detectedSkillsSection = extractSkillsRegex(extractedContent);
+    // Logging: Print the detected TECHNICAL SKILLS section
+    console.log("=== DETECTED TECHNICAL SKILLS SECTION ===\n", detectedSkillsSection);
+
+    const regexSkills = parseGroupedSkills(detectedSkillsSection);
+    const aiSkills = parsedData.skills || {};
+
+    const mergedSkills: Record<string, string[]> = {
+      programming_languages: [],
+      frontend: [],
+      backend: [],
+      database: [],
+      tools: [],
+      core_concepts: [],
+      ai_ml: []
+    };
+
+    // Gather and map AI parsed skills
+    if (aiSkills && typeof aiSkills === "object" && !Array.isArray(aiSkills)) {
+      const keysMap: Record<string, string[]> = {
+        programming_languages: ["programming_languages", "languages"],
+        frontend: ["frontend", "frameworks", "libraries"],
+        backend: ["backend"],
+        database: ["database", "databases"],
+        tools: ["tools", "devTools", "devops", "cloud"],
+        core_concepts: ["core_concepts", "all"],
+        ai_ml: ["ai_ml", "aiMlTools"]
+      };
+
+      Object.entries(keysMap).forEach(([targetKey, sourceKeys]) => {
+        sourceKeys.forEach(sKey => {
+          const list = (aiSkills as any)[sKey];
+          if (Array.isArray(list)) {
+            list.forEach(val => {
+              if (typeof val === "string" && val.trim()) {
+                mergedSkills[targetKey].push(val.trim());
+              }
+            });
+          }
+        });
+      });
+    } else if (aiSkills && Array.isArray(aiSkills)) {
+      aiSkills.forEach((skill: any) => {
+        if (typeof skill === "string" && skill.trim()) {
+          const sLower = skill.toLowerCase();
+          if (/(?:javascript|typescript|python|java|c\+\+|c#|ruby|go|golang|rust|php|swift|kotlin|bash|shell|perl)/.test(sLower)) {
+            mergedSkills.programming_languages.push(skill);
+          } else if (/(?:react|angular|vue|next\.js|nextjs|tailwind|css|html|sass|svelte|bootstrap|jquery|frontend|front-end)/.test(sLower)) {
+            mergedSkills.frontend.push(skill);
+          } else if (/(?:node\.js|nodejs|express|nest\.js|nestjs|django|flask|spring|laravel|fastapi|backend|back-end|rails)/.test(sLower)) {
+            mergedSkills.backend.push(skill);
+          } else if (/(?:postgres|mysql|mongodb|redis|dynamodb|sqlite|sql|oracle|cassandra|database|databases)/.test(sLower)) {
+            mergedSkills.database.push(skill);
+          } else if (/(?:git|docker|kubernetes|k8s|terraform|ansible|jenkins|github|gitlab|jira|webpack|vite|postman|vscode)/.test(sLower)) {
+            mergedSkills.tools.push(skill);
+          } else if (/(?:pytorch|tensorflow|keras|openai|gemini|llm|deep\s+learning|nlp|computer\s+vision|machine\s+learning|ai|ml)/.test(sLower)) {
+            mergedSkills.ai_ml.push(skill);
+          } else {
+            mergedSkills.core_concepts.push(skill);
+          }
+        }
+      });
+    }
+
+    // Merge in Regex extracted skills (ensuring no duplicates)
+    Object.entries(regexSkills).forEach(([key, list]) => {
+      list.forEach(val => {
+        if (!mergedSkills[key].some(existing => existing.toLowerCase() === val.toLowerCase())) {
+          mergedSkills[key].push(val);
+        }
+      });
+    });
+
+    // De-duplicate lists
+    Object.keys(mergedSkills).forEach(key => {
+      mergedSkills[key] = [...new Set(mergedSkills[key])];
+    });
+
+    parsedData.skills = mergedSkills;
+
+    // Logging: Print the parsed JSON
+    console.log("=== PARSED SKILLS JSON ===\n", JSON.stringify(mergedSkills, null, 2));
+
     // Save parsed resume to Firestore
     const resumeRef = collection(db, "resumes");
     const docRef = await addDoc(resumeRef, {
@@ -643,6 +837,8 @@ app.post("/api/resumes/upload", upload.single("resume"), async (req, res) => {
       createdAt: new Date().toISOString()
     });
   } catch (error: any) {
+    // Logging: Print any parser errors
+    console.log("=== PARSER ERRORS ===\n", error.message);
     console.error("Resume parse/upload error:", error);
     res.status(500).json({ error: error.message });
   }

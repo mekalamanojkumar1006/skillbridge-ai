@@ -192,16 +192,46 @@ export default function AnalysisPage({ user, resume, onNavigate, theme, setTheme
           <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider mb-4 font-bold border-b border-[var(--color-border)] pb-3">
             Extracted Technical Stack / Skills
           </h3>
-          <div className="flex flex-wrap gap-2">
-            {parsed.skills && parsed.skills.length > 0 ? (
-              parsed.skills.map((skill: string, idx: number) => (
-                <span
-                  key={idx}
-                  className="px-3 py-1.5 bg-[var(--color-bg-page)] border border-[var(--color-border)] text-xs font-mono text-[var(--color-text-primary)] rounded-xl font-bold shadow-sm"
-                >
-                  {skill}
-                </span>
-              ))
+          <div className="w-full">
+            {parsed.skills && typeof parsed.skills === "object" && !Array.isArray(parsed.skills) ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {Object.entries(parsed.skills).map(([category, items]) => {
+                  const arr = items as string[];
+                  if (!Array.isArray(arr) || arr.length === 0) return null;
+                  const displayName = category
+                    .split("_")
+                    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                    .join(" ");
+                  return (
+                    <div key={category} className="space-y-2 bg-[var(--color-bg-page)]/40 p-4 border border-[var(--color-border)] rounded-2xl">
+                      <span className="text-[10px] font-mono text-indigo-600 dark:text-indigo-400 font-black uppercase tracking-wider block">
+                        {displayName}
+                      </span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {arr.map((skill: string, idx: number) => (
+                          <span
+                            key={idx}
+                            className="px-2.5 py-1 bg-[var(--color-bg-page)] border border-[var(--color-border)] text-[10px] font-mono text-[var(--color-text-primary)] rounded-xl font-bold shadow-sm"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : parsed.skills && Array.isArray(parsed.skills) && parsed.skills.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {parsed.skills.map((skill: string, idx: number) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1.5 bg-[var(--color-bg-page)] border border-[var(--color-border)] text-xs font-mono text-[var(--color-text-primary)] rounded-xl font-bold shadow-sm"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
             ) : (
               <span className="text-xs text-[var(--color-text-tertiary)] italic">No skills extracted from this file.</span>
             )}

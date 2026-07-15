@@ -50,7 +50,14 @@ export function calculateSkillsScore(
         sData.devops,
         sData.aiMlTools,
         sData.devTools,
-        sData.all
+        sData.all,
+        sData.programming_languages,
+        sData.frontend,
+        sData.backend,
+        sData.database,
+        sData.tools,
+        sData.core_concepts,
+        sData.ai_ml
       ];
       for (const arr of subArrays) {
         if (Array.isArray(arr)) {

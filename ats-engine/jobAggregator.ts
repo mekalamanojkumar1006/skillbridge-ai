@@ -354,7 +354,14 @@ export class JobAggregatorService {
         ...(resumeSkillsObj.devops || []),
         ...(resumeSkillsObj.aiMlTools || []),
         ...(resumeSkillsObj.devTools || []),
-        ...(resumeSkillsObj.all || [])
+        ...(resumeSkillsObj.all || []),
+        ...(resumeSkillsObj.programming_languages || []),
+        ...(resumeSkillsObj.frontend || []),
+        ...(resumeSkillsObj.backend || []),
+        ...(resumeSkillsObj.database || []),
+        ...(resumeSkillsObj.tools || []),
+        ...(resumeSkillsObj.core_concepts || []),
+        ...(resumeSkillsObj.ai_ml || [])
       ];
     }
     // De-duplicate and lowercase resume skills
