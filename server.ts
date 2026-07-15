@@ -13,6 +13,7 @@ dotenv.config();
 
 import localConfig from "./firebase-applet-config.json" assert { type: "json" };
 import { calculateATSScore } from "./ats-engine/calculateATSScore.js";
+import { JobAggregatorService } from "./ats-engine/jobAggregator.js";
 import fs from "fs";
 
 const trimVal = (val: any) => typeof val === "string" ? val.trim() : val;
@@ -1013,50 +1014,45 @@ app.post("/api/jobs/match", async (req, res) => {
 
     const resumeData = resumeSnap.data();
 
-    const prompt = `You are a recruitment agent. Suggest 3 highly relevant and real job roles and companies for the candidate based on their resume. For each suggested match, specify:
-1. Target job role title
-2. High-profile company
-3. Match percentage
-4. Missing requirements
-5. Candidate's core strengths for this role
-6. Short description explaining the match
+    // 1. Fetch raw real-world jobs from Aggregator
+    const rawJobs = await JobAggregatorService.fetchAllJobs();
 
-Return ONLY a valid JSON object matching the schema below:
-{
-  "matches": [
-    {
-      "role": "Frontend Architect",
-      "company": "Vercel",
-      "matchPercentage": 92,
-      "missingRequirements": ["Next.js App Router optimization", "Web vitals expertise"],
-      "strengths": ["Advanced TypeScript", "State management", "Framer Motion"],
-      "description": "Your extensive skills in responsive animations and modern web engineering align perfectly with their product engineering focus."
-    }
-  ]
-}
+    // 2. Perform weighted matching against resume parsedData
+    const matchResults = JobAggregatorService.matchResumeToJobs(resumeData.parsedData, rawJobs);
 
-Resume Data:
-${JSON.stringify(resumeData.parsedData || resumeData.content)}`;
+    // 3. Normalize into the frontend schema
+    const formattedMatches = matchResults.map(m => ({
+      role: m.job.role,
+      company: m.job.company,
+      matchPercentage: m.matchScore,
+      location: m.job.location,
+      salary: m.job.salary,
+      description: m.job.description,
+      matchedSkills: m.matchedSkills,
+      missingSkills: m.missingSkills,
+      type: m.job.jobType,
+      applyUrl: m.job.applyUrl,
+      logo: m.job.logo,
+      postedDate: m.job.postedDate,
+      reason: m.reason
+    }));
 
-    const aiResponse = await generateContentWithFallback({
-      contents: prompt
-    });
-
-    const matchResult = cleanAndParseJSON(aiResponse.text || "{}");
+    // Sort descending by matchPercentage
+    formattedMatches.sort((a, b) => b.matchPercentage - a.matchPercentage);
 
     // Save to Firestore
     const jobMatchRef = collection(db, "jobMatches");
     const docRef = await addDoc(jobMatchRef, {
       resumeId,
       userId: userId || resumeData.userId,
-      matches: matchResult.matches,
+      matches: formattedMatches,
       createdAt: new Date().toISOString()
     });
 
     res.status(200).json({
       id: docRef.id,
       resumeId,
-      ...matchResult,
+      matches: formattedMatches,
       createdAt: new Date().toISOString()
     });
   } catch (error: any) {
