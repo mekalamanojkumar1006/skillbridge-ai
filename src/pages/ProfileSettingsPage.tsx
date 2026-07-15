@@ -44,7 +44,7 @@ export default function ProfileSettingsPage({
   const [profileSuccess, setProfileSuccess] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
 
-  // Link Account States (for converting anonymous to permanent)
+  // Link Account States
   const [linkEmail, setLinkEmail] = useState("");
   const [linkPassword, setLinkPassword] = useState("");
   const [linking, setLinking] = useState(false);
@@ -182,7 +182,7 @@ export default function ProfileSettingsPage({
       if (err.code === "auth/popup-blocked" || err.code === "auth/popup-closed-by-user") {
         setLinkError("Authentication popup was blocked or closed. Please allow popups or try again in a new tab.");
       } else if (err.code === "auth/unauthorized-domain") {
-        setLinkError("This domain is not authorized. Please add 'localhost' (or your current hosting domain) to the Authorized Domains list in the Firebase Console -> Authentication -> Settings tab.");
+        setLinkError("This domain is not authorized. Please add your current hosting domain to Authorized Domains in Firebase Console.");
       } else {
         setLinkError(err.message || "Failed to link Google account.");
       }
@@ -241,82 +241,83 @@ export default function ProfileSettingsPage({
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 p-4 sm:p-6 pb-24 text-slate-100">
+    <div className="max-w-4xl mx-auto space-y-8 p-4 sm:p-6 pb-24 text-[var(--color-text-primary)]">
       {/* Back Header */}
-      <div className="flex items-center justify-between border-b border-white/5 pb-4">
-        <div className="flex items-center space-x-3">
+      <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-6">
+        <div className="flex items-center space-x-4">
           <button
             onClick={onNavigateBack}
-            className="p-2 hover:bg-white/5 rounded-xl border border-white/10 text-slate-400 hover:text-white transition duration-200"
+            className="p-3 bg-[var(--clay-card-bg)] hover:bg-[var(--color-bg-page)] rounded-2xl border border-[var(--color-border)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] shadow-[var(--clay-btn-secondary-shadow)] transition duration-200 cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
           </button>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Profile Settings</h1>
-            <p className="text-xs text-slate-400 mt-1">Manage credentials, link logins, and control personal database records</p>
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">Profile Settings</h1>
+            <p className="text-xs text-[var(--color-text-secondary)] mt-1 font-medium font-sans">Manage credentials, link logins, and control personal database records</p>
           </div>
         </div>
-        <span className="px-2 py-1 text-[10px] bg-white/5 border border-white/10 text-slate-400 rounded-lg font-mono">
-          SECURE CREDENTIALS
+        <span className="hidden sm:inline-block px-3 py-1 text-[10px] bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-xl font-mono font-bold uppercase tracking-wider">
+          Secure Credentials
         </span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Left Side: Instructions & Summary */}
+        
+        {/* Left Side: Profile Summary Card */}
         <div className="md:col-span-1 space-y-6">
-          <div className="bg-white/[0.02] border border-white/10 p-6 rounded-2xl space-y-4">
-            <h2 className="text-sm font-mono uppercase tracking-wider text-blue-400 font-bold">Aesthetic Identity</h2>
-            <div className="flex flex-col items-center justify-center p-6 bg-white/[0.01] border border-white/5 rounded-xl">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-black text-2xl text-white font-mono shadow-xl mb-4 border border-white/20">
+          <div className="clay-card p-6 space-y-5">
+            <h2 className="text-xs font-mono uppercase tracking-wider text-indigo-600 dark:text-indigo-400 font-bold">Aesthetic Identity</h2>
+            <div className="flex flex-col items-center justify-center p-5 bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl shadow-inner">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center font-black text-2xl text-white font-mono shadow-md mb-4 border border-white/20">
                 {displayName ? displayName[0].toUpperCase() : user?.email?.[0].toUpperCase() || "U"}
               </div>
-              <p className="text-base font-bold text-slate-200 text-center truncate w-full">{displayName || "Anonymous Professional"}</p>
-              <p className="text-[10px] font-mono text-slate-500 text-center mt-1 truncate w-full">{user?.email || "Anonymous Guest Account"}</p>
+              <p className="text-sm font-extrabold text-[var(--color-text-primary)] text-center truncate w-full">{displayName || "Anonymous Professional"}</p>
+              <p className="text-[10px] font-mono text-[var(--color-text-tertiary)] text-center mt-1 truncate w-full">{user?.email || "Anonymous Guest Account"}</p>
             </div>
             
-            <div className="text-xs text-slate-400 space-y-2 leading-relaxed">
+            <div className="text-xs text-[var(--color-text-secondary)] space-y-2.5 leading-relaxed font-sans">
               <p>Your workspace is secured with End-to-End Firebase Identity controls.</p>
               <p>Changes made here are instantly synchronized across your career profile, optimization tools, and AI assessors.</p>
             </div>
           </div>
         </div>
 
-        {/* Right Side: Settings Actions */}
+        {/* Right Side: Action Forms */}
         <div className="md:col-span-2 space-y-8">
           
-          {/* Section 1: Display Details */}
-          <section className="bg-white/[0.02] border border-white/10 p-6 rounded-2xl space-y-6">
+          {/* Personal Details */}
+          <section className="clay-card p-6 sm:p-8 space-y-6">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-xl">
+              <div className="p-2.5 bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-xl">
                 <User className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-slate-200">Personal Details</h3>
-                <p className="text-[11px] text-slate-500">Update how you appear across resumes and interview modules</p>
+                <h3 className="text-base font-extrabold">Personal Details</h3>
+                <p className="text-[10px] text-[var(--color-text-secondary)]">Update how you appear across resumes and interview modules</p>
               </div>
             </div>
 
-            <form onSubmit={handleUpdateProfile} className="space-y-4">
+            <form onSubmit={handleUpdateProfile} className="space-y-5">
               <div>
-                <label className="block text-xs font-mono uppercase tracking-widest text-slate-400 mb-2">Display Name</label>
+                <label className="block text-[10px] font-mono uppercase tracking-widest text-[var(--color-text-secondary)] mb-2 font-bold">Display Name</label>
                 <input
                   type="text"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full bg-[#050608] border border-white/10 rounded-xl px-4 py-3 text-sm text-slate-100 placeholder-slate-600 focus:outline-none focus:border-blue-500 transition duration-200"
+                  className="w-full clay-input px-4 py-3 text-sm text-[var(--color-text-primary)] focus:outline-none"
                   placeholder="Enter your professional name"
                 />
               </div>
 
               {profileError && (
-                <div className="flex items-center space-x-2 text-red-400 text-xs bg-red-500/10 border border-red-500/20 p-3 rounded-xl">
+                <div className="flex items-center space-x-2 text-red-600 dark:text-red-400 text-xs bg-red-500/10 border border-red-500/20 p-3.5 rounded-2xl font-medium">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{profileError}</span>
                 </div>
               )}
 
               {profileSuccess && (
-                <div className="flex items-center space-x-2 text-green-400 text-xs bg-green-500/10 border border-green-500/20 p-3 rounded-xl">
+                <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400 text-xs bg-emerald-500/10 border border-emerald-500/20 p-3.5 rounded-2xl font-medium animate-fade-in">
                   <CheckCircle2 className="w-4 h-4 shrink-0" />
                   <span>Identity synchronized and saved successfully!</span>
                 </div>
@@ -326,16 +327,16 @@ export default function ProfileSettingsPage({
                 <button
                   type="submit"
                   disabled={loadingProfile}
-                  className="bg-blue-600 hover:bg-blue-500 active:bg-blue-700 disabled:opacity-50 text-white font-semibold text-xs tracking-wider uppercase px-5 py-3 rounded-xl transition duration-200 flex items-center space-x-2"
+                  className="clay-btn clay-btn-primary px-5 py-3 text-xs tracking-wider uppercase text-white shadow-md disabled:opacity-50"
                 >
                   {loadingProfile ? (
                     <>
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <RefreshCw className="w-4 h-4 animate-spin mr-1.5" />
                       <span>Saving Profile...</span>
                     </>
                   ) : (
                     <>
-                      <UserCheck className="w-3.5 h-3.5" />
+                      <UserCheck className="w-4 h-4 mr-1.5" />
                       <span>Save Profile Details</span>
                     </>
                   )}
@@ -344,71 +345,70 @@ export default function ProfileSettingsPage({
             </form>
           </section>
 
-          {/* Section 2: Manage Linked Credentials / Conversion */}
-          <section className="bg-white/[0.02] border border-white/10 p-6 rounded-2xl space-y-6">
+          {/* Account Linking */}
+          <section className="clay-card p-6 sm:p-8 space-y-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded-xl">
+                <div className="p-2.5 bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 rounded-xl">
                   <Link2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-200">Linked Accounts</h3>
-                  <p className="text-[11px] text-slate-500">Link authentication channels to protect and access career metadata</p>
+                  <h3 className="text-base font-extrabold">Linked Accounts</h3>
+                  <p className="text-[10px] text-[var(--color-text-secondary)]">Link authentication channels to protect and access career metadata</p>
                 </div>
               </div>
               {isAnonymous && (
-                <span className="px-2 py-0.5 text-[9px] bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded font-mono uppercase font-bold">
+                <span className="px-2.5 py-0.5 text-[9px] bg-amber-500/15 border border-amber-500/35 text-amber-600 dark:text-amber-400 rounded-lg font-mono uppercase font-black">
                   Guest Mode
                 </span>
               )}
             </div>
 
-            {/* If the account is anonymous, prompt them to convert/link to a standard account */}
             {isAnonymous ? (
-              <div className="bg-amber-500/5 border border-amber-500/10 p-4 rounded-xl space-y-4">
+              <div className="bg-amber-500/5 border border-amber-500/10 p-5 rounded-2xl space-y-4">
                 <div className="flex items-start space-x-3">
                   <ShieldAlert className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                   <div className="space-y-1">
-                    <p className="text-xs font-bold text-amber-400">Save Your Progress Permanently!</p>
-                    <p className="text-[11px] text-slate-400 leading-relaxed">
-                      You are using a guest session. Register your email and password now to convert this session into a lifetime account. Your resumes, Ats assessments, and roadmap steps will automatically move to your new account.
+                    <p className="text-xs font-bold text-amber-500">Save Your Progress Permanently!</p>
+                    <p className="text-[11px] text-[var(--color-text-secondary)] leading-relaxed">
+                      You are using a temporary guest session. Register your credentials now to convert this session into a permanent lifetime account. All parsed resumes, ATS scores, and roadmaps will automatically carry over.
                     </p>
                   </div>
                 </div>
 
                 <form onSubmit={handleLinkEmailPassword} className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                   <div>
-                    <label className="block text-[10px] font-mono text-slate-400 uppercase tracking-widest mb-1.5">Register Email</label>
+                    <label className="block text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-widest mb-1.5 font-bold">Register Email</label>
                     <input
                       type="email"
                       required
                       value={linkEmail}
                       onChange={(e) => setLinkEmail(e.target.value)}
-                      className="w-full bg-[#050608] border border-white/10 rounded-xl px-3 py-2.5 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-amber-500 transition"
+                      className="w-full clay-input px-3.5 py-2.5 text-xs focus:outline-none"
                       placeholder="name@company.com"
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-mono text-slate-400 uppercase tracking-widest mb-1.5">Setup Password</label>
+                    <label className="block text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-widest mb-1.5 font-bold">Setup Password</label>
                     <input
                       type="password"
                       required
                       value={linkPassword}
                       onChange={(e) => setLinkPassword(e.target.value)}
-                      className="w-full bg-[#050608] border border-white/10 rounded-xl px-3 py-2.5 text-xs text-slate-100 placeholder-slate-600 focus:outline-none focus:border-amber-500 transition"
-                      placeholder="Minimum 6 characters"
+                      className="w-full clay-input px-3.5 py-2.5 text-xs focus:outline-none"
+                      placeholder="Min. 6 characters"
                     />
                   </div>
 
                   {linkError && (
-                    <div className="col-span-1 sm:col-span-2 flex items-center space-x-2 text-red-400 text-xs bg-red-500/10 border border-red-500/20 p-3 rounded-xl">
+                    <div className="col-span-1 sm:col-span-2 flex items-center space-x-2 text-red-600 dark:text-red-400 text-xs bg-red-500/10 border border-red-500/20 p-3 rounded-2xl font-medium">
                       <AlertCircle className="w-4 h-4 shrink-0" />
                       <span>{linkError}</span>
                     </div>
                   )}
 
                   {linkSuccess && (
-                    <div className="col-span-1 sm:col-span-2 flex items-center space-x-2 text-green-400 text-xs bg-green-500/10 border border-green-500/20 p-3 rounded-xl">
+                    <div className="col-span-1 sm:col-span-2 flex items-center space-x-2 text-emerald-600 dark:text-emerald-400 text-xs bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-2xl font-medium">
                       <CheckCircle2 className="w-4 h-4 shrink-0" />
                       <span>Account upgraded and linked successfully! Use these credentials to log in next time.</span>
                     </div>
@@ -418,16 +418,16 @@ export default function ProfileSettingsPage({
                     <button
                       type="submit"
                       disabled={linking}
-                      className="bg-amber-600 hover:bg-amber-500 text-slate-900 font-bold text-xs tracking-wider uppercase px-4 py-2.5 rounded-xl transition duration-200 flex items-center space-x-2"
+                      className="clay-btn clay-btn-primary px-4 py-2.5 text-xs tracking-wider uppercase text-white shadow-md"
                     >
                       {linking ? (
                         <>
-                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin mr-1.5" />
                           <span>Converting Account...</span>
                         </>
                       ) : (
                         <>
-                          <Key className="w-3.5 h-3.5" />
+                          <Key className="w-3.5 h-3.5 mr-1.5" />
                           <span>Link Credentials</span>
                         </>
                       )}
@@ -437,61 +437,61 @@ export default function ProfileSettingsPage({
               </div>
             ) : (
               <div className="space-y-4">
-                <div className="text-xs text-slate-400 leading-relaxed">
+                <div className="text-xs text-[var(--color-text-secondary)] leading-relaxed font-sans font-medium">
                   You are signed in via password credential authentication. Your account data is secured with absolute multi-tenant database rules.
                 </div>
                 
                 {/* List Providers */}
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-4 bg-white/[0.01] border border-white/5 rounded-xl">
-                    <div className="flex items-center space-x-3">
-                      <Mail className="w-4 h-4 text-purple-400" />
+                  <div className="flex items-center justify-between p-4 bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl shadow-sm">
+                    <div className="flex items-center space-x-3.5">
+                      <Mail className="w-4.5 h-4.5 text-purple-600 dark:text-purple-400" />
                       <div>
-                        <p className="text-xs font-bold text-slate-200">Email & Password Auth</p>
-                        <p className="text-[10px] text-slate-500 font-mono">{user?.email}</p>
+                        <p className="text-xs font-bold">Email & Password Auth</p>
+                        <p className="text-[10px] text-[var(--color-text-tertiary)] font-mono">{user?.email}</p>
                       </div>
                     </div>
-                    <span className="flex items-center space-x-1.5 text-[10px] text-green-400 bg-green-500/10 border border-green-500/20 px-2.5 py-1 rounded-full font-bold">
-                      <CheckCircle2 className="w-3 h-3" />
+                    <span className="flex items-center space-x-1 text-[9px] text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full font-bold">
+                      <CheckCircle2 className="w-3 h-3 mr-0.5" />
                       <span>Linked</span>
                     </span>
                   </div>
 
                   {providers.some((p) => p.providerId === "google.com") ? (
-                    <div className="flex items-center justify-between p-4 bg-white/[0.01] border border-white/5 rounded-xl">
-                      <div className="flex items-center space-x-3">
-                        <svg className="w-4 h-4 text-red-400" viewBox="0 0 24 24" fill="currentColor">
+                    <div className="flex items-center justify-between p-4 bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl shadow-sm">
+                      <div className="flex items-center space-x-3.5">
+                        <svg className="w-4.5 h-4.5 text-red-500" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M12.24 10.285V13.4h6.887C18.2 15.614 15.645 18 12.24 18c-3.86 0-7-3.14-7-7s3.14-7 7-7c1.7 0 3.3.619 4.5 1.8l2.4-2.4C17.2 1.5 14.85.9 12.24.9c-5.523 0-10 4.477-10 10s4.477 10 10 10c5.753 0 9.76-4.043 9.76-9.9 0-.6-.06-1.17-.16-1.715h-9.6z"/>
                         </svg>
                         <div>
-                          <p className="text-xs font-bold text-slate-200">Google Account</p>
-                          <p className="text-[10px] text-slate-500 font-mono">Linked social sign-in channel</p>
+                          <p className="text-xs font-bold">Google Account</p>
+                          <p className="text-[10px] text-[var(--color-text-tertiary)] font-mono">Linked social sign-in channel</p>
                         </div>
                       </div>
                       <button
                         onClick={() => handleUnlinkProvider("google.com")}
-                        className="flex items-center space-x-1 text-[10px] text-red-400 hover:text-red-300 bg-red-500/5 hover:bg-red-500/10 border border-red-500/10 px-2.5 py-1 rounded-full transition duration-200"
+                        className="clay-btn clay-btn-danger px-3 py-1.5 text-[9px] uppercase tracking-wider font-bold"
                       >
-                        <Unlink className="w-3 h-3" />
+                        <Unlink className="w-3 h-3 mr-1" />
                         <span>Disconnect</span>
                       </button>
                     </div>
                   ) : (
-                    <div className="flex items-center justify-between p-4 bg-white/[0.01] border border-white/5 rounded-xl border-dashed">
-                      <div className="flex items-center space-x-3">
-                        <svg className="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="currentColor">
+                    <div className="flex items-center justify-between p-4 bg-[var(--color-bg-page)] border border-[var(--color-border)] border-dashed rounded-2xl">
+                      <div className="flex items-center space-x-3.5">
+                        <svg className="w-4.5 h-4.5 text-[var(--color-text-tertiary)]" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M12.24 10.285V13.4h6.887C18.2 15.614 15.645 18 12.24 18c-3.86 0-7-3.14-7-7s3.14-7 7-7c1.7 0 3.3.619 4.5 1.8l2.4-2.4C17.2 1.5 14.85.9 12.24.9c-5.523 0-10 4.477-10 10s4.477 10 10 10c5.753 0 9.76-4.043 9.76-9.9 0-.6-.06-1.17-.16-1.715h-9.6z"/>
                         </svg>
                         <div>
-                          <p className="text-xs font-bold text-slate-400">Google Account</p>
-                          <p className="text-[10px] text-slate-600">Connect Google for quick one-click login</p>
+                          <p className="text-xs font-bold text-[var(--color-text-secondary)]">Google Account</p>
+                          <p className="text-[10px] text-[var(--color-text-tertiary)]">Connect Google for quick one-click login</p>
                         </div>
                       </div>
                       <button
                         onClick={handleLinkGoogle}
-                        className="flex items-center space-x-1 text-[10px] text-blue-400 hover:text-blue-300 bg-blue-500/5 hover:bg-blue-500/10 border border-blue-500/10 px-2.5 py-1 rounded-full transition duration-200"
+                        className="clay-btn clay-btn-secondary px-3 py-1.5 text-[9px] uppercase tracking-wider font-bold"
                       >
-                        <Link2 className="w-3 h-3" />
+                        <Link2 className="w-3.5 h-3.5 mr-1" />
                         <span>Connect</span>
                       </button>
                     </div>
@@ -501,32 +501,32 @@ export default function ProfileSettingsPage({
             )}
           </section>
 
-          {/* Section 3: Reset Resume Data (Dangerous Action) */}
-          <section className="bg-red-500/[0.01] border border-red-500/20 p-6 rounded-2xl space-y-6">
+          {/* Reset Workspace Data */}
+          <section className="bg-red-500/[0.02] border border-red-500/20 p-6 sm:p-8 rounded-3xl space-y-6">
             <div className="flex items-center space-x-3">
-              <div className="p-2 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl">
+              <div className="p-2.5 bg-red-500/10 border border-red-500/20 text-red-500 rounded-xl">
                 <Trash2 className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-slate-200">Reset Workspace Data</h3>
-                <p className="text-[11px] text-slate-500">Purge and clean your uploaded resumes, analyses, and learning models</p>
+                <h3 className="text-base font-extrabold">Reset Workspace Data</h3>
+                <p className="text-[10px] text-[var(--color-text-secondary)]">Purge and clean your uploaded resumes, analyses, and learning models</p>
               </div>
             </div>
 
-            <div className="text-xs text-slate-400 leading-relaxed space-y-2">
+            <div className="text-xs text-[var(--color-text-secondary)] leading-relaxed space-y-2 font-sans font-medium">
               <p>Purging your data will permanently delete:</p>
-              <ul className="list-disc pl-5 text-[11px] text-slate-500 space-y-1">
+              <ul className="list-disc pl-5 text-[11px] text-[var(--color-text-tertiary)] space-y-1.5">
                 <li>Your uploaded resume file and its parsed structured data representation</li>
                 <li>AI career rating score assessments and suggested improvements</li>
                 <li>ATS profile optimization matches and learning suggestions</li>
                 <li>Simulated interview performance score histories</li>
                 <li>Your customized roadmap steps and career match recommendations</li>
               </ul>
-              <p className="text-red-500 font-semibold pt-1">This operation is destructive and completely irreversible.</p>
+              <p className="text-red-500 dark:text-red-400 font-bold pt-1.5 flex items-center"><ShieldAlert className="w-4 h-4 mr-1.5" /> This operation is destructive and completely irreversible.</p>
             </div>
 
             {resetSuccess && (
-              <div className="flex items-center space-x-2 text-green-400 text-xs bg-green-500/10 border border-green-500/20 p-3 rounded-xl">
+              <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400 text-xs bg-emerald-500/10 border border-emerald-500/20 p-3.5 rounded-2xl font-medium animate-fade-in">
                 <CheckCircle2 className="w-4 h-4 shrink-0" />
                 <span>All workspace data purged successfully. Dashboard reset complete.</span>
               </div>
@@ -537,40 +537,40 @@ export default function ProfileSettingsPage({
                 <button
                   type="button"
                   onClick={() => setShowResetConfirm(true)}
-                  className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 font-bold text-xs tracking-wider uppercase px-5 py-3 rounded-xl transition duration-200 flex items-center space-x-2"
+                  className="clay-btn clay-btn-danger px-5 py-3 text-xs tracking-wider uppercase text-white shadow-md"
                 >
-                  <Trash2 className="w-3.5 h-3.5" />
+                  <Trash2 className="w-4 h-4 mr-1.5" />
                   <span>Reset All Workspace Data</span>
                 </button>
               </div>
             ) : (
-              <div className="bg-red-500/5 border border-red-500/20 p-4 rounded-xl space-y-4">
-                <div className="flex items-start space-x-2.5">
+              <div className="bg-red-500/5 border border-red-500/20 p-5 rounded-2xl space-y-4">
+                <div className="flex items-start space-x-3">
                   <ShieldAlert className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-xs font-bold text-red-400">Extreme Warning: Final Deletion</p>
-                    <p className="text-[11px] text-slate-400 leading-relaxed mt-0.5">
-                      To confirm deletion of your active resume profile, ATS ratings, and roadmaps, type <span className="font-bold text-white font-mono bg-white/10 px-1 py-0.5 rounded">DELETE ALL</span> in the field below.
+                  <div className="space-y-1">
+                    <p className="text-xs font-bold text-red-500">Extreme Warning: Final Deletion</p>
+                    <p className="text-[11px] text-[var(--color-text-secondary)] leading-relaxed mt-1">
+                      To confirm deletion of your active resume profile, ATS ratings, and roadmaps, type <span className="font-mono font-bold bg-red-500/10 px-2 py-0.5 rounded-lg border border-red-500/20">DELETE ALL</span> in the field below.
                     </p>
                   </div>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <input
                     type="text"
                     value={confirmText}
                     onChange={(e) => setConfirmText(e.target.value)}
-                    className="w-full bg-[#050608] border border-red-500/30 rounded-xl px-4 py-2.5 text-xs text-red-200 placeholder-slate-700 focus:outline-none focus:border-red-500 transition font-mono uppercase font-semibold"
+                    className="w-full clay-input px-4 py-3 text-xs focus:outline-none font-mono uppercase font-bold text-red-600 dark:text-red-400"
                     placeholder="Type DELETE ALL to purge"
                   />
 
                   {resetError && (
-                    <div className="text-red-400 text-xs mt-1">
+                    <div className="text-red-500 text-xs font-semibold leading-relaxed">
                       {resetError}
                     </div>
                   )}
 
-                  <div className="flex space-x-3 justify-end pt-1">
+                  <div className="flex space-x-3.5 justify-end">
                     <button
                       type="button"
                       onClick={() => {
@@ -578,7 +578,7 @@ export default function ProfileSettingsPage({
                         setConfirmText("");
                         setResetError(null);
                       }}
-                      className="px-4 py-2 text-xs font-bold text-slate-400 hover:text-white transition"
+                      className="px-4 py-2.5 text-xs font-bold text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition"
                     >
                       Cancel
                     </button>
@@ -586,16 +586,16 @@ export default function ProfileSettingsPage({
                       type="button"
                       disabled={confirmText !== "DELETE ALL" || resetting}
                       onClick={handleResetData}
-                      className="bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white font-bold text-xs tracking-wider uppercase px-4 py-2 rounded-xl transition duration-200 flex items-center space-x-1.5"
+                      className="clay-btn clay-btn-danger px-4 py-2.5 text-xs font-mono uppercase tracking-wider font-bold disabled:opacity-40"
                     >
                       {resetting ? (
                         <>
-                          <RefreshCw className="w-3 h-3 animate-spin" />
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin mr-1.5" />
                           <span>Purging...</span>
                         </>
                       ) : (
                         <>
-                          <Trash2 className="w-3 h-3" />
+                          <Trash2 className="w-3.5 h-3.5 mr-1.5" />
                           <span>Confirm Permanent Deletion</span>
                         </>
                       )}

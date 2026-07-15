@@ -48,7 +48,6 @@ import {
 import ProfileSettingsPage from "./ProfileSettingsPage";
 import { CAREER_ROADMAPS, CareerPath, Milestone } from "../data/careersData";
 
-
 const ATS_FRIENDLY_TEMPLATE = `[FIRST NAME] [LAST NAME]
 [City, State, Zip Code] | [Phone Number] | [Email Address] | [LinkedIn Profile URL] | [GitHub Profile URL]
 
@@ -104,7 +103,7 @@ export function CircularScoreGauge({
   maxScore = 100,
   size = 112,
   strokeWidth = 8,
-  colorClass = "stroke-blue-500",
+  colorClass = "stroke-indigo-600",
   duration = 1000,
   showMaxScore = true,
   suffix = ""
@@ -139,7 +138,7 @@ export function CircularScoreGauge({
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
+      initial={{ opacity: 0, scale: 0.85 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="relative flex items-center justify-center shrink-0"
@@ -150,7 +149,7 @@ export function CircularScoreGauge({
           cx={center}
           cy={center}
           r={radius}
-          className="stroke-white/5 fill-none"
+          className="stroke-[var(--color-border)] fill-none"
           strokeWidth={strokeWidth}
         />
         <circle
@@ -165,11 +164,11 @@ export function CircularScoreGauge({
         />
       </svg>
       <div className="absolute flex flex-col items-center">
-        <span className="text-3xl font-black text-slate-100 font-sans">
+        <span className="text-3xl font-black text-[var(--color-text-primary)] font-sans">
           {currentScore}{suffix}
         </span>
         {showMaxScore && (
-          <span className="text-[9px] text-slate-500 font-mono uppercase">
+          <span className="text-[9px] text-[var(--color-text-tertiary)] font-mono uppercase font-bold">
             / {maxScore}
           </span>
         )}
@@ -213,7 +212,7 @@ export function CountUpText({ to, duration = 1000, prefix = "", suffix = "" }: C
 }
 
 const renderCareerIcon = (iconName: string) => {
-  const props = { className: "w-5 h-5 text-purple-400" };
+  const props = { className: "w-5 h-5 text-purple-600 dark:text-purple-400" };
   switch (iconName) {
     case "Code": return <Code {...props} />;
     case "UserCheck": return <UserCheck {...props} />;
@@ -238,6 +237,8 @@ interface DashboardPageProps {
   onLogout: () => void;
   onUpdateUser: (updatedUser: any) => void;
   onResetResume: () => void;
+  theme: "light" | "dark";
+  setTheme: (theme: "light" | "dark") => void;
 }
 
 export default function DashboardPage({ 
@@ -246,7 +247,9 @@ export default function DashboardPage({
   onNavigate, 
   onLogout,
   onUpdateUser,
-  onResetResume
+  onResetResume,
+  theme,
+  setTheme
 }: DashboardPageProps) {
   const [activeTab, setActiveTab] = useState<"overview" | "ats" | "jobs" | "roadmap" | "career-roadmap" | "interview" | "probability" | "settings">("overview");
   const [resume, setResume] = useState<any>(initialResume || null);
@@ -296,7 +299,6 @@ export default function DashboardPage({
   const [calculatingOpps, setCalculatingOpps] = useState(false);
   const [allRawOpps, setAllRawOpps] = useState<any[]>([]);
   const [loadingRawOpps, setLoadingRawOpps] = useState(false);
-  const [oppsViewMode, setOppsViewMode] = useState<"matched" | "all">("matched");
 
   // Career Path Roadmaps state
   const [careerRoadmaps, setCareerRoadmaps] = useState<any[]>([]);
@@ -305,20 +307,17 @@ export default function DashboardPage({
   const [generatingRoadmap, setGeneratingRoadmap] = useState(false);
   const [targetPathInput, setTargetPathInput] = useState("");
 
-  // Career Roadmap Builder Redesign states
+  // Career Roadmap Builder states
   const [selectedCareer, setSelectedCareer] = useState<CareerPath | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [completedCareerMilestones, setCompletedCareerMilestones] = useState<{ [careerId: string]: number[] }>({});
   const [loadingProgress, setLoadingProgress] = useState(false);
   const [expandedMilestones, setExpandedMilestones] = useState<{ [milestoneIdx: number]: boolean }>({});
 
-  const [isLocalLightMode, setIsLocalLightMode] = useState<boolean>(() => {
-    try {
-      return localStorage.getItem("premium_roadmap_theme") === "light";
-    } catch {
-      return false;
-    }
-  });
+  const isLocalLightMode = theme === "light";
+  const setIsLocalLightMode = (newVal: boolean) => {
+    setTheme(newVal ? "light" : "dark");
+  };
 
   const [recentSearches, setRecentSearches] = useState<string[]>(() => {
     try {
@@ -391,7 +390,6 @@ export default function DashboardPage({
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-
   const fetchProgressForCareer = async (careerId: string) => {
     if (!user) return;
     setLoadingProgress(true);
@@ -426,7 +424,6 @@ export default function DashboardPage({
 
     if (currentCompleted.includes(milestoneIdx)) {
       updatedCompleted = currentCompleted.filter((idx) => idx !== milestoneIdx);
-      // Uncheck dependent subsequent milestones for strict locking
       updatedCompleted = updatedCompleted.filter((idx) => idx < milestoneIdx);
     } else {
       updatedCompleted = [...currentCompleted, milestoneIdx];
@@ -453,15 +450,6 @@ export default function DashboardPage({
     }
   }, [selectedCareer]);
 
-  const [completedMilestones, setCompletedMilestones] = useState<{ [roadmapId: string]: { [milestoneIdx: number]: boolean } }>(() => {
-    try {
-      const saved = localStorage.getItem("milestone_checks");
-      return saved ? JSON.parse(saved) : {};
-    } catch {
-      return {};
-    }
-  });
-
   const fetchCareerRoadmaps = async () => {
     if (!user) return;
     setLoadingRoadmaps(true);
@@ -478,47 +466,7 @@ export default function DashboardPage({
     }
   };
 
-  const handleGenerateCareerRoadmap = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!resume || !user) return;
-    setGeneratingRoadmap(true);
-    setError(null);
-    try {
-      const res = await ApiService.generateCareerRoadmap(
-        resume.id,
-        targetPathInput,
-        user.uid
-      );
-      setCareerRoadmaps((prev) => [res, ...prev]);
-      setSelectedRoadmap(res);
-      setTargetPathInput("");
-    } catch (err: any) {
-      console.error("Failed to generate career path roadmap:", err);
-      setError("Failed to generate career path roadmap: " + err.message);
-    } finally {
-      setGeneratingRoadmap(false);
-    }
-  };
-
-  const toggleMilestoneCheck = (roadmapId: string, idx: number) => {
-    setCompletedMilestones((prev) => {
-      const roadmapChecks = prev[roadmapId] || {};
-      const updated = {
-        ...prev,
-        [roadmapId]: {
-          ...roadmapChecks,
-          [idx]: !roadmapChecks[idx]
-        }
-      };
-      // Persist in localStorage for ease
-      localStorage.setItem("milestone_checks", JSON.stringify(updated));
-      return updated;
-    });
-  };
-
-  // Fetch initial profile resumes on mount
   useEffect(() => {
-    // If we came with a freshly uploaded resume, trigger quality analysis automatically
     if (resume && !qualityAnalysis && !analyzingQuality) {
       triggerQualityAnalysis();
     }
@@ -549,7 +497,6 @@ export default function DashboardPage({
       if (res && res.matches && res.matches.length > 0) {
         setRecommendedOpps(res.matches);
       } else if (resume) {
-        // If empty, auto calculate once to provide instant delight
         await handleCalculateOpps();
       }
     } catch (err: any) {
@@ -589,7 +536,6 @@ export default function DashboardPage({
     }
   };
 
-  // ATS Match scan
   const handleAtsScan = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!resume) {
@@ -614,7 +560,6 @@ export default function DashboardPage({
     }
   };
 
-  // Job matching scan
   const handleJobMatching = async () => {
     if (!resume) return;
     setMatchingJobs(true);
@@ -630,7 +575,6 @@ export default function DashboardPage({
     }
   };
 
-  // Skill gap scan
   const handleSkillGapAnalysis = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!resume) return;
@@ -652,7 +596,6 @@ export default function DashboardPage({
     }
   };
 
-  // Interview Questions load
   const handleStartInterview = async () => {
     if (!resume) return;
     setGeneratingQuestions(true);
@@ -673,7 +616,6 @@ export default function DashboardPage({
     }
   };
 
-  // Interview evaluation submit
   const handleSubmitInterviewAnswer = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!userAnswer.trim()) return;
@@ -706,14 +648,12 @@ export default function DashboardPage({
     }
   };
 
-  // Next Interview Question
   const handleNextQuestion = () => {
     setUserAnswer("");
     setCurrentEvaluation(null);
     setCurrentQuestionIndex((prev) => prev + 1);
   };
 
-  // Hiring Probability Predictor
   const handlePredictHiringProbability = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!resume) return;
@@ -742,179 +682,123 @@ export default function DashboardPage({
   };
 
   return (
-    <div className="min-h-screen bg-[#0f1016] text-slate-100 flex flex-col md:flex-row font-sans selection:bg-blue-500/30 selection:text-white relative overflow-hidden">
-      {/* Background glow spots */}
-      <div className="absolute top-[-150px] left-[-100px] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none"></div>
-      <div className="absolute bottom-[-150px] right-[-100px] w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[140px] pointer-events-none"></div>
+    <div className="min-h-screen flex flex-col md:flex-row font-sans selection:bg-indigo-500/30 selection:text-white relative overflow-hidden bg-[var(--color-bg-page)] text-[var(--color-text-primary)] transition-colors duration-300">
+      
+      {/* Background soft spheres */}
+      <motion.div
+        animate={{
+          y: [0, -30, 0],
+          x: [0, 20, 0],
+        }}
+        transition={{
+          duration: 12,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute top-[-100px] left-[-100px] w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none"
+      />
+      <motion.div
+        animate={{
+          y: [0, 30, 0],
+          x: [0, -20, 0],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute bottom-[-100px] right-[-100px] w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-[120px] pointer-events-none"
+      />
 
-      {/* Left Navigation Rail */}
-      <aside className="w-full md:w-64 bg-white/[0.01] border-r border-white/10 backdrop-blur-2xl flex flex-col justify-between shrink-0 relative z-10">
+      {/* Left Sidebar Rail */}
+      <aside className="w-full md:w-64 border-r border-[var(--color-border)] backdrop-blur-2xl flex flex-col justify-between shrink-0 relative z-10 p-5 bg-[var(--clay-card-bg)] shadow-[var(--clay-card-shadow)] rounded-none md:rounded-r-[32px]">
         <div>
-          {/* Header */}
-          <div className="p-6 border-b border-white/10 flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-6 h-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+          {/* Brand Title */}
+          <div className="p-4 border-b border-[var(--color-border)] flex items-center justify-between">
+            <div className="flex items-center space-x-2.5">
+              <div className="w-7 h-7 bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-xl flex items-center justify-center shadow-lg">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
               </div>
-              <span className="text-base font-bold bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">
+              <span className="text-base font-black tracking-tight">
                 SkillBridge
               </span>
-              <span className="px-1.5 py-0.5 text-[8px] bg-white/10 border border-white/10 text-slate-300 rounded font-mono font-bold">
+              <span className="px-1.5 py-0.5 text-[8px] bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-lg font-mono font-black uppercase">
                 AI
               </span>
             </div>
+
+            {/* Local Theme Toggle Button */}
+            <button
+              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+              className="p-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-page)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition shadow-sm cursor-pointer"
+            >
+              {theme === "light" ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
+            </button>
           </div>
 
-          {/* User Info */}
-          <div className="p-6 border-b border-white/10 flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-bold text-sm text-white font-mono shadow-md">
+          {/* User badge */}
+          <div className="p-4 border-b border-[var(--color-border)] flex items-center space-x-3.5">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center font-black text-sm text-white font-mono shadow-md">
               {user.displayName ? user.displayName[0].toUpperCase() : "U"}
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-bold truncate text-slate-200">
+              <p className="text-xs font-black truncate text-[var(--color-text-primary)]">
                 {user.displayName || "Career Professional"}
               </p>
-              <p className="text-[10px] font-mono text-slate-500 truncate">{user.email}</p>
+              <p className="text-[9px] font-mono text-[var(--color-text-tertiary)] truncate font-bold mt-0.5">{user.email}</p>
             </div>
           </div>
 
-          {/* Navigation Links */}
-          <nav className="p-4 space-y-1">
-            <button
-              onClick={() => {
-                setActiveTab("overview");
-                setError(null);
-              }}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-mono tracking-wider uppercase transition duration-200 ${
-                activeTab === "overview"
-                  ? "bg-white/10 border border-white/15 text-blue-400 font-bold"
-                  : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
-              }`}
-            >
-              <LayoutDashboard className="w-4 h-4" />
-              <span>Career Board</span>
-            </button>
-
-            <button
-              onClick={() => {
-                setActiveTab("ats");
-                setError(null);
-              }}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-mono tracking-wider uppercase transition duration-200 ${
-                activeTab === "ats"
-                  ? "bg-white/10 border border-white/15 text-blue-400 font-bold"
-                  : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
-              }`}
-            >
-              <FileText className="w-4 h-4" />
-              <span>ATS Optimiser</span>
-            </button>
-
-            <button
-              onClick={() => {
-                setActiveTab("jobs");
-                setError(null);
-                if (resume && jobMatches.length === 0) {
-                  handleJobMatching();
-                }
-              }}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-mono tracking-wider uppercase transition duration-200 ${
-                activeTab === "jobs"
-                  ? "bg-white/10 border border-white/15 text-blue-400 font-bold"
-                  : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
-              }`}
-            >
-              <Search className="w-4 h-4" />
-              <span>Job Matcher</span>
-            </button>
-
-            <button
-              onClick={() => {
-                setActiveTab("roadmap");
-                setError(null);
-              }}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-mono tracking-wider uppercase transition duration-200 ${
-                activeTab === "roadmap"
-                  ? "bg-white/10 border border-white/15 text-blue-400 font-bold"
-                  : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
-              }`}
-            >
-              <Map className="w-4 h-4" />
-              <span>Skill Gaps</span>
-            </button>
-
-            <button
-              onClick={() => {
-                setActiveTab("career-roadmap");
-                setError(null);
-                if (resume && careerRoadmaps.length === 0) {
-                  fetchCareerRoadmaps();
-                }
-              }}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-mono tracking-wider uppercase transition duration-200 ${
-                activeTab === "career-roadmap"
-                  ? "bg-white/10 border border-white/15 text-blue-400 font-bold"
-                  : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
-              }`}
-            >
-              <Sparkles className="w-4 h-4 text-purple-400" />
-              <span>Career Roadmap</span>
-            </button>
-
-            <button
-              onClick={() => {
-                setActiveTab("interview");
-                setError(null);
-              }}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-mono tracking-wider uppercase transition duration-200 ${
-                activeTab === "interview"
-                  ? "bg-white/10 border border-white/15 text-blue-400 font-bold"
-                  : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
-              }`}
-            >
-              <MessageSquare className="w-4 h-4" />
-              <span>Interview Lab</span>
-            </button>
-
-            <button
-              onClick={() => {
-                setActiveTab("probability");
-                setError(null);
-              }}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-mono tracking-wider uppercase transition duration-200 ${
-                activeTab === "probability"
-                  ? "bg-white/10 border border-white/15 text-blue-400 font-bold"
-                  : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
-              }`}
-            >
-              <Award className="w-4 h-4" />
-              <span>Hiring Predictor</span>
-            </button>
-
-            <button
-              onClick={() => {
-                setActiveTab("settings");
-                setError(null);
-              }}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-xs font-mono tracking-wider uppercase transition duration-200 ${
-                activeTab === "settings"
-                  ? "bg-white/10 border border-white/15 text-blue-400 font-bold"
-                  : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
-              }`}
-            >
-              <Settings className="w-4 h-4" />
-              <span>Profile Settings</span>
-            </button>
+          {/* Navigation links */}
+          <nav className="p-2 space-y-2 mt-4">
+            {[
+              { id: "overview", label: "Career Board", icon: LayoutDashboard },
+              { id: "ats", label: "ATS Optimiser", icon: FileText },
+              { id: "jobs", label: "Job Matcher", icon: Search },
+              { id: "roadmap", label: "Skill Gaps", icon: Map },
+              { id: "career-roadmap", label: "Career Roadmap", icon: Sparkles, iconColor: "text-purple-500 dark:text-purple-400" },
+              { id: "interview", label: "Interview Lab", icon: MessageSquare },
+              { id: "probability", label: "Hiring Predictor", icon: Award },
+              { id: "settings", label: "Profile Settings", icon: Settings }
+            ].map((tab: any) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    setError(null);
+                    if (tab.id === "jobs" && resume && jobMatches.length === 0) {
+                      handleJobMatching();
+                    }
+                    if (tab.id === "career-roadmap" && resume && careerRoadmaps.length === 0) {
+                      fetchCareerRoadmaps();
+                    }
+                  }}
+                  className={`w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-[10px] font-mono font-bold tracking-wider uppercase transition-all duration-150 cursor-pointer border ${
+                    isActive
+                      ? "bg-indigo-500/10 border-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-extrabold"
+                      : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-indigo-500/5 border-transparent"
+                  }`}
+                >
+                  <Icon className={`w-4.5 h-4.5 ${tab.iconColor || ""}`} />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
           </nav>
         </div>
 
-        {/* Footer actions */}
-        <div className="p-4 border-t border-white/10">
+        {/* Aside footer */}
+        <div className="p-2 border-t border-[var(--color-border)]">
           <button
             onClick={onLogout}
-            className="w-full flex items-center space-x-3 px-4 py-3 text-xs font-mono tracking-wider uppercase text-slate-500 hover:text-white transition duration-200 rounded-xl"
+            className="w-full flex items-center space-x-3.5 px-4 py-3 text-[10px] font-mono tracking-wider uppercase text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition duration-200 rounded-2xl cursor-pointer"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="w-4.5 h-4.5" />
             <span>Terminate Session</span>
           </button>
         </div>
@@ -922,15 +806,16 @@ export default function DashboardPage({
 
       {/* Main Workspace Frame */}
       <main className="flex-1 p-6 sm:p-8 overflow-y-auto max-w-7xl mx-auto w-full relative">
+        
         {/* Universal Alert Banner */}
         {error && (
-          <div className="mb-6 p-4 bg-red-950/40 border border-red-500/30 text-red-300 rounded-xl flex items-start space-x-2 text-xs">
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 rounded-2xl flex items-start space-x-2.5 text-xs font-medium animate-fade-in">
             <AlertCircle className="w-4.5 h-4.5 flex-shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        {/* Profile Settings page can be accessed regardless of resume presence */}
+        {/* Sub page mapping */}
         {activeTab === "settings" ? (
           <ProfileSettingsPage
             user={user}
@@ -939,25 +824,26 @@ export default function DashboardPage({
             onNavigateBack={() => setActiveTab("overview")}
           />
         ) : !resume ? (
-          <div className="min-h-[50vh] flex flex-col items-center justify-center text-center p-8 neomorph-card max-w-xl mx-auto my-12 relative z-10">
-            <div className="p-4 neomorph-inset-input text-blue-400 mb-4">
-              <FileText className="w-10 h-10 animate-bounce" />
+          <div className="min-h-[50vh] flex flex-col items-center justify-center text-center p-8 clay-card max-w-xl mx-auto my-12 relative z-10">
+            <div className="p-4 bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-3xl mb-5 animate-bounce">
+              <FileText className="w-10 h-10" />
             </div>
-            <h2 className="text-xl font-extrabold tracking-tight text-white">No Active Resume Loaded</h2>
-            <p className="text-sm text-slate-400 max-w-md mt-2 font-sans leading-relaxed">
+            <h2 className="text-xl font-black">No Active Resume Loaded</h2>
+            <p className="text-xs text-[var(--color-text-secondary)] max-w-md mt-2 font-sans leading-relaxed font-medium">
               Before exploring multi-agent career tools, you must parse your current profile resume. Our algorithms will map out matching paths, learning roadmaps, and mock evaluation.
             </p>
             <button
               onClick={() => onNavigate("upload")}
-              className="mt-6 px-6 py-3 neomorph-button-primary text-xs font-mono tracking-wider uppercase font-bold text-white"
+              className="mt-6 px-6 py-3.5 clay-btn clay-btn-primary text-xs font-mono tracking-wider uppercase font-bold text-white shadow-md"
             >
               Parse Profile Resume
             </button>
           </div>
         ) : (
-          /* ACTIVE TABS SCREEN PANEL */
+          /* ACTIVE TABS */
           <div className="space-y-8 animate-fade-in relative z-10">
-            {/* Overview dashboard */}
+            
+            {/* Tab: Overview (Career Board) */}
             {activeTab === "overview" && (
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
@@ -965,44 +851,44 @@ export default function DashboardPage({
                 transition={{ duration: 0.4 }}
                 className="space-y-6"
               >
-                {/* Board header */}
+                {/* Hero section */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div>
-                    <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center space-x-2 text-white">
+                    <h1 className="text-2xl sm:text-3xl font-black tracking-tight flex items-center space-x-2.5">
                       <span>Career Board</span>
-                      <span className="text-xs px-2 py-0.5 bg-white/10 border border-white/10 text-slate-300 rounded font-mono font-medium lowercase">
+                      <span className="text-[10px] px-2.5 py-0.5 bg-indigo-500/15 border border-indigo-500/25 text-indigo-600 dark:text-indigo-400 rounded-lg font-mono font-bold lowercase">
                         online
                       </span>
                     </h1>
-                    <p className="text-xs text-slate-400 mt-1">
-                      Resume parsed: <span className="font-mono text-slate-300 font-semibold">{resume.fileName}</span>
+                    <p className="text-xs text-[var(--color-text-secondary)] mt-1 font-semibold">
+                      Resume parsed: <span className="font-mono text-indigo-600 dark:text-indigo-400">{resume.fileName}</span>
                     </p>
                   </div>
                   <button
                     onClick={() => onNavigate("upload")}
-                    className="px-4 py-2 neomorph-button text-xs font-mono uppercase tracking-wider text-slate-300 hover:text-white"
+                    className="px-4 py-2.5 clay-btn clay-btn-secondary text-xs font-mono uppercase tracking-wider text-[var(--color-text-primary)]"
                   >
                     Replace Resume
                   </button>
                 </div>
 
-                {/* Score & Extracted Stats Grid */}
+                {/* Score and synthesis breakdown */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* Quality circle gauge */}
+                  {/* Score gauge container */}
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5 }}
-                    className="p-6 neomorph-card flex flex-col justify-between"
+                    className="p-6 clay-card flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex justify-between items-start">
-                        <h2 className="text-xs font-mono text-slate-400 uppercase tracking-wider">
+                        <h2 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">
                           Resume Score
                         </h2>
-                        <Sparkles className="w-4 h-4 text-purple-400" />
+                        <Sparkles className="w-4.5 h-4.5 text-purple-500 dark:text-purple-400" />
                       </div>
-                      <p className="text-[10px] text-slate-500 font-sans mt-0.5 leading-relaxed">
+                      <p className="text-[10px] text-[var(--color-text-tertiary)] mt-1.5 font-medium leading-relaxed">
                         Evaluated by Cognitive Quality Agent based on formatting, depth, and syntax guidelines.
                       </p>
                     </div>
@@ -1010,56 +896,56 @@ export default function DashboardPage({
                     <div className="my-6 flex flex-col items-center justify-center">
                       {analyzingQuality ? (
                         <div className="flex flex-col items-center space-y-2">
-                          <div className="w-8 h-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-                          <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                          <div className="w-8 h-8 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin" />
+                          <span className="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider">
                             Analyzing...
                           </span>
                         </div>
                       ) : qualityAnalysis ? (
-                        <CircularScoreGauge score={qualityAnalysis.qualityScore} colorClass="stroke-blue-500" />
+                        <CircularScoreGauge score={qualityAnalysis.qualityScore} colorClass="stroke-indigo-600" />
                       ) : (
                         <button
                           onClick={triggerQualityAnalysis}
-                          className="px-4 py-2 bg-blue-900/30 border border-blue-500/30 text-blue-300 text-xs font-mono uppercase tracking-wider font-semibold rounded-xl"
+                          className="px-4 py-2.5 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider text-white shadow-sm"
                         >
                           Trigger Quality Review
                         </button>
                       )}
                     </div>
 
-                    <div className="border-t border-white/5 pt-4 flex justify-between items-center text-xs font-mono">
-                      <span className="text-slate-500">Suggested Enhancements:</span>
-                      <span className="text-slate-300 font-bold">
+                    <div className="border-t border-[var(--color-border)] pt-4 flex justify-between items-center text-xs font-mono font-bold">
+                      <span className="text-[var(--color-text-secondary)]">Suggested Enhancements:</span>
+                      <span className="text-indigo-600 dark:text-indigo-400">
                         {qualityAnalysis?.improvements?.length || 0}
                       </span>
                     </div>
                   </motion.div>
 
                   {/* Summary & Core Profile */}
-                  <div className="lg:col-span-2 p-6 neomorph-card flex flex-col justify-between">
+                  <div className="lg:col-span-2 p-6 clay-card flex flex-col justify-between">
                     <div>
-                      <h2 className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-2">
+                      <h2 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider mb-2.5 font-bold">
                         Synthesized Profile
                       </h2>
-                      <h3 className="text-lg font-black text-slate-100">
+                      <h3 className="text-lg font-black text-[var(--color-text-primary)]">
                         {resume.parsedData?.name || "Career Professional"}
                       </h3>
                       {resume.parsedData?.summary ? (
-                        <p className="mt-2 text-xs text-slate-400 leading-relaxed font-sans line-clamp-4">
+                        <p className="mt-2.5 text-xs text-[var(--color-text-secondary)] leading-relaxed font-sans line-clamp-4 font-medium">
                           {resume.parsedData.summary}
                         </p>
                       ) : (
-                        <p className="mt-2 text-xs text-slate-500 italic font-sans">
+                        <p className="mt-2.5 text-xs text-[var(--color-text-tertiary)] italic font-sans font-medium">
                           No professional summary extracted. Click 'Trigger Quality Review' to analyze improvements.
                         </p>
                       )}
                     </div>
 
-                    <div className="mt-4 pt-4 border-t border-white/5">
-                      <h4 className="text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-2">
+                    <div className="mt-4 pt-4 border-t border-[var(--color-border)]">
+                      <h4 className="text-[10px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider mb-2.5 font-bold">
                         Identified Tech Stack / Skills
                       </h4>
-                      <div className="flex flex-wrap gap-1.5 max-h-[85px] overflow-y-auto pr-1">
+                      <div className="flex flex-wrap gap-1.5 max-h-[85px] overflow-y-auto pr-1 custom-scrollbar">
                         {(() => {
                           const skillsObj = resume?.parsedData?.skills;
                           let skillsArr: string[] = [];
@@ -1072,14 +958,14 @@ export default function DashboardPage({
                             return skillsArr.map((skill: string, idx: number) => (
                               <span
                                 key={idx}
-                                className="px-2 py-1 bg-white/5 border border-white/10 rounded text-[10px] font-mono text-slate-300"
+                                className="px-2.5 py-1 bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-xl text-[10px] font-mono text-[var(--color-text-primary)] font-bold shadow-sm"
                               >
                                 {skill}
                               </span>
                             ));
                           }
                           return (
-                            <span className="text-xs text-slate-500 font-sans italic">
+                            <span className="text-xs text-[var(--color-text-tertiary)] font-sans italic">
                               No structured skills extracted.
                             </span>
                           );
@@ -1089,28 +975,28 @@ export default function DashboardPage({
                   </div>
                 </div>
 
-                {/* Extracted Work History & Suggestions Split Panel */}
+                {/* History & quality report details */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                   {/* Quality Coach Feedback */}
-                  <div className="p-6 neomorph-card space-y-4">
-                    <div className="flex items-center justify-between border-b border-white/5 pb-3">
-                      <h3 className="text-xs font-mono text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
-                        <TrendingUp className="w-4 h-4 text-emerald-400" />
+                  {/* Quality Coach Feedback */}
+                  <div className="p-6 clay-card space-y-4">
+                    <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-3">
+                      <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider flex items-center space-x-1.5 font-bold">
+                        <TrendingUp className="w-4.5 h-4.5 text-emerald-500" />
                         <span>AI Quality Analysis</span>
                       </h3>
-                      <span className="text-[10px] font-mono text-slate-500 uppercase">
+                      <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-bold">
                         Real-time Evaluation
                       </span>
                     </div>
 
                     {qualityAnalysis ? (
                       <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
-                        {/* Recruiter Verdict */}
-                        <div className="bg-gradient-to-r from-purple-950/20 to-indigo-950/20 border border-purple-500/10 rounded-2xl p-4">
-                          <span className="text-[9px] font-mono text-purple-400 uppercase block font-bold mb-1">
+                        {/* Verdict */}
+                        <div className="bg-indigo-500/5 border border-indigo-500/10 rounded-2xl p-4">
+                          <span className="text-[9px] font-mono text-indigo-600 dark:text-indigo-400 uppercase block font-black mb-1">
                             Final Recruiter Verdict
                           </span>
-                          <p className="text-[11px] text-slate-300 leading-relaxed font-sans">
+                          <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed font-medium">
                             {qualityAnalysis.verdict || `Current Quality Score: ${qualityAnalysis.qualityScore || 75}/100. This resume has a solid base structure and is suitable for target developer profiles.`}
                           </p>
                         </div>
@@ -1129,11 +1015,11 @@ export default function DashboardPage({
                             keywords: Math.min(10, Math.round((qualityAnalysis.qualityScore || 75) * 0.1))
                           };
                           return (
-                            <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-3.5 space-y-2.5">
-                              <span className="text-[9px] font-mono text-blue-400 uppercase block font-bold">
+                            <div className="bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl p-4 space-y-2.5 shadow-inner">
+                              <span className="text-[9px] font-mono text-indigo-600 dark:text-indigo-400 uppercase block font-black">
                                 ATS Score Breakdown
                               </span>
-                              <div className="space-y-1.5 text-[11px]">
+                              <div className="space-y-2 text-xs">
                                 {[
                                   { name: "ATS Formatting", val: breakdown.formatting, max: 20 },
                                   { name: "Contact Information", val: breakdown.contactInfo, max: 10 },
@@ -1145,10 +1031,10 @@ export default function DashboardPage({
                                   { name: "Certifications", val: breakdown.certifications, max: 5 },
                                   { name: "ATS Keywords", val: breakdown.keywords, max: 10 }
                                 ].map((b, idx) => (
-                                  <div key={idx} className="flex justify-between items-center text-slate-300 font-sans">
+                                  <div key={idx} className="flex justify-between items-center text-[var(--color-text-secondary)] font-medium">
                                     <span className="shrink-0">{b.name}</span>
-                                    <div className="flex-grow border-b border-dotted border-white/10 mx-2 translate-y-1.5" />
-                                    <span className="font-mono text-slate-400 shrink-0">{b.val}/{b.max}</span>
+                                    <div className="flex-grow border-b border-dotted border-[var(--color-border)] mx-2 translate-y-1.5" />
+                                    <span className="font-mono text-[var(--color-text-tertiary)] shrink-0 font-bold">{b.val}/{b.max}</span>
                                   </div>
                                 ))}
                               </div>
@@ -1157,118 +1043,47 @@ export default function DashboardPage({
                         })()}
 
                         {/* What's Excellent */}
-                        {(() => {
-                          const strengths = qualityAnalysis.strengths || [
-                            "ATS-friendly layout template structure",
-                            "Strong core developer skill metrics matching target roles"
-                          ];
-                          return (
-                            <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-3.5 space-y-2">
-                              <span className="text-[9px] font-mono text-emerald-400 uppercase block font-bold">
-                                What's Excellent ✅
-                              </span>
-                              <ul className="space-y-1 text-[11px] text-slate-300 font-sans">
-                                {strengths.map((str: string, i: number) => (
-                                  <li key={i} className="flex items-start gap-1.5">
-                                    <span className="text-emerald-400 font-bold shrink-0">✓</span>
-                                    <span>{str}</span>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          );
-                        })()}
+                        <div className="bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl p-4 space-y-2 shadow-inner">
+                          <span className="text-[9px] font-mono text-emerald-600 dark:text-emerald-400 uppercase block font-black">
+                            What's Excellent ✅
+                          </span>
+                          <ul className="space-y-2 text-xs text-[var(--color-text-secondary)] font-medium">
+                            {(qualityAnalysis.strengths || ["ATS-friendly layout template structure", "Strong core developer skill metrics matching target roles"]).map((str: string, i: number) => (
+                              <li key={i} className="flex items-start gap-2.5">
+                                <span className="text-emerald-500 font-bold shrink-0">✓</span>
+                                <span>{str}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
 
-                        {/* Areas for Improvement */}
-                        {(() => {
-                          const improvements = qualityAnalysis.improvements || [
-                            { text: "Incorporate more quantified metrics in project details", impact: 2 }
-                          ];
-                          return (
-                            <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-3.5 space-y-2">
-                              <span className="text-[9px] font-mono text-amber-400 uppercase block font-bold">
-                                Areas for Improvement ⚠️
-                              </span>
-                              <div className="space-y-1.5">
-                                {improvements.map((imp: any, i: number) => (
-                                  <div key={i} className="flex items-start justify-between bg-white/[0.02] border border-white/5 rounded-xl p-2.5 text-[11px] leading-relaxed gap-2.5">
-                                    <span className="text-slate-300 font-sans">{imp.text || imp}</span>
-                                    {imp.impact && (
-                                      <span className="px-1.5 py-0.5 bg-amber-500/10 border border-amber-500/15 text-amber-400 text-[8px] font-mono rounded font-bold shrink-0">
-                                        +{imp.impact}
-                                      </span>
-                                    )}
-                                  </div>
-                                ))}
+                        {/* Suggestions */}
+                        <div className="bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl p-4 space-y-2 shadow-inner">
+                          <span className="text-[9px] font-mono text-amber-600 dark:text-amber-400 uppercase block font-black">
+                            Areas for Improvement ⚠️
+                          </span>
+                          <div className="space-y-2">
+                            {(qualityAnalysis.improvements || [{ text: "Incorporate more quantified metrics in project details", impact: 2 }]).map((imp: any, i: number) => (
+                              <div key={i} className="flex items-start justify-between bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-xl p-3 text-xs leading-relaxed gap-3 shadow-sm">
+                                <span className="text-[var(--color-text-secondary)] font-medium">{imp.text || imp}</span>
+                                {imp.impact && (
+                                  <span className="px-2 py-0.5 bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 text-[9px] font-mono rounded-lg font-black shrink-0">
+                                    +{imp.impact}
+                                  </span>
+                                )}
                               </div>
-                            </div>
-                          );
-                        })()}
-
-                        {/* Company ATS Compatibility */}
-                        {(() => {
-                          const comp = qualityAnalysis.companyCompatibility || {
-                            tcsInfosysWipro: "90+/100",
-                            accentureCapgemini: "88+/100",
-                            deloitte: "87-90/100",
-                            productCompanies: "82–87/100",
-                            amazon: "80–85/100",
-                            microsoft: "78–83/100",
-                            google: "75–80/100"
-                          };
-                          return (
-                            <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-3.5 space-y-2">
-                              <span className="text-[9px] font-mono text-purple-400 uppercase block font-bold">
-                                Company ATS Compatibility
-                              </span>
-                              <div className="space-y-1.5 text-[11px]">
-                                {[
-                                  { name: "TCS / Infosys / Wipro", val: comp.tcsInfosysWipro },
-                                  { name: "Accenture / Capgemini", val: comp.accentureCapgemini },
-                                  { name: "Deloitte", val: comp.deloitte },
-                                  { name: "Product Companies", val: comp.productCompanies },
-                                  { name: "Amazon", val: comp.amazon },
-                                  { name: "Microsoft", val: comp.microsoft },
-                                  { name: "Google", val: comp.google }
-                                ].map((item, idx) => (
-                                  <div key={idx} className="flex justify-between items-center text-slate-300 font-sans">
-                                    <span className="shrink-0">{item.name}</span>
-                                    <div className="flex-grow border-b border-dotted border-white/10 mx-2 translate-y-1.5" />
-                                    <span className="font-mono text-slate-400 shrink-0">{item.val}</span>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          );
-                        })()}
-
-                        {/* Critical Missing Skills */}
-                        {qualityAnalysis.missingSkills && qualityAnalysis.missingSkills.length > 0 && (
-                          <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-3.5 space-y-2">
-                            <span className="text-[9px] font-mono text-blue-400 uppercase block font-bold">
-                              Critical Missing Skills
-                            </span>
-                            <div className="flex flex-wrap gap-1">
-                              {qualityAnalysis.missingSkills.map((skill: string, idx: number) => (
-                                <span
-                                  key={idx}
-                                  className="px-1.5 py-0.5 bg-red-950/20 border border-red-500/10 text-red-300 rounded text-[9px] font-mono"
-                                >
-                                  {skill}
-                                </span>
-                              ))}
-                            </div>
+                            ))}
                           </div>
-                        )}
+                        </div>
                       </div>
                     ) : (
                       <div className="h-48 flex flex-col items-center justify-center text-center">
-                        <p className="text-xs text-slate-500 font-sans">
+                        <p className="text-xs text-[var(--color-text-secondary)] font-medium font-sans">
                           Complete quality evaluation to unlock deep roadmap checks.
                         </p>
                         <button
                           onClick={triggerQualityAnalysis}
-                          className="mt-3 px-4 py-1.5 bg-white/10 border border-white/10 text-xs font-mono text-slate-300 rounded-lg hover:text-white"
+                          className="mt-4 px-4 py-2.5 clay-btn clay-btn-secondary text-[var(--color-text-primary)] text-xs font-mono uppercase tracking-wider font-bold"
                         >
                           Trigger Analysis
                         </button>
@@ -1276,73 +1091,71 @@ export default function DashboardPage({
                     )}
                   </div>
 
-                  {/* Work Experience Timeline */}
-                  <div className="p-6 neomorph-card space-y-4">
-                    <div className="flex items-center justify-between border-b border-white/5 pb-3">
-                      <h3 className="text-xs font-mono text-slate-400 uppercase tracking-wider flex items-center space-x-1.5">
-                        <Briefcase className="w-4 h-4 text-blue-400" />
+                  {/* Work Experience */}
+                  <div className="p-6 clay-card space-y-4">
+                    <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-3">
+                      <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider flex items-center space-x-1.5 font-bold">
+                        <Briefcase className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                         <span>Work History Timeline</span>
                       </h3>
-                      <span className="text-[10px] font-mono text-slate-500 uppercase">
+                      <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-bold">
                         Parsed Records
                       </span>
                     </div>
 
-                    <div className="space-y-4 max-h-[350px] overflow-y-auto pr-1">
+                    <div className="space-y-4 max-h-[350px] overflow-y-auto pr-1 custom-scrollbar">
                       {resume.parsedData?.experience && resume.parsedData.experience.length > 0 ? (
                         resume.parsedData.experience.map((exp: any, idx: number) => (
-                          <div key={idx} className="relative pl-4 border-l border-white/10 pb-2">
-                            <div className="absolute w-2.5 h-2.5 rounded-full bg-blue-500/50 border border-[#020204] top-1.5 left-[-5px]" />
+                          <div key={idx} className="relative pl-5 border-l-2 border-[var(--color-border)] pb-4">
+                            <div className="absolute w-3 h-3 rounded-full bg-indigo-500 border border-[var(--color-bg-page)] top-1 left-[-7px]" />
                             <div className="flex justify-between items-start text-xs">
-                              <h4 className="font-bold text-slate-200">{exp.role}</h4>
-                              <span className="text-[10px] font-mono text-slate-500 shrink-0">
+                              <h4 className="font-extrabold text-[var(--color-text-primary)]">{exp.role}</h4>
+                              <span className="text-[10px] font-mono text-[var(--color-text-tertiary)] shrink-0 font-bold">
                                 {exp.duration}
                               </span>
                             </div>
-                            <p className="text-[11px] text-slate-400 font-semibold">{exp.company}</p>
-                            <p className="text-[10px] text-slate-500 font-sans mt-1 leading-relaxed">
+                            <p className="text-[11px] text-indigo-600 dark:text-indigo-400 font-bold mt-0.5">{exp.company}</p>
+                            <p className="text-[10px] text-[var(--color-text-secondary)] font-medium font-sans mt-1.5 leading-relaxed">
                               {exp.description}
                             </p>
                           </div>
                         ))
                       ) : (
-                        <p className="text-xs text-slate-500 font-sans italic">No employment records parsed.</p>
+                        <p className="text-xs text-[var(--color-text-tertiary)] font-sans italic font-medium">No employment records parsed.</p>
                       )}
                     </div>
                   </div>
                 </div>
 
-                {/* Recommended Opportunities Section with Live Database Explorer */}
-                <div className="p-8 neomorph-card space-y-6">
-                  <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 border-b border-white/5 pb-6">
+                {/* AI Recommendations */}
+                <div className="p-8 clay-card space-y-6">
+                  <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 border-b border-[var(--color-border)] pb-6">
                     <div>
-                      <h2 className="text-lg font-black text-white flex items-center space-x-2">
-                        <Award className="w-5 h-5 text-blue-400" />
+                      <h2 className="text-lg font-black flex items-center space-x-2.5">
+                        <Award className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
                         <span>AI Role Recommendations</span>
                       </h2>
-                      <p className="text-xs text-slate-400 mt-1 font-sans">
+                      <p className="text-xs text-[var(--color-text-secondary)] mt-1.5 font-medium">
                         Personalized career role suggestions matched using our multi-agent capabilities against your profile.
                       </p>
                     </div>
 
-                    <div>
-                      <button
-                        onClick={handleCalculateOpps}
-                        disabled={calculatingOpps || loadingOpps}
-                        className="flex items-center space-x-2 px-4 py-2 neomorph-button-primary disabled:opacity-50 text-white text-xs font-mono uppercase tracking-wider font-bold shrink-0"
-                      >
-                        <RefreshCw className={`w-4 h-4 ${(calculatingOpps || loadingOpps) ? "animate-spin" : ""}`} />
-                        <span>{calculatingOpps ? "Matching..." : "Recalculate Recommendations"}</span>
-                      </button>
-                    </div>
+                    <button
+                      onClick={handleCalculateOpps}
+                      disabled={calculatingOpps || loadingOpps}
+                      className="flex items-center space-x-2 px-5 py-3 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider text-white shadow-md disabled:opacity-50"
+                    >
+                      <RefreshCw className={`w-4 h-4 ${(calculatingOpps || loadingOpps) ? "animate-spin" : ""}`} />
+                      <span>{calculatingOpps ? "Matching..." : "Recalculate Matches"}</span>
+                    </button>
                   </div>
 
                   {calculatingOpps || loadingOpps ? (
                     <div className="h-64 flex flex-col items-center justify-center space-y-3">
-                      <div className="w-10 h-10 border-4 border-blue-500/20 border-t-blue-500 rounded-full animate-spin" />
+                      <div className="w-10 h-10 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin" />
                       <div className="text-center">
-                        <span className="text-xs font-mono text-slate-400 uppercase tracking-widest block">Comparing Skill Vectors</span>
-                        <p className="text-[11px] text-slate-500 mt-1 max-w-xs font-sans">
+                        <span className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-widest block font-bold">Comparing Skill Vectors</span>
+                        <p className="text-[11px] text-[var(--color-text-tertiary)] mt-1 max-w-xs font-medium">
                           Generating candidate-to-role intersection indices and calculating matching statistics...
                         </p>
                       </div>
@@ -1355,97 +1168,90 @@ export default function DashboardPage({
                           initial={{ opacity: 0, y: 15 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.4, delay: idx * 0.05 }}
-                          whileHover={{ y: -4, borderColor: "rgba(59, 130, 246, 0.3)", backgroundColor: "rgba(255, 255, 255, 0.02)" }}
-                          className="p-6 bg-white/[0.01] border border-white/5 rounded-2xl flex flex-col justify-between space-y-5 transition duration-300 group"
+                          whileHover={{ y: -4 }}
+                          className="p-6 bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-3xl flex flex-col justify-between space-y-5 transition duration-300 shadow-sm"
                         >
-                          <div className="space-y-3">
+                          <div className="space-y-4">
                             <div className="flex justify-between items-start">
-                              <span className={`px-2.5 py-1 rounded text-[10px] font-mono font-bold border ${
+                              <span className={`px-2.5 py-1 rounded-lg text-[9px] font-mono font-black border ${
                                 opp.matchScore >= 75
-                                  ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
+                                  ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400"
                                   : opp.matchScore >= 50
-                                  ? "bg-blue-500/10 border-blue-500/20 text-blue-400"
-                                  : "bg-amber-500/10 border-amber-500/20 text-amber-400"
+                                  ? "bg-indigo-500/10 border-indigo-500/20 text-indigo-600 dark:text-indigo-400"
+                                  : "bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-400"
                               }`}>
-                                <CountUpText to={opp.matchScore} suffix="% Match Score" />
+                                <CountUpText to={opp.matchScore} suffix="% Match" />
                               </span>
                             </div>
 
                             <div>
-                              <h3 className="text-sm font-bold text-slate-200 group-hover:text-blue-400 transition-colors leading-snug">
+                              <h3 className="text-sm font-extrabold text-[var(--color-text-primary)] leading-snug">
                                 {opp.title}
                               </h3>
-                              <p className="text-xs text-blue-400 font-mono font-semibold mt-0.5">{opp.company}</p>
+                              <p className="text-xs text-indigo-600 dark:text-indigo-400 font-mono font-black mt-1">{opp.company}</p>
                             </div>
 
-                            <div className="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-slate-400 font-mono">
-                              <span className="flex items-center space-x-1">
-                                <span className="text-slate-600">&bull;</span>
-                                <span>{opp.location}</span>
-                              </span>
-                              <span className="flex items-center space-x-1">
-                                <span className="text-slate-600">&bull;</span>
-                                <span>{opp.type}</span>
-                              </span>
-                              <span className="flex items-center space-x-1">
-                                <span className="text-slate-600">&bull;</span>
-                                <span>{opp.salary}</span>
-                              </span>
+                            <div className="flex flex-wrap gap-x-2.5 gap-y-1 text-[10px] text-[var(--color-text-secondary)] font-mono font-bold">
+                              <span>{opp.location}</span>
+                              <span>&bull;</span>
+                              <span>{opp.type}</span>
+                              <span>&bull;</span>
+                              <span>{opp.salary}</span>
                             </div>
 
-                            <p className="text-xs text-slate-400 font-sans leading-relaxed line-clamp-3">
+                            <p className="text-xs text-[var(--color-text-secondary)] font-medium leading-relaxed line-clamp-3">
                               {opp.description}
                             </p>
                           </div>
 
-                          <div className="space-y-3 border-t border-white/5 pt-4">
+                          <div className="space-y-4 border-t border-[var(--color-border)] pt-4">
                             <div>
-                              <h4 className="text-[9px] font-mono text-emerald-400 uppercase tracking-wider mb-1.5 flex items-center space-x-1">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
-                                <span>Your Matching Skills ({opp.matchedSkills?.length || 0})</span>
+                              <h4 className="text-[9px] font-mono text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-2 flex items-center space-x-1 font-bold">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+                                <span>Overlap Skills ({opp.matchedSkills?.length || 0})</span>
                               </h4>
                               <div className="flex flex-wrap gap-1">
                                 {opp.matchedSkills && opp.matchedSkills.length > 0 ? (
-                                  opp.matchedSkills.slice(0, 5).map((skill: string, i: number) => (
+                                  opp.matchedSkills.slice(0, 4).map((skill: string, i: number) => (
                                     <span
                                       key={i}
-                                      className="px-1.5 py-0.5 bg-emerald-950/20 text-emerald-400 rounded text-[9px] font-mono border border-emerald-500/10"
+                                      className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-lg text-[9px] font-mono font-medium"
                                     >
                                       {skill}
                                     </span>
                                   ))
                                 ) : (
-                                  <span className="text-[9px] text-slate-500 italic">No exact skill overlap</span>
+                                  <span className="text-[9px] text-[var(--color-text-tertiary)] italic">None</span>
                                 )}
-                                {opp.matchedSkills?.length > 5 && (
-                                  <span className="text-[9px] text-slate-500 font-mono self-center">
-                                    +{opp.matchedSkills.length - 5} more
+                                {opp.matchedSkills?.length > 4 && (
+                                  <span className="text-[9px] text-[var(--color-text-tertiary)] font-mono font-bold self-center">
+                                    +{opp.matchedSkills.length - 4} more
                                   </span>
                                 )}
                               </div>
                             </div>
 
                             <div>
-                              <h4 className="text-[9px] font-mono text-red-400 uppercase tracking-wider mb-1.5 flex items-center space-x-1">
-                                <span className="w-1.5 h-1.5 rounded-full bg-red-400 inline-block" />
-                                <span>Missing Target Skills ({opp.missingSkills?.length || 0})</span>
+                              <h4 className="text-[9px] font-mono text-red-600 dark:text-red-400 uppercase tracking-wider mb-2 flex items-center space-x-1 font-bold">
+                                <span className="w-1.5 h-1.5 rounded-full bg-red-500 inline-block" />
+                                <span>Deficit Skills ({opp.missingSkills?.length || 0})</span>
                               </h4>
                               <div className="flex flex-wrap gap-1">
                                 {opp.missingSkills && opp.missingSkills.length > 0 ? (
-                                  opp.missingSkills.slice(0, 5).map((skill: string, i: number) => (
+                                  opp.missingSkills.slice(0, 4).map((skill: string, i: number) => (
                                     <span
                                       key={i}
-                                      className="px-1.5 py-0.5 bg-red-950/20 text-red-300 rounded text-[9px] font-mono border border-red-500/10"
+                                      className="px-2 py-0.5 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 rounded-lg text-[9px] font-mono font-medium"
                                     >
                                       {skill}
                                     </span>
                                   ))
                                 ) : (
-                                  <span className="text-[9px] text-emerald-400 italic">Fully aligned!</span>
+                                  <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-bold italic">Check list full!</span>
                                 )}
-                                {opp.missingSkills?.length > 5 && (
-                                  <span className="text-[9px] text-slate-500 font-mono self-center">
-                                    +{opp.missingSkills.length - 5} more
+                                {opp.missingSkills?.length > 4 && (
+                                  <span className="text-[9px] text-[var(--color-text-tertiary)] font-mono font-bold self-center">
+                                    +{opp.missingSkills.length - 4} more
                                   </span>
                                 )}
                               </div>
@@ -1456,12 +1262,12 @@ export default function DashboardPage({
                     </div>
                   ) : (
                     <div className="h-48 flex flex-col items-center justify-center text-center">
-                      <p className="text-xs text-slate-500 font-sans">
+                      <p className="text-xs text-[var(--color-text-secondary)] font-medium">
                         No role recommendations have been calculated yet.
                       </p>
                       <button
                         onClick={handleCalculateOpps}
-                        className="mt-3 px-4 py-1.5 bg-white/10 border border-white/10 text-xs font-mono text-slate-300 rounded-lg hover:text-white"
+                        className="mt-4 px-4 py-2.5 clay-btn clay-btn-secondary text-[var(--color-text-primary)] text-xs font-mono uppercase tracking-wider font-bold"
                       >
                         Calculate Recommendations
                       </button>
@@ -1471,7 +1277,7 @@ export default function DashboardPage({
               </motion.div>
             )}
 
-            {/* ATS Scanner Tab */}
+            {/* Tab: ATS Scanner */}
             {activeTab === "ats" && (
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
@@ -1480,17 +1286,17 @@ export default function DashboardPage({
                 className="space-y-6"
               >
                 <div>
-                  <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">ATS Scanner & Optimizer</h1>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-primary)]">ATS Optimiser</h1>
+                  <p className="text-xs text-[var(--color-text-secondary)] mt-1 font-medium">
                     Directly simulate recruiter applicant filters and optimize keywords to maximize resume pass-through.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Input Job Description */}
-                  <form onSubmit={handleAtsScan} className="p-6 neomorph-card flex flex-col justify-between space-y-4 min-h-[400px]">
-                    <div className="space-y-2">
-                      <label className="block text-xs font-mono text-slate-400 uppercase tracking-wider">
+                  {/* Form */}
+                  <form onSubmit={handleAtsScan} className="p-6 clay-card flex flex-col justify-between space-y-5 min-h-[400px]">
+                    <div className="space-y-3">
+                      <label className="block text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">
                         Target Job Description
                       </label>
                       <textarea
@@ -1499,25 +1305,25 @@ export default function DashboardPage({
                         placeholder="Paste the target job description here to analyze matched and missing core keywords..."
                         rows={10}
                         required
-                        className="w-full neomorph-inset-input px-4 py-3 text-sm focus:outline-none text-slate-300 font-sans leading-relaxed resize-none"
+                        className="w-full clay-input px-4 py-3.5 text-xs text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none leading-relaxed resize-none min-h-[220px]"
                       />
                     </div>
 
                     <button
                       type="submit"
                       disabled={scanningAts}
-                      className="w-full py-3.5 neomorph-button-primary text-xs font-mono uppercase tracking-wider font-bold text-white"
+                      className="w-full py-4 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider text-white shadow-md"
                     >
                       {scanningAts ? "Scanning Keywords against ATS..." : "Analyze ATS Compatibility"}
                     </button>
                   </form>
 
-                  {/* ATS Results Output */}
-                  <div className="p-6 neomorph-card space-y-6 min-h-[400px] flex flex-col justify-between">
+                  {/* Results */}
+                  <div className="p-6 clay-card space-y-6 min-h-[400px] flex flex-col justify-between">
                     {scanningAts ? (
-                      <div className="flex-1 flex flex-col items-center justify-center space-y-2">
-                        <div className="w-8 h-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-                        <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                      <div className="flex-grow flex flex-col items-center justify-center space-y-3 text-center">
+                        <div className="w-8 h-8 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin" />
+                        <span className="text-[10px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">
                           Recruiter Simulator active...
                         </span>
                       </div>
@@ -1526,241 +1332,111 @@ export default function DashboardPage({
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.5 }}
-                        className="space-y-6 flex-1 flex flex-col justify-between"
+                        className="space-y-6 flex-grow flex flex-col justify-between"
                       >
-                        {/* Circle Score Header */}
-                        <div className="flex items-center space-x-4 border-b border-white/5 pb-4">
-                          <CircularScoreGauge score={atsResult.score} size={80} strokeWidth={6} colorClass="stroke-blue-500" />
-
+                        {/* Gauge & info */}
+                        <div className="flex items-center space-x-5 border-b border-[var(--color-border)] pb-5">
+                          <CircularScoreGauge score={atsResult.score} size={84} strokeWidth={6} colorClass="stroke-indigo-600" />
                           <div>
-                            <h3 className="text-sm font-bold text-slate-200">ATS Match Rating</h3>
-                            <p className="text-[11px] text-slate-400 mt-0.5 leading-relaxed font-sans">
+                            <h3 className="text-sm font-bold">ATS Match Rating</h3>
+                            <p className="text-[10px] text-[var(--color-text-secondary)] mt-1.5 leading-relaxed font-sans font-medium">
                               {atsResult.score >= 85
-                                ? "Strong compatibility! Your resume exhibits high-quality project descriptions and aligned skills."
+                                ? "Excellent compatibility! Your resume exhibits high-quality project details and aligned skills."
                                 : atsResult.score >= 70
                                 ? "Moderate match. Optimize using the recommended keyword weights below to improve selection chances."
-                                : "Weak compatibility. RESTORE structural components and target missing experience tags."}
+                                : "Weak compatibility. Structurally audit experience descriptions and target missing keywords."}
                             </p>
                           </div>
                         </div>
 
-                        {/* Extracted Details with Premium Scroll Layout */}
-                        <div className="space-y-5 max-h-[460px] overflow-y-auto pr-2 custom-scrollbar">
+                        {/* Report list */}
+                        <div className="space-y-5 max-h-[440px] overflow-y-auto pr-2 custom-scrollbar">
                           
-                          {/* Final Recruiter Verdict */}
-                          <div className="bg-gradient-to-r from-purple-950/20 to-indigo-950/20 border border-purple-500/10 rounded-2xl p-4">
-                            <span className="text-[9px] font-mono text-purple-400 uppercase tracking-widest block font-bold mb-1">
-                              Final Recruiter Verdict
+                          <div className="bg-indigo-500/5 border border-indigo-500/10 rounded-2xl p-4">
+                            <span className="text-[9px] font-mono text-indigo-600 dark:text-indigo-400 uppercase tracking-widest block font-black mb-1">
+                              Verdict Summary
                             </span>
-                            <p className="text-xs text-slate-300 leading-relaxed font-sans">
+                            <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed font-medium">
                               {atsResult.verdict || `Current ATS Score: ${atsResult.score}/100. This resume has a solid base structure and is suitable for target developer profiles.`}
                             </p>
                           </div>
 
-                          {/* Score Breakdown with Dot Leaders */}
-                          {(() => {
-                            const breakdown = atsResult.breakdown || {
-                              formatting: Math.min(20, Math.round(atsResult.score * 0.2)),
-                              contactInfo: 9,
-                              summary: Math.min(10, Math.round(atsResult.score * 0.1)),
-                              skills: Math.min(10, Math.round(atsResult.score * 0.1)),
-                              experience: Math.min(10, Math.round(atsResult.score * 0.1)),
-                              projects: Math.min(20, Math.round(atsResult.score * 0.2)),
-                              education: 4,
-                              certifications: 4,
-                              keywords: Math.min(10, Math.round(atsResult.score * 0.1))
-                            };
-                            return (
-                              <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-4 space-y-3">
-                                <span className="text-[9px] font-mono text-blue-400 uppercase tracking-widest block font-bold">
-                                  ATS Score Breakdown
-                                </span>
-                                <div className="space-y-2 text-xs">
-                                  {[
-                                    { name: "ATS Formatting", val: breakdown.formatting, max: 20 },
-                                    { name: "Contact Information", val: breakdown.contactInfo, max: 10 },
-                                    { name: "Professional Summary", val: breakdown.summary, max: 10 },
-                                    { name: "Technical Skills", val: breakdown.skills, max: 10 },
-                                    { name: "Work Experience", val: breakdown.experience, max: 10 },
-                                    { name: "Projects", val: breakdown.projects, max: 20 },
-                                    { name: "Education", val: breakdown.education, max: 5 },
-                                    { name: "Certifications", val: breakdown.certifications, max: 5 },
-                                    { name: "ATS Keywords", val: breakdown.keywords, max: 10 }
-                                  ].map((b, idx) => (
-                                    <div key={idx} className="flex justify-between items-center text-[11px] text-slate-300 font-sans">
-                                      <span className="shrink-0">{b.name}</span>
-                                      <div className="flex-grow border-b border-dotted border-white/10 mx-2 translate-y-1.5" />
-                                      <span className="font-mono text-slate-400 shrink-0">{b.val}/{b.max}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            );
-                          })()}
-
-                          {/* Strengths Section */}
-                          {(() => {
-                            const strengths = atsResult.strengths || [
-                              "ATS-friendly layout template structure",
-                              "Strong core developer skill metrics matching targets"
-                            ];
-                            return (
-                              <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-4 space-y-3">
-                                <span className="text-[9px] font-mono text-emerald-400 uppercase tracking-widest block font-bold">
-                                  What's Excellent ✅
-                                </span>
-                                <ul className="space-y-2 text-xs text-slate-300 font-sans">
-                                  {strengths.map((str: string, i: number) => (
-                                    <li key={i} className="flex items-start gap-2">
-                                      <span className="text-emerald-400 font-bold shrink-0">✓</span>
-                                      <span>{str}</span>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
-                            );
-                          })()}
-
-                          {/* Actionable Improvements with weighted impacts */}
-                          {(() => {
-                            const improvements = atsResult.improvements || [
-                              { text: "Incorporate more quantified metrics in project details", impact: 2 }
-                            ];
-                            return (
-                              <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-4 space-y-3">
-                                <span className="text-[9px] font-mono text-amber-400 uppercase tracking-widest block font-bold">
-                                  Improvement Suggestions
-                                </span>
-                                <div className="space-y-2">
-                                  {improvements.map((imp: any, i: number) => (
-                                    <div key={i} className="flex items-start justify-between bg-white/[0.02] border border-white/5 rounded-xl p-3 text-xs leading-relaxed gap-3">
-                                      <span className="text-slate-300 font-sans">{imp.text || imp}</span>
-                                      {imp.impact && (
-                                        <span className="px-2 py-0.5 bg-amber-500/10 border border-amber-500/15 text-amber-400 text-[9px] font-mono rounded font-bold shrink-0">
-                                          +{imp.impact}
-                                        </span>
-                                      )}
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            );
-                          })()}
-
-                          {/* Company Compatibility Predictions */}
-                          {(() => {
-                            const comp = atsResult.companyCompatibility || {
-                              tcsInfosysWipro: "90+/100",
-                              accentureCapgemini: "88+/100",
-                              startups: "85–90/100",
-                              productCompanies: "82–87/100",
-                              amazon: "80–85/100",
-                              microsoft: "78–83/100",
-                              google: "75–80/100"
-                            };
-                            return (
-                              <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-4 space-y-3">
-                                <span className="text-[9px] font-mono text-purple-400 uppercase tracking-widest block font-bold">
-                                  Estimated Compatibility
-                                </span>
-                                <div className="space-y-2 text-xs">
-                                  {[
-                                    { name: "TCS / Infosys / Wipro", val: comp.tcsInfosysWipro },
-                                    { name: "Accenture / Capgemini", val: comp.accentureCapgemini },
-                                    { name: "Startups", val: comp.startups },
-                                    { name: "Product Companies", val: comp.productCompanies },
-                                    { name: "Amazon", val: comp.amazon },
-                                    { name: "Microsoft", val: comp.microsoft },
-                                    { name: "Google", val: comp.google }
-                                  ].map((item, idx) => (
-                                    <div key={idx} className="flex justify-between items-center text-[11px] text-slate-300 font-sans">
-                                      <span className="shrink-0">{item.name}</span>
-                                      <div className="flex-grow border-b border-dotted border-white/10 mx-2 translate-y-1.5" />
-                                      <span className="font-mono text-slate-400 shrink-0">{item.val}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            );
-                          })()}
-
-                          {/* Keywords Lists */}
+                          {/* Keywords lists */}
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-4 space-y-2">
-                              <span className="text-[9px] font-mono text-emerald-400 uppercase tracking-widest block font-bold">
+                            <div className="bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl p-4 space-y-3 shadow-inner">
+                              <span className="text-[9px] font-mono text-emerald-600 dark:text-emerald-400 uppercase tracking-widest block font-black">
                                 Keywords Matched
                               </span>
                               <div className="flex flex-wrap gap-1">
                                 {atsResult.keywordsMatched?.map((word: string, i: number) => (
                                   <span
                                     key={i}
-                                    className="px-2 py-0.5 bg-emerald-950/20 border border-emerald-900/10 text-emerald-400 rounded text-[9px] font-mono"
+                                    className="px-2 py-0.5 bg-emerald-50/10 border border-emerald-500/15 text-emerald-600 dark:text-emerald-400 rounded text-[9px] font-mono font-medium"
                                   >
                                     {word}
                                   </span>
-                                )) || <span className="text-[10px] text-slate-500">None</span>}
+                                )) || <span className="text-[10px] text-[var(--color-text-tertiary)] italic">None</span>}
                               </div>
                             </div>
 
-                            <div className="bg-white/[0.01] border border-white/5 rounded-2xl p-4 space-y-2">
-                              <span className="text-[9px] font-mono text-red-400 uppercase tracking-widest block font-bold">
+                            <div className="bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl p-4 space-y-3 shadow-inner">
+                              <span className="text-[9px] font-mono text-red-600 dark:text-red-400 uppercase tracking-widest block font-black">
                                 Missing Keywords
                               </span>
                               <div className="flex flex-wrap gap-1">
                                 {atsResult.missingKeywords?.map((word: string, i: number) => (
                                   <span
                                     key={i}
-                                    className="px-2 py-0.5 bg-red-950/20 border border-red-500/10 text-red-400 rounded text-[9px] font-mono"
+                                    className="px-2 py-0.5 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 rounded text-[9px] font-mono font-medium"
                                   >
                                     {word}
                                   </span>
-                                )) || <span className="text-[10px] text-slate-500">None</span>}
+                                )) || <span className="text-[10px] text-[var(--color-text-tertiary)] italic">None</span>}
                               </div>
                             </div>
                           </div>
 
+                          {/* Copiable templates */}
                           {atsResult.score < 80 && (
-                            <div className="mt-4 border-t border-white/5 pt-4 space-y-3">
-                              <div className="bg-amber-500/5 border border-amber-500/10 rounded-2xl p-4 space-y-2">
-                                <div className="flex items-start space-x-2.5">
-                                  <div className="w-5 h-5 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-400 shrink-0 text-xs">
-                                    💡
-                                  </div>
-                                  <div>
-                                    <h5 className="text-xs font-bold text-amber-400">ATS-Friendly Template Recommendation</h5>
-                                    <p className="text-[11px] text-slate-400 leading-relaxed font-sans mt-0.5">
-                                      Since your score is under 80, formatting errors may be impacting your parsing rate. Copy this industry-standard single-column layout to restructure your details:
-                                    </p>
-                                  </div>
+                            <div className="bg-amber-500/5 border border-amber-500/10 rounded-2xl p-4 space-y-2.5">
+                              <div className="flex items-start space-x-2.5">
+                                <div className="w-5 h-5 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 shrink-0 text-xs font-bold">
+                                  💡
                                 </div>
-                                
-                                <div className="mt-3">
-                                  <textarea
-                                    readOnly
-                                    value={ATS_FRIENDLY_TEMPLATE}
-                                    className="w-full h-32 bg-[#050608] border border-white/10 rounded-xl p-3 text-[10px] font-mono text-slate-300 focus:outline-none focus:border-amber-500/30"
-                                  />
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      navigator.clipboard.writeText(ATS_FRIENDLY_TEMPLATE);
-                                      alert("ATS template copied to clipboard!");
-                                    }}
-                                    className="mt-2 text-[10px] font-mono font-bold text-amber-400 hover:text-amber-300 transition duration-150 flex items-center space-x-1"
-                                  >
-                                    <span>[Copy Template]</span>
-                                  </button>
+                                <div className="space-y-0.5">
+                                  <h5 className="text-xs font-black text-amber-600 dark:text-amber-400">ATS Template Recommendation</h5>
+                                  <p className="text-[10px] text-[var(--color-text-secondary)] leading-relaxed font-medium">
+                                    Since your score is under 80, formatting errors may be hindering parsing. Copy this standard single-column layout structure:
+                                  </p>
                                 </div>
+                              </div>
+                              
+                              <div className="mt-2 text-left">
+                                <textarea
+                                  readOnly
+                                  value={ATS_FRIENDLY_TEMPLATE}
+                                  className="w-full h-32 bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-xl p-3 text-[10px] font-mono text-[var(--color-text-secondary)] focus:outline-none"
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(ATS_FRIENDLY_TEMPLATE);
+                                    alert("ATS template copied to clipboard!");
+                                  }}
+                                  className="mt-2 text-[10px] font-mono font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center space-x-1 cursor-pointer"
+                                >
+                                  <span>[Copy Template to Clipboard]</span>
+                                </button>
                               </div>
                             </div>
                           )}
                         </div>
                       </motion.div>
                     ) : (
-                      <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
-                        <ClipboardList className="w-10 h-10 text-slate-600 mb-2" />
-                        <h3 className="text-sm font-bold text-slate-400">Scan Results Pending</h3>
-                        <p className="text-xs text-slate-500 mt-1 max-w-xs font-sans">
+                      <div className="flex-grow flex flex-col items-center justify-center text-center p-4">
+                        <ClipboardList className="w-10 h-10 text-[var(--color-text-tertiary)] mb-3" />
+                        <h3 className="text-sm font-bold text-[var(--color-text-secondary)]">Scan Results Pending</h3>
+                        <p className="text-xs text-[var(--color-text-tertiary)] mt-1.5 max-w-xs font-medium font-sans leading-relaxed">
                           Input the target job description in the form to check matching indices and keyword density.
                         </p>
                       </div>
@@ -1770,7 +1446,7 @@ export default function DashboardPage({
               </motion.div>
             )}
 
-            {/* Job Matcher Tab */}
+            {/* Tab: Job Matcher */}
             {activeTab === "jobs" && (
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
@@ -1780,15 +1456,15 @@ export default function DashboardPage({
               >
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div>
-                    <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Neural Job Matcher</h1>
-                    <p className="text-xs text-slate-400 mt-1">
+                    <h1 className="text-2xl sm:text-3xl font-black">Neural Job Matcher</h1>
+                    <p className="text-xs text-[var(--color-text-secondary)] mt-1 font-medium">
                       Our intelligence matchers examine your profile skills to recommend real roles and companies.
                     </p>
                   </div>
                   <button
                     onClick={handleJobMatching}
                     disabled={matchingJobs}
-                    className="px-4 py-2 bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 font-mono text-xs uppercase tracking-wider font-bold rounded-xl transition duration-200"
+                    className="px-5 py-3 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider text-white shadow-md disabled:opacity-50"
                   >
                     {matchingJobs ? "Matching..." : "Refresh Job Matches"}
                   </button>
@@ -1796,8 +1472,8 @@ export default function DashboardPage({
 
                 {matchingJobs ? (
                   <div className="h-64 flex flex-col items-center justify-center space-y-2">
-                    <div className="w-8 h-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-                    <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                    <div className="w-8 h-8 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin" />
+                    <span className="text-[10px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">
                       Consulting market indices...
                     </span>
                   </div>
@@ -1809,59 +1485,59 @@ export default function DashboardPage({
                         initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.4, delay: idx * 0.05 }}
-                        whileHover={{ y: -4, borderColor: "rgba(59, 130, 246, 0.3)", backgroundColor: "rgba(255, 255, 255, 0.02)" }}
-                        className="p-6 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl flex flex-col justify-between space-y-6 transition duration-300"
+                        whileHover={{ y: -4 }}
+                        className="p-6 clay-card flex flex-col justify-between space-y-6 transition duration-300"
                       >
                         <div>
                           <div className="flex justify-between items-start">
-                            <span className="px-2.5 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 font-mono text-[10px] font-bold rounded">
+                            <span className="px-2.5 py-1 bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-mono text-[10px] font-black rounded-lg">
                               <CountUpText to={job.matchPercentage} suffix="% Match" />
                             </span>
-                            <span className="text-[9px] font-mono text-slate-500 uppercase">
+                            <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-bold">
                               Rank #{idx + 1}
                             </span>
                           </div>
 
-                          <h3 className="mt-4 text-base font-bold text-slate-200 leading-tight">
+                          <h3 className="mt-4 text-base font-extrabold text-[var(--color-text-primary)] leading-tight">
                             {job.role}
                           </h3>
-                          <p className="text-xs text-blue-400 font-mono font-semibold">{job.company}</p>
+                          <p className="text-xs text-indigo-600 dark:text-indigo-400 font-mono font-bold mt-0.5">{job.company}</p>
 
-                          <p className="mt-3 text-xs text-slate-400 font-sans leading-relaxed line-clamp-3">
+                          <p className="mt-3 text-xs text-[var(--color-text-secondary)] font-medium font-sans leading-relaxed line-clamp-3">
                             {job.description}
                           </p>
                         </div>
 
-                        <div className="space-y-4 border-t border-white/5 pt-4">
+                        <div className="space-y-4 border-t border-[var(--color-border)] pt-4">
                           <div>
-                            <h4 className="text-[9px] font-mono text-emerald-400 uppercase tracking-wider mb-1.5">
+                            <h4 className="text-[9px] font-mono text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-2 font-bold">
                               Leveraged Strengths
                             </h4>
                             <div className="flex flex-wrap gap-1">
                               {job.strengths?.map((str: string, i: number) => (
                                 <span
                                   key={i}
-                                  className="px-1.5 py-0.5 bg-emerald-950/20 text-emerald-400 rounded text-[9px] font-mono"
+                                  className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-lg text-[9px] font-mono font-medium"
                                 >
                                   {str}
                                 </span>
-                              )) || <span className="text-[9px] text-slate-500">None</span>}
+                              )) || <span className="text-[9px] text-[var(--color-text-tertiary)]">None</span>}
                             </div>
                           </div>
 
                           <div>
-                            <h4 className="text-[9px] font-mono text-red-400 uppercase tracking-wider mb-1.5">
+                            <h4 className="text-[9px] font-mono text-red-600 dark:text-red-400 uppercase tracking-wider mb-2 font-bold">
                               Unmet Requirements
                             </h4>
                             <div className="flex flex-wrap gap-1">
                               {job.missingRequirements?.map((req: string, i: number) => (
                                 <span
                                   key={i}
-                                  className="px-1.5 py-0.5 bg-red-950/20 text-red-400 rounded text-[9px] font-mono"
+                                  className="px-2 py-0.5 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 rounded-lg text-[9px] font-mono font-medium"
                                 >
                                   {req}
                                 </span>
-                              )) || <span className="text-[9px] text-slate-500">None</span>}
+                              )) || <span className="text-[9px] text-[var(--color-text-tertiary)]">None</span>}
                             </div>
                           </div>
                         </div>
@@ -1869,15 +1545,15 @@ export default function DashboardPage({
                     ))}
                   </div>
                 ) : (
-                  <div className="h-64 flex flex-col items-center justify-center text-center bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl p-6">
-                    <Briefcase className="w-8 h-8 text-slate-600 mb-2" />
-                    <h3 className="text-sm font-bold text-slate-400">No Job Matches Cached</h3>
-                    <p className="text-xs text-slate-500 mt-1 max-w-xs font-sans">
+                  <div className="h-64 flex flex-col items-center justify-center text-center clay-card p-6 max-w-xl mx-auto my-6">
+                    <Briefcase className="w-10 h-10 text-[var(--color-text-tertiary)] mb-3" />
+                    <h3 className="text-sm font-bold text-[var(--color-text-secondary)]">No Job Matches Cached</h3>
+                    <p className="text-xs text-[var(--color-text-tertiary)] mt-1.5 max-w-xs font-medium font-sans leading-relaxed">
                       Trigger neural matching to inspect prospective companies and custom fit analysis.
                     </p>
                     <button
                       onClick={handleJobMatching}
-                      className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-mono uppercase tracking-wider font-bold rounded-xl transition duration-200"
+                      className="mt-6 px-5 py-3 clay-btn clay-btn-primary text-white text-xs font-mono uppercase tracking-wider font-bold shadow-md"
                     >
                       Trigger Neural Matcher
                     </button>
@@ -1886,7 +1562,7 @@ export default function DashboardPage({
               </motion.div>
             )}
 
-            {/* Skill Gaps & Roadmap Tab */}
+            {/* Tab: Skill Gaps */}
             {activeTab === "roadmap" && (
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
@@ -1895,21 +1571,21 @@ export default function DashboardPage({
                 className="space-y-6"
               >
                 <div>
-                  <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Skill Gap & Learning Roadmap</h1>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <h1 className="text-2xl sm:text-3xl font-black">Skill Gap & Learning Roadmap</h1>
+                  <p className="text-xs text-[var(--color-text-secondary)] mt-1 font-medium">
                     State your target career goal, and the system will design a visual learning path to bridge the tech skill gaps.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Goal Input form */}
-                  <div className="p-6 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl h-fit space-y-4">
-                    <h2 className="text-xs font-mono text-slate-400 uppercase tracking-wider">
+                  <div className="p-6 clay-card h-fit space-y-5">
+                    <h2 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">
                       Configure Target Role
                     </h2>
                     <form onSubmit={handleSkillGapAnalysis} className="space-y-4">
                       <div>
-                        <label className="block text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-2">
+                        <label className="block text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider mb-2 font-bold">
                           Target Role Title
                         </label>
                         <input
@@ -1918,50 +1594,50 @@ export default function DashboardPage({
                           onChange={(e) => setTargetCareerRole(e.target.value)}
                           placeholder="e.g. Senior Cloud Engineer, Lead Architect"
                           required
-                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-blue-500/50 text-slate-300"
+                          className="w-full clay-input px-4 py-3 text-xs text-[var(--color-text-primary)] focus:outline-none"
                         />
                       </div>
 
                       <button
                         type="submit"
                         disabled={analyzingGaps}
-                        className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-[10px] font-mono uppercase tracking-wider font-bold rounded-xl text-white transition duration-200"
+                        className="w-full py-3.5 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider font-bold text-white shadow-md"
                       >
                         {analyzingGaps ? "Synthesizing Roadmap..." : "Calculate Skill Gaps"}
                       </button>
                     </form>
 
                     {skillGapResult && (
-                      <div className="pt-4 border-t border-white/5 space-y-4">
+                      <div className="pt-4 border-t border-[var(--color-border)] space-y-4 font-sans text-xs">
                         <div>
-                          <h4 className="text-[9px] font-mono text-emerald-400 uppercase tracking-wider mb-1.5">
+                          <h4 className="text-[9px] font-mono text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-2 font-bold">
                             Possessed Skills
                           </h4>
-                          <div className="flex flex-wrap gap-1 max-h-[80px] overflow-y-auto">
+                          <div className="flex flex-wrap gap-1.5 max-h-[100px] overflow-y-auto pr-1 custom-scrollbar">
                             {skillGapResult.currentSkills?.map((skill: string, i: number) => (
                               <span
                                 key={i}
-                                className="px-1.5 py-0.5 bg-emerald-950/20 border border-emerald-900/10 text-emerald-400 rounded text-[9px] font-mono"
+                                className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-lg text-[9px] font-mono font-medium"
                               >
                                 {skill}
                               </span>
-                            )) || <span className="text-[10px] text-gray-500">None</span>}
+                            )) || <span className="text-[10px] text-[var(--color-text-tertiary)]">None</span>}
                           </div>
                         </div>
 
                         <div>
-                          <h4 className="text-[9px] font-mono text-red-400 uppercase tracking-wider mb-1.5">
+                          <h4 className="text-[9px] font-mono text-red-600 dark:text-red-400 uppercase tracking-wider mb-2 font-bold">
                             Core Skill Deficits
                           </h4>
-                          <div className="flex flex-wrap gap-1 max-h-[80px] overflow-y-auto">
+                          <div className="flex flex-wrap gap-1.5 max-h-[100px] overflow-y-auto pr-1 custom-scrollbar">
                             {skillGapResult.missingSkills?.map((skill: string, i: number) => (
                               <span
                                 key={i}
-                                className="px-1.5 py-0.5 bg-red-950/20 border border-red-500/10 text-red-400 rounded text-[9px] font-mono"
+                                className="px-2 py-0.5 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 rounded-lg text-[9px] font-mono font-medium"
                               >
                                 {skill}
                               </span>
-                            )) || <span className="text-[10px] text-slate-500">None</span>}
+                            )) || <span className="text-[10px] text-[var(--color-text-tertiary)]">None</span>}
                           </div>
                         </div>
                       </div>
@@ -1969,46 +1645,46 @@ export default function DashboardPage({
                   </div>
 
                   {/* Roadmap Timeline */}
-                  <div className="lg:col-span-2 p-6 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl min-h-[400px]">
-                    <div className="flex justify-between items-center border-b border-white/5 pb-3 mb-6">
-                      <h3 className="text-xs font-mono text-slate-400 uppercase tracking-wider">
+                  <div className="lg:col-span-2 p-6 clay-card min-h-[400px]">
+                    <div className="flex justify-between items-center border-b border-[var(--color-border)] pb-3 mb-6">
+                      <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">
                         Tailored Multi-Week Roadmap
                       </h3>
-                      <span className="text-[9px] font-mono text-slate-500 uppercase">
+                      <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-bold">
                         Timeline Sequence
                       </span>
                     </div>
 
                     {analyzingGaps ? (
-                      <div className="h-64 flex flex-col items-center justify-center space-y-2">
-                        <div className="w-8 h-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-                        <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                      <div className="h-64 flex flex-col items-center justify-center space-y-3">
+                        <div className="w-8 h-8 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin" />
+                        <span className="text-[10px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">
                           Assembling educational plan...
                         </span>
                       </div>
                     ) : skillGapResult?.learningRoadmap && skillGapResult.learningRoadmap.length > 0 ? (
                       <div className="space-y-6">
                         {skillGapResult.learningRoadmap.map((step: any, idx: number) => (
-                          <div key={idx} className="relative pl-8 border-l border-white/10 pb-2">
-                            <div className="absolute w-6 h-6 rounded-full bg-blue-950 border border-blue-500/30 text-blue-400 font-mono text-[10px] font-bold flex items-center justify-center top-0.5 left-[-12px]">
+                          <div key={idx} className="relative pl-8 border-l-2 border-[var(--color-border)] pb-4">
+                            <div className="absolute w-6 h-6 rounded-full bg-[var(--color-bg-page)] border border-indigo-500 text-indigo-600 dark:text-indigo-400 font-mono text-[10px] font-black flex items-center justify-center top-0.5 left-[-13px] shadow-sm">
                               {idx + 1}
                             </div>
                             <div className="flex justify-between items-start text-xs">
-                              <h4 className="font-bold text-slate-200">{step.title}</h4>
-                              <span className="text-[10px] font-mono text-blue-400 shrink-0 bg-blue-500/10 border border-blue-500/10 px-2 py-0.5 rounded">
+                              <h4 className="font-extrabold text-[var(--color-text-primary)]">{step.title}</h4>
+                              <span className="text-[9px] font-mono text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded-lg font-bold">
                                 {step.duration}
                               </span>
                             </div>
-                            <p className="text-[11px] text-slate-400 font-sans mt-1.5 leading-relaxed">
+                            <p className="text-[11px] text-[var(--color-text-secondary)] font-medium font-sans mt-1.5 leading-relaxed">
                               {step.description}
                             </p>
                             {step.resources && step.resources.length > 0 && (
-                              <div className="mt-2 flex flex-wrap gap-1.5 items-center">
-                                <span className="text-[9px] font-mono text-slate-500 uppercase tracking-wider">Resources:</span>
+                              <div className="mt-2.5 flex flex-wrap gap-1.5 items-center">
+                                <span className="text-[8px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider font-black">Resources:</span>
                                 {step.resources.map((res: string, rIdx: number) => (
                                   <span
                                     key={rIdx}
-                                    className="px-2 py-0.5 bg-white/5 border border-white/10 rounded text-[9px] font-mono text-slate-300"
+                                    className="px-2 py-0.5 bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded text-[9px] font-mono text-[var(--color-text-secondary)] font-medium shadow-sm"
                                   >
                                     {res}
                                   </span>
@@ -2020,9 +1696,9 @@ export default function DashboardPage({
                       </div>
                     ) : (
                       <div className="h-64 flex flex-col items-center justify-center text-center p-4">
-                        <BookOpen className="w-10 h-10 text-slate-600 mb-2" />
-                        <h3 className="text-sm font-bold text-slate-400 font-mono uppercase tracking-wider">Plan Offline</h3>
-                        <p className="text-xs text-slate-500 mt-1 max-w-xs font-sans">
+                        <BookOpen className="w-10 h-10 text-[var(--color-text-tertiary)] mb-3" />
+                        <h3 className="text-sm font-bold text-[var(--color-text-secondary)]">Plan Offline</h3>
+                        <p className="text-xs text-[var(--color-text-tertiary)] mt-1.5 max-w-xs font-medium font-sans leading-relaxed">
                           State your career objectives in the sidebar configuration to build a personalized study roadmap.
                         </p>
                       </div>
@@ -2032,7 +1708,7 @@ export default function DashboardPage({
               </motion.div>
             )}
 
-            {/* Career Roadmap Builder Tab */}
+            {/* Tab: Career Roadmap Navigator */}
             {activeTab === "career-roadmap" && (
               <div className={`premium-theme-container ${isLocalLightMode ? "premium-light-theme" : "premium-dark-theme"} w-full text-[var(--theme-text-primary)] bg-[var(--theme-bg-page)] premium-transition pb-24 rounded-3xl overflow-hidden border border-[var(--theme-border)]`}>
                 <motion.div
@@ -2041,7 +1717,7 @@ export default function DashboardPage({
                   transition={{ duration: 0.4 }}
                   className="space-y-8 animate-fade-in"
                 >
-                  {/* Sticky Search Header (Catalog Mode Only) */}
+                  {/* Search Header */}
                   {!selectedCareer && (
                     <div className="sticky top-0 z-30 backdrop-blur-md bg-[var(--theme-bg-page)]/85 border-b border-[var(--theme-border)] py-6 px-8 flex flex-col gap-4">
                       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -2050,29 +1726,13 @@ export default function DashboardPage({
                             <SparklesIcon className="w-7 h-7 text-[var(--theme-accent)]" />
                             <span>Career Path Navigator</span>
                           </h1>
-                          <p className="text-xs text-[var(--theme-text-secondary)] mt-1.5 font-sans">
+                          <p className="text-xs text-[var(--theme-text-secondary)] mt-1.5 font-sans font-medium">
                             Master industry-aligned technical skillsets, practice assignments, and custom structured projects curated for premium job readiness.
                           </p>
-                        </div>
-
-                        {/* Local Theme Toggle Button */}
-                        <div className="flex items-center gap-3">
-                          <button
-                            onClick={() => {
-                              const newTheme = !isLocalLightMode;
-                              setIsLocalLightMode(newTheme);
-                              localStorage.setItem("premium_roadmap_theme", newTheme ? "light" : "dark");
-                            }}
-                            className="p-2.5 rounded-xl border border-[var(--theme-border)] bg-[var(--theme-bg-card)] text-[var(--theme-text-secondary)] hover:text-[var(--theme-text-primary)] hover:border-purple-500/30 transition duration-200 cursor-pointer"
-                            title={isLocalLightMode ? "Switch to Dark Mode" : "Switch to Light Mode"}
-                          >
-                            {isLocalLightMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-                          </button>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-center">
-                        {/* Search Input with instant autocomplete suggestions */}
                         <div className="lg:col-span-2 relative">
                           <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-[var(--theme-text-tertiary)]">
                             <Search className="w-4 h-4" />
@@ -2095,7 +1755,6 @@ export default function DashboardPage({
                             </button>
                           )}
 
-                          {/* Autocomplete Suggestions Dropdown */}
                           {showSuggestions && (
                             <div className="absolute top-full left-0 right-0 mt-2 bg-[var(--theme-bg-card)] border border-[var(--theme-border)] rounded-2xl shadow-xl z-50 py-2 max-h-60 overflow-y-auto">
                               {CAREER_ROADMAPS.filter(c => 
@@ -2118,7 +1777,6 @@ export default function DashboardPage({
                           )}
                         </div>
 
-                        {/* Trending careers suggestions */}
                         <div className="flex flex-wrap items-center gap-2 text-[11px] font-sans">
                           <span className="text-[var(--theme-text-tertiary)] uppercase font-semibold tracking-wider text-[9px] mr-1">Trending:</span>
                           {["AI Engineer", "SDE", "DevOps", "Frontend"].map((trend) => (
@@ -2141,10 +1799,9 @@ export default function DashboardPage({
                         </div>
                       </div>
 
-                      {/* Recent Search history list */}
                       {recentSearches.length > 0 && (
                         <div className="flex flex-wrap items-center gap-2 text-xs pt-1">
-                          <span className="text-[var(--theme-text-tertiary)] flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> Recent:</span>
+                          <span className="text-[var(--theme-text-tertiary)] flex items-center gap-1 font-bold"><Clock className="w-3.5 h-3.5" /> Recent:</span>
                           <div className="flex flex-wrap gap-1.5">
                             {recentSearches.map((s, idx) => (
                               <button
@@ -2165,7 +1822,7 @@ export default function DashboardPage({
                                 setRecentSearches([]);
                                 localStorage.removeItem("premium_roadmap_recent_searches");
                               }}
-                              className="text-[9px] text-red-400 hover:underline pl-1 cursor-pointer"
+                              className="text-[9px] text-red-400 hover:underline pl-1 cursor-pointer font-bold"
                             >
                               Clear History
                             </button>
@@ -2176,7 +1833,7 @@ export default function DashboardPage({
                   )}
 
                   {!selectedCareer ? (
-                    /* CAREER CATALOG VIEW WITH SKELETON LOADING */
+                    /* CATALOG VIEW */
                     isLoadingCatalog ? (
                       <div className="px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {Array.from({ length: 6 }).map((_, i) => (
@@ -2194,10 +1851,6 @@ export default function DashboardPage({
                                 <div className="w-full h-4 rounded bg-[var(--theme-border)] premium-skeleton" />
                                 <div className="w-5/6 h-4 rounded bg-[var(--theme-border)] premium-skeleton" />
                               </div>
-                              <div className="space-y-2 border-t border-[var(--theme-border)] pt-4">
-                                <div className="w-1/2 h-3 rounded bg-[var(--theme-border)] premium-skeleton" />
-                                <div className="w-2/3 h-3 rounded bg-[var(--theme-border)] premium-skeleton" />
-                              </div>
                             </div>
                             <div className="w-full h-11 rounded-xl bg-[var(--theme-border)] premium-skeleton" />
                           </div>
@@ -2214,12 +1867,12 @@ export default function DashboardPage({
 
                           if (filteredCareers.length === 0) {
                             return (
-                              <div className="col-span-full neomorph-card p-16 text-center flex flex-col items-center justify-center space-y-4">
-                                <AlertCircle className="w-12 h-12 text-[var(--theme-text-tertiary)]" />
+                              <div className="col-span-full clay-card p-16 text-center flex flex-col items-center justify-center space-y-4">
+                                <AlertCircle className="w-12 h-12 text-[var(--theme-text-tertiary)] animate-pulse" />
                                 <h3 className="text-base font-bold text-[var(--theme-text-primary)] font-mono uppercase tracking-wider">
                                   No Career Tracks Found
                                 </h3>
-                                <p className="text-xs text-[var(--theme-text-secondary)] max-w-sm font-sans">
+                                <p className="text-xs text-[var(--theme-text-secondary)] max-w-sm font-sans font-medium">
                                   Try typing in direct keywords like "SDE", "Java", "Python", "Data", "Cyber", or "DevOps".
                                 </p>
                               </div>
@@ -2245,7 +1898,6 @@ export default function DashboardPage({
                                 className="bg-[var(--theme-bg-card)] border border-[var(--theme-border)] rounded-3xl p-6 flex flex-col justify-between h-[380px] premium-transition relative group"
                               >
                                 <div className="space-y-4">
-                                  {/* Card Top: Icon & Demand Badge */}
                                   <div className="flex justify-between items-start">
                                     <div className="w-12 h-12 rounded-2xl flex items-center justify-center bg-[var(--theme-accent-soft)] border border-purple-500/10 text-[var(--theme-accent)]">
                                       {renderCareerIcon(career.icon)}
@@ -2255,43 +1907,40 @@ export default function DashboardPage({
                                         {career.demandScore}% Demand
                                       </span>
                                       {completedList.length > 0 && (
-                                        <span className="text-[9px] font-mono text-emerald-500 bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 rounded-full">
+                                        <span className="text-[9px] font-mono text-emerald-500 bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 rounded-full font-bold">
                                           Active
                                         </span>
                                       )}
                                     </div>
                                   </div>
 
-                                  {/* Title & Short Clamped Description */}
                                   <div>
                                     <h3 className="text-base font-extrabold text-[var(--theme-text-primary)] group-hover:text-[var(--theme-accent)] transition-colors duration-200 font-sans">
                                       {career.title}
                                     </h3>
-                                    <p className="text-xs text-[var(--theme-text-secondary)] mt-2 line-clamp-2 font-sans leading-relaxed">
+                                    <p className="text-xs text-[var(--theme-text-secondary)] mt-2 line-clamp-2 font-sans leading-relaxed font-medium">
                                       {career.description}
                                     </p>
                                   </div>
 
-                                  {/* Metadata Rows: Spaced Out cleanly (duration, courses, salary) */}
-                                  <div className="space-y-2 border-t border-[var(--theme-border)] pt-4 text-xs font-mono">
+                                  <div className="space-y-2 border-t border-[var(--theme-border)] pt-4 text-xs font-mono font-bold">
                                     <div className="flex justify-between items-center">
-                                      <span className="text-[var(--theme-text-tertiary)] uppercase text-[9px] tracking-wider font-semibold">Est. Salary</span>
-                                      <span className="text-emerald-500 font-bold">{career.salaryLPA}</span>
+                                      <span className="text-[var(--theme-text-tertiary)] uppercase text-[9px] tracking-wider">Est. Salary</span>
+                                      <span className="text-emerald-500">{career.salaryLPA}</span>
                                     </div>
                                     <div className="flex justify-between items-center">
-                                      <span className="text-[var(--theme-text-tertiary)] uppercase text-[9px] tracking-wider font-semibold">Est. Duration</span>
-                                      <span className="text-blue-400 font-bold">{career.durationMonths} Months</span>
+                                      <span className="text-[var(--theme-text-tertiary)] uppercase text-[9px] tracking-wider">Est. Duration</span>
+                                      <span className="text-blue-400">{career.durationMonths} Months</span>
                                     </div>
                                     <div className="flex justify-between items-center">
-                                      <span className="text-[var(--theme-text-tertiary)] uppercase text-[9px] tracking-wider font-semibold">Stage Checklist</span>
-                                      <span className="text-[var(--theme-text-primary)] font-bold">{career.milestones.length} Phases</span>
+                                      <span className="text-[var(--theme-text-tertiary)] uppercase text-[9px] tracking-wider">Phases</span>
+                                      <span className="text-[var(--theme-text-primary)]">{career.milestones.length} Stages</span>
                                     </div>
                                   </div>
 
-                                  {/* Overall Progress Indicator (if active) */}
                                   {completedList.length > 0 ? (
                                     <div className="space-y-1 pt-1">
-                                      <div className="flex justify-between text-[9px] font-mono text-[var(--theme-text-secondary)]">
+                                      <div className="flex justify-between text-[9px] font-mono text-[var(--theme-text-secondary)] font-bold">
                                         <span>Pathway Completed</span>
                                         <span>{progressPercent}%</span>
                                       </div>
@@ -2303,9 +1952,8 @@ export default function DashboardPage({
                                       </div>
                                     </div>
                                   ) : (
-                                    /* Hiring Companies overlapping avatars block */
                                     <div className="pt-2 flex justify-between items-center">
-                                      <span className="text-[9px] font-mono text-[var(--theme-text-tertiary)] uppercase tracking-wider font-semibold">Top Hiring Tech</span>
+                                      <span className="text-[9px] font-mono text-[var(--theme-text-tertiary)] uppercase tracking-wider font-bold">Top Hiring Entities</span>
                                       <div className="flex -space-x-1.5 overflow-hidden">
                                         {career.hiringCompanies.slice(0, 4).map((company, i) => {
                                           const initials = company.split(" ").map(w => w[0]).join("").slice(0, 2);
@@ -2318,7 +1966,7 @@ export default function DashboardPage({
                                           return (
                                             <div
                                               key={i}
-                                              className={`w-6 h-6 rounded-full border flex items-center justify-center text-[9px] font-mono font-bold ${colors[i % colors.length]} bg-[var(--theme-bg-card)]`}
+                                              className={`w-6 h-6 rounded-full border flex items-center justify-center text-[9px] font-mono font-black ${colors[i % colors.length]} bg-[var(--theme-bg-card)]`}
                                               title={company}
                                             >
                                               {initials}
@@ -2335,10 +1983,10 @@ export default function DashboardPage({
                                     addRecentSearch(career.title);
                                     setSelectedCareer(career);
                                   }}
-                                  className="w-full mt-4 py-2.5 bg-[var(--theme-accent-soft)] hover:bg-[var(--theme-accent)] text-[var(--theme-accent)] hover:text-white border border-[var(--theme-accent)]/15 text-xs font-mono uppercase tracking-wider font-bold rounded-xl transition-all duration-200 flex items-center justify-center gap-1 shadow-sm hover:shadow-purple-500/10 cursor-pointer font-sans"
+                                  className="w-full mt-4 py-2.5 bg-[var(--theme-accent-soft)] hover:bg-[var(--theme-accent)] text-[var(--theme-accent)] hover:text-white border border-[var(--theme-accent)]/15 text-xs font-bold rounded-xl transition duration-200 flex items-center justify-center gap-1 shadow-sm hover:shadow-purple-500/10 cursor-pointer"
                                 >
                                   <span>View Roadmap</span>
-                                  <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                                  <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition" />
                                 </button>
                               </motion.div>
                             );
@@ -2347,75 +1995,60 @@ export default function DashboardPage({
                       </div>
                     )
                   ) : (
-                    /* DEDICATED ROADMAP TIMELINE VIEW */
+                    /* DEDICATED SYLLABUS TIMELINE */
                     <div className="px-8 space-y-8">
-                      {/* Back button & Header Area */}
                       <div className="bg-[var(--theme-bg-card)] border border-[var(--theme-border)] rounded-3xl p-8 space-y-6 shadow-[var(--theme-card-shadow)]">
                         <div className="flex justify-between items-center">
                           <button
                             onClick={() => setSelectedCareer(null)}
-                            className="flex items-center gap-2 text-xs font-mono text-[var(--theme-text-secondary)] hover:text-[var(--theme-text-primary)] border border-[var(--theme-border)] bg-[var(--theme-inner-input)] px-4 py-2 rounded-xl transition duration-200 shadow-sm cursor-pointer"
+                            className="flex items-center gap-2 text-xs font-mono text-[var(--theme-text-secondary)] hover:text-[var(--theme-text-primary)] border border-[var(--theme-border)] bg-[var(--theme-inner-input)] px-4 py-2 rounded-xl transition duration-200 shadow-sm cursor-pointer font-bold"
                           >
                             <ArrowLeft className="w-4 h-4" />
                             <span>Back to Directory</span>
-                          </button>
-
-                          {/* Light/Dark Toggle */}
-                          <button
-                            onClick={() => {
-                              const newTheme = !isLocalLightMode;
-                              setIsLocalLightMode(newTheme);
-                              localStorage.setItem("premium_roadmap_theme", newTheme ? "light" : "dark");
-                            }}
-                            className="p-2.5 rounded-xl border border-[var(--theme-border)] bg-[var(--theme-inner-input)] text-[var(--theme-text-secondary)] hover:text-[var(--theme-text-primary)] transition cursor-pointer"
-                          >
-                            {isLocalLightMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
                           </button>
                         </div>
 
                         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 border-t border-[var(--theme-border)] pt-6">
                           <div className="space-y-2">
-                            <span className="text-[9px] font-mono text-[var(--theme-accent)] uppercase tracking-widest bg-[var(--theme-accent-soft)] px-2.5 py-0.5 rounded-full font-bold">
+                            <span className="text-[9px] font-mono text-[var(--theme-accent)] uppercase tracking-widest bg-[var(--theme-accent-soft)] px-2.5 py-0.5 rounded-full font-black">
                               Verified Learning Pathway
                             </span>
                             <h2 className="text-2xl font-black text-[var(--theme-text-primary)] font-sans">{selectedCareer.title}</h2>
-                            <p className="text-xs text-[var(--theme-text-secondary)] font-sans max-w-2xl leading-relaxed">
+                            <p className="text-xs text-[var(--theme-text-secondary)] font-sans max-w-2xl leading-relaxed font-medium">
                               {selectedCareer.description}
                             </p>
                           </div>
 
-                          {/* Metagrid: MD3 metrics */}
-                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full lg:w-auto shrink-0">
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full lg:w-auto shrink-0 font-mono font-bold">
                             <div className="p-3 bg-[var(--theme-inner-input)] border border-[var(--theme-border)] rounded-2xl text-center shadow-inner">
-                              <span className="block text-[8px] text-[var(--theme-text-tertiary)] font-mono uppercase tracking-wider font-semibold">Avg Salary</span>
-                              <span className="text-xs font-bold text-emerald-500">{selectedCareer.salaryLPA}</span>
+                              <span className="block text-[8px] text-[var(--theme-text-tertiary)] uppercase tracking-wider">Avg Salary</span>
+                              <span className="text-xs text-emerald-500">{selectedCareer.salaryLPA}</span>
                             </div>
                             <div className="p-3 bg-[var(--theme-inner-input)] border border-[var(--theme-border)] rounded-2xl text-center shadow-inner">
-                              <span className="block text-[8px] text-[var(--theme-text-tertiary)] font-mono uppercase tracking-wider font-semibold">Total Duration</span>
-                              <span className="text-xs font-bold text-blue-400">{selectedCareer.durationMonths} Months</span>
+                              <span className="block text-[8px] text-[var(--theme-text-tertiary)] uppercase tracking-wider">Duration</span>
+                              <span className="text-xs text-blue-400">{selectedCareer.durationMonths} Months</span>
                             </div>
                             <div className="p-3 bg-[var(--theme-inner-input)] border border-[var(--theme-border)] rounded-2xl text-center shadow-inner">
-                              <span className="block text-[8px] text-[var(--theme-text-tertiary)] font-mono uppercase tracking-wider font-semibold">Demand Score</span>
-                              <span className="text-xs font-bold text-purple-400">{selectedCareer.demandScore}/100</span>
+                              <span className="block text-[8px] text-[var(--theme-text-tertiary)] uppercase tracking-wider">Demand</span>
+                              <span className="text-xs text-purple-400">{selectedCareer.demandScore}/100</span>
                             </div>
                             <div className="p-3 bg-[var(--theme-inner-input)] border border-[var(--theme-border)] rounded-2xl text-center shadow-inner">
-                              <span className="block text-[8px] text-[var(--theme-text-tertiary)] font-mono uppercase tracking-wider font-semibold">Job Postings</span>
-                              <span className="text-xs font-bold text-amber-500">
+                              <span className="block text-[8px] text-[var(--theme-text-tertiary)] uppercase tracking-wider">Postings</span>
+                              <span className="text-xs text-amber-500">
                                 {selectedCareer.id.includes("sde") ? "4,820+" : selectedCareer.id.includes("ai") ? "1,240+" : "2,500+"}
                               </span>
                             </div>
                           </div>
                         </div>
 
-                        {/* Companies hiring info */}
                         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-t border-[var(--theme-border)] pt-4 text-xs font-sans text-[var(--theme-text-secondary)]">
                           <div className="flex items-center gap-3">
-                            <span className="font-medium text-[var(--theme-text-tertiary)]">Primary Hiring Entities:</span>
+                            <span className="font-bold text-[var(--theme-text-tertiary)]">Hiring Entities:</span>
                             <div className="flex flex-wrap gap-1.5">
                               {selectedCareer.hiringCompanies.map((c, i) => (
                                 <span
                                   key={i}
-                                  className="px-2 py-0.5 bg-[var(--theme-inner-input)] border border-[var(--theme-border)] text-[9px] font-mono text-[var(--theme-text-secondary)] rounded-md"
+                                  className="px-2 py-0.5 bg-[var(--theme-inner-input)] border border-[var(--theme-border)] text-[9px] font-mono text-[var(--theme-text-secondary)] rounded-md font-bold"
                                 >
                                   {c}
                                 </span>
@@ -2424,7 +2057,7 @@ export default function DashboardPage({
                           </div>
                         </div>
 
-                        {/* Progress Bar & Stage Indicator */}
+                        {/* Syllabus progress percentage */}
                         {(() => {
                           const completedList = completedCareerMilestones[selectedCareer.id] || [];
                           const total = selectedCareer.milestones.length;
@@ -2432,16 +2065,16 @@ export default function DashboardPage({
 
                           return (
                             <div className="border-t border-[var(--theme-border)] pt-6 space-y-3">
-                              <div className="flex justify-between items-center text-xs font-mono">
-                                <span className="text-[var(--theme-text-secondary)]">SaaS Roadmap Completion</span>
-                                <span className="text-[var(--theme-accent)] font-bold">{percentage}% Done ({completedList.length}/{total} Milestones)</span>
+                              <div className="flex justify-between items-center text-xs font-mono font-bold">
+                                <span className="text-[var(--theme-text-secondary)]">Pathway Completion progress</span>
+                                <span className="text-[var(--theme-accent)]">{percentage}% Done ({completedList.length}/{total} Stages)</span>
                               </div>
                               <div className="w-full h-2.5 bg-[var(--theme-inner-input)] rounded-full overflow-hidden border border-[var(--theme-border)] p-[1px]">
                                 <motion.div
                                   initial={{ width: 0 }}
                                   animate={{ width: `${percentage}%` }}
                                   transition={{ duration: 0.5 }}
-                                  className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full shadow-[0_0_8px_rgba(168,85,247,0.3)]"
+                                  className="h-full bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full"
                                 />
                               </div>
                             </div>
@@ -2449,24 +2082,22 @@ export default function DashboardPage({
                         })()}
                       </div>
 
-                      {/* Timeline container */}
+                      {/* Timeline */}
                       <div className="bg-[var(--theme-bg-card)] border border-[var(--theme-border)] rounded-3xl p-8 space-y-8 shadow-[var(--theme-card-shadow)]">
-                        <h3 className="text-xs font-mono text-[var(--theme-text-tertiary)] uppercase tracking-widest font-bold">
+                        <h3 className="text-xs font-mono text-[var(--theme-text-tertiary)] uppercase tracking-widest font-black">
                           Sequential Milestone Syllabus
                         </h3>
 
                         {loadingProgress ? (
                           <div className="py-16 flex flex-col items-center justify-center space-y-2">
                             <div className="w-8 h-8 border-2 border-purple-500/20 border-t-purple-500 rounded-full animate-spin" />
-                            <span className="text-[10px] font-mono text-[var(--theme-text-tertiary)] uppercase tracking-wider">Synchronizing client states...</span>
+                            <span className="text-[10px] font-mono text-[var(--theme-text-tertiary)] uppercase tracking-wider font-bold">Synchronizing client states...</span>
                           </div>
                         ) : (
-                          /* Vertical timeline layout with growing colored line */
                           <div className="relative pl-6 sm:pl-10">
-                            {/* Background Grey Track Line */}
+                            {/* Track lines */}
                             <div className="absolute left-[11px] sm:left-[19px] top-4 bottom-4 w-[2px] bg-[var(--theme-border)] z-0" />
                             
-                            {/* Animated Progress Overlay Track Line */}
                             {(() => {
                               const completedList = completedCareerMilestones[selectedCareer.id] || [];
                               const total = selectedCareer.milestones.length;
@@ -2484,11 +2115,8 @@ export default function DashboardPage({
                               {selectedCareer.milestones.map((m, idx) => {
                                 const completedList = completedCareerMilestones[selectedCareer.id] || [];
                                 const isCompleted = completedList.includes(idx);
-                                
-                                // Locked unless first item or previous is completed
                                 const isUnlocked = idx === 0 || completedList.includes(idx - 1);
                                 
-                                // Pulse highlight current active milestone
                                 const currentActiveIdx = selectedCareer.milestones.findIndex((_, i) => !completedList.includes(i));
                                 const isCurrent = idx === currentActiveIdx;
 
@@ -2496,7 +2124,7 @@ export default function DashboardPage({
 
                                 return (
                                   <div key={idx} className="relative z-20">
-                                    {/* Timeline node icon */}
+                                    {/* Icon circle */}
                                     <div
                                       className={`absolute w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center top-1 left-[-21px] sm:left-[-35px] z-30 border transition-all duration-300 ${
                                         isCompleted
@@ -2511,7 +2139,7 @@ export default function DashboardPage({
                                       </span>
                                     </div>
 
-                                    {/* Milestone Detail Card */}
+                                    {/* Syllabus Detail Card */}
                                     <div
                                       className={`border rounded-2xl overflow-hidden transition-all duration-300 bg-[var(--theme-bg-card)] ${
                                         isCompleted
@@ -2523,7 +2151,6 @@ export default function DashboardPage({
                                           : "border-[var(--theme-border)]"
                                       }`}
                                     >
-                                      {/* Header click area */}
                                       <div
                                         onClick={() => {
                                           if (isUnlocked) {
@@ -2551,15 +2178,13 @@ export default function DashboardPage({
                                             ) : null}
                                           </div>
 
-                                          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[10px] font-mono text-[var(--theme-text-tertiary)]">
-                                            <span className="text-[var(--theme-accent)] font-bold">{m.duration}</span>
-                                            <span>&bull;</span>
+                                          <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[10px] font-mono text-[var(--theme-text-tertiary)] font-bold">
+                                            <span className="text-[var(--theme-accent)]">{m.duration}</span>
                                             <span>Complexity: {m.difficulty}</span>
                                           </div>
                                         </div>
 
                                         <div className="flex items-center space-x-3 shrink-0">
-                                          {/* Done switch button */}
                                           <button
                                             onClick={(e) => {
                                               e.stopPropagation();
@@ -2567,7 +2192,7 @@ export default function DashboardPage({
                                                 handleToggleMilestone(selectedCareer.id, idx);
                                               }
                                             }}
-                                            className={`px-3 py-1.5 text-[9px] font-mono uppercase tracking-wider border rounded-xl transition duration-200 font-bold cursor-pointer ${
+                                            className={`px-3.5 py-1.5 text-[9px] font-mono uppercase tracking-wider border rounded-xl transition duration-200 font-black cursor-pointer ${
                                               isCompleted
                                                 ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/20"
                                                 : "bg-[var(--theme-inner-input)] border-[var(--theme-border)] text-[var(--theme-text-secondary)] hover:text-[var(--theme-text-primary)]"
@@ -2579,33 +2204,31 @@ export default function DashboardPage({
                                         </div>
                                       </div>
 
-                                      {/* Expand content body */}
                                       {isExpanded && (
                                         <motion.div
                                           initial={{ height: 0, opacity: 0 }}
                                           animate={{ height: "auto", opacity: 1 }}
                                           transition={{ duration: 0.25 }}
-                                          className="border-t border-[var(--theme-border)] p-5 space-y-5 text-xs text-[var(--theme-text-secondary)] bg-[var(--theme-inner-input)]/30 font-sans"
+                                          className="border-t border-[var(--theme-border)] p-5 space-y-5 text-xs text-[var(--theme-text-secondary)] bg-[var(--theme-inner-input)]/30 font-sans font-medium"
                                         >
                                           <div>
-                                            <h5 className="text-[9px] font-mono text-[var(--theme-text-tertiary)] uppercase tracking-wider font-bold mb-1.5">
+                                            <h5 className="text-[9px] font-mono text-[var(--theme-text-tertiary)] uppercase tracking-wider font-black mb-1.5">
                                               Milestone Briefing
                                             </h5>
-                                            <p className="leading-relaxed text-[var(--theme-text-secondary)] font-sans text-xs">
+                                            <p className="leading-relaxed text-[var(--theme-text-secondary)] text-xs">
                                               {m.description}
                                             </p>
                                           </div>
 
-                                          {/* Skills badge grid */}
                                           <div>
-                                            <h5 className="text-[9px] font-mono text-[var(--theme-text-tertiary)] uppercase tracking-wider font-bold mb-1.5">
+                                            <h5 className="text-[9px] font-mono text-[var(--theme-text-tertiary)] uppercase tracking-wider font-black mb-1.5">
                                               Key Capabilities Acquired
                                             </h5>
                                             <div className="flex flex-wrap gap-1.5">
                                               {m.skillsToLearn.map((skill, sIdx) => (
                                                 <span
                                                   key={sIdx}
-                                                  className="px-2 py-0.5 bg-[var(--theme-accent-soft)] border border-[var(--theme-accent)]/15 text-[var(--theme-accent)] rounded-lg text-[10px] font-mono"
+                                                  className="px-2 py-0.5 bg-[var(--theme-accent-soft)] border border-[var(--theme-accent)]/15 text-[var(--theme-accent)] rounded-lg text-[10px] font-mono font-bold"
                                                 >
                                                   {skill}
                                                 </span>
@@ -2613,21 +2236,19 @@ export default function DashboardPage({
                                             </div>
                                           </div>
 
-                                          {/* Study questions bullet list */}
                                           <div>
-                                            <h5 className="text-[9px] font-mono text-[var(--theme-text-tertiary)] uppercase tracking-wider font-bold mb-1.5">
+                                            <h5 className="text-[9px] font-mono text-[var(--theme-text-tertiary)] uppercase tracking-wider font-black mb-1.5">
                                               Self-Assessment Problems
                                             </h5>
-                                            <ul className="list-disc pl-4 space-y-1.5 font-sans leading-relaxed text-[var(--theme-text-secondary)]">
+                                            <ul className="list-disc pl-4 space-y-1.5 leading-relaxed text-[var(--theme-text-secondary)]">
                                               {m.practiceQuestions.map((q, qIdx) => (
                                                 <li key={qIdx}>{q}</li>
                                               ))}
                                             </ul>
                                           </div>
 
-                                          {/* Clickable Resource links */}
                                           <div>
-                                            <h5 className="text-[9px] font-mono text-[var(--theme-text-tertiary)] uppercase tracking-wider font-bold mb-1.5">
+                                            <h5 className="text-[9px] font-mono text-[var(--theme-text-tertiary)] uppercase tracking-wider font-black mb-1.5">
                                               Curated Reference Guides
                                             </h5>
                                             <div className="flex flex-wrap gap-2">
@@ -2641,7 +2262,7 @@ export default function DashboardPage({
                                                     href={searchUrl}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="px-3 py-1 bg-[var(--theme-bg-card)] border border-[var(--theme-border)] hover:border-[var(--theme-accent)]/30 rounded-xl text-[10px] font-mono text-[var(--theme-text-secondary)] hover:text-[var(--theme-accent)] transition duration-200 cursor-pointer"
+                                                    className="px-3 py-1 bg-[var(--theme-bg-card)] border border-[var(--theme-border)] hover:border-[var(--theme-accent)]/30 rounded-xl text-[10px] font-mono text-[var(--theme-text-secondary)] hover:text-[var(--theme-accent)] transition duration-200 cursor-pointer font-bold"
                                                   >
                                                     {res} ↗
                                                   </a>
@@ -2650,13 +2271,12 @@ export default function DashboardPage({
                                             </div>
                                           </div>
 
-                                          {/* Mini Project block inside body */}
                                           {m.practicalProject && (
                                             <div className="p-4 bg-[var(--theme-bg-card)] border border-[var(--theme-border)] rounded-2xl space-y-2">
-                                              <span className="text-[8px] font-mono text-[var(--theme-accent)] uppercase tracking-widest block font-bold">
+                                              <span className="text-[8px] font-mono text-[var(--theme-accent)] uppercase tracking-widest block font-black">
                                                 Practical Capstone Assignment
                                               </span>
-                                              <h4 className="text-xs font-bold text-[var(--theme-text-primary)]">
+                                              <h4 className="text-xs font-extrabold text-[var(--theme-text-primary)]">
                                                 {m.practicalProject.title}
                                               </h4>
                                               <p className="text-[11px] text-[var(--theme-text-secondary)] leading-relaxed font-sans mt-0.5">
@@ -2669,15 +2289,15 @@ export default function DashboardPage({
                                     </div>
                                   </div>
                                 );
-                              })}
+                              })}`
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
 
-                  {/* Floating Action Button (FAB) for AI Career Coach */}
+                  {/* Floating AI Coach Panel */}
                   <div className="fixed bottom-6 right-6 z-50">
                     <button
                       onClick={() => setIsAiMentorOpen(!isAiMentorOpen)}
@@ -2687,21 +2307,19 @@ export default function DashboardPage({
                       {isAiMentorOpen ? <X className="w-5 h-5" /> : <SparklesIcon className="w-6 h-6 animate-pulse" />}
                     </button>
 
-                    {/* Chat dialog panel overlay */}
                     {isAiMentorOpen && (
                       <motion.div
                         initial={{ opacity: 0, y: 50, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         className="absolute bottom-16 right-0 w-80 sm:w-96 h-[450px] bg-[var(--theme-bg-card)] border border-[var(--theme-border)] rounded-3xl shadow-2xl flex flex-col justify-between overflow-hidden"
                       >
-                        {/* Header */}
                         <div className="p-4 bg-gradient-to-r from-purple-950/20 to-indigo-950/20 border-b border-[var(--theme-border)] flex justify-between items-center">
                           <div>
                             <h4 className="text-xs font-mono uppercase tracking-widest text-[var(--theme-accent)] font-bold flex items-center gap-1.5">
                               <SparklesIcon className="w-3.5 h-3.5" />
                               <span>AI Career Mentor</span>
                             </h4>
-                            <p className="text-[10px] text-[var(--theme-text-secondary)] font-sans">Ask me about resource materials or exam strategies</p>
+                            <p className="text-[10px] text-[var(--theme-text-secondary)] font-sans font-medium">Ask me about resource materials or exam strategies</p>
                           </div>
                           <button
                             onClick={() => setIsAiMentorOpen(false)}
@@ -2711,8 +2329,7 @@ export default function DashboardPage({
                           </button>
                         </div>
 
-                        {/* Chat Messages */}
-                        <div className="flex-1 p-4 overflow-y-auto space-y-3 font-sans text-xs">
+                        <div className="flex-grow p-4 overflow-y-auto space-y-3 font-sans text-xs custom-scrollbar">
                           {aiMentorMessages.map((msg, i) => (
                             <div
                               key={i}
@@ -2721,8 +2338,8 @@ export default function DashboardPage({
                               <div
                                 className={`max-w-[80%] rounded-2xl px-3.5 py-2 leading-relaxed ${
                                   msg.sender === "user"
-                                    ? "bg-purple-600 text-white rounded-tr-none font-sans"
-                                    : "bg-[var(--theme-inner-input)] border border-[var(--theme-border)] text-[var(--theme-text-primary)] rounded-tl-none font-sans"
+                                    ? "bg-purple-600 text-white rounded-tr-none font-sans font-semibold"
+                                    : "bg-[var(--theme-inner-input)] border border-[var(--theme-border)] text-[var(--theme-text-primary)] rounded-tl-none font-sans font-semibold"
                                 }`}
                               >
                                 {msg.text}
@@ -2730,7 +2347,7 @@ export default function DashboardPage({
                             </div>
                           ))}
                           {isAiMentorTyping && (
-                            <div className="flex justify-start">
+                            <div className="flex justify-start animate-pulse">
                               <div className="bg-[var(--theme-inner-input)] border border-[var(--theme-border)] text-[var(--theme-text-tertiary)] rounded-2xl rounded-tl-none px-4 py-2 flex items-center gap-1">
                                 <span className="w-1.5 h-1.5 bg-[var(--theme-text-tertiary)] rounded-full animate-bounce" />
                                 <span className="w-1.5 h-1.5 bg-[var(--theme-text-tertiary)] rounded-full animate-bounce [animation-delay:0.2s]" />
@@ -2740,14 +2357,13 @@ export default function DashboardPage({
                           )}
                         </div>
 
-                        {/* Input Footer */}
                         <form onSubmit={handleSendAiMentorMessage} className="p-3 border-t border-[var(--theme-border)] bg-[var(--theme-inner-input)] flex items-center gap-2">
                           <input
                             type="text"
                             value={aiMentorInput}
                             onChange={(e) => setAiMentorInput(e.target.value)}
                             placeholder="Ask about exam materials, target jobs..."
-                            className="flex-1 bg-[var(--theme-bg-card)] border border-[var(--theme-border)] rounded-xl px-3 py-2 text-[11px] text-[var(--theme-text-primary)] focus:outline-none focus:border-purple-500/40"
+                            className="flex-grow bg-[var(--theme-bg-card)] border border-[var(--theme-border)] rounded-xl px-3 py-2 text-[11px] text-[var(--theme-text-primary)] focus:outline-none focus:border-purple-500/40"
                           />
                           <button
                             type="submit"
@@ -2764,8 +2380,7 @@ export default function DashboardPage({
               </div>
             )}
 
-
-            {/* AI Interview Lab Tab */}
+            {/* Tab: AI Interview Lab */}
             {activeTab === "interview" && (
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
@@ -2774,51 +2389,51 @@ export default function DashboardPage({
                 className="space-y-6"
               >
                 <div>
-                  <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">AI Interview Simulator</h1>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <h1 className="text-2xl sm:text-3xl font-black">AI Interview Simulator</h1>
+                  <p className="text-xs text-[var(--color-text-secondary)] mt-1 font-medium">
                     Conduct technical and behavioral interview simulations generated dynamically from your work history and profile skills.
                   </p>
                 </div>
 
                 {interviewQuestions.length === 0 ? (
-                  <div className="p-8 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl flex flex-col items-center justify-center text-center max-w-xl mx-auto my-6">
-                    <MessageSquare className="w-12 h-12 text-blue-500/50 mb-4 animate-pulse" />
-                    <h2 className="text-lg font-extrabold tracking-tight text-white">Initialize Simulation Session</h2>
-                    <p className="text-xs text-slate-400 max-w-sm mt-1 leading-relaxed">
+                  <div className="p-8 clay-card flex flex-col items-center justify-center text-center max-w-xl mx-auto my-6">
+                    <MessageSquare className="w-10 h-10 text-indigo-600 dark:text-indigo-400 mb-4 animate-pulse" />
+                    <h2 className="text-lg font-extrabold tracking-tight">Initialize Mock Session</h2>
+                    <p className="text-xs text-[var(--color-text-secondary)] max-w-sm mt-1.5 leading-relaxed font-medium">
                       Specialized AI interviewers will assemble 3 tailored interview questions targeting your parsed resume skills.
                     </p>
                     <button
                       onClick={handleStartInterview}
                       disabled={generatingQuestions}
-                      className="mt-6 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-xs font-mono uppercase tracking-wider font-bold rounded-xl text-white shadow-xl shadow-blue-600/20 transition duration-200"
+                      className="mt-6 px-6 py-3.5 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider font-bold text-white shadow-md"
                     >
                       {generatingQuestions ? "Agents Preparing Questions..." : "Begin Mock Session"}
                     </button>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Active Question panel */}
-                    <div className="lg:col-span-2 p-6 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl flex flex-col justify-between space-y-6 min-h-[420px]">
+                    {/* Active Question */}
+                    <div className="lg:col-span-2 p-6 clay-card flex flex-col justify-between space-y-6 min-h-[420px]">
                       {currentQuestionIndex < interviewQuestions.length ? (
-                        <div className="space-y-6 flex-1 flex flex-col justify-between">
+                        <div className="space-y-6 flex-grow flex flex-col justify-between">
                           <div className="space-y-3">
-                            <div className="flex justify-between items-center text-xs font-mono">
-                              <span className="text-blue-400">
+                            <div className="flex justify-between items-center text-xs font-mono font-bold">
+                              <span className="text-indigo-600 dark:text-indigo-400">
                                 Question {currentQuestionIndex + 1} of {interviewQuestions.length}
                               </span>
-                              <span className="px-1.5 py-0.5 bg-white/5 border border-white/10 rounded font-bold text-[9px] text-purple-300">
+                              <span className="px-2 py-0.5 bg-indigo-500/10 border border-indigo-500/20 rounded-lg text-[9px] text-indigo-600 dark:text-indigo-400 font-black uppercase">
                                 {interviewQuestions[currentQuestionIndex].category}
                               </span>
                             </div>
 
-                            <h3 className="text-base sm:text-lg font-bold text-slate-100 leading-snug">
+                            <h3 className="text-base sm:text-lg font-extrabold text-[var(--color-text-primary)] leading-snug">
                               {interviewQuestions[currentQuestionIndex].question}
                             </h3>
                           </div>
 
                           <form onSubmit={handleSubmitInterviewAnswer} className="space-y-4">
                             <div>
-                              <label className="block text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-2">
+                              <label className="block text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider mb-2 font-bold">
                                 Your Response
                               </label>
                               <textarea
@@ -2828,7 +2443,7 @@ export default function DashboardPage({
                                 rows={6}
                                 required
                                 disabled={evaluatingAnswer || !!currentEvaluation}
-                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-blue-500/50 text-slate-300 leading-relaxed font-sans resize-none"
+                                className="w-full clay-input px-4 py-3.5 text-xs focus:outline-none text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] leading-relaxed font-medium resize-none min-h-[140px]"
                               />
                             </div>
 
@@ -2836,13 +2451,13 @@ export default function DashboardPage({
                               <button
                                 type="submit"
                                 disabled={evaluatingAnswer || !userAnswer.trim()}
-                                className="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-xs font-mono uppercase tracking-wider font-bold rounded-xl text-white shadow-xl shadow-blue-600/20 transition duration-200 flex items-center justify-center space-x-2"
+                                className="w-full py-3.5 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider font-bold text-white shadow-md"
                               >
                                 {evaluatingAnswer ? (
                                   "Evaluation Agent assessing answer..."
                                 ) : (
                                   <>
-                                    <Send className="w-4 h-4" />
+                                    <Send className="w-4 h-4 mr-1.5" />
                                     <span>Submit Response</span>
                                   </>
                                 )}
@@ -2853,7 +2468,7 @@ export default function DashboardPage({
                                   <button
                                     type="button"
                                     onClick={handleNextQuestion}
-                                    className="w-full py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-mono uppercase tracking-wider font-bold rounded-xl text-slate-300 hover:text-white transition duration-200"
+                                    className="w-full py-3.5 clay-btn clay-btn-secondary text-xs font-mono uppercase tracking-wider font-bold text-[var(--color-text-primary)]"
                                   >
                                     Next Question &rarr;
                                   </button>
@@ -2861,12 +2476,11 @@ export default function DashboardPage({
                                   <button
                                     type="button"
                                     onClick={() => {
-                                      // Trigger complete state
                                       setCurrentQuestionIndex((prev) => prev + 1);
                                     }}
-                                    className="w-full py-3.5 bg-purple-600 hover:bg-purple-500 text-xs font-mono uppercase tracking-wider font-bold rounded-xl text-white transition duration-200"
+                                    className="w-full py-3.5 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider font-bold text-white"
                                   >
-                                    View Session Report card
+                                    View Session Report Card
                                   </button>
                                 )}
                               </div>
@@ -2874,28 +2488,28 @@ export default function DashboardPage({
                           </form>
                         </div>
                       ) : (
-                        /* Complete report */
-                        <div className="space-y-6 text-center py-6 flex-1 flex flex-col justify-center">
-                          <div className="p-4 bg-emerald-950/20 border border-emerald-950/20 text-emerald-400 rounded-full w-fit mx-auto">
-                            <ShieldCheck className="w-10 h-10" />
+                        /* Session completed */
+                        <div className="space-y-6 text-center py-8 flex-grow flex flex-col justify-center">
+                          <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 rounded-full w-fit mx-auto animate-bounce">
+                            <ShieldCheck className="w-12 h-12" />
                           </div>
                           <div>
-                            <h3 className="text-xl font-black text-slate-100">Session Completed</h3>
-                            <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto leading-relaxed">
+                            <h3 className="text-xl font-black text-[var(--color-text-primary)]">Session Completed</h3>
+                            <p className="text-xs text-[var(--color-text-secondary)] mt-1.5 max-w-sm mx-auto leading-relaxed font-medium">
                               Your interview responses have been analyzed. Here is your overall session performance metric:
                             </p>
                           </div>
 
                           <div className="text-center my-4">
-                            <span className="text-5xl font-black text-blue-400">
+                            <span className="text-5xl font-black text-indigo-600 dark:text-indigo-400">
                               <CountUpText to={getInterviewOverallScore()} suffix="%" />
                             </span>
-                            <span className="text-xs font-mono text-slate-500 uppercase tracking-widest block mt-1">Average Evaluation Rating</span>
+                            <span className="text-[10px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-widest block mt-2 font-bold">Average Evaluation Rating</span>
                           </div>
 
                           <button
                             onClick={handleStartInterview}
-                            className="px-6 py-2.5 bg-white/5 border border-white/10 hover:bg-white/10 text-xs font-mono uppercase tracking-wider text-slate-300 rounded-xl hover:text-white mx-auto transition duration-200"
+                            className="clay-btn clay-btn-secondary px-6 py-2.5 text-xs font-mono uppercase tracking-wider font-bold text-[var(--color-text-primary)] mx-auto shadow-sm"
                           >
                             Restart Mock Session
                           </button>
@@ -2903,61 +2517,61 @@ export default function DashboardPage({
                       )}
                     </div>
 
-                    {/* Feedback report side panel */}
-                    <div className="p-6 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl flex flex-col justify-between min-h-[420px]">
+                    {/* Feedback */}
+                    <div className="p-6 clay-card flex flex-col justify-between min-h-[420px]">
                       {evaluatingAnswer ? (
-                        <div className="flex-1 flex flex-col items-center justify-center space-y-2">
-                          <div className="w-8 h-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-                          <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                        <div className="flex-grow flex flex-col items-center justify-center space-y-3 text-center">
+                          <div className="w-8 h-8 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin" />
+                          <span className="text-[10px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">
                             Evaluating depth and vocabulary...
                           </span>
                         </div>
                       ) : currentEvaluation ? (
-                        <div className="space-y-4 flex-1 flex flex-col justify-between">
-                          <div className="flex justify-between items-center border-b border-white/5 pb-3">
-                            <h3 className="text-xs font-mono text-slate-400 uppercase tracking-wider">
+                        <div className="space-y-4 flex-grow flex flex-col justify-between">
+                          <div className="flex justify-between items-center border-b border-[var(--color-border)] pb-3">
+                            <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">
                               Agent Feedback Report
                             </h3>
-                            <span className="px-2 py-0.5 bg-blue-500/10 text-blue-400 font-mono text-xs font-bold rounded">
+                            <span className="px-2.5 py-1 bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 font-mono text-xs font-black rounded-lg">
                               <CountUpText to={currentEvaluation.score} suffix="% Score" />
                             </span>
                           </div>
 
-                          <div className="space-y-4 max-h-[300px] overflow-y-auto pr-1">
+                          <div className="space-y-4 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
                             <div>
-                              <h4 className="text-[10px] font-mono text-blue-400 uppercase tracking-wider mb-1">
+                              <h4 className="text-[10px] font-mono text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-1 font-bold">
                                 Evaluation Feedback
                               </h4>
-                              <p className="text-xs text-slate-300 font-sans leading-relaxed">
+                              <p className="text-xs text-[var(--color-text-secondary)] font-medium font-sans leading-relaxed">
                                 {currentEvaluation.feedback}
                               </p>
                             </div>
 
                             <div>
-                              <h4 className="text-[10px] font-mono text-emerald-400 uppercase tracking-wider mb-1.5">
+                              <h4 className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1.5 font-bold">
                                 Addressed Expected Points
                               </h4>
                               <div className="space-y-1.5">
                                 {currentEvaluation.expectedPointsMatched?.map((pt: string, i: number) => (
-                                  <div key={i} className="flex items-center space-x-1.5 text-xs text-slate-300 font-sans">
-                                    <CheckCircle className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />
+                                  <div key={i} className="flex items-center space-x-2 text-xs text-[var(--color-text-secondary)] font-medium font-sans">
+                                    <CheckCircle className="w-4.5 h-4.5 text-emerald-500 flex-shrink-0" />
                                     <span>{pt}</span>
                                   </div>
                                 ))}
                                 {(!currentEvaluation.expectedPointsMatched || currentEvaluation.expectedPointsMatched.length === 0) && (
-                                  <span className="text-[10px] text-slate-500 italic">No expected metrics covered.</span>
+                                  <span className="text-[10px] text-[var(--color-text-tertiary)] italic">No expected metrics covered.</span>
                                 )}
                               </div>
                             </div>
 
                             <div>
-                              <h4 className="text-[10px] font-mono text-amber-400 uppercase tracking-wider mb-1.5">
-                                Enhancement Recommendations
+                              <h4 className="text-[10px] font-mono text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-1.5 font-bold">
+                                Recommendations
                               </h4>
-                              <ul className="space-y-1.5 text-xs text-slate-300 font-sans">
+                              <ul className="space-y-1.5 text-xs text-[var(--color-text-secondary)] font-sans font-medium">
                                 {currentEvaluation.suggestions?.map((item: string, i: number) => (
                                   <li key={i} className="flex items-start space-x-1.5">
-                                    <span className="text-amber-400 mt-0.5">&bull;</span>
+                                    <span className="text-amber-500 mt-0.5 font-bold">&bull;</span>
                                     <span>{item}</span>
                                   </li>
                                 ))}
@@ -2966,10 +2580,10 @@ export default function DashboardPage({
                           </div>
                         </div>
                       ) : (
-                        <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
-                          <HelpCircle className="w-10 h-10 text-slate-600 mb-2" />
-                          <h3 className="text-sm font-bold text-slate-400">Response Analysis</h3>
-                          <p className="text-xs text-slate-500 mt-1 max-w-xs font-sans">
+                        <div className="flex-grow flex flex-col items-center justify-center text-center p-4">
+                          <HelpCircle className="w-10 h-10 text-[var(--color-text-tertiary)] mb-3" />
+                          <h3 className="text-sm font-bold text-[var(--color-text-secondary)]">Response Analysis</h3>
+                          <p className="text-xs text-[var(--color-text-tertiary)] mt-1.5 max-w-xs font-medium font-sans leading-relaxed">
                             Complete and submit your question response to display grading and constructive feedback.
                           </p>
                         </div>
@@ -2980,7 +2594,7 @@ export default function DashboardPage({
               </motion.div>
             )}
 
-            {/* Hiring Probability Predictor Tab */}
+            {/* Tab: Hiring Predictor */}
             {activeTab === "probability" && (
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
@@ -2989,21 +2603,21 @@ export default function DashboardPage({
                 className="space-y-6"
               >
                 <div>
-                  <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">Hiring Predictor</h1>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <h1 className="text-2xl sm:text-3xl font-black">Hiring Predictor</h1>
+                  <p className="text-xs text-[var(--color-text-secondary)] mt-1 font-medium">
                     Calculate career metrics, predict the probability of success for specific roles, and highlight optimizations.
                   </p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  {/* Job and Company config */}
-                  <form onSubmit={handlePredictHiringProbability} className="p-6 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl h-fit space-y-4">
-                    <h2 className="text-xs font-mono text-slate-400 uppercase tracking-wider">
+                  {/* Form */}
+                  <form onSubmit={handlePredictHiringProbability} className="p-6 clay-card h-fit space-y-5">
+                    <h2 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">
                       Specify Application Details
                     </h2>
 
                     <div>
-                      <label className="block text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-2">
+                      <label className="block text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider mb-2 font-bold">
                         Target Job Title
                       </label>
                       <input
@@ -3012,12 +2626,12 @@ export default function DashboardPage({
                         onChange={(e) => setProbJobTitle(e.target.value)}
                         placeholder="e.g. Senior Backend Engineer"
                         required
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-blue-500/50 text-slate-300"
+                        className="w-full clay-input px-4 py-3 text-xs text-[var(--color-text-primary)] focus:outline-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[10px] font-mono text-gray-500 uppercase tracking-wider mb-2">
+                      <label className="block text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider mb-2 font-bold">
                         Target Company Name
                       </label>
                       <input
@@ -3026,69 +2640,66 @@ export default function DashboardPage({
                         onChange={(e) => setProbCompany(e.target.value)}
                         placeholder="e.g. Stripe, Netflix"
                         required
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-blue-500/50 text-slate-300"
+                        className="w-full clay-input px-4 py-3 text-xs text-[var(--color-text-primary)] focus:outline-none"
                       />
                     </div>
 
                     <button
                       type="submit"
                       disabled={predictingProb}
-                      className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-[10px] font-mono uppercase tracking-wider font-bold rounded-xl text-white transition duration-200"
+                      className="w-full py-3.5 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider font-bold text-white shadow-md"
                     >
                       {predictingProb ? "Consulting Predictors..." : "Predict Hiring Odds"}
                     </button>
                   </form>
 
-                  {/* Prob Result Output */}
-                  <div className="lg:col-span-2 p-6 bg-white/[0.02] border border-white/10 backdrop-blur-2xl rounded-3xl min-h-[400px] flex flex-col justify-between">
+                  {/* Results */}
+                  <div className="lg:col-span-2 p-6 clay-card min-h-[400px] flex flex-col justify-between">
                     {predictingProb ? (
-                      <div className="flex-1 flex flex-col items-center justify-center space-y-2">
-                        <div className="w-8 h-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-                        <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                      <div className="flex-grow flex flex-col items-center justify-center space-y-3 text-center">
+                        <div className="w-8 h-8 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin" />
+                        <span className="text-[10px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">
                           Analyzing profile strengths...
                         </span>
                       </div>
                     ) : hiringProbability ? (
-                      <div className="space-y-6 flex-1 flex flex-col justify-between">
-                        {/* Circle Score Header */}
-                        <div className="flex items-center space-x-6 border-b border-white/5 pb-4">
-                          <CircularScoreGauge score={hiringProbability.probabilityScore} size={96} strokeWidth={7} colorClass="stroke-purple-500" />
-
+                      <div className="space-y-6 flex-grow flex flex-col justify-between">
+                        <div className="flex items-center space-x-6 border-b border-[var(--color-border)] pb-5">
+                          <CircularScoreGauge score={hiringProbability.probabilityScore} size={96} strokeWidth={8} colorClass="stroke-purple-600" />
                           <div>
-                            <h3 className="text-base font-bold text-slate-200">Hiring Probability</h3>
-                            <p className="text-xs text-purple-400 font-mono mt-0.5 font-semibold">
+                            <h3 className="text-base font-extrabold text-[var(--color-text-primary)]">Hiring Probability</h3>
+                            <p className="text-xs text-purple-600 dark:text-purple-400 font-mono mt-1 font-bold">
                               {hiringProbability.jobTitle} &bull; {hiringProbability.company}
                             </p>
-                            <p className="text-xs text-slate-500 mt-2 leading-relaxed font-sans">
+                            <p className="text-[10px] text-[var(--color-text-tertiary)] mt-2 leading-relaxed font-sans font-medium">
                               Probability model simulated based on background align, missing skills, and tech depth compared against target firm indices.
                             </p>
                           </div>
                         </div>
 
-                        {/* Extracted Strengths & Gaps */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[220px] overflow-y-auto pr-1">
-                          <div>
-                            <h4 className="text-[10px] font-mono text-emerald-400 uppercase tracking-wider mb-2">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[220px] overflow-y-auto pr-1 custom-scrollbar">
+                          <div className="space-y-2">
+                            <h4 className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 uppercase tracking-wider font-bold">
                               Core Assets / Strengths
                             </h4>
-                            <ul className="space-y-1.5 text-xs text-slate-300 font-sans">
+                            <ul className="space-y-2 text-xs text-[var(--color-text-secondary)] font-sans font-medium">
                               {hiringProbability.strengths?.map((item: string, i: number) => (
-                                <li key={i} className="flex items-start space-x-1.5">
-                                  <CheckCircle className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0 mt-0.5" />
+                                <li key={i} className="flex items-start space-x-2">
+                                  <CheckCircle className="w-4.5 h-4.5 text-emerald-500 flex-shrink-0 mt-0.5" />
                                   <span>{item}</span>
                                 </li>
                               ))}
                             </ul>
                           </div>
 
-                          <div>
-                            <h4 className="text-[10px] font-mono text-red-400 uppercase tracking-wider mb-2">
+                          <div className="space-y-2">
+                            <h4 className="text-[10px] font-mono text-red-600 dark:text-red-400 uppercase tracking-wider font-bold">
                               Identified Gaps / Weaknesses
                             </h4>
-                            <ul className="space-y-1.5 text-xs text-slate-300 font-sans">
+                            <ul className="space-y-2 text-xs text-[var(--color-text-secondary)] font-sans font-medium">
                               {hiringProbability.weaknesses?.map((item: string, i: number) => (
-                                <li key={i} className="flex items-start space-x-1.5">
-                                  <XCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0 mt-0.5" />
+                                <li key={i} className="flex items-start space-x-2">
+                                  <XCircle className="w-4.5 h-4.5 text-red-500 flex-shrink-0 mt-0.5" />
                                   <span>{item}</span>
                                 </li>
                               ))}
@@ -3096,11 +2707,10 @@ export default function DashboardPage({
                           </div>
                         </div>
 
-                        {/* Recommendation banner */}
                         {hiringProbability.suggestions && hiringProbability.suggestions.length > 0 && (
-                          <div className="p-4 bg-blue-950/20 border border-blue-900/30 text-xs text-slate-300 rounded-xl leading-relaxed font-sans">
-                            <span className="font-bold text-blue-400 block mb-1">Strategist Tips to Maximize Odds:</span>
-                            <ul className="space-y-1 list-disc pl-4 text-slate-300">
+                          <div className="p-4 bg-indigo-500/5 border border-indigo-500/10 text-xs text-[var(--color-text-secondary)] rounded-2xl leading-relaxed font-sans font-medium shadow-inner">
+                            <span className="font-extrabold text-indigo-600 dark:text-indigo-400 block mb-1">Strategist Tips to Maximize Odds:</span>
+                            <ul className="space-y-1.5 list-disc pl-4">
                               {hiringProbability.suggestions.map((sug: string, i: number) => (
                                 <li key={i}>{sug}</li>
                               ))}
@@ -3109,10 +2719,10 @@ export default function DashboardPage({
                         )}
                       </div>
                     ) : (
-                      <div className="flex-1 flex flex-col items-center justify-center text-center p-4">
-                        <Award className="w-10 h-10 text-slate-600 mb-2" />
-                        <h3 className="text-sm font-bold text-slate-400 font-mono uppercase tracking-wider">Simulator Offline</h3>
-                        <p className="text-xs text-slate-500 mt-1 max-w-xs font-sans">
+                      <div className="flex-grow flex flex-col items-center justify-center text-center p-4">
+                        <Award className="w-10 h-10 text-[var(--color-text-tertiary)] mb-3" />
+                        <h3 className="text-sm font-bold text-[var(--color-text-secondary)] font-mono uppercase tracking-wider">Simulator Offline</h3>
+                        <p className="text-xs text-[var(--color-text-tertiary)] mt-1.5 max-w-xs font-medium font-sans leading-relaxed">
                           Input your application details in the sidebar form to check predictive statistics and gap remedies.
                         </p>
                       </div>
@@ -3121,6 +2731,7 @@ export default function DashboardPage({
                 </div>
               </motion.div>
             )}
+
           </div>
         )}
       </main>

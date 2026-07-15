@@ -17,6 +17,30 @@ export default function App() {
   const [resume, setResume] = useState<any>(null);
   const [authChecking, setAuthChecking] = useState(true);
 
+  // Global theme synchronized with local storage key matching DashboardPage
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    try {
+      const saved = localStorage.getItem("premium_roadmap_theme");
+      return saved === "light" ? "light" : "dark";
+    } catch {
+      return "dark";
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("premium_roadmap_theme", theme);
+    } catch (e) {
+      console.error(e);
+    }
+    const root = window.document.documentElement;
+    if (theme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+  }, [theme]);
+
   useEffect(() => {
     // Monitor auth changes for auto-login
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -94,10 +118,10 @@ export default function App() {
 
   if (authChecking) {
     return (
-      <div className="min-h-screen bg-[#050608] flex items-center justify-center text-white">
-        <div className="flex flex-col items-center space-y-3">
-          <div className="w-8 h-8 border-2 border-blue-500/30 border-t-blue-500 rounded-full animate-spin" />
-          <span className="text-xs font-mono text-gray-500 uppercase tracking-widest">
+      <div className={`min-h-screen flex items-center justify-center transition-colors duration-300 ${theme === "light" ? "bg-[#F5F7FF] text-[#1F2937]" : "bg-[#0B0C10] text-[#F1F5F9]"}`}>
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-10 h-10 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin" />
+          <span className="text-[10px] font-mono uppercase tracking-widest opacity-60">
             Synchronizing profile auth...
           </span>
         </div>
@@ -106,15 +130,15 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050608] text-white">
+    <div className={`min-h-screen transition-colors duration-300 ${theme === "light" ? "bg-[#F5F7FF] text-[#1F2937]" : "bg-[#0B0C10] text-[#F1F5F9]"}`}>
       {currentPage === "landing" && (
-        <LandingPage onNavigate={setCurrentPage} user={user} />
+        <LandingPage onNavigate={setCurrentPage} user={user} theme={theme} setTheme={setTheme} />
       )}
       {currentPage === "login" && (
-        <LoginPage onNavigate={setCurrentPage} onLoginSuccess={handleLoginSuccess} />
+        <LoginPage onNavigate={setCurrentPage} onLoginSuccess={handleLoginSuccess} theme={theme} setTheme={setTheme} />
       )}
       {currentPage === "signup" && (
-        <SignupPage onNavigate={setCurrentPage} onLoginSuccess={handleLoginSuccess} />
+        <SignupPage onNavigate={setCurrentPage} onLoginSuccess={handleLoginSuccess} theme={theme} setTheme={setTheme} />
       )}
       {currentPage === "dashboard" && user && (
         <DashboardPage
@@ -124,6 +148,8 @@ export default function App() {
           onLogout={handleLogout}
           onUpdateUser={(updatedUser: any) => setUser(updatedUser)}
           onResetResume={() => setResume(null)}
+          theme={theme}
+          setTheme={setTheme}
         />
       )}
       {currentPage === "upload" && user && (
@@ -131,10 +157,12 @@ export default function App() {
           userId={user.uid}
           onUploadSuccess={handleResumeUploadSuccess}
           onNavigate={setCurrentPage}
+          theme={theme}
+          setTheme={setTheme}
         />
       )}
       {currentPage === "analysis" && user && (
-        <AnalysisPage user={user} resume={resume} onNavigate={setCurrentPage} />
+        <AnalysisPage user={user} resume={resume} onNavigate={setCurrentPage} theme={theme} setTheme={setTheme} />
       )}
     </div>
   );

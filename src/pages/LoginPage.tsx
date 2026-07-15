@@ -1,21 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../lib/firebase";
 import { ApiService } from "../services/api";
 import { motion } from "motion/react";
-import { Mail, Lock, Eye, EyeOff, AlertCircle, ArrowLeft, ArrowRight, Shield } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, AlertCircle, ArrowLeft, ArrowRight, Sun, Moon } from "lucide-react";
 
 interface LoginPageProps {
   onNavigate: (page: string) => void;
   onLoginSuccess: (user: any) => void;
+  theme: "light" | "dark";
+  setTheme: (theme: "light" | "dark") => void;
 }
 
-export default function LoginPage({ onNavigate, onLoginSuccess }: LoginPageProps) {
+export default function LoginPage({ onNavigate, onLoginSuccess, theme, setTheme }: LoginPageProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Initialize Email from Remembered state
+  useEffect(() => {
+    try {
+      const savedEmail = localStorage.getItem("remembered_email");
+      if (savedEmail) {
+        setEmail(savedEmail);
+        setRememberMe(true);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,8 +46,19 @@ export default function LoginPage({ onNavigate, onLoginSuccess }: LoginPageProps
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
+      // Handle remember me logic
+      try {
+        if (rememberMe) {
+          localStorage.setItem("remembered_email", email);
+        } else {
+          localStorage.removeItem("remembered_email");
+        }
+      } catch (err) {
+        console.error("Local storage remember me error:", err);
+      }
+
       // Sync user profile on the backend
-      const profileRes = await ApiService.loginUser(user.uid).catch(async () => {
+      await ApiService.loginUser(user.uid).catch(async () => {
         // If profile doesn't exist, register it
         return ApiService.registerUser(user.uid, user.email || "", user.displayName || "");
       });
@@ -43,7 +70,7 @@ export default function LoginPage({ onNavigate, onLoginSuccess }: LoginPageProps
       if (err.code === "auth/user-not-found" || err.code === "auth/wrong-password" || err.code === "auth/invalid-credential") {
         setError("Invalid email or password combination.");
       } else if (err.code === "auth/operation-not-allowed") {
-        setError("Email & Password sign-in is not enabled in the Firebase Console. Please go to your Firebase Console -> Authentication -> Sign-in Method tab and enable 'Email/Password'.");
+        setError("Email & Password sign-in is not enabled in the Firebase Console. Please enable it in Authentication -> Sign-in Method.");
       } else {
         setError(err.message || "Authentication failed. Please try again.");
       }
@@ -75,7 +102,7 @@ export default function LoginPage({ onNavigate, onLoginSuccess }: LoginPageProps
       } else if (err.code === "auth/popup-closed-by-user") {
         setError("Google sign-in popup was closed before completion.");
       } else if (err.code === "auth/unauthorized-domain") {
-        setError("This domain is not authorized. Please add 'localhost' (or your current hosting domain) to the Authorized Domains list in the Firebase Console -> Authentication -> Settings tab.");
+        setError("This domain is not authorized. Please add it to your Authorized Domains list in Firebase Console.");
       } else {
         setError(err.message || "Google Authentication failed. Please try again.");
       }
@@ -85,77 +112,132 @@ export default function LoginPage({ onNavigate, onLoginSuccess }: LoginPageProps
   };
 
   return (
-    <div className="min-h-screen bg-[#0f1016] text-slate-100 flex flex-col justify-center relative px-6 overflow-hidden">
-      {/* Glow Effects */}
-      <div className="absolute top-[-150px] left-[-100px] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none"></div>
-      <div className="absolute bottom-[-150px] right-[-100px] w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[140px] pointer-events-none"></div>
+    <div className="min-h-screen flex flex-col justify-center relative px-6 overflow-hidden bg-[var(--color-bg-page)] text-[var(--color-text-primary)] transition-colors duration-300">
+      
+      {/* 3D Animated Clay Spheres in Background */}
+      <motion.div
+        animate={{
+          y: [0, -30, 0],
+          x: [0, 20, 0],
+          scale: [1, 1.1, 1],
+        }}
+        transition={{
+          duration: 12,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute top-[10%] left-[10%] w-48 h-48 rounded-full bg-gradient-to-br from-indigo-400/20 to-purple-400/10 blur-[4px] pointer-events-none"
+      />
+      <motion.div
+        animate={{
+          y: [0, 40, 0],
+          x: [0, -25, 0],
+          scale: [1, 0.9, 1],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute bottom-[10%] right-[10%] w-64 h-64 rounded-full bg-gradient-to-br from-purple-400/20 to-pink-400/10 blur-[6px] pointer-events-none"
+      />
+      <motion.div
+        animate={{
+          y: [0, -25, 0],
+          x: [0, -20, 0],
+        }}
+        transition={{
+          duration: 9,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute top-[60%] left-[80%] w-32 h-32 rounded-full bg-gradient-to-br from-teal-400/15 to-blue-400/10 blur-[3px] pointer-events-none"
+      />
 
-      {/* Nav back button */}
-      <button
-        onClick={() => onNavigate("landing")}
-        className="absolute top-6 left-6 flex items-center space-x-2 text-xs font-mono text-slate-400 hover:text-white transition duration-200"
+      {/* Header Bar */}
+      <div className="absolute top-6 left-6 right-6 flex items-center justify-between z-20">
+        <button
+          onClick={() => onNavigate("landing")}
+          className="flex items-center space-x-2 text-xs font-mono uppercase tracking-wider opacity-60 hover:opacity-100 transition-opacity duration-200"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Return Home</span>
+        </button>
+
+        {/* Theme Toggle Button */}
+        <button
+          onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+          className="p-2.5 rounded-2xl border border-[var(--color-border)] bg-[var(--clay-card-bg)] shadow-[var(--clay-btn-secondary-shadow)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition duration-200 cursor-pointer"
+        >
+          {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+        </button>
+      </div>
+
+      {/* Main Login Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-md mx-auto relative clay-card p-8 sm:p-10 z-10"
       >
-        <ArrowLeft className="w-4 h-4" />
-        <span>Return to Main</span>
-      </button>
-
-      <div className="w-full max-w-md mx-auto relative neomorph-card p-8 z-10">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center space-x-2 mb-2">
-            <div className="w-7 h-7 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg shadow-md shadow-blue-500/10 flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+          <div className="inline-flex items-center space-x-2.5 mb-3">
+            <div className="w-9 h-9 bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
             </div>
-            <span className="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
+            <span className="text-xl font-black tracking-tight">
               SkillBridge
             </span>
-            <span className="px-1.5 py-0.5 text-[9px] bg-white/10 border border-white/10 text-slate-300 rounded font-mono font-bold">
+            <span className="px-2 py-0.5 text-[10px] bg-indigo-500/10 border border-indigo-500/20 text-indigo-500 rounded-lg font-mono font-black uppercase">
               AI
             </span>
           </div>
-          <h2 className="text-2xl font-extrabold tracking-tight text-white mt-3">
+          <h2 className="text-2xl font-black tracking-tight mt-4">
             Welcome Back
           </h2>
-          <p className="text-xs text-slate-400 mt-1 font-sans">
-            Log in to continue analyzing your resume and skill metrics
+          <p className="text-xs text-[var(--color-text-secondary)] mt-1.5 font-medium leading-relaxed">
+            Sign in to continue analyzing your career assets and roadmaps
           </p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-950/40 border border-red-500/30 text-red-300 rounded-xl flex items-start space-x-2 text-xs">
+          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 rounded-2xl flex items-start space-x-2.5 text-xs font-medium animate-fade-in">
             <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs font-mono text-slate-400 uppercase tracking-wider mb-2">
+            <label className="block text-[10px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider mb-2 font-bold">
               Email Address
             </label>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--color-text-tertiary)]">
                 <Mail className="w-4 h-4" />
               </span>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder="name@company.com"
                 required
                 disabled={loading}
-                className="w-full neomorph-inset-input pl-10 pr-4 py-3 text-sm focus:outline-none text-slate-200"
+                className="w-full clay-input pl-10 pr-4 py-3.5 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none"
               />
             </div>
           </div>
 
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label className="block text-xs font-mono text-slate-400 uppercase tracking-wider">
+              <label className="block text-[10px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">
                 Password
               </label>
             </div>
             <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--color-text-tertiary)]">
                 <Lock className="w-4 h-4" />
               </span>
               <input
@@ -165,22 +247,35 @@ export default function LoginPage({ onNavigate, onLoginSuccess }: LoginPageProps
                 placeholder="••••••••••••"
                 required
                 disabled={loading}
-                className="w-full neomorph-inset-input pl-10 pr-10 py-3 text-sm focus:outline-none text-slate-200"
+                className="w-full clay-input pl-10 pr-10 py-3.5 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-300"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </div>
 
+          {/* Remember Me and Forgot Password bar */}
+          <div className="flex items-center justify-between text-xs pt-1">
+            <label className="flex items-center space-x-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+              />
+              <span className="text-[var(--color-text-secondary)] font-medium">Remember me</span>
+            </label>
+          </div>
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-2 py-3 neomorph-button-primary font-bold text-sm text-white flex items-center justify-center space-x-2"
+            className="w-full mt-4 py-3.5 clay-btn clay-btn-primary font-bold text-sm text-white flex items-center justify-center space-x-2 shadow-lg"
           >
             {loading ? (
               <span className="flex items-center space-x-2">
@@ -195,13 +290,19 @@ export default function LoginPage({ onNavigate, onLoginSuccess }: LoginPageProps
             )}
           </button>
 
+          <div className="relative flex py-3 items-center">
+            <div className="flex-grow border-t border-[var(--color-border)]"></div>
+            <span className="flex-shrink mx-4 text-[10px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider">or continue with</span>
+            <div className="flex-grow border-t border-[var(--color-border)]"></div>
+          </div>
+
           <button
             type="button"
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full mt-3 py-3 neomorph-button text-slate-300 hover:text-white text-sm font-semibold flex items-center justify-center space-x-2"
+            className="w-full py-3.5 clay-btn clay-btn-secondary text-[var(--color-text-primary)] text-sm font-bold flex items-center justify-center space-x-2.5 shadow-md"
           >
-            <svg className="w-4 h-4 mr-1.5" viewBox="0 0 24 24">
+            <svg className="w-4.5 h-4.5 mr-1" viewBox="0 0 24 24">
               <path
                 fill="#EA4335"
                 d="M5.266 9.765A7.077 7.077 0 0 1 12 4.909c1.69 0 3.218.6 4.418 1.582L19.91 3C17.782 1.145 15.055 0 12 0 7.27 0 3.23 2.682 1.22 6.62l4.046 3.145z"
@@ -219,20 +320,20 @@ export default function LoginPage({ onNavigate, onLoginSuccess }: LoginPageProps
                 d="M23.49 12.273c0-.8-.073-1.573-.209-2.318H12v4.545h6.455a5.556 5.556 0 0 1-2.41 3.645l4.028 3.23c2.355-2.173 3.418-5.382 3.418-8.828z"
               />
             </svg>
-            <span>Sign In with Google</span>
+            <span>Google Workspace</span>
           </button>
         </form>
 
-        <p className="mt-6 text-center text-xs text-slate-500">
+        <p className="mt-8 text-center text-xs text-[var(--color-text-secondary)] font-medium">
           New to SkillBridge?{" "}
           <button
             onClick={() => onNavigate("signup")}
-            className="text-blue-400 hover:underline font-semibold"
+            className="text-indigo-600 dark:text-indigo-400 hover:underline font-bold"
           >
             Create an Account
           </button>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }

@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { ArrowRight, Bot, Cpu, Briefcase, BarChart2, Award, Users, Terminal } from "lucide-react";
+import { ArrowRight, Bot, Cpu, Briefcase, BarChart2, Award, Users, Terminal, Moon, Sun } from "lucide-react";
 import { ApiService } from "../services/api";
 
 interface LandingPageProps {
   onNavigate: (page: string) => void;
   user: any;
+  theme: "light" | "dark";
+  setTheme: (theme: "light" | "dark") => void;
 }
 
-export default function LandingPage({ onNavigate, user }: LandingPageProps) {
+export default function LandingPage({ onNavigate, user, theme, setTheme }: LandingPageProps) {
   const [stats, setStats] = useState({
     matchAccuracy: "98%",
     fasterPrep: "10x",
@@ -79,31 +81,66 @@ export default function LandingPage({ onNavigate, user }: LandingPageProps) {
   ];
 
   return (
-    <div className="relative min-h-screen bg-[#0f1016] text-slate-100 selection:bg-blue-500/30 selection:text-white overflow-hidden pb-16">
-      {/* Glow Effects */}
-      <div className="absolute top-[-150px] left-[-100px] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none"></div>
-      <div className="absolute bottom-[-150px] right-[-100px] w-[600px] h-[600px] bg-purple-600/10 rounded-full blur-[140px] pointer-events-none"></div>
+    <div className="relative min-h-screen transition-colors duration-300 bg-[var(--color-bg-page)] text-[var(--color-text-primary)] overflow-hidden pb-16">
+      
+      {/* 3D Animated Clay Spheres in Background */}
+      <motion.div
+        animate={{
+          y: [0, -35, 0],
+          x: [0, 25, 0],
+          scale: [1, 1.15, 1],
+        }}
+        transition={{
+          duration: 15,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute top-[8%] left-[5%] w-60 h-60 rounded-full bg-gradient-to-br from-indigo-500/15 to-purple-500/10 blur-[5px] pointer-events-none"
+      />
+      <motion.div
+        animate={{
+          y: [0, 30, 0],
+          x: [0, -20, 0],
+          scale: [1, 0.9, 1],
+        }}
+        transition={{
+          duration: 18,
+          repeat: Infinity,
+          ease: "easeInOut",
+        }}
+        className="absolute bottom-[20%] right-[3%] w-72 h-72 rounded-full bg-gradient-to-br from-purple-500/15 to-pink-500/10 blur-[6px] pointer-events-none"
+      />
 
       {/* Navigation Header */}
-      <header className="sticky top-0 z-40 backdrop-blur-2xl border-b border-white/5 bg-white/[0.02]">
+      <header className="sticky top-0 z-40 border-b border-[var(--color-border)] backdrop-blur-2xl bg-[var(--clay-card-bg)] shadow-[var(--clay-btn-secondary-shadow)]">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg shadow-md shadow-blue-500/10 flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+          <div className="flex items-center space-x-2.5">
+            <div className="w-8 h-8 bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-xl shadow-lg flex items-center justify-center">
+              <svg className="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
             </div>
-            <span className="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
+            <span className="text-base font-black tracking-tight">
               SkillBridge
             </span>
-            <span className="px-1.5 py-0.5 text-[9px] bg-white/10 border border-white/10 text-slate-300 rounded font-mono font-bold">
+            <span className="px-1.5 py-0.5 text-[8px] bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 rounded-lg font-mono font-bold uppercase">
               AI
             </span>
           </div>
 
           <div className="flex items-center space-x-4">
+            {/* Theme Toggle */}
+            <button
+              onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+              className="p-2.5 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-page)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition duration-200 cursor-pointer shadow-sm"
+            >
+              {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+            </button>
+
             {user ? (
               <button
                 onClick={() => onNavigate("dashboard")}
-                className="px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white transition duration-200"
+                className="px-5 py-2.5 clay-btn clay-btn-primary text-white text-xs font-mono font-bold uppercase tracking-wider"
               >
                 Go to Dashboard
               </button>
@@ -111,13 +148,13 @@ export default function LandingPage({ onNavigate, user }: LandingPageProps) {
               <>
                 <button
                   onClick={() => onNavigate("login")}
-                  className="px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white transition duration-200"
+                  className="px-4 py-2.5 text-xs font-mono font-bold uppercase tracking-wider text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition"
                 >
                   Log In
                 </button>
                 <button
                   onClick={() => onNavigate("signup")}
-                  className="px-5 py-2 text-sm font-bold bg-blue-600 hover:bg-blue-500 shadow-xl shadow-blue-600/20 rounded-lg transition duration-200 text-white"
+                  className="px-5 py-2.5 clay-btn clay-btn-primary text-white text-xs font-mono font-bold uppercase tracking-wider shadow-md"
                 >
                   Sign Up
                 </button>
@@ -128,10 +165,10 @@ export default function LandingPage({ onNavigate, user }: LandingPageProps) {
       </header>
 
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-6 pt-16 sm:pt-24 pb-12 text-center relative">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full mb-6 backdrop-blur-xl">
-          <Terminal className="w-3.5 h-3.5 text-blue-400" />
-          <span className="text-xs font-mono text-slate-400 tracking-wider uppercase">
+      <section className="max-w-7xl mx-auto px-6 pt-20 sm:pt-28 pb-12 text-center relative z-10">
+        <div className="inline-flex items-center space-x-2 px-3 py-1 bg-indigo-500/5 border border-indigo-500/15 rounded-full mb-6 backdrop-blur-xl">
+          <Terminal className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+          <span className="text-[10px] font-mono text-[var(--color-text-secondary)] tracking-wider uppercase font-bold">
             Powered by Gemini 2.5 Flash
           </span>
         </div>
@@ -140,10 +177,10 @@ export default function LandingPage({ onNavigate, user }: LandingPageProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-4xl sm:text-6xl font-extrabold tracking-tight max-w-4xl mx-auto leading-tight text-white"
+          className="text-4xl sm:text-6xl font-black tracking-tight max-w-4xl mx-auto leading-tight text-[var(--color-text-primary)]"
         >
           Your AI-Powered Career{" "}
-          <span className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-500 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(168,85,247,0.2)]">
+          <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(168,85,247,0.15)]">
             Intelligence Platform
           </span>
         </motion.h1>
@@ -152,7 +189,7 @@ export default function LandingPage({ onNavigate, user }: LandingPageProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1 }}
-          className="mt-6 text-base sm:text-lg text-slate-400 max-w-2xl mx-auto font-sans leading-relaxed"
+          className="mt-6 text-sm sm:text-base text-[var(--color-text-secondary)] max-w-2xl mx-auto font-sans leading-relaxed font-semibold"
         >
           Unlock ATS scoring, custom skill-gap roadmaps, real-time interactive interview practice, and personalized match recommendations tailored to your profile.
         </motion.p>
@@ -161,18 +198,18 @@ export default function LandingPage({ onNavigate, user }: LandingPageProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
+          className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto"
         >
           <button
             onClick={() => onNavigate(user ? "dashboard" : "signup")}
-            className="w-full sm:w-auto px-8 py-3.5 bg-blue-600 hover:bg-blue-500 shadow-xl shadow-blue-600/20 text-sm font-bold rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 text-white"
+            className="w-full py-4 clay-btn clay-btn-primary text-xs font-mono font-bold uppercase tracking-wider text-white shadow-lg flex items-center justify-center space-x-2"
           >
             <span>Analyze Your Resume Now</span>
             <ArrowRight className="w-4 h-4" />
           </button>
           <button
             onClick={() => onNavigate("login")}
-            className="w-full sm:w-auto px-8 py-3.5 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 text-sm font-semibold text-slate-300 transition duration-200"
+            className="w-full py-4 clay-btn clay-btn-secondary text-xs font-mono font-bold uppercase tracking-wider text-[var(--color-text-primary)]"
           >
             Schedule Demo
           </button>
@@ -180,12 +217,12 @@ export default function LandingPage({ onNavigate, user }: LandingPageProps) {
       </section>
 
       {/* Features Bento Grid */}
-      <section className="max-w-7xl mx-auto px-6 py-16">
+      <section className="max-w-7xl mx-auto px-6 py-16 relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
+          <h2 className="text-2xl sm:text-4xl font-black tracking-tight">
             Integrated Multi-Agent Intelligence
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-slate-400 font-sans max-w-xl mx-auto">
+          <p className="mt-3 text-xs sm:text-sm text-[var(--color-text-secondary)] font-sans max-w-xl mx-auto font-medium leading-relaxed">
             A specialized collection of professional agents collaborating on every segment of your career strategy.
           </p>
         </div>
@@ -199,16 +236,16 @@ export default function LandingPage({ onNavigate, user }: LandingPageProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: i * 0.05 }}
-                className="relative group p-6 rounded-3xl bg-white/[0.02] border border-white/10 backdrop-blur-xl transition-all duration-300 hover:bg-white/[0.05] hover:border-white/20 hover:shadow-lg hover:shadow-blue-500/5 flex flex-col justify-between h-[230px]"
+                className="relative group p-6 clay-card flex flex-col justify-between h-[230px]"
               >
                 <div>
-                  <div className="p-3 bg-white/5 border border-white/10 rounded-xl w-fit">
-                    <IconComponent className="w-6 h-6 text-blue-400 group-hover:text-purple-400 transition-colors duration-300" />
+                  <div className="p-3 bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-xl w-fit text-indigo-600 dark:text-indigo-400 group-hover:text-purple-600 transition-colors duration-300 shadow-inner">
+                    <IconComponent className="w-5.5 h-5.5" />
                   </div>
-                  <h3 className="mt-4 text-lg font-bold text-white group-hover:text-blue-300 transition-all">
+                  <h3 className="mt-4 text-base font-black text-[var(--color-text-primary)]">
                     {feat.title}
                   </h3>
-                  <p className="mt-2 text-xs sm:text-sm text-slate-400 leading-relaxed font-sans line-clamp-3">
+                  <p className="mt-2 text-xs text-[var(--color-text-secondary)] leading-relaxed font-sans font-medium line-clamp-3">
                     {feat.desc}
                   </p>
                 </div>
@@ -219,45 +256,45 @@ export default function LandingPage({ onNavigate, user }: LandingPageProps) {
       </section>
 
       {/* Proof Section */}
-      <section className="max-w-7xl mx-auto px-6 py-12 text-center border-t border-white/5 mt-12 space-y-4">
+      <section className="max-w-7xl mx-auto px-6 py-12 text-center border-t border-[var(--color-border)] mt-12 space-y-6 relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div>
-            <span className="block text-3xl font-extrabold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="block text-3xl font-black bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
               {stats.matchAccuracy}
             </span>
-            <span className="text-xs text-slate-500 font-mono uppercase tracking-wider mt-1 block">
+            <span className="text-[10px] text-[var(--color-text-tertiary)] font-mono uppercase tracking-widest mt-1 block font-black">
               Match Accuracy
             </span>
           </div>
           <div>
-            <span className="block text-3xl font-extrabold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="block text-3xl font-black bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
               {stats.fasterPrep}
             </span>
-            <span className="text-xs text-slate-500 font-mono uppercase tracking-wider mt-1 block">
-              Faster Preparation
+            <span className="text-[10px] text-[var(--color-text-tertiary)] font-mono uppercase tracking-widest mt-1 block font-black">
+              Faster Prep
             </span>
           </div>
           <div>
-            <span className="block text-3xl font-extrabold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="block text-3xl font-black bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
               {stats.averageAtsScore}
             </span>
-            <span className="text-xs text-slate-500 font-mono uppercase tracking-wider mt-1 block">
+            <span className="text-[10px] text-[var(--color-text-tertiary)] font-mono uppercase tracking-widest mt-1 block font-black">
               Average ATS Score
             </span>
           </div>
           <div>
-            <span className="block text-3xl font-extrabold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="block text-3xl font-black bg-gradient-to-r from-indigo-500 to-purple-500 bg-clip-text text-transparent">
               {stats.agentCoverage}
             </span>
-            <span className="text-xs text-slate-500 font-mono uppercase tracking-wider mt-1 block">
+            <span className="text-[10px] text-[var(--color-text-tertiary)] font-mono uppercase tracking-widest mt-1 block font-black">
               Agent Coverage
             </span>
           </div>
         </div>
 
         {/* Live database stats badge */}
-        <div className="inline-flex items-center space-x-1.5 px-3 py-1 bg-emerald-500/5 border border-emerald-500/15 rounded-full text-[10px] font-mono text-emerald-400">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+        <div className="inline-flex items-center space-x-2 px-3 py-1.5 bg-emerald-500/5 border border-emerald-500/15 rounded-full text-[10px] font-mono text-emerald-600 dark:text-emerald-400">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
           <span>Live platform analytics calculated from {stats.totalExecutions || 0} active database operations (Uptime: {stats.uptime})</span>
         </div>
       </section>
