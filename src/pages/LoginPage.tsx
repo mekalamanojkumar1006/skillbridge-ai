@@ -112,46 +112,34 @@ export default function LoginPage({ onNavigate, onLoginSuccess, theme, setTheme 
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center relative px-6 overflow-hidden bg-[var(--color-bg-page)] text-[var(--color-text-primary)] transition-colors duration-300">
+    <div className="min-h-screen flex flex-col justify-center relative px-6 overflow-hidden bg-[var(--color-bg-page)] text-[var(--color-text-primary)] transition-colors duration-300 font-sans">
       
-      {/* 3D Animated Clay Spheres in Background */}
+      {/* Dynamic Background Blobs */}
       <motion.div
         animate={{
           y: [0, -30, 0],
           x: [0, 20, 0],
-          scale: [1, 1.1, 1],
+          scale: [1, 1.12, 1],
         }}
         transition={{
           duration: 12,
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute top-[10%] left-[10%] w-48 h-48 rounded-full bg-gradient-to-br from-indigo-400/20 to-purple-400/10 blur-[4px] pointer-events-none"
+        className="absolute top-[10%] left-[10%] w-60 h-60 rounded-full bg-gradient-to-br from-[#6D5DF6]/15 to-[#8B5CF6]/5 blur-[80px] pointer-events-none"
       />
       <motion.div
         animate={{
-          y: [0, 40, 0],
-          x: [0, -25, 0],
+          y: [0, 45, 0],
+          x: [0, -30, 0],
           scale: [1, 0.9, 1],
         }}
         transition={{
-          duration: 15,
+          duration: 16,
           repeat: Infinity,
           ease: "easeInOut",
         }}
-        className="absolute bottom-[10%] right-[10%] w-64 h-64 rounded-full bg-gradient-to-br from-purple-400/20 to-pink-400/10 blur-[6px] pointer-events-none"
-      />
-      <motion.div
-        animate={{
-          y: [0, -25, 0],
-          x: [0, -20, 0],
-        }}
-        transition={{
-          duration: 9,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="absolute top-[60%] left-[80%] w-32 h-32 rounded-full bg-gradient-to-br from-teal-400/15 to-blue-400/10 blur-[3px] pointer-events-none"
+        className="absolute bottom-[10%] right-[10%] w-80 h-80 rounded-full bg-gradient-to-br from-[#8B5CF6]/15 to-pink-500/5 blur-[100px] pointer-events-none"
       />
 
       {/* Header Bar */}
@@ -164,10 +152,9 @@ export default function LoginPage({ onNavigate, onLoginSuccess, theme, setTheme 
           <span>Return Home</span>
         </button>
 
-        {/* Theme Toggle Button */}
         <button
           onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-          className="p-2.5 rounded-2xl border border-[var(--color-border)] bg-[var(--clay-card-bg)] shadow-[var(--clay-btn-secondary-shadow)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition duration-200 cursor-pointer"
+          className="p-2.5 rounded-2xl border border-[var(--color-glass-border)] bg-[var(--glass-card-bg)] shadow-[var(--clay-btn-secondary-shadow)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition duration-200 cursor-pointer"
         >
           {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
         </button>
@@ -178,11 +165,11 @@ export default function LoginPage({ onNavigate, onLoginSuccess, theme, setTheme 
         initial={{ opacity: 0, y: 30, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-md mx-auto relative clay-card p-8 sm:p-10 z-10"
+        className="w-full max-w-md mx-auto relative glass-card glowing-border p-8 sm:p-10 z-10"
       >
         <div className="text-center mb-8">
           <div className="inline-flex items-center space-x-2.5 mb-3">
-            <div className="w-9 h-9 bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+            <div className="w-9 h-9 bg-gradient-to-br from-[#6D5DF6] to-[#8B5CF6] rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
@@ -190,7 +177,7 @@ export default function LoginPage({ onNavigate, onLoginSuccess, theme, setTheme 
             <span className="text-xl font-black tracking-tight">
               SkillBridge
             </span>
-            <span className="px-2 py-0.5 text-[10px] bg-indigo-500/10 border border-indigo-500/20 text-indigo-500 rounded-lg font-mono font-black uppercase">
+            <span className="px-2 py-0.5 text-[10px] bg-[#6D5DF6]/10 border border-[#6D5DF6]/20 text-[#6D5DF6] rounded-lg font-mono font-black uppercase">
               AI
             </span>
           </div>
@@ -198,7 +185,7 @@ export default function LoginPage({ onNavigate, onLoginSuccess, theme, setTheme 
             Welcome Back
           </h2>
           <p className="text-xs text-[var(--color-text-secondary)] mt-1.5 font-medium leading-relaxed">
-            Sign in to continue analyzing your career assets and roadmaps
+            Sign in to continue building your AI career path
           </p>
         </div>
 
@@ -275,7 +262,7 @@ export default function LoginPage({ onNavigate, onLoginSuccess, theme, setTheme 
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-4 py-3.5 clay-btn clay-btn-primary font-bold text-sm text-white flex items-center justify-center space-x-2 shadow-lg"
+            className="w-full mt-4 py-3.5 clay-btn clay-btn-primary font-semibold text-sm text-white flex items-center justify-center space-x-2 shadow-lg"
           >
             {loading ? (
               <span className="flex items-center space-x-2">
@@ -300,7 +287,7 @@ export default function LoginPage({ onNavigate, onLoginSuccess, theme, setTheme 
             type="button"
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full py-3.5 clay-btn clay-btn-secondary text-[var(--color-text-primary)] text-sm font-bold flex items-center justify-center space-x-2.5 shadow-md"
+            className="w-full py-3.5 clay-btn clay-btn-secondary text-[var(--color-text-primary)] text-sm font-semibold flex items-center justify-center space-x-2.5 shadow-md"
           >
             <svg className="w-4.5 h-4.5 mr-1" viewBox="0 0 24 24">
               <path
