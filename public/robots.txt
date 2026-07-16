@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://skillbridge-ai-7m05.onrender.com/sitemap.xml
