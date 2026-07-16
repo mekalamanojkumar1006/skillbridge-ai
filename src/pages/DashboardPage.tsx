@@ -52,7 +52,8 @@ import {
   ArrowRight,
   Target,
   Mic,
-  Check
+  Check,
+  Copy
 } from "lucide-react";
 import ProfileSettingsPage from "./ProfileSettingsPage";
 import { CAREER_ROADMAPS, CareerPath, Milestone } from "../data/careersData";
@@ -280,6 +281,9 @@ export default function DashboardPage({
   const [greeting, setGreeting] = useState("Good evening");
   const [showNotifications, setShowNotifications] = useState(false);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isHowToUseOpen, setIsHowToUseOpen] = useState(false);
+  const [isAtsTemplateOpen, setIsAtsTemplateOpen] = useState(false);
+  const [copiedAts, setCopiedAts] = useState(false);
   const [notificationsList, setNotificationsList] = useState([
     { id: 1, title: "Resume parsed successfully", time: "2 hours ago", read: false },
     { id: 2, title: "ATS Optimizer scan recommendations updated", time: "4 hours ago", read: false },
@@ -1507,38 +1511,53 @@ export default function DashboardPage({
         {/* Sidebar Footer Panel */}
         <div className="space-y-4 pt-4 border-t border-[var(--color-border)] mt-4">
           
-          {/* Resume Completion & Storage stats */}
-          {!isSidebarCollapsed && (
-            <div className="space-y-3.5 p-3.5 bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl shadow-inner text-[10px] font-mono font-semibold text-[var(--color-text-secondary)]">
-              <div>
-                <div className="flex justify-between items-center mb-1">
-                  <span>Profile Asset</span>
-                  <span className="text-[#6D5DF6] font-bold">{resume ? "85%" : "0%"}</span>
-                </div>
-                <div className="w-full bg-[var(--color-border)] h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-[#6D5DF6] h-full transition-all duration-300" style={{ width: resume ? "85%" : "0%" }} />
-                </div>
-              </div>
-              
-              <div>
-                <div className="flex justify-between items-center mb-1">
-                  <span>Cloud Database</span>
-                  <span className="text-[#8B5CF6] font-bold">8.4%</span>
-                </div>
-                <div className="w-full bg-[var(--color-border)] h-1.5 rounded-full overflow-hidden">
-                  <div className="bg-[#8B5CF6] h-full" style={{ width: "8.4%" }} />
-                </div>
-              </div>
+          {/* Quick Guide and ATS Template */}
+          {isSidebarCollapsed ? (
+            <div className="flex flex-col items-center space-y-2 pb-2">
+              <button
+                onClick={() => setIsHowToUseOpen(true)}
+                className="p-2.5 rounded-2xl border border-[var(--color-glass-border)] bg-[var(--glass-card-bg)] hover:bg-[#6D5DF6]/10 text-[var(--color-text-secondary)] hover:text-[#6D5DF6] shadow-[var(--clay-btn-secondary-shadow)] transition duration-200 cursor-pointer"
+                title="How to Use This App"
+              >
+                <HelpCircle className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setIsAtsTemplateOpen(true)}
+                className="p-2.5 rounded-2xl border border-[var(--color-glass-border)] bg-[var(--glass-card-bg)] hover:bg-[#8B5CF6]/10 text-[var(--color-text-secondary)] hover:text-[#8B5CF6] shadow-[var(--clay-btn-secondary-shadow)] transition duration-200 cursor-pointer"
+                title="ATS Resume Template"
+              >
+                <FileText className="w-4 h-4" />
+              </button>
             </div>
-          )}
+          ) : (
+            <div className="space-y-3 p-3 bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl shadow-inner text-[10px] font-mono font-semibold text-[var(--color-text-secondary)]">
+              <div>
+                <span className="text-[9px] font-mono uppercase tracking-wider text-[var(--color-text-tertiary)] block mb-1.5 font-bold">Quick Guide</span>
+                <button
+                  onClick={() => setIsHowToUseOpen(true)}
+                  className="w-full flex items-center justify-between p-2 rounded-xl border border-[var(--color-border)] bg-[var(--glass-card-bg)] hover:bg-[#6D5DF6]/5 hover:border-[#6D5DF6]/20 transition duration-200 cursor-pointer text-left text-[10px] text-[var(--color-text-primary)] font-semibold"
+                >
+                  <div className="flex items-center space-x-2">
+                    <HelpCircle className="w-3.5 h-3.5 text-[#6D5DF6] shrink-0" />
+                    <span className="truncate">How to Use App</span>
+                  </div>
+                  <ChevronRight className="w-3 h-3 text-[var(--color-text-tertiary)] shrink-0" />
+                </button>
+              </div>
 
-          {/* Floating Premium AI badge */}
-          {!isSidebarCollapsed && (
-            <div className="p-3 bg-gradient-to-tr from-[#6D5DF6]/12 to-[#8B5CF6]/5 border border-[var(--color-glass-border)] rounded-2xl flex items-center space-x-2.5">
-              <ShieldCheck className="w-4 h-4 text-[#8B5CF6] shrink-0" />
-              <span className="text-[9px] font-mono uppercase tracking-wider text-[var(--color-text-secondary)] font-extrabold">
-                Copilot Enterprise
-              </span>
+              <div>
+                <span className="text-[9px] font-mono uppercase tracking-wider text-[var(--color-text-tertiary)] block mb-1.5 font-bold">Resources</span>
+                <button
+                  onClick={() => setIsAtsTemplateOpen(true)}
+                  className="w-full flex items-center justify-between p-2 rounded-xl border border-[var(--color-border)] bg-[var(--glass-card-bg)] hover:bg-[#8B5CF6]/5 hover:border-[#8B5CF6]/20 transition duration-200 cursor-pointer text-left text-[10px] text-[var(--color-text-primary)] font-semibold"
+                >
+                  <div className="flex items-center space-x-2">
+                    <FileText className="w-3.5 h-3.5 text-[#8B5CF6] shrink-0" />
+                    <span className="truncate">ATS Resume Template</span>
+                  </div>
+                  <ChevronRight className="w-3 h-3 text-[var(--color-text-tertiary)] shrink-0" />
+                </button>
+              </div>
             </div>
           )}
 
@@ -3611,6 +3630,224 @@ export default function DashboardPage({
                   className="w-full py-3.5 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider font-semibold text-white shadow-md cursor-pointer"
                 >
                   Dismiss Details
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* How to Use This App Modal */}
+      <AnimatePresence>
+        {isHowToUseOpen && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            onClick={() => setIsHowToUseOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.95, y: 20, opacity: 0 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full max-w-xl glass-card glowing-border p-6 sm:p-8 space-y-6 relative text-[var(--color-text-primary)]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-start border-b border-[var(--color-border)] pb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-9 h-9 bg-gradient-to-br from-[#6D5DF6] to-[#8B5CF6] rounded-xl flex items-center justify-center shadow-md text-white font-black text-xs font-mono">
+                    💡
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-black tracking-tight uppercase font-mono">How to Use This App</h3>
+                    <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider block font-bold mt-0.5">Quick Onboarding Guide</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsHowToUseOpen(false)}
+                  className="p-1.5 rounded-lg hover:bg-[var(--color-bg-page)] text-[var(--color-text-secondary)] transition cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="space-y-4 max-h-96 overflow-y-auto custom-scrollbar pr-2">
+                <div className="space-y-3.5">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 rounded-lg bg-[#6D5DF6]/10 border border-[#6D5DF6]/20 flex items-center justify-center text-[10px] font-bold text-[#6D5DF6] font-mono mt-0.5 shrink-0">
+                      1
+                    </div>
+                    <div>
+                      <h4 className="text-[11px] font-mono uppercase tracking-wider font-extrabold text-[var(--color-text-primary)]">Upload Your Resume</h4>
+                      <p className="text-[10.5px] leading-relaxed text-[var(--color-text-secondary)] mt-0.5 font-medium font-sans">
+                        Start by uploading your current profile resume (PDF/DOCX) or pasting your text on the upload screen. Our Gemini-powered AI parses your details automatically.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 rounded-lg bg-[#8B5CF6]/10 border border-[#8B5CF6]/20 flex items-center justify-center text-[10px] font-bold text-[#8B5CF6] font-mono mt-0.5 shrink-0">
+                      2
+                    </div>
+                    <div>
+                      <h4 className="text-[11px] font-mono uppercase tracking-wider font-extrabold text-[var(--color-text-primary)]">Analyze ATS Score</h4>
+                      <p className="text-[10.5px] leading-relaxed text-[var(--color-text-secondary)] mt-0.5 font-medium font-sans">
+                        Navigate to the **ATS Optimizer** tab to run a thorough scan. Review formatting checkmarks, keyword density, and actionable suggestions to optimize your resume for recruiters.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 rounded-lg bg-[#6D5DF6]/10 border border-[#6D5DF6]/20 flex items-center justify-center text-[10px] font-bold text-[#6D5DF6] font-mono mt-0.5 shrink-0">
+                      3
+                    </div>
+                    <div>
+                      <h4 className="text-[11px] font-mono uppercase tracking-wider font-extrabold text-[var(--color-text-primary)]">Review Skill Deficits</h4>
+                      <p className="text-[10.5px] leading-relaxed text-[var(--color-text-secondary)] mt-0.5 font-medium font-sans">
+                        Check the **Skill Deficits** card on the Overview dashboard to see which core tools, technologies, and soft skills are missing for your desired career paths.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 rounded-lg bg-[#8B5CF6]/10 border border-[#8B5CF6]/20 flex items-center justify-center text-[10px] font-bold text-[#8B5CF6] font-mono mt-0.5 shrink-0">
+                      4
+                    </div>
+                    <div>
+                      <h4 className="text-[11px] font-mono uppercase tracking-wider font-extrabold text-[var(--color-text-primary)]">Follow Career Roadmap</h4>
+                      <p className="text-[10.5px] leading-relaxed text-[var(--color-text-secondary)] mt-0.5 font-medium font-sans">
+                        Generate and follow a tailored step-by-step learning roadmap in the **Career Roadmap** tab, including tutorials, projects, and certifications to bridge your gaps.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 rounded-lg bg-[#6D5DF6]/10 border border-[#6D5DF6]/20 flex items-center justify-center text-[10px] font-bold text-[#6D5DF6] font-mono mt-0.5 shrink-0">
+                      5
+                    </div>
+                    <div>
+                      <h4 className="text-[11px] font-mono uppercase tracking-wider font-extrabold text-[var(--color-text-primary)]">Practice AI Mock Interviews</h4>
+                      <p className="text-[10.5px] leading-relaxed text-[var(--color-text-secondary)] mt-0.5 font-medium font-sans">
+                        Use the **Mock Interview** simulator to practice behavioral or technical interviews. Speak or type answers and get instant feedback with dynamic grading.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-3">
+                    <div className="w-6 h-6 rounded-lg bg-[#8B5CF6]/10 border border-[#8B5CF6]/20 flex items-center justify-center text-[10px] font-bold text-[#8B5CF6] font-mono mt-0.5 shrink-0">
+                      6
+                    </div>
+                    <div>
+                      <h4 className="text-[11px] font-mono uppercase tracking-wider font-extrabold text-[var(--color-text-primary)]">Explore Jobs & Placement</h4>
+                      <p className="text-[10.5px] leading-relaxed text-[var(--color-text-secondary)] mt-0.5 font-medium font-sans">
+                        Browse matching industry jobs, see your compatibility scores, read feedback on why you're a good fit, and apply directly to matching opportunities.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  onClick={() => setIsHowToUseOpen(false)}
+                  className="w-full py-3.5 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider font-semibold text-white shadow-md cursor-pointer"
+                >
+                  Got It!
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* ATS Resume Template Modal */}
+      <AnimatePresence>
+        {isAtsTemplateOpen && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            onClick={() => setIsAtsTemplateOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.95, y: 20, opacity: 0 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full max-w-2xl glass-card glowing-border p-6 sm:p-8 space-y-6 relative text-[var(--color-text-primary)]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-start border-b border-[var(--color-border)] pb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-9 h-9 bg-gradient-to-br from-[#8B5CF6] to-[#6D5DF6] rounded-xl flex items-center justify-center shadow-md text-white font-black text-xs font-mono">
+                    📄
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-black tracking-tight uppercase font-mono">ATS Resume Template</h3>
+                    <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider block font-bold mt-0.5">100% Parser Compliant Format</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsAtsTemplateOpen(false)}
+                  className="p-1.5 rounded-lg hover:bg-[var(--color-bg-page)] text-[var(--color-text-secondary)] transition cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="space-y-4 text-xs font-sans">
+                <p className="font-semibold text-[var(--color-text-secondary)] leading-relaxed">
+                  This single-column template is optimized for Applicant Tracking Systems (ATS). It uses clear headers and standard styling to guarantee full parsability.
+                </p>
+
+                <div className="relative">
+                  <pre className="bg-[var(--color-bg-page)] border border-[var(--color-border)] p-4 rounded-xl font-mono text-[10px] text-[var(--color-text-primary)] whitespace-pre-wrap max-h-64 overflow-y-auto custom-scrollbar select-text">
+                    {ATS_FRIENDLY_TEMPLATE}
+                  </pre>
+                  
+                  {/* Action buttons inside the code box */}
+                  <div className="absolute right-3.5 top-3.5 flex space-x-2">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(ATS_FRIENDLY_TEMPLATE);
+                        setCopiedAts(true);
+                        setTimeout(() => setCopiedAts(false), 2000);
+                      }}
+                      className="p-2 bg-[var(--glass-card-bg)] hover:bg-[#6D5DF6]/10 border border-[var(--color-glass-border)] hover:border-[#6D5DF6]/20 rounded-lg shadow-sm transition text-[var(--color-text-secondary)] hover:text-[#6D5DF6] flex items-center space-x-1 cursor-pointer font-mono text-[9px] font-bold uppercase tracking-wider"
+                    >
+                      {copiedAts ? (
+                        <>
+                          <Check className="w-3.5 h-3.5 text-green-500" />
+                          <span>Copied!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-3.5 h-3.5" />
+                          <span>Copy</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 pt-2">
+                <button
+                  onClick={() => {
+                    const blob = new Blob([ATS_FRIENDLY_TEMPLATE], { type: "text/plain;charset=utf-8" });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.download = "ats_resume_template.txt";
+                    link.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                  className="py-3.5 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider font-semibold text-white shadow-md cursor-pointer flex items-center justify-center space-x-2"
+                >
+                  <span>Download TXT</span>
+                </button>
+                <button
+                  onClick={() => setIsAtsTemplateOpen(false)}
+                  className="py-3.5 border border-[var(--color-border)] hover:bg-[var(--color-bg-page)] rounded-2xl text-xs font-mono uppercase tracking-wider font-semibold text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] shadow-sm transition duration-200 cursor-pointer"
+                >
+                  Dismiss
                 </button>
               </div>
             </motion.div>
