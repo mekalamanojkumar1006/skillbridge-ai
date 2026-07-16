@@ -169,13 +169,6 @@ export default function LandingPage({ onNavigate, user, theme, setTheme }: Landi
       {/* Hero Section */}
       <section className="pt-20 sm:pt-28 pb-12 text-center relative z-10">
         <ResponsiveContainer>
-        <div className="inline-flex items-center space-x-2 px-3 py-1 bg-[#6D5DF6]/5 border border-[#6D5DF6]/15 rounded-full mb-8 backdrop-blur-xl">
-          <Terminal className="w-3.5 h-3.5 text-[#6D5DF6]" />
-          <span className="text-[10px] font-mono text-[var(--color-text-secondary)] tracking-wider uppercase font-bold">
-            Cognitive Platform &bull; Gemini 2.5 Flash
-          </span>
-        </div>
-
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -201,7 +194,7 @@ export default function LandingPage({ onNavigate, user, theme, setTheme }: Landi
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto"
+          className="mt-10 flex items-center justify-center max-w-xs mx-auto"
         >
           <button
             onClick={() => onNavigate(user ? "dashboard" : "signup")}
@@ -209,12 +202,6 @@ export default function LandingPage({ onNavigate, user, theme, setTheme }: Landi
           >
             <span>Analyze Your Resume Now</span>
             <ArrowRight className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => onNavigate("login")}
-            className="w-full py-4 clay-btn clay-btn-secondary text-xs tracking-wider uppercase font-semibold"
-          >
-            Request Access Demo
           </button>
         </motion.div>
         </ResponsiveContainer>

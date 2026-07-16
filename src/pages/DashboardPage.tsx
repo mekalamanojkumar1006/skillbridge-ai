@@ -279,6 +279,7 @@ export default function DashboardPage({
   const [currentTime, setCurrentTime] = useState("");
   const [greeting, setGreeting] = useState("Good evening");
   const [showNotifications, setShowNotifications] = useState(false);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const [notificationsList, setNotificationsList] = useState([
     { id: 1, title: "Resume parsed successfully", time: "2 hours ago", read: false },
     { id: 2, title: "ATS Optimizer scan recommendations updated", time: "4 hours ago", read: false },
@@ -1609,6 +1610,16 @@ export default function DashboardPage({
             >
               <Brain className="w-4 h-4" />
               <span className="hidden sm:inline text-[9px] font-mono uppercase tracking-wider font-black">AI Coach</span>
+            </button>
+
+            {/* About Button */}
+            <button
+              onClick={() => setIsAboutOpen(true)}
+              className="p-2 sm:p-2.5 rounded-2xl border border-[var(--color-glass-border)] bg-[var(--glass-card-bg)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[#6D5DF6]/5 shadow-[var(--clay-btn-secondary-shadow)] transition duration-200 cursor-pointer flex items-center space-x-1.5"
+              title="About Platform"
+            >
+              <HelpCircle className="w-4 h-4" />
+              <span className="hidden sm:inline text-[9px] font-mono uppercase tracking-wider font-black">About</span>
             </button>
 
             {/* Notifications panel toggle */}
@@ -3537,6 +3548,75 @@ export default function DashboardPage({
           <Brain className="w-5 h-5" />
         </button>
       </div>
+
+      {/* About Platform Modal */}
+      <AnimatePresence>
+        {isAboutOpen && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            onClick={() => setIsAboutOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, y: 20, opacity: 0 }}
+              animate={{ scale: 1, y: 0, opacity: 1 }}
+              exit={{ scale: 0.95, y: 20, opacity: 0 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full max-w-lg glass-card glowing-border p-6 sm:p-8 space-y-6 relative text-[var(--color-text-primary)]"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-start border-b border-[var(--color-border)] pb-4">
+                <div className="flex items-center space-x-3">
+                  <div className="w-9 h-9 bg-gradient-to-br from-[#6D5DF6] to-[#8B5CF6] rounded-xl flex items-center justify-center shadow-md text-white font-black text-xs font-mono">
+                    SB
+                  </div>
+                  <div>
+                    <h3 className="text-xs font-black tracking-tight uppercase font-mono">SkillBridge AI</h3>
+                    <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider block font-bold mt-0.5">Version 1.0.0</span>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setIsAboutOpen(false)}
+                  className="p-1.5 rounded-lg hover:bg-[var(--color-bg-page)] text-[var(--color-text-secondary)] transition cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              <div className="space-y-4 text-xs leading-relaxed font-sans text-[var(--color-text-secondary)]">
+                <p className="font-semibold">
+                  SkillBridge AI is an AI-powered Career Intelligence Platform that empowers students, fresh graduates, and job seekers with resume analysis, ATS optimization, personalized career roadmaps, real-time job matching, and simulated mock interviews.
+                </p>
+                
+                <div className="grid grid-cols-2 gap-4 border-t border-b border-[var(--color-border)] py-4 font-mono text-[10px]">
+                  <div>
+                    <span className="text-[9px] text-[var(--color-text-tertiary)] uppercase block font-bold">Developer</span>
+                    <span className="font-bold text-[var(--color-text-primary)]">Mekala Manoj Kumar</span>
+                  </div>
+                  <div>
+                    <span className="text-[9px] text-[var(--color-text-tertiary)] uppercase block font-bold">Contact Email</span>
+                    <a href="mailto:mekalamanojkumar6@gmail.com" className="font-bold text-[#6D5DF6] hover:underline">
+                      mekalamanojkumar6@gmail.com
+                    </a>
+                  </div>
+                </div>
+
+                <p className="text-[10px] text-[var(--color-text-tertiary)]">
+                  Built using React, TypeScript, Tailwind CSS, and the Google Gemini API to bridge the gap between academic education and modern professional employment.
+                </p>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  onClick={() => setIsAboutOpen(false)}
+                  className="w-full py-3.5 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider font-semibold text-white shadow-md cursor-pointer"
+                >
+                  Dismiss Details
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
     </div>
   );
