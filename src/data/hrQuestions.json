@@ -1,0 +1,110 @@
+[
+  {
+    "id": "hr_1",
+    "question": "Tell me about yourself.",
+    "expectedPoints": [
+      "Provide a concise summary of your professional background",
+      "Highlight 1-2 key accomplishments or core strengths",
+      "Explain your current career focus and why you are seeking new opportunities"
+    ]
+  },
+  {
+    "id": "hr_2",
+    "question": "Why should we hire you?",
+    "expectedPoints": [
+      "Align your skills and experience with the core needs of the role",
+      "Explain your unique value proposition or work ethic",
+      "Demonstrate enthusiasm and commitment to adding value to the team"
+    ]
+  },
+  {
+    "id": "hr_3",
+    "question": "Describe a challenge you faced and how you handled it.",
+    "expectedPoints": [
+      "Set the context using the STAR method (Situation, Task, Action, Result)",
+      "Explain the specific actions you took to address the problem",
+      "Describe the positive outcome and what you learned from the experience"
+    ]
+  },
+  {
+    "id": "hr_4",
+    "question": "How do you handle pressure or stressful situations?",
+    "expectedPoints": [
+      "Explain your mental or organizational process for staying calm under pressure",
+      "Give a specific example of a high-pressure situation you managed successfully",
+      "Emphasize positive outcomes like meeting deadlines or maintaining quality"
+    ]
+  },
+  {
+    "id": "hr_5",
+    "question": "What motivates you?",
+    "expectedPoints": [
+      "Connect your motivation to professional development or problem-solving",
+      "Mention a passion for learning new technologies or creating useful tools",
+      "Illustrate with a brief example of a project or task that excited you"
+    ]
+  },
+  {
+    "id": "hr_6",
+    "question": "What are your greatest strengths?",
+    "expectedPoints": [
+      "Identify 1-2 distinct professional or soft skills",
+      "Provide a brief example where this strength made a clear difference",
+      "Connect this strength back to the requirements of the job"
+    ]
+  },
+  {
+    "id": "hr_7",
+    "question": "What are your weaknesses?",
+    "expectedPoints": [
+      "Name a genuine, non-critical area of improvement (avoid clichés like 'perfectionism')",
+      "Explain the active steps you are taking to overcome or manage it",
+      "Frame the response with self-awareness and a growth mindset"
+    ]
+  },
+  {
+    "id": "hr_8",
+    "question": "Where do you see yourself in five years?",
+    "expectedPoints": [
+      "Express a desire to deepen your technical expertise or transition into leadership",
+      "Show alignment between your career trajectory and the goals of the company",
+      "Emphasize a commitment to long-term growth and learning"
+    ]
+  },
+  {
+    "id": "hr_9",
+    "question": "Why do you want to join our company?",
+    "expectedPoints": [
+      "Reference specific aspects of the company's culture, mission, or products",
+      "Explain how your skills align with the company's current trajectory",
+      "Express enthusiasm for collaborating with their team"
+    ]
+  },
+  {
+    "id": "hr_10",
+    "question": "How do you prioritize your work when dealing with multiple deadlines?",
+    "expectedPoints": [
+      "Describe a structured prioritization method (e.g., Eisenhower matrix, task lists)",
+      "Explain how you communicate with stakeholders about expectations and deadlines",
+      "Provide a brief example of successfully managing a heavy workload"
+    ]
+  },
+  {
+    "id": "hr_11",
+    "question": "Describe a time when you had a conflict with a teammate and how you resolved it.",
+    "expectedPoints": [
+      "Describe the conflict objectively and without blaming the other person",
+      "Detail the steps you took to listen, communicate, and reach a compromise",
+      "Explain the professional outcome and how it improved your working relationship"
+    ]
+  },
+  {
+    "id": "hr_12",
+    "question": "How do you handle constructive criticism or negative feedback?",
+    "expectedPoints": [
+      "Demonstrate a mature, positive attitude that values feedback for self-improvement",
+      "Explain how you listen actively and ask clarifying questions rather than getting defensive",
+      "Give an example of when feedback helped you adjust and deliver a better result"
+    ]
+  }
+]

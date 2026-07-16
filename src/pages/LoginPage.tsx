@@ -18,8 +18,9 @@ import {
   Map,
   Search,
   MessageSquare,
-  Sparkles
+  Brain
 } from "lucide-react";
+import ResponsiveContainer from "../components/ResponsiveContainer";
 
 interface LoginPageProps {
   onNavigate: (page: string) => void;
@@ -186,7 +187,8 @@ export default function LoginPage({ onNavigate, onLoginSuccess, theme, setTheme 
   ];
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row relative overflow-hidden bg-[var(--color-bg-page)] text-[var(--color-text-primary)] transition-colors duration-300 font-sans">
+    <div className="min-h-screen relative overflow-hidden bg-[var(--color-bg-page)] text-[var(--color-text-primary)] transition-colors duration-300 font-sans">
+      <ResponsiveContainer className="flex flex-col md:flex-row min-h-screen">
       
       {/* Top Floating Utility Bar */}
       <div className="absolute top-6 left-6 right-6 flex items-center justify-between z-30">
@@ -266,7 +268,7 @@ export default function LoginPage({ onNavigate, onLoginSuccess, theme, setTheme 
 
           {/* Platform Stat Tag */}
           <div className="pt-6 border-t border-[var(--color-border)] flex items-center space-x-2">
-            <Sparkles className="w-4 h-4 text-[#8B5CF6] animate-pulse" />
+            <Brain className="w-4 h-4 text-[#8B5CF6]" />
             <span className="text-[10.5px] font-mono text-[var(--color-text-tertiary)] uppercase font-bold tracking-wider">
               Powered by advanced neural evaluation metrics
             </span>
@@ -506,6 +508,7 @@ export default function LoginPage({ onNavigate, onLoginSuccess, theme, setTheme 
           </p>
         </motion.div>
       </div>
+      </ResponsiveContainer>
     </div>
   );
 }

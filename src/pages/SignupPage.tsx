@@ -4,6 +4,7 @@ import { auth } from "../lib/firebase";
 import { ApiService } from "../services/api";
 import { motion } from "motion/react";
 import { Mail, Lock, User, Eye, EyeOff, AlertCircle, ArrowLeft, ArrowRight, Sun, Moon } from "lucide-react";
+import ResponsiveContainer from "../components/ResponsiveContainer";
 
 interface SignupPageProps {
   onNavigate: (page: string) => void;
@@ -94,7 +95,8 @@ export default function SignupPage({ onNavigate, onLoginSuccess, theme, setTheme
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center relative px-6 overflow-hidden bg-[var(--color-bg-page)] text-[var(--color-text-primary)] transition-colors duration-300 font-sans">
+    <div className="min-h-screen relative overflow-hidden bg-[var(--color-bg-page)] text-[var(--color-text-primary)] transition-colors duration-300 font-sans">
+      <ResponsiveContainer className="flex flex-col justify-center items-center min-h-screen">
       
       {/* Background Clay Spheres */}
       <motion.div
@@ -308,6 +310,7 @@ export default function SignupPage({ onNavigate, onLoginSuccess, theme, setTheme
           </button>
         </p>
       </motion.div>
+      </ResponsiveContainer>
     </div>
   );
 }

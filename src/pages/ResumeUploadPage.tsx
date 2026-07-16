@@ -1,7 +1,8 @@
 import React, { useState, useRef } from "react";
 import { ApiService } from "../services/api";
-import { Upload, FileText, ArrowRight, Clipboard, AlertCircle, Sparkles, Sun, Moon, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { Upload, FileText, ArrowRight, Clipboard, AlertCircle, Cpu, Sun, Moon, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { motion } from "motion/react";
+import ResponsiveContainer from "../components/ResponsiveContainer";
 
 interface ResumeUploadPageProps {
   userId: string;
@@ -114,7 +115,8 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate, 
   ];
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center px-6 py-12 relative overflow-hidden bg-[var(--color-bg-page)] text-[var(--color-text-primary)] transition-colors duration-300 font-sans">
+    <div className="min-h-screen relative overflow-hidden bg-[var(--color-bg-page)] text-[var(--color-text-primary)] transition-colors duration-300 font-sans">
+      <ResponsiveContainer className="min-h-screen flex flex-col justify-center items-center py-16">
       
       {/* Background Clay Spheres */}
       <motion.div
@@ -317,7 +319,7 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate, 
                   </span>
                 ) : (
                   <>
-                    <Sparkles className="w-4.5 h-4.5 text-amber-300 animate-pulse" />
+                    <Cpu className="w-4.5 h-4.5" />
                     <span>Initialize AI Resume Synthesis</span>
                     <ArrowRight className="w-4.5 h-4.5" />
                   </>
@@ -337,8 +339,8 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate, 
             <div className="space-y-4">
               {benefits.map((b, idx) => (
                 <div key={idx} className="flex items-start space-x-3.5">
-                  <div className="p-2 bg-emerald-500/10 border border-emerald-500/20 text-[#22C55E] rounded-xl text-xs font-bold shrink-0">
-                    ✓
+                  <div className="p-2 bg-emerald-500/10 border border-emerald-500/20 text-[#22C55E] rounded-xl shrink-0">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
                   </div>
                   <div>
                     <h4 className="text-xs font-bold text-[var(--color-text-primary)]">{b.title}</h4>
@@ -358,6 +360,7 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate, 
         </div>
 
       </div>
+      </ResponsiveContainer>
     </div>
   );
 }

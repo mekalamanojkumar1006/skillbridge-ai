@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { ArrowLeft, User, Mail, Phone, Award, Briefcase, FileText, CheckCircle2, ChevronRight, Sun, Moon } from "lucide-react";
-import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
+import { ResponsiveContainer as RechartsResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
+import ResponsiveContainer from "../components/ResponsiveContainer";
 
 interface AnalysisPageProps {
   user: any;
@@ -88,7 +89,8 @@ export default function AnalysisPage({ user, resume, onNavigate, theme, setTheme
         </button>
       </div>
 
-      <main className="max-w-6xl mx-auto px-6 pt-10 space-y-8 relative z-10">
+      <main className="pt-10 relative z-10 overflow-x-hidden">
+        <ResponsiveContainer className="space-y-8">
         
         {/* Title widget */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-[var(--color-border)] pb-6">
@@ -167,7 +169,7 @@ export default function AnalysisPage({ user, resume, onNavigate, theme, setTheme
             </div>
 
             <div className="h-[180px] w-full mt-4 font-mono text-[10px]">
-              <ResponsiveContainer width="100%" height="100%">
+              <RechartsResponsiveContainer width="100%" height="100%">
                 <BarChart data={graphData} layout="vertical">
                   <XAxis type="number" domain={[0, 100]} stroke="var(--color-text-tertiary)" fontSize={9} />
                   <YAxis dataKey="name" type="category" stroke="var(--color-text-tertiary)" fontSize={9} width={60} />
@@ -182,7 +184,7 @@ export default function AnalysisPage({ user, resume, onNavigate, theme, setTheme
                   />
                   <Bar dataKey="score" radius={[0, 8, 8, 0]} barSize={12} />
                 </BarChart>
-              </ResponsiveContainer>
+              </RechartsResponsiveContainer>
             </div>
           </div>
         </div>
@@ -297,7 +299,7 @@ export default function AnalysisPage({ user, resume, onNavigate, theme, setTheme
           </div>
 
         </div>
-
+        </ResponsiveContainer>
       </main>
     </div>
   );

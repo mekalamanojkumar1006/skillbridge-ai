@@ -1643,7 +1643,17 @@ app.get("/api/interview/questions", async (req, res) => {
 
     const resumeData = resumeSnap.data();
 
-    const prompt = `You are a senior hiring manager. Based on the candidate's resume, generate 3 highly relevant and challenging technical or behavioral interview questions.
+    const prompt = `You are a senior hiring manager. Based on the candidate's resume, extract their profile details:
+- Programming Languages (from skills.programming_languages)
+- Frameworks & Libraries (from skills.frontend, skills.backend, etc.)
+- Projects (from projects)
+- Professional Experience (from experience)
+- Education (from education)
+
+Based on this profile, generate exactly 5 highly customized and challenging technical or project-specific interview questions. 
+For example, if the resume contains Python, React, Node, and MongoDB, ask about specific concepts like the Node Event Loop, Python decorators, React performance optimization, SQL vs MongoDB, or details about a project from their resume (e.g. 'Tell me about your [Project Name] project' or 'How did you handle [feature] in your [Project Name] project?').
+Each question must be directly related to their skills, projects, education, or work experience. Do not use generic or hardcoded questions that could apply to anyone.
+
 Return ONLY a valid JSON object matching the schema below:
 {
   "questions": [
@@ -1708,6 +1718,66 @@ ${userAnswer}`;
     res.status(200).json(evaluationResult);
   } catch (error: any) {
     console.error("Interview evaluation error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/interview/report
+app.post("/api/interview/report", async (req, res) => {
+  try {
+    const { interviewType, questionsAndAnswers } = req.body;
+    if (!interviewType || !questionsAndAnswers || !Array.isArray(questionsAndAnswers)) {
+      return res.status(400).json({ error: "Missing interviewType or questionsAndAnswers" });
+    }
+
+    const prompt = `You are an executive interviewer and professional career coach. Review the candidate's performance in the following ${interviewType} interview round.
+We have collected the questions, answers, and individual evaluations for each question.
+Analyze their performance and compile a comprehensive, highly-structured Final Evaluation Report.
+
+Here is the data from the interview session:
+${JSON.stringify(questionsAndAnswers)}
+
+Generate a detailed final report. You must provide scores from 0 to 100 for all metrics, detailed arrays for strengths and weaknesses, improvement suggestions, and recommended learning resources.
+If this was an Aptitude round, evaluate their analytical thinking based on their scores in Quantitative, Logical, Verbal, Analytical, and Data Interpretation.
+If this was a Technical or HR round, evaluate their communication style, confidence, depth of knowledge, grammar, problem solving, and leadership qualities based on their text/speech answers and individual feedbacks.
+
+Return ONLY a valid JSON object matching the schema below:
+{
+  "overallScore": 85,
+  "metrics": {
+    "communication": 80,
+    "confidence": 85,
+    "technicalKnowledge": 90,
+    "grammar": 88,
+    "problemSolving": 85,
+    "leadership": 75
+  },
+  "strengths": [
+    "Highlight specific areas of strength demonstrated by candidate"
+  ],
+  "weaknesses": [
+    "Identify constructive areas of weakness or opportunities for growth"
+  ],
+  "improvementSuggestions": [
+    "Provide clear, actionable tips to improve their interview performance"
+  ],
+  "recommendedResources": [
+    {
+      "title": "Specific resource title (book, website, or course name)",
+      "description": "Short explanation of how this resource helps them address their specific weakness"
+    }
+  ]
+}`;
+
+    const aiResponse = await generateContentWithFallback({
+      contents: prompt
+    });
+
+    const reportResult = cleanAndParseJSON(aiResponse.text || "{}");
+
+    res.status(200).json(reportResult);
+  } catch (error: any) {
+    console.error("Interview report compilation error:", error);
     res.status(500).json({ error: error.message });
   }
 });

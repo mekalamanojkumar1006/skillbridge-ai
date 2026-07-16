@@ -9,7 +9,6 @@ import {
   Search,
   Map,
   MessageSquare,
-  Sparkles,
   Award,
   Database,
   AlertCircle,
@@ -48,13 +47,20 @@ import {
   Bell,
   Star,
   Bookmark,
-  Sparkles as SparklesIcon,
   MapPin,
-  ExternalLink
+  ExternalLink,
+  ArrowRight,
+  Target,
+  Mic,
+  Check
 } from "lucide-react";
 import ProfileSettingsPage from "./ProfileSettingsPage";
 import { CAREER_ROADMAPS, CareerPath, Milestone } from "../data/careersData";
-import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart as ReChartsBarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
+import { ResponsiveContainer as RechartsResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart as ReChartsBarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
+import ResponsiveContainer from "../components/ResponsiveContainer";
+import { jsPDF } from "jspdf";
+import aptitudeQuestions from "../data/aptitudeQuestions.json";
+import hrQuestions from "../data/hrQuestions.json";
 
 const ATS_FRIENDLY_TEMPLATE = `[FIRST NAME] [LAST NAME]
 [City, State, Zip Code] | [Phone Number] | [Email Address] | [LinkedIn Profile URL] | [GitHub Profile URL]
@@ -269,6 +275,7 @@ export default function DashboardPage({
   
   // Custom interactive dashboard states
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState("");
   const [greeting, setGreeting] = useState("Good evening");
   const [showNotifications, setShowNotifications] = useState(false);
@@ -278,7 +285,7 @@ export default function DashboardPage({
     { id: 3, title: "Your simulated Interview feedback is ready", time: "1 day ago", read: true }
   ]);
 
-  // Clock & Greetings Effect
+  // Clock, Greetings & Viewport Resize Effect
   useEffect(() => {
     const updateClock = () => {
       const now = new Date();
@@ -290,14 +297,31 @@ export default function DashboardPage({
       else setGreeting("Good Evening");
     };
 
+    const handleResize = () => {
+      const w = window.innerWidth;
+      // Auto-collapse sidebar on tablets (between 768px and 1023px)
+      if (w >= 768 && w < 1024) {
+        setIsSidebarCollapsed(true);
+      } else if (w >= 1024) {
+        setIsSidebarCollapsed(false);
+      }
+    };
+
     updateClock();
+    handleResize();
     const interval = setInterval(updateClock, 1000);
-    return () => clearInterval(interval);
+    window.addEventListener("resize", handleResize);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   useEffect(() => {
     setResume(initialResume);
   }, [initialResume]);
+
+
 
   // Resume Quality state
   const [qualityAnalysis, setQualityAnalysis] = useState<any>(null);
@@ -331,6 +355,7 @@ export default function DashboardPage({
   const [analyzingGaps, setAnalyzingGaps] = useState(false);
 
   // Interview state
+  const [interviewType, setInterviewType] = useState<"aptitude" | "technical" | "hr" | null>(null);
   const [interviewQuestions, setInterviewQuestions] = useState<any[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [userAnswer, setUserAnswer] = useState("");
@@ -342,7 +367,15 @@ export default function DashboardPage({
   const [recordingTimer, setRecordingTimer] = useState(0);
   const [recordingIntervalId, setRecordingIntervalId] = useState<any>(null);
 
-  // Voice recording simulation
+  // New Interview States
+  const [interviewStatus, setInterviewStatus] = useState<"setup" | "active" | "generating_report" | "completed">("setup");
+  const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [finalReport, setFinalReport] = useState<any>(null);
+  const [generatingReport, setGeneratingReport] = useState(false);
+  const [recognitionInstance, setRecognitionInstance] = useState<any>(null);
+
+  // Voice recording simulation using Web Speech API with simulation fallback
   const startRecording = () => {
     setIsRecording(true);
     setRecordingTimer(0);
@@ -350,6 +383,38 @@ export default function DashboardPage({
       setRecordingTimer((prev) => prev + 1);
     }, 1000);
     setRecordingIntervalId(id);
+
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      try {
+        const rec = new SpeechRecognition();
+        rec.continuous = true;
+        rec.interimResults = true;
+        rec.lang = "en-US";
+        
+        let finalTranscript = "";
+        rec.onresult = (event: any) => {
+          let interimTranscript = "";
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              finalTranscript += event.results[i][0].transcript;
+            } else {
+              interimTranscript += event.results[i][0].transcript;
+            }
+          }
+          setUserAnswer(finalTranscript + interimTranscript);
+        };
+
+        rec.onerror = (err: any) => {
+          console.error("Speech recognition error:", err);
+        };
+
+        rec.start();
+        setRecognitionInstance(rec);
+      } catch (err) {
+        console.error("Speech recognition initialization failed:", err);
+      }
+    }
   };
 
   const stopRecording = () => {
@@ -358,8 +423,22 @@ export default function DashboardPage({
       clearInterval(recordingIntervalId);
       setRecordingIntervalId(null);
     }
-    // Simulate auto typing response text
-    setUserAnswer("As an experienced developer, I design distributed system databases focusing on transactional safety and data partitioning. I utilize Redis for high-performance memory cache hits and execute query planning optimizations on Postgres.");
+    if (recognitionInstance) {
+      try {
+        recognitionInstance.stop();
+      } catch (err) {
+        console.error("Error stopping speech recognition:", err);
+      }
+      setRecognitionInstance(null);
+    } else {
+      if (!userAnswer.trim()) {
+        setUserAnswer(
+          interviewType === "hr"
+            ? "I am highly motivated and excel in solving challenging problems. Over my career, I've worked in agile team setups, aligning technical execution with customer values and demonstrating leadership in times of conflict."
+            : "In my past projects, I worked closely with React and Node.js. For database management, I chose MongoDB due to its flexible JSON schema, which suited our rapid development cycle. I also configured secure JWT authentication for endpoints."
+        );
+      }
+    }
   };
 
   // Hiring probability state
@@ -668,8 +747,38 @@ export default function DashboardPage({
     }
   };
 
-  const handleStartInterview = async () => {
-    if (!resume) return;
+  // Start Aptitude Round
+  const handleStartAptitude = () => {
+    setGeneratingQuestions(true);
+    setError(null);
+    setSelectedOption(null);
+    setInterviewQuestions([]);
+    setCurrentQuestionIndex(0);
+    setUserAnswer("");
+    setCurrentEvaluation(null);
+    setInterviewAnswers([]);
+    setFinalReport(null);
+    setInterviewType("aptitude");
+    
+    try {
+      const selected = [...aptitudeQuestions].sort(() => 0.5 - Math.random()).slice(0, 10);
+      setInterviewQuestions(selected);
+      setInterviewStatus("active");
+      setTimeLeft(600); // 10 minutes global timer
+    } catch (err: any) {
+      console.error(err);
+      setError("Failed to load aptitude questions: " + err.message);
+    } finally {
+      setGeneratingQuestions(false);
+    }
+  };
+
+  // Start Technical Round
+  const handleStartTechnical = async () => {
+    if (!resume) {
+      setError("Please upload a resume first to generate custom technical questions.");
+      return;
+    }
     setGeneratingQuestions(true);
     setError(null);
     setInterviewQuestions([]);
@@ -677,53 +786,277 @@ export default function DashboardPage({
     setUserAnswer("");
     setCurrentEvaluation(null);
     setInterviewAnswers([]);
+    setFinalReport(null);
+    setInterviewType("technical");
+
     try {
       const res = await ApiService.getInterviewQuestions(resume.id);
       setInterviewQuestions(res.questions || []);
+      setInterviewStatus("active");
+      setTimeLeft(120); // 120 seconds per question
     } catch (err: any) {
       console.error(err);
-      setError("Failed to generate custom interview questions: " + err.message);
+      setError("Failed to generate technical questions: " + err.message);
     } finally {
       setGeneratingQuestions(false);
     }
   };
 
-  const handleSubmitInterviewAnswer = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!userAnswer.trim()) return;
-    const currentQuestion = interviewQuestions[currentQuestionIndex];
-    if (!currentQuestion) return;
-
-    setEvaluatingAnswer(true);
+  // Start HR Round
+  const handleStartHR = () => {
+    setGeneratingQuestions(true);
     setError(null);
+    setInterviewQuestions([]);
+    setCurrentQuestionIndex(0);
+    setUserAnswer("");
+    setCurrentEvaluation(null);
+    setInterviewAnswers([]);
+    setFinalReport(null);
+    setInterviewType("hr");
+
     try {
-      const evaluation = await ApiService.evaluateInterviewAnswer(
-        currentQuestion.question,
-        currentQuestion.expectedPoints,
-        userAnswer
-      );
-
-      const updatedAnswer = {
-        questionId: currentQuestion.id,
-        questionText: currentQuestion.question,
-        userAnswer,
-        ...evaluation
-      };
-
-      setInterviewAnswers((prev) => [...prev, updatedAnswer]);
-      setCurrentEvaluation(updatedAnswer);
+      const selected = [...hrQuestions].sort(() => 0.5 - Math.random()).slice(0, 5);
+      setInterviewQuestions(selected);
+      setInterviewStatus("active");
+      setTimeLeft(90); // 90 seconds per question
     } catch (err: any) {
       console.error(err);
-      setError("Evaluation failed: " + err.message);
+      setError("Failed to load HR questions: " + err.message);
     } finally {
-      setEvaluatingAnswer(false);
+      setGeneratingQuestions(false);
     }
   };
 
-  const handleNextQuestion = () => {
+  // Skip Current Question
+  const handleSkipQuestion = async () => {
+    const currentQuestion = interviewQuestions[currentQuestionIndex];
+    if (!currentQuestion) return;
+
+    if (interviewType === "aptitude") {
+      const answerRecord = {
+        questionId: currentQuestion.id,
+        questionText: currentQuestion.question,
+        userAnswer: "Skipped",
+        correctAnswer: currentQuestion.correctAnswer,
+        isCorrect: false,
+        score: 0,
+        topic: currentQuestion.topic,
+        difficulty: currentQuestion.difficulty
+      };
+      const updatedAnswers = [...interviewAnswers, answerRecord];
+      setInterviewAnswers(updatedAnswers);
+
+      if (currentQuestionIndex < interviewQuestions.length - 1) {
+        setSelectedOption(null);
+        setCurrentQuestionIndex((prev) => prev + 1);
+      } else {
+        await handleFinishInterviewRound(updatedAnswers);
+      }
+    } else {
+      setEvaluatingAnswer(true);
+      setError(null);
+      try {
+        const evaluation = {
+          score: 0,
+          feedback: "Question skipped by candidate.",
+          expectedPointsMatched: [],
+          suggestions: ["Provide an answer, even partial, to gain experience and structural feedback."]
+        };
+        const updatedAnswer = {
+          questionId: currentQuestion.id,
+          questionText: currentQuestion.question,
+          userAnswer: "Skipped",
+          ...evaluation
+        };
+        const updatedAnswers = [...interviewAnswers, updatedAnswer];
+        setInterviewAnswers(updatedAnswers);
+        setCurrentEvaluation(updatedAnswer);
+      } catch (err: any) {
+        console.error(err);
+        setError("Skip action failed: " + err.message);
+      } finally {
+        setEvaluatingAnswer(false);
+      }
+    }
+  };
+
+  // Submit Answer for Tech / HR / Aptitude
+  const handleSubmitInterviewAnswer = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const currentQuestion = interviewQuestions[currentQuestionIndex];
+    if (!currentQuestion) return;
+
+    if (interviewType === "aptitude") {
+      if (!selectedOption) return;
+      const isCorrect = selectedOption === currentQuestion.correctAnswer;
+      const answerRecord = {
+        questionId: currentQuestion.id,
+        questionText: currentQuestion.question,
+        userAnswer: selectedOption,
+        correctAnswer: currentQuestion.correctAnswer,
+        isCorrect,
+        score: isCorrect ? 100 : 0,
+        topic: currentQuestion.topic,
+        difficulty: currentQuestion.difficulty
+      };
+      const updatedAnswers = [...interviewAnswers, answerRecord];
+      setInterviewAnswers(updatedAnswers);
+
+      if (currentQuestionIndex < interviewQuestions.length - 1) {
+        setSelectedOption(null);
+        setCurrentQuestionIndex((prev) => prev + 1);
+      } else {
+        await handleFinishInterviewRound(updatedAnswers);
+      }
+    } else {
+      if (!userAnswer.trim()) return;
+      setEvaluatingAnswer(true);
+      setError(null);
+      try {
+        const evaluation = await ApiService.evaluateInterviewAnswer(
+          currentQuestion.question,
+          currentQuestion.expectedPoints || [],
+          userAnswer
+        );
+
+        const updatedAnswer = {
+          questionId: currentQuestion.id,
+          questionText: currentQuestion.question,
+          userAnswer,
+          ...evaluation
+        };
+
+        setInterviewAnswers((prev) => [...prev, updatedAnswer]);
+        setCurrentEvaluation(updatedAnswer);
+      } catch (err: any) {
+        console.error(err);
+        setError("Evaluation failed: " + err.message);
+      } finally {
+        setEvaluatingAnswer(false);
+      }
+    }
+  };
+
+  // Next Question (Advanced for Tech/HR after evaluation is shown)
+  const handleNextQuestion = async () => {
     setUserAnswer("");
     setCurrentEvaluation(null);
-    setCurrentQuestionIndex((prev) => prev + 1);
+    if (currentQuestionIndex < interviewQuestions.length - 1) {
+      setCurrentQuestionIndex((prev) => prev + 1);
+      setTimeLeft(interviewType === "technical" ? 120 : 90);
+    } else {
+      await handleFinishInterviewRound(interviewAnswers);
+    }
+  };
+
+  // Handle Question Timer Expiration for Technical / HR (Auto-submit)
+  const handleTimeOut = async () => {
+    if (interviewType === "aptitude") {
+      const currentQuestion = interviewQuestions[currentQuestionIndex];
+      const ans = selectedOption || "Unanswered";
+      const isCorrect = ans === currentQuestion?.correctAnswer;
+      const finalAnswers = [...interviewAnswers];
+      
+      for (let i = currentQuestionIndex; i < interviewQuestions.length; i++) {
+        const q = interviewQuestions[i];
+        const isCurr = i === currentQuestionIndex;
+        finalAnswers.push({
+          questionId: q.id,
+          questionText: q.question,
+          userAnswer: isCurr ? ans : "Unanswered (Time Out)",
+          correctAnswer: q.correctAnswer,
+          isCorrect: isCurr ? isCorrect : false,
+          score: (isCurr && isCorrect) ? 100 : 0,
+          topic: q.topic,
+          difficulty: q.difficulty
+        });
+      }
+      setInterviewAnswers(finalAnswers);
+      await handleFinishInterviewRound(finalAnswers);
+    } else {
+      const ansText = userAnswer.trim() || "Unanswered (Time Out)";
+      setUserAnswer(ansText);
+      
+      const currentQuestion = interviewQuestions[currentQuestionIndex];
+      if (!currentQuestion) return;
+      
+      setEvaluatingAnswer(true);
+      setError(null);
+      try {
+        const evaluation = await ApiService.evaluateInterviewAnswer(
+          currentQuestion.question,
+          currentQuestion.expectedPoints || [],
+          ansText
+        );
+        const updatedAnswer = {
+          questionId: currentQuestion.id,
+          questionText: currentQuestion.question,
+          userAnswer: ansText,
+          ...evaluation
+        };
+        const updatedAnswers = [...interviewAnswers, updatedAnswer];
+        setInterviewAnswers(updatedAnswers);
+        setCurrentEvaluation(updatedAnswer);
+      } catch (err: any) {
+        console.error("Auto evaluation failed on timeout:", err);
+        const fallbackAns = {
+          questionId: currentQuestion.id,
+          questionText: currentQuestion.question,
+          userAnswer: ansText,
+          score: 0,
+          feedback: "Time limit expired. Answer evaluation skipped.",
+          expectedPointsMatched: [],
+          suggestions: ["Pace yourself to answer within the allocated time limits."]
+        };
+        const updatedAnswers = [...interviewAnswers, fallbackAns];
+        setInterviewAnswers(updatedAnswers);
+        setCurrentEvaluation(fallbackAns);
+      } finally {
+        setEvaluatingAnswer(false);
+      }
+    }
+  };
+
+  // Compile Final Report using AI
+  const handleFinishInterviewRound = async (answersToCompile: any[]) => {
+    setInterviewStatus("generating_report");
+    setGeneratingReport(true);
+    setError(null);
+    try {
+      const report = await ApiService.generateInterviewReport(
+        interviewType === "aptitude" ? "Aptitude" : interviewType === "technical" ? "Technical" : "HR",
+        answersToCompile
+      );
+      setFinalReport(report);
+      setInterviewStatus("completed");
+    } catch (err: any) {
+      console.error("Report generation failed:", err);
+      const avgScore = Math.round(answersToCompile.reduce((acc, c) => acc + (c.score || 0), 0) / answersToCompile.length);
+      const isApt = interviewType === "aptitude";
+      setFinalReport({
+        overallScore: avgScore,
+        metrics: {
+          communication: isApt ? 80 : Math.round(avgScore * 0.95),
+          confidence: isApt ? 85 : Math.round(avgScore * 0.9),
+          technicalKnowledge: isApt ? 60 : avgScore,
+          grammar: isApt ? 95 : Math.round(avgScore * 0.95),
+          problemSolving: avgScore,
+          leadership: isApt ? 50 : Math.round(avgScore * 0.8)
+        },
+        strengths: isApt ? ["Strong performance under time limits"] : ["Good structure in core answers"],
+        weaknesses: isApt ? ["Needs improvement in logic pacing"] : ["Could elaborate more with STAR structure"],
+        improvementSuggestions: ["Practice mock tests regularly to build confidence."],
+        recommendedResources: [
+          {
+            title: "SkillBridge Career Path Prep",
+            description: "Practice specialized topics directly tailored to industry benchmarks."
+          }
+        ]
+      });
+      setInterviewStatus("completed");
+    } finally {
+      setGeneratingReport(false);
+    }
   };
 
   const handlePredictHiringProbability = async (e: React.FormEvent) => {
@@ -748,10 +1081,181 @@ export default function DashboardPage({
   };
 
   const getInterviewOverallScore = () => {
+    if (finalReport) return finalReport.overallScore;
     if (interviewAnswers.length === 0) return 0;
-    const sum = interviewAnswers.reduce((acc, curr) => acc + curr.score, 0);
+    const sum = interviewAnswers.reduce((acc, curr) => acc + (curr.score || 0), 0);
     return Math.round(sum / interviewAnswers.length);
   };
+
+  const downloadReportPDF = () => {
+    if (!finalReport) return;
+    
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    
+    // Header banner (Indigo color theme)
+    doc.setFillColor(109, 93, 246);
+    doc.rect(0, 0, pageWidth, 38, "F");
+    
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(20);
+    doc.text("SkillBridge AI - Evaluation Report", 15, 24);
+    
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text("AI-POWERED MOCK INTERVIEW PERFORMANCE LOG", 15, 30);
+    
+    // Metadata panel
+    doc.setTextColor(50, 50, 50);
+    doc.setFontSize(10);
+    doc.text(`Interview Round: ${interviewType ? interviewType.toUpperCase() : "MOCK INTERVIEW"}`, 15, 50);
+    doc.text(`Candidate Name: ${user.displayName || "Career Practitioner"}`, 15, 56);
+    doc.text(`Date of Evaluation: ${new Date().toLocaleDateString()}`, 15, 62);
+    doc.text(`Overall Rating Score: ${finalReport.overallScore || 0} / 100`, 15, 68);
+    
+    doc.setDrawColor(220, 220, 220);
+    doc.line(15, 73, pageWidth - 15, 73);
+    
+    // Metrics section
+    doc.setTextColor(17, 24, 39);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(13);
+    doc.text("Evaluation Competency Ratings", 15, 82);
+    
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9.5);
+    let y = 92;
+    const metrics = finalReport.metrics || {};
+    
+    Object.keys(metrics).forEach((mKey) => {
+      const formattedLabel = mKey.charAt(0).toUpperCase() + mKey.slice(1).replace(/([A-Z])/g, " $1");
+      const ratingVal = metrics[mKey];
+      
+      doc.text(`${formattedLabel}:`, 15, y);
+      
+      // Draw progress bar track
+      doc.setFillColor(240, 243, 250);
+      doc.rect(70, y - 3.5, 90, 4, "F");
+      
+      // Draw progress fill
+      doc.setFillColor(109, 93, 246);
+      doc.rect(70, y - 3.5, ratingVal * 0.9, 4, "F");
+      
+      doc.text(`${ratingVal}%`, 168, y);
+      y += 8;
+    });
+    
+    y += 4;
+    doc.line(15, y, pageWidth - 15, y);
+    y += 10;
+    
+    // Strengths section
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(13);
+    doc.text("Key Strengths Identified", 15, y);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9.5);
+    y += 6;
+    
+    const strengths = finalReport.strengths || [];
+    strengths.forEach((strengthStr: string) => {
+      const splitStr = doc.splitTextToSize(`• ${strengthStr}`, pageWidth - 30);
+      doc.text(splitStr, 15, y);
+      y += splitStr.length * 5;
+    });
+    
+    y += 4;
+    
+    // Weaknesses section
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(13);
+    doc.text("Improvement Opportunities (Weaknesses)", 15, y);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9.5);
+    y += 6;
+    
+    const weaknesses = finalReport.weaknesses || [];
+    weaknesses.forEach((weaknessStr: string) => {
+      const splitStr = doc.splitTextToSize(`• ${weaknessStr}`, pageWidth - 30);
+      doc.text(splitStr, 15, y);
+      y += splitStr.length * 5;
+    });
+    
+    // Add page if needed
+    if (y > 230) {
+      doc.addPage();
+      y = 20;
+    } else {
+      y += 6;
+      doc.line(15, y, pageWidth - 15, y);
+      y += 10;
+    }
+    
+    // Suggestions
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(13);
+    doc.text("Actionable Development Suggestions", 15, y);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9.5);
+    y += 6;
+    
+    const suggestions = finalReport.improvementSuggestions || [];
+    suggestions.forEach((suggestionStr: string) => {
+      const splitStr = doc.splitTextToSize(`• ${suggestionStr}`, pageWidth - 30);
+      doc.text(splitStr, 15, y);
+      y += splitStr.length * 5;
+    });
+    
+    y += 4;
+    
+    // Recommended Resources
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(13);
+    doc.text("Recommended Learning Resources", 15, y);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(9.5);
+    y += 6;
+    
+    const resources = finalReport.recommendedResources || [];
+    resources.forEach((resourceObj: any) => {
+      const title = resourceObj.title || resourceObj;
+      const desc = resourceObj.description || "";
+      
+      doc.setFont("helvetica", "bold");
+      doc.text(`* ${title}`, 15, y);
+      doc.setFont("helvetica", "normal");
+      y += 5;
+      
+      if (desc) {
+        const splitDesc = doc.splitTextToSize(desc, pageWidth - 35);
+        doc.text(splitDesc, 20, y);
+        y += splitDesc.length * 5 + 2;
+      }
+    });
+    
+    doc.save(`${user.displayName || "candidate"}_interview_report_${interviewType}.pdf`);
+  };
+
+  // Active Interview countdown timer effect
+  useEffect(() => {
+    let timerId: any;
+    if (interviewStatus === "active" && timeLeft > 0) {
+      timerId = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1) {
+            clearInterval(timerId);
+            setTimeout(() => handleTimeOut(), 0);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => {
+      if (timerId) clearInterval(timerId);
+    };
+  }, [interviewStatus, timeLeft, currentQuestionIndex]);
 
   const toggleBookmark = (company: string) => {
     setBookmarkedJobs((prev) =>
@@ -857,7 +1361,7 @@ export default function DashboardPage({
     { id: "ats", label: "ATS Optimiser", icon: FileText, badge: 1 },
     { id: "jobs", label: "Job Matcher", icon: Search, badge: 0 },
     { id: "roadmap", label: "Skill Gaps", icon: Map, badge: 0 },
-    { id: "career-roadmap", label: "Career Roadmap", icon: Sparkles, iconColor: "text-[#8B5CF6]" },
+    { id: "career-roadmap", label: "Career Roadmap", icon: Target, iconColor: "text-[#8B5CF6]" },
     { id: "interview", label: "Interview Lab", icon: MessageSquare, badge: 0 },
     { id: "probability", label: "Hiring Predictor", icon: Award, badge: 0 },
     { id: "settings", label: "Profile Settings", icon: Settings, badge: 0 }
@@ -884,9 +1388,19 @@ export default function DashboardPage({
         className="absolute bottom-[-100px] right-[-100px] w-[500px] h-[500px] bg-[#8B5CF6]/8 rounded-full blur-[120px] pointer-events-none"
       />
 
+      {/* Backdrop overlay for mobile menu */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 bg-black/45 backdrop-blur-[3px] z-40 md:hidden animate-fade-in"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
       {/* Sidebar Rail */}
-      <aside className={`border-r border-[var(--color-border)] backdrop-blur-2xl flex flex-col justify-between shrink-0 relative z-20 p-5 bg-[var(--glass-card-bg)] shadow-[var(--glass-card-shadow)] rounded-none md:rounded-r-[32px] transition-all duration-350 ease-[cubic-bezier(0.16,1,0.3,1)] ${
-        isSidebarCollapsed ? "w-full md:w-20" : "w-full md:w-64"
+      <aside className={`fixed inset-y-0 left-0 z-50 md:z-20 md:static md:translate-x-0 bg-[var(--glass-card-bg)] border-r border-[var(--color-border)] backdrop-blur-2xl flex flex-col justify-between shrink-0 p-5 shadow-[var(--glass-card-shadow)] md:rounded-r-[32px] transition-all duration-350 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        isSidebarCollapsed ? "w-64 md:w-20" : "w-64 md:w-64"
+      } ${
+        isMobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
       }`}>
         <div>
           {/* Brand header */}
@@ -897,16 +1411,12 @@ export default function DashboardPage({
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              {!isSidebarCollapsed && (
-                <span className="text-base font-black tracking-tight shrink-0">
-                  SkillBridge
-                </span>
-              )}
-              {!isSidebarCollapsed && (
-                <span className="px-1.5 py-0.5 text-[8px] bg-[#6D5DF6]/10 border border-[#6D5DF6]/20 text-[#6D5DF6] rounded-lg font-mono font-black uppercase shrink-0">
-                  AI
-                </span>
-              )}
+              <span className="text-base font-black tracking-tight shrink-0">
+                SkillBridge
+              </span>
+              <span className="px-1.5 py-0.5 text-[8px] bg-[#6D5DF6]/10 border border-[#6D5DF6]/20 text-[#6D5DF6] rounded-lg font-mono font-black uppercase shrink-0">
+                AI
+              </span>
             </div>
 
             {/* Collapse Trigger (hidden on mobile) */}
@@ -915,6 +1425,15 @@ export default function DashboardPage({
               className="hidden md:flex p-1.5 rounded-lg border border-[var(--color-border)] hover:bg-[#6D5DF6]/10 text-[var(--color-text-secondary)] transition cursor-pointer"
             >
               <ChevronLeftIcon className={`w-3.5 h-3.5 transform transition duration-300 ${isSidebarCollapsed ? "rotate-180" : ""}`} />
+            </button>
+
+            {/* Mobile Menu Close Trigger */}
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="md:hidden p-1.5 rounded-lg border border-[var(--color-border)] hover:bg-red-500/10 text-[var(--color-text-secondary)] hover:text-red-500 transition cursor-pointer shrink-0"
+              aria-label="Close menu"
+            >
+              <X className="w-3.5 h-3.5" />
             </button>
           </div>
 
@@ -944,6 +1463,7 @@ export default function DashboardPage({
                   onClick={() => {
                     setActiveTab(tab.id as any);
                     setError(null);
+                    setIsMobileMenuOpen(false);
                     if (tab.id === "jobs" && resume && jobMatches.length === 0) {
                       handleJobMatching();
                     }
@@ -1014,7 +1534,7 @@ export default function DashboardPage({
           {/* Floating Premium AI badge */}
           {!isSidebarCollapsed && (
             <div className="p-3 bg-gradient-to-tr from-[#6D5DF6]/12 to-[#8B5CF6]/5 border border-[var(--color-glass-border)] rounded-2xl flex items-center space-x-2.5">
-              <Sparkles className="w-4 h-4 text-[#8B5CF6] shrink-0 animate-bounce" />
+              <ShieldCheck className="w-4 h-4 text-[#8B5CF6] shrink-0" />
               <span className="text-[9px] font-mono uppercase tracking-wider text-[var(--color-text-secondary)] font-extrabold">
                 Copilot Enterprise
               </span>
@@ -1037,25 +1557,44 @@ export default function DashboardPage({
       <div className="flex-1 flex flex-col min-w-0">
         
         {/* Top Header */}
-        <header className="sticky top-0 z-10 border-b border-[var(--color-glass-border)] backdrop-blur-md bg-[var(--glass-card-bg)] shadow-[var(--glass-card-shadow)] h-16 shrink-0 flex items-center px-6 sm:px-8 justify-between">
-          <div className="flex items-center space-x-4">
-            <h2 className="text-sm font-bold tracking-tight text-[var(--color-text-secondary)] hidden sm:flex items-center space-x-2">
-              <span>{greeting}, {user.displayName || "Manoj"} 👋</span>
-            </h2>
+        <header className="sticky top-0 z-30 border-b border-[var(--color-glass-border)] backdrop-blur-md bg-[var(--glass-card-bg)] shadow-[var(--glass-card-shadow)] h-16 shrink-0 flex items-center px-4 sm:px-8 justify-between">
+          <div className="flex items-center space-x-3">
+            {/* Hamburger Button for Mobile */}
+            <button
+              onClick={() => setIsMobileMenuOpen(true)}
+              className="md:hidden p-2 rounded-xl border border-[var(--color-border)] hover:bg-[#6D5DF6]/10 text-[var(--color-text-secondary)] transition cursor-pointer shrink-0"
+              aria-label="Open menu"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+
+            {/* Logo on mobile */}
+            <div className="flex items-center space-x-2 md:hidden">
+              <div className="w-7 h-7 bg-gradient-to-br from-[#6D5DF6] to-[#8B5CF6] rounded-lg flex items-center justify-center shadow-md">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+            </div>
             
+            <h2 className="text-sm font-bold tracking-tight text-[var(--color-text-secondary)] hidden md:flex items-center space-x-2">
+              <span>{greeting}, {user.displayName || "Manoj"}</span>
+            </h2>
+          </div>
+
+          <div className="flex items-center space-x-2 sm:space-x-3.5">
             {/* Search Box */}
             <div className="relative">
               <SearchIcon className="absolute left-3 top-2.5 w-3.5 h-3.5 text-[var(--color-text-tertiary)]" />
               <input
                 type="text"
-                placeholder="Search tools & courses..."
-                className="pl-8.5 pr-4 py-1.5 text-xs clay-input focus:outline-none w-36 sm:w-56 text-[var(--color-text-primary)]"
+                placeholder="Search..."
+                className="pl-8.5 pr-3 py-1.5 text-xs clay-input focus:outline-none w-24 sm:w-44 md:w-56 text-[var(--color-text-primary)] transition-all duration-200"
               />
             </div>
-          </div>
 
-          <div className="flex items-center space-x-3.5">
-            
             {/* Current Time Clock */}
             <div className="hidden lg:flex items-center space-x-1.5 px-3 py-1.5 bg-[#6D5DF6]/5 border border-[#6D5DF6]/12 rounded-xl text-[10px] font-mono text-[#6D5DF6] font-extrabold">
               <Clock className="w-3.5 h-3.5" />
@@ -1065,10 +1604,10 @@ export default function DashboardPage({
             {/* AI Advisor Button */}
             <button
               onClick={() => setIsAiMentorOpen(!isAiMentorOpen)}
-              className="p-2.5 rounded-2xl border border-[var(--color-glass-border)] bg-[var(--glass-card-bg)] text-[#8B5CF6] hover:bg-[#8B5CF6]/10 shadow-[var(--clay-btn-secondary-shadow)] transition duration-200 cursor-pointer flex items-center space-x-1.5"
+              className="p-2 sm:p-2.5 rounded-2xl border border-[var(--color-glass-border)] bg-[var(--glass-card-bg)] text-[#8B5CF6] hover:bg-[#8B5CF6]/10 shadow-[var(--clay-btn-secondary-shadow)] transition duration-200 cursor-pointer flex items-center space-x-1.5"
               title="Open AI Mentor"
             >
-              <SparklesIcon className="w-4 h-4 animate-pulse" />
+              <Brain className="w-4 h-4" />
               <span className="hidden sm:inline text-[9px] font-mono uppercase tracking-wider font-black">AI Coach</span>
             </button>
 
@@ -1076,7 +1615,7 @@ export default function DashboardPage({
             <div className="relative">
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="p-2.5 rounded-2xl border border-[var(--color-glass-border)] bg-[var(--glass-card-bg)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] shadow-[var(--clay-btn-secondary-shadow)] transition duration-200 cursor-pointer relative"
+                className="p-2 sm:p-2.5 rounded-2xl border border-[var(--color-glass-border)] bg-[var(--glass-card-bg)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] shadow-[var(--clay-btn-secondary-shadow)] transition duration-200 cursor-pointer relative"
               >
                 <Bell className="w-4 h-4" />
                 {notificationsList.some(n => !n.read) && (
@@ -1090,7 +1629,7 @@ export default function DashboardPage({
                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute right-0 mt-3 w-80 glass-card p-4 space-y-3 z-50 text-[var(--color-text-primary)] text-xs"
+                    className="absolute right-0 mt-3 w-72 sm:w-80 glass-card p-4 space-y-3 z-50 text-[var(--color-text-primary)] text-xs"
                   >
                     <div className="flex justify-between items-center border-b border-[var(--color-border)] pb-2">
                       <span className="font-mono uppercase font-black tracking-wider text-[10px] text-[var(--color-text-secondary)]">Inbox Notifications</span>
@@ -1119,15 +1658,24 @@ export default function DashboardPage({
             {/* Theme switcher */}
             <button
               onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-              className="p-2.5 rounded-2xl border border-[var(--color-glass-border)] bg-[var(--glass-card-bg)] shadow-[var(--clay-btn-secondary-shadow)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition duration-200 cursor-pointer"
+              className="p-2 sm:p-2.5 rounded-2xl border border-[var(--color-glass-border)] bg-[var(--glass-card-bg)] shadow-[var(--clay-btn-secondary-shadow)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition duration-200 cursor-pointer"
             >
               {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
             </button>
+            
+            {/* User Profile Avatar on mobile */}
+            <div 
+              className="md:hidden w-8 h-8 rounded-xl bg-gradient-to-tr from-[#6D5DF6] to-[#8B5CF6] flex items-center justify-center font-black text-xs text-white font-mono shadow-md cursor-pointer shrink-0" 
+              onClick={() => setActiveTab("settings")}
+            >
+              {user.displayName ? user.displayName[0].toUpperCase() : "U"}
+            </div>
           </div>
         </header>
 
         {/* Workspace core canvas */}
-        <main className="flex-1 p-6 sm:p-8 overflow-y-auto max-w-7xl mx-auto w-full relative">
+        <main className="flex-1 py-6 sm:py-8 overflow-y-auto w-full relative overflow-x-hidden">
+          <ResponsiveContainer>
           
           {error && (
             <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 rounded-2xl flex items-start space-x-2.5 text-xs font-semibold animate-fade-in z-20">
@@ -1239,7 +1787,7 @@ export default function DashboardPage({
                   </div>
 
                   {/* Bento Statistics widgets */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     {/* Resume Score Card */}
                     <div className="glass-card p-6 flex flex-col justify-between h-[240px]">
                       <div className="flex justify-between items-start">
@@ -1315,6 +1863,34 @@ export default function DashboardPage({
                         Inspect Matches
                       </button>
                     </div>
+
+                    {/* Mock Interview Rating count card */}
+                    <div className="glass-card p-6 flex flex-col justify-between h-[240px]">
+                      <div className="flex justify-between items-start">
+                        <span className="text-[10px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">Interview Rating</span>
+                        <MessageSquare className="w-4.5 h-4.5 text-[#F59E0B]" />
+                      </div>
+
+                      <div className="flex items-center justify-center my-2">
+                        {finalReport ? (
+                          <CircularScoreGauge score={finalReport.overallScore} colorClass="stroke-[#F59E0B]" size={80} strokeWidth={6} />
+                        ) : (
+                          <div className="text-center my-2">
+                            <span className="text-4xl font-black text-[#F59E0B] block font-mono">
+                              {interviewAnswers.length > 0 ? `${getInterviewOverallScore()}%` : "0%"}
+                            </span>
+                            <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase mt-1.5 block font-bold">Latest mock run</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <button
+                        onClick={() => setActiveTab("interview")}
+                        className="w-full py-2.5 clay-btn clay-btn-secondary text-[10px] font-mono uppercase tracking-wider font-semibold"
+                      >
+                        Start Mock Round
+                      </button>
+                    </div>
                   </div>
 
                   {/* Quick actions bento grid */}
@@ -1340,7 +1916,7 @@ export default function DashboardPage({
                           </div>
                           <span className="text-[9px] font-mono text-[#6D5DF6] flex items-center space-x-1 font-bold pt-2">
                             <span>Open Tool</span>
-                            <span>➔</span>
+                            <ArrowRight className="w-3 h-3" />
                           </span>
                         </div>
                       ))}
@@ -1649,7 +2225,7 @@ export default function DashboardPage({
                   ) : filteredJobs.length > 0 ? (
                     <>
                       {/* Paginated Job Grid */}
-                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
                         {filteredJobs.slice((currentPageNum - 1) * 6, currentPageNum * 6).map((job, idx) => {
                           const isBookmarked = bookmarkedJobs.includes(job.company);
                           const isCopied = copiedJobId === job.applyUrl;
@@ -1743,7 +2319,7 @@ export default function DashboardPage({
 
                                 {/* Why it matches box */}
                                 <div className="p-3.5 bg-indigo-500/5 border border-indigo-500/10 rounded-xl flex items-start space-x-2">
-                                  <Sparkles className="w-4 h-4 text-[#6D5DF6] shrink-0 mt-0.5 animate-pulse" />
+                                  <Brain className="w-4 h-4 text-[#6D5DF6] shrink-0 mt-0.5" />
                                   <p className="text-[10px] leading-relaxed text-[var(--color-text-secondary)] font-sans font-medium italic">
                                     {job.reason || "Matches your candidate profile skills structure and core technical projects stacks."}
                                   </p>
@@ -1858,7 +2434,7 @@ export default function DashboardPage({
                   <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-stretch">
                     
                     {/* Role search form */}
-                    <div className="lg:col-span-2 glass-card p-6 flex flex-col justify-between space-y-6">
+                    <div className="order-2 lg:order-1 lg:col-span-2 glass-card p-6 flex flex-col justify-between space-y-6">
                       <form
                         onSubmit={(e) => {
                           handleSkillGapAnalysis(e);
@@ -1880,7 +2456,7 @@ export default function DashboardPage({
                               className="w-full clay-input pl-4 pr-10 py-3 text-xs text-[var(--color-text-primary)] focus:outline-none font-sans font-medium"
                             />
                             <button type="submit" className="absolute right-3 top-2 text-[#6D5DF6]">
-                              ➔
+                              <ArrowRight className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         </div>
@@ -1919,7 +2495,7 @@ export default function DashboardPage({
                     </div>
 
                     {/* Gap Radar Heatmap widgets */}
-                    <div className="lg:col-span-3 glass-card p-6 flex flex-col justify-between min-h-[380px]">
+                    <div className="order-1 lg:order-2 lg:col-span-3 glass-card p-6 flex flex-col justify-between min-h-[380px]">
                       {analyzingGaps ? (
                         <div className="flex-grow flex flex-col items-center justify-center text-center space-y-3">
                           <div className="w-8 h-8 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin" />
@@ -1931,8 +2507,8 @@ export default function DashboardPage({
                           
                           {/* Recharts Radar chart */}
                           <div className="h-[220px] w-full flex items-center justify-center font-mono text-[9px]">
-                            <ResponsiveContainer width="100%" height="100%">
-                              <RadarChart cx="50%" cy="50%" radius="70%" data={[
+                            <RechartsResponsiveContainer width="100%" height="100%">
+                              <RadarChart cx="50%" cy="50%" outerRadius="70%" data={[
                                 { subject: "Languages", A: 85, B: 95 },
                                 { subject: "Databases", A: 90, B: 85 },
                                 { subject: "Cloud Ops", A: 55, B: 88 },
@@ -1945,7 +2521,7 @@ export default function DashboardPage({
                                 <Radar name="Possessed" dataKey="A" stroke="#6D5DF6" fill="#6D5DF6" fillOpacity={0.25} />
                                 <Radar name="Target Required" dataKey="B" stroke="#8B5CF6" fill="#8B5CF6" fillOpacity={0.15} />
                               </RadarChart>
-                            </ResponsiveContainer>
+                            </RechartsResponsiveContainer>
                           </div>
 
                           <div className="grid grid-cols-2 gap-4">
@@ -2009,7 +2585,7 @@ export default function DashboardPage({
                             </div>
                             <div className="min-w-0">
                               <h4 className="text-xs font-bold truncate text-[var(--color-text-primary)]">{career.title}</h4>
-                              <span className="text-[9px] font-mono text-[var(--color-text-secondary)]">{career.duration}</span>
+                              <span className="text-[9px] font-mono text-[var(--color-text-secondary)]">{career.durationMonths} Months</span>
                             </div>
                           </button>
                         ))}
@@ -2030,14 +2606,72 @@ export default function DashboardPage({
                             </span>
                           </div>
 
-                          {/* Roadmap stepper list */}
-                          <div className="space-y-5">
+                          {/* Stepper Timeline: Responsive viewport adaptation */}
+                          
+                          {/* Desktop Layout: Horizontal Timeline (lg+) */}
+                          <div className="hidden lg:flex overflow-x-auto space-x-6 pb-4 pt-2 scroll-smooth custom-scrollbar">
+                            {selectedCareer.milestones?.map((milestone, idx) => {
+                              const isCompleted = (completedCareerMilestones[selectedCareer.id] || []).includes(idx);
+                              const isExpanded = expandedMilestones[idx] || false;
+                              return (
+                                <div key={idx} className="flex-shrink-0 w-72 bg-[var(--color-bg-page)]/45 border border-[var(--color-border)] rounded-2xl p-5 flex flex-col justify-between space-y-4 relative">
+                                  <div className="space-y-2">
+                                    <div className="flex justify-between items-center">
+                                      <span className="text-[10px] font-mono text-[#6D5DF6] font-bold">{milestone.duration}</span>
+                                      <button
+                                        onClick={() => handleToggleMilestone(selectedCareer.id, idx)}
+                                        className={`w-6 h-6 rounded-full border flex items-center justify-center text-[10.5px] font-mono font-bold transition shadow-sm cursor-pointer ${
+                                          isCompleted ? "bg-emerald-500 border-emerald-500 text-white" : "bg-[var(--color-bg-page)] border-[var(--color-border)] text-[var(--color-text-secondary)] hover:border-[#6D5DF6]"
+                                        }`}
+                                      >
+                                        {isCompleted ? <Check className="w-3.5 h-3.5" /> : idx + 1}
+                                      </button>
+                                    </div>
+                                    <h4 className="font-extrabold text-xs text-[var(--color-text-primary)] line-clamp-2 h-8 leading-snug">{milestone.milestoneTitle}</h4>
+                                    <p className="text-[10px] text-[var(--color-text-secondary)] font-medium line-clamp-3 font-sans leading-relaxed">
+                                      {milestone.practicalProject?.description}
+                                    </p>
+                                  </div>
+                                  
+                                  <button
+                                    onClick={() => setExpandedMilestones(prev => ({ ...prev, [idx]: !isExpanded }))}
+                                    className="w-full py-2 bg-[var(--color-bg-page)] hover:bg-[#6D5DF6]/5 border border-[var(--color-border)] rounded-xl text-[10px] font-mono font-bold text-[var(--color-text-secondary)] flex items-center justify-center space-x-1.5 transition"
+                                  >
+                                    <span>Details</span>
+                                    {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                                  </button>
+
+                                  {isExpanded && (
+                                    <div className="absolute left-0 right-0 top-full mt-3 bg-[var(--glass-card-bg)] border border-[var(--color-border)] backdrop-blur-2xl rounded-2xl p-4.5 shadow-xl z-20 text-[10.5px] leading-relaxed space-y-3.5 max-w-[280px]">
+                                      <div className="space-y-1.5">
+                                        <span className="text-[8px] font-mono text-[var(--color-text-tertiary)] uppercase font-black block">Practical Project Brief</span>
+                                        <h5 className="font-bold text-[var(--color-text-primary)]">{milestone.practicalProject?.title}</h5>
+                                        <p className="text-[10px] text-[var(--color-text-secondary)] font-sans">{milestone.practicalProject?.description}</p>
+                                      </div>
+                                      
+                                      <div className="space-y-1.5 border-t border-[var(--color-border)] pt-2">
+                                        <span className="text-[8px] font-mono text-[var(--color-text-tertiary)] uppercase font-black block mb-1">Study References</span>
+                                        {milestone.recommendedResources?.map((res, i) => (
+                                          <div key={i} className="flex items-center space-x-1.5">
+                                            <BookOpen className="w-3 h-3 text-[#6D5DF6] shrink-0" />
+                                            <span className="truncate">{res}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+
+                          {/* Tablet Layout: Vertical Timeline (md:lg:hidden) */}
+                          <div className="hidden md:block lg:hidden space-y-5">
                             {selectedCareer.milestones?.map((milestone, idx) => {
                               const isCompleted = (completedCareerMilestones[selectedCareer.id] || []).includes(idx);
                               const isExpanded = expandedMilestones[idx] || false;
                               return (
                                 <div key={idx} className="relative pl-7 border-l border-[var(--color-border)] space-y-3">
-                                  {/* Step Circle checkbox */}
                                   <button
                                     onClick={() => handleToggleMilestone(selectedCareer.id, idx)}
                                     className={`absolute left-[-11px] top-1.5 w-5.5 h-5.5 rounded-full border flex items-center justify-center text-xs font-mono font-bold transition shadow-sm cursor-pointer ${
@@ -2046,7 +2680,7 @@ export default function DashboardPage({
                                         : "bg-[var(--color-bg-page)] border-[var(--color-border)] text-[var(--color-text-secondary)] hover:border-[#6D5DF6]"
                                     }`}
                                   >
-                                    {isCompleted ? "✓" : idx + 1}
+                                    {isCompleted ? <Check className="w-3 h-3" /> : idx + 1}
                                   </button>
 
                                   <div className="flex justify-between items-start text-xs">
@@ -2089,6 +2723,64 @@ export default function DashboardPage({
                               );
                             })}
                           </div>
+
+                          {/* Mobile Layout: Accordion (under md viewport width) */}
+                          <div className="block md:hidden space-y-3">
+                            {selectedCareer.milestones?.map((milestone, idx) => {
+                              const isCompleted = (completedCareerMilestones[selectedCareer.id] || []).includes(idx);
+                              const isExpanded = expandedMilestones[idx] || false;
+                              return (
+                                <div key={idx} className="bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl overflow-hidden shadow-sm">
+                                  <div 
+                                    className="p-4 flex items-center justify-between cursor-pointer hover:bg-[#6D5DF6]/5 transition"
+                                    onClick={() => setExpandedMilestones(prev => ({ ...prev, [idx]: !isExpanded }))}
+                                  >
+                                    <div className="flex items-center space-x-3 min-w-0">
+                                      <button
+                                        type="button"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleToggleMilestone(selectedCareer.id, idx);
+                                        }}
+                                        className={`w-6.5 h-6.5 rounded-full border flex items-center justify-center text-xs font-mono font-bold shrink-0 cursor-pointer ${
+                                          isCompleted ? "bg-emerald-500 border-emerald-500 text-white" : "bg-[var(--color-bg-page)] border-[var(--color-border)] text-[var(--color-text-secondary)]"
+                                        }`}
+                                      >
+                                        {isCompleted ? <Check className="w-3.5 h-3.5" /> : idx + 1}
+                                      </button>
+                                      <div className="min-w-0">
+                                        <h4 className="font-extrabold text-xs text-[var(--color-text-primary)] truncate">{milestone.milestoneTitle}</h4>
+                                        <span className="text-[9px] text-[var(--color-text-secondary)] font-mono">{milestone.duration}</span>
+                                      </div>
+                                    </div>
+                                    <div>
+                                      {isExpanded ? <ChevronUp className="w-4 h-4 text-[var(--color-text-secondary)]" /> : <ChevronDown className="w-4 h-4 text-[var(--color-text-secondary)]" />}
+                                    </div>
+                                  </div>
+
+                                  {isExpanded && (
+                                    <div className="p-4 border-t border-[var(--color-border)] bg-[var(--color-bg-page)]/20 text-xs space-y-4 font-medium text-[var(--color-text-secondary)] animate-fade-in">
+                                      <div className="space-y-1.5">
+                                        <span className="text-[8.5px] font-mono text-[var(--color-text-tertiary)] uppercase font-black block">Practical Project Brief</span>
+                                        <h5 className="font-bold text-[var(--color-text-primary)]">{milestone.practicalProject?.title}</h5>
+                                        <p className="text-[10.5px] leading-relaxed font-sans">{milestone.practicalProject?.description}</p>
+                                      </div>
+                                      
+                                      <div className="space-y-1.5 border-t border-[var(--color-border)] pt-2.5">
+                                        <span className="text-[8.5px] font-mono text-[var(--color-text-tertiary)] uppercase font-black block mb-1">Study Courses & References</span>
+                                        {milestone.recommendedResources?.map((res, i) => (
+                                          <div key={i} className="flex items-center space-x-2">
+                                            <BookOpen className="w-3.5 h-3.5 text-[#6D5DF6] shrink-0" />
+                                            <span className="text-[10.5px] leading-relaxed font-sans">{res}</span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
                       ) : (
                         <div className="flex-grow flex flex-col items-center justify-center text-center p-6">
@@ -2107,186 +2799,526 @@ export default function DashboardPage({
               {/* Tab Content: Interview Lab */}
               {activeTab === "interview" && (
                 <div className="space-y-6">
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-[var(--color-border)] pb-5">
-                    <div>
-                      <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-primary)]">AI Interview Lab</h1>
-                      <p className="text-xs text-[var(--color-text-secondary)] mt-1 font-medium leading-relaxed font-sans">
-                        Practice mock simulator runs tailored to parsed resume stack skills.
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={handleStartInterview}
-                      disabled={generatingQuestions}
-                      className="px-5 py-3 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider text-white font-semibold shadow-md flex items-center space-x-2"
-                    >
-                      <RefreshCw className={`w-4 h-4 ${generatingQuestions ? "animate-spin" : ""}`} />
-                      <span>{generatingQuestions ? "Generating..." : "Generate Custom Mock Questions"}</span>
-                    </button>
-                  </div>
-
-                  {generatingQuestions ? (
-                    <div className="h-64 flex flex-col items-center justify-center text-center space-y-3">
-                      <div className="w-8 h-8 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin" />
-                      <span className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">Synthesizing Tailored Interview Questionnaire</span>
-                    </div>
-                  ) : interviewQuestions.length > 0 ? (
-                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-stretch">
-                      
-                      {/* Left: Interactive Mic & Recording simulator */}
-                      <div className="lg:col-span-3 glass-card p-6 sm:p-8 flex flex-col justify-between space-y-6">
-                        <div className="space-y-4">
-                          <div className="flex justify-between items-center text-[10px] font-mono font-bold text-[#6D5DF6]">
-                            <span>QUESTION {currentQuestionIndex + 1} OF {interviewQuestions.length}</span>
-                            <span>{interviewQuestions[currentQuestionIndex]?.category}</span>
-                          </div>
-
-                          <h3 className="text-base font-black text-[var(--color-text-primary)] leading-snug">
-                            {interviewQuestions[currentQuestionIndex]?.question}
-                          </h3>
-                        </div>
-
-                        {/* Interactive mic / voice animation */}
-                        <div className="bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-inner relative">
-                          {isRecording ? (
-                            <div className="space-y-4">
-                              <span className="text-[10px] font-mono text-red-500 animate-pulse font-extrabold">RECORDING FEEDBACK LIVE ({recordingTimer}s)</span>
-                              
-                              {/* Voice Visualization waves */}
-                              <div className="flex items-center justify-center space-x-1.5 h-12 my-2">
-                                {Array.from({ length: 11 }).map((_, i) => (
-                                  <motion.div
-                                    key={i}
-                                    animate={{ height: [10, 42, 10] }}
-                                    transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.05 }}
-                                    className="w-1 bg-[#6D5DF6] rounded-full"
-                                  />
-                                ))}
-                              </div>
-
-                              <button
-                                type="button"
-                                onClick={stopRecording}
-                                className="px-5 py-2.5 clay-btn clay-btn-danger text-xs font-mono uppercase tracking-wider font-bold shadow-md"
-                              >
-                                Stop & Parse Speech
-                              </button>
-                            </div>
-                          ) : (
-                            <div className="space-y-4">
-                              <span className="text-[9.5px] font-mono text-[var(--color-text-tertiary)] uppercase font-black">Speech Simulation</span>
-                              <button
-                                type="button"
-                                onClick={startRecording}
-                                className="w-16 h-16 rounded-full bg-[#6D5DF6] text-white flex items-center justify-center shadow-lg shadow-indigo-500/25 hover:scale-105 transition cursor-pointer"
-                              >
-                                🎙️
-                              </button>
-                              <p className="text-[10.5px] text-[var(--color-text-secondary)] font-medium font-sans">Click to speak answer or type below</p>
-                            </div>
-                          )}
-                        </div>
-
-                        <form onSubmit={handleSubmitInterviewAnswer} className="space-y-4">
-                          <textarea
-                            value={userAnswer}
-                            onChange={(e) => setUserAnswer(e.target.value)}
-                            placeholder="Type your simulated response here..."
-                            rows={4}
-                            required
-                            disabled={evaluatingAnswer}
-                            className="w-full clay-input px-4 py-3 text-xs focus:outline-none font-medium leading-relaxed font-sans"
-                          />
-
-                          <div className="flex justify-between items-center">
-                            <span className="text-[9.5px] font-mono text-[var(--color-text-tertiary)]">Double highlights active</span>
-                            <button
-                              type="submit"
-                              disabled={evaluatingAnswer || !userAnswer.trim()}
-                              className="px-5 py-3 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider text-white font-semibold shadow-md disabled:opacity-50"
-                            >
-                              {evaluatingAnswer ? "Evaluating..." : "Submit Answer"}
-                            </button>
-                          </div>
-                        </form>
+                  {/* Setup/Selection View */}
+                  {interviewStatus === "setup" && (
+                    <div className="space-y-8">
+                      <div className="border-b border-[var(--color-border)] pb-5">
+                        <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-primary)]">AI Interview Simulator</h1>
+                        <p className="text-xs text-[var(--color-text-secondary)] mt-1 font-medium leading-relaxed font-sans">
+                          Select a specialized round to evaluate your capabilities. Experience realistic mock interview constraints.
+                        </p>
                       </div>
 
-                      {/* Right: Results / evaluation review */}
-                      <div className="lg:col-span-2 glass-card p-6 flex flex-col justify-between space-y-6">
-                        {evaluatingAnswer ? (
-                          <div className="flex-grow flex flex-col items-center justify-center text-center space-y-3">
-                            <div className="w-6 h-6 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin" />
-                            <span className="text-[10px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">Agents scoring response...</span>
+                      {generatingQuestions ? (
+                        <div className="h-64 flex flex-col items-center justify-center text-center space-y-4 glass-card">
+                          <div className="relative w-12 h-12">
+                            <div className="absolute inset-0 rounded-full border-4 border-indigo-500/20 border-t-indigo-600 animate-spin" />
                           </div>
-                        ) : currentEvaluation ? (
-                          <div className="space-y-5 flex-grow flex flex-col justify-between">
-                            <div className="flex items-center space-x-4 border-b border-[var(--color-border)] pb-4">
-                              <CircularScoreGauge score={currentEvaluation.score} size={64} strokeWidth={5} colorClass="stroke-[#6D5DF6]" showMaxScore={false} suffix=" pts" />
-                              <div>
-                                <h4 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase font-bold">Answer Rating</h4>
-                                <span className="text-[11px] font-bold text-[var(--color-text-primary)]">Evaluating overlap keywords matched</span>
+                          <span className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">
+                            {interviewType === "technical" 
+                              ? "Synthesizing custom questions from parsed resume..." 
+                              : "Preparing randomized mock interview rounds..."}
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          {/* Card 1: Aptitude */}
+                          <div className="glass-card hover:border-[#6D5DF6]/30 transition p-6 flex flex-col justify-between space-y-6 relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-4 bg-indigo-500/10 text-indigo-600 rounded-bl-2xl font-mono text-[10px] font-bold">OFFLINE</div>
+                            <div className="space-y-3">
+                              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-600">
+                                <Cpu className="w-5 h-5" />
+                              </div>
+                              <h3 className="text-lg font-black text-[var(--color-text-primary)]">Aptitude Round</h3>
+                              <p className="text-[11.5px] leading-relaxed text-[var(--color-text-secondary)] font-medium font-sans">
+                                10 multiple-choice questions covering Quantitative, Logical, Verbal, Analytical, and Data Interpretation. Instantly evaluated.
+                              </p>
+                              <div className="text-[9.5px] font-mono text-[var(--color-text-tertiary)] flex flex-col space-y-1.5 pt-2">
+                                <span className="flex items-center space-x-1.5">
+                                  <Clock className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                                  <span>10 Minutes Total</span>
+                                </span>
+                                <span className="flex items-center space-x-1.5">
+                                  <BarChart className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                                  <span>Category Score Breakdown</span>
+                                </span>
                               </div>
                             </div>
+                            <button
+                              onClick={handleStartAptitude}
+                              className="w-full py-3 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider font-bold text-white shadow-md cursor-pointer"
+                            >
+                              Start Round
+                            </button>
+                          </div>
 
-                            <div className="space-y-4 max-h-[350px] overflow-y-auto pr-1 custom-scrollbar text-xs">
-                              {/* Grading cards */}
-                              <div className="grid grid-cols-2 gap-3">
-                                <div className="p-3 bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-xl text-center">
-                                  <span className="text-[8px] font-mono text-[var(--color-text-tertiary)] uppercase font-bold block">Confidence</span>
-                                  <span className="text-xs font-extrabold text-[#22C55E]">High (92%)</span>
-                                </div>
-                                <div className="p-3 bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-xl text-center">
-                                  <span className="text-[8px] font-mono text-[var(--color-text-tertiary)] uppercase font-bold block">Grammar</span>
-                                  <span className="text-xs font-extrabold text-[#6D5DF6]">Excellent</span>
-                                </div>
+                          {/* Card 2: Technical */}
+                          <div className="glass-card hover:border-[#6D5DF6]/30 transition p-6 flex flex-col justify-between space-y-6 relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-4 bg-purple-500/10 text-purple-600 rounded-bl-2xl font-mono text-[10px] font-bold">RESUME-DRIVEN</div>
+                            <div className="space-y-3">
+                              <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600">
+                                <Code className="w-5 h-5" />
                               </div>
-
-                              <div className="bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl p-4 shadow-inner">
-                                <span className="text-[9px] font-mono text-indigo-600 dark:text-indigo-400 uppercase block font-black mb-1">Feedback Summary</span>
-                                <p className="text-[11px] text-[var(--color-text-secondary)] leading-relaxed font-semibold">{currentEvaluation.feedback}</p>
-                              </div>
-
-                              <div className="bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl p-4 shadow-inner">
-                                <span className="text-[9px] font-mono text-[#22C55E] uppercase block font-black mb-1.5">Expected Points Overlaps</span>
-                                <div className="flex flex-wrap gap-1">
-                                  {currentEvaluation.expectedPointsMatched?.map((pt: string, idx: number) => (
-                                    <span key={idx} className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-[#22C55E] rounded-md text-[9px] font-mono">{pt}</span>
-                                  )) || <span className="text-[10px] text-[var(--color-text-tertiary)] italic">None</span>}
-                                </div>
+                              <h3 className="text-lg font-black text-[var(--color-text-primary)]">Technical Round</h3>
+                              <p className="text-[11.5px] leading-relaxed text-[var(--color-text-secondary)] font-medium font-sans">
+                                5 dynamic questions based on your profile's coding languages, frameworks, projects, education, and career experience. Evaluated by AI.
+                              </p>
+                              <div className="text-[9.5px] font-mono text-[var(--color-text-tertiary)] flex flex-col space-y-1.5 pt-2">
+                                <span className="flex items-center space-x-1.5">
+                                  <Clock className="w-3.5 h-3.5 text-purple-500 shrink-0" />
+                                  <span>120s per question</span>
+                                </span>
+                                <span className="flex items-center space-x-1.5">
+                                  <Mic className="w-3.5 h-3.5 text-purple-500 shrink-0" />
+                                  <span>Voice and Text responses</span>
+                                </span>
                               </div>
                             </div>
-
-                            {currentQuestionIndex < interviewQuestions.length - 1 ? (
+                            {resume ? (
                               <button
-                                onClick={handleNextQuestion}
-                                className="w-full py-3.5 clay-btn clay-btn-secondary text-xs font-mono uppercase tracking-wider font-bold"
+                                onClick={handleStartTechnical}
+                                className="w-full py-3 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider font-bold text-white shadow-md cursor-pointer"
                               >
-                                Next Question
+                                Start Round
                               </button>
                             ) : (
-                              <div className="bg-emerald-500/5 border border-emerald-500/15 p-4.5 rounded-2xl text-center">
-                                <p className="text-xs font-extrabold text-[#22C55E]">Session Complete!</p>
-                                <span className="text-[10px] text-[var(--color-text-secondary)] font-mono font-semibold block mt-1">Average rating: {getInterviewOverallScore()}/100</span>
+                              <div className="space-y-2">
+                                <button
+                                  disabled
+                                  className="w-full py-3 clay-btn clay-btn-secondary text-xs font-mono uppercase tracking-wider font-bold text-[var(--color-text-tertiary)] opacity-50 cursor-not-allowed"
+                                >
+                                  Locked
+                                </button>
+                                <span className="text-[9.5px] text-red-500 font-semibold block text-center">Please upload a resume to unlock.</span>
                               </div>
                             )}
                           </div>
-                        ) : (
-                          <div className="flex-grow flex flex-col items-center justify-center text-center p-6">
-                            <Sparkles className="w-10 h-10 text-[var(--color-text-tertiary)] opacity-60 mb-3" />
-                            <p className="text-xs text-[var(--color-text-secondary)] font-medium font-sans">
-                              Submit response to activate recruiter grade evaluation.
-                            </p>
+
+                          {/* Card 3: HR */}
+                          <div className="glass-card hover:border-[#6D5DF6]/30 transition p-6 flex flex-col justify-between space-y-6 relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-4 bg-emerald-500/10 text-emerald-600 rounded-bl-2xl font-mono text-[10px] font-bold">BEHAVIORAL</div>
+                            <div className="space-y-3">
+                              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                                <UserCheck className="w-5 h-5" />
+                              </div>
+                              <h3 className="text-lg font-black text-[var(--color-text-primary)]">HR Behavioral</h3>
+                              <p className="text-[11.5px] leading-relaxed text-[var(--color-text-secondary)] font-medium font-sans">
+                                5 random questions evaluating culture fit, leadership, stress management, conflict resolution, and career objectives. Evaluated by AI.
+                              </p>
+                              <div className="text-[9.5px] font-mono text-[var(--color-text-tertiary)] flex flex-col space-y-1.5 pt-2">
+                                <span className="flex items-center space-x-1.5">
+                                  <Clock className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                                  <span>90s per question</span>
+                                </span>
+                                <span className="flex items-center space-x-1.5">
+                                  <Mic className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                                  <span>Voice and Text responses</span>
+                                </span>
+                              </div>
+                            </div>
+                            <button
+                              onClick={handleStartHR}
+                              className="w-full py-3 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider font-bold text-white shadow-md cursor-pointer"
+                            >
+                              Start Round
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Active Question View */}
+                  {interviewStatus === "active" && interviewQuestions.length > 0 && (
+                    <div className="space-y-6">
+                      {/* Header Panel with timer and progress bar */}
+                      <div className="glass-card p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div className="space-y-1 flex-grow">
+                          <div className="flex justify-between items-center text-[10.5px] font-mono font-bold text-[#6D5DF6] uppercase tracking-wider">
+                            <span>{interviewType?.toUpperCase()} ROUND</span>
+                            <span>Question {currentQuestionIndex + 1} of {interviewQuestions.length}</span>
+                          </div>
+                          
+                          {/* Progress bar */}
+                          <div className="w-full bg-[var(--color-border)] h-2 rounded-full overflow-hidden mt-2">
+                            <div 
+                              className="bg-indigo-600 h-full rounded-full transition-all duration-300"
+                              style={{ width: `${((currentQuestionIndex + (currentEvaluation ? 1 : 0)) / interviewQuestions.length) * 100}%` }}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Timer clock */}
+                        <div className="flex items-center space-x-3 px-4 py-2.5 bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl shadow-inner font-mono text-xs font-black">
+                          <Clock className={`w-4 h-4 ${timeLeft < 15 ? "text-red-500 animate-pulse" : "text-indigo-600"}`} />
+                          <span className={timeLeft < 15 ? "text-red-500 font-extrabold animate-pulse" : "text-[var(--color-text-primary)]"}>
+                            {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, "0")}
+                          </span>
+                          <span className="text-[10px] text-[var(--color-text-secondary)] uppercase">
+                            {interviewType === "aptitude" ? "TOTAL" : "REMAINING"}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Main workspace */}
+                      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-stretch">
+                        
+                        {/* Question & Input Area (Left) */}
+                        <div className="lg:col-span-3 glass-card p-6 sm:p-8 flex flex-col justify-between space-y-6">
+                          <div className="space-y-4">
+                            <div className="flex items-center justify-between text-[10px] font-mono text-[var(--color-text-tertiary)] uppercase font-extrabold">
+                              <span>Topic: {interviewQuestions[currentQuestionIndex]?.topic || "Interview Question"}</span>
+                              <span className={`px-2 py-0.5 rounded text-[9px] ${
+                                interviewQuestions[currentQuestionIndex]?.difficulty === "Easy" ? "bg-emerald-500/10 text-emerald-600" :
+                                interviewQuestions[currentQuestionIndex]?.difficulty === "Medium" ? "bg-amber-500/10 text-amber-600" :
+                                "bg-red-500/10 text-red-600"
+                              }`}>
+                                {interviewQuestions[currentQuestionIndex]?.difficulty || "Medium"}
+                              </span>
+                            </div>
+
+                            <h3 className="text-base sm:text-lg font-black text-[var(--color-text-primary)] leading-snug">
+                              {interviewQuestions[currentQuestionIndex]?.question}
+                            </h3>
+                          </div>
+
+                          {interviewType === "aptitude" ? (
+                            /* MCQ Options */
+                            <div className="grid grid-cols-1 gap-3.5 py-4">
+                              {interviewQuestions[currentQuestionIndex]?.options?.map((optionText: string, idx: number) => {
+                                const isSelected = selectedOption === optionText;
+                                return (
+                                  <button
+                                    key={idx}
+                                    type="button"
+                                    onClick={() => setSelectedOption(optionText)}
+                                    className={`w-full text-left px-5 py-4 rounded-2xl border text-xs font-semibold transition-all duration-150 flex items-center space-x-3 cursor-pointer ${
+                                      isSelected
+                                        ? "bg-indigo-500/10 border-indigo-600 text-indigo-700 dark:text-indigo-400 font-bold shadow-md"
+                                        : "bg-[var(--color-bg-page)] border-[var(--color-border)] text-[var(--color-text-secondary)] hover:border-indigo-500/20"
+                                    }`}
+                                  >
+                                    <span className={`w-6 h-6 rounded-full flex items-center justify-center border font-mono text-[10.5px] font-extrabold ${
+                                      isSelected 
+                                        ? "bg-indigo-600 text-white border-indigo-600"
+                                        : "bg-[var(--color-bg-page)] border-[var(--color-border)] text-[var(--color-text-tertiary)]"
+                                    }`}>
+                                      {String.fromCharCode(65 + idx)}
+                                    </span>
+                                    <span>{optionText}</span>
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            /* Voice / Text Response */
+                            <div className="space-y-6">
+                              {/* Voice Visualizer / Mic control */}
+                              <div className="bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl p-6 flex flex-col items-center justify-center text-center shadow-inner relative">
+                                {isRecording ? (
+                                  <div className="space-y-4">
+                                    <span className="text-[10px] font-mono text-red-500 animate-pulse font-extrabold">TRANSCRIBING LIVE SPEECH ({recordingTimer}s)</span>
+                                    
+                                    <div className="flex items-center justify-center space-x-1.5 h-12 my-2">
+                                      {Array.from({ length: 11 }).map((_, i) => (
+                                        <motion.div
+                                          key={i}
+                                          animate={{ height: [10, 42, 10] }}
+                                          transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.05 }}
+                                          className="w-1 bg-[#6D5DF6] rounded-full"
+                                        />
+                                      ))}
+                                    </div>
+
+                                    <button
+                                      type="button"
+                                      onClick={stopRecording}
+                                      className="px-5 py-2.5 clay-btn clay-btn-danger text-xs font-mono uppercase tracking-wider font-bold shadow-md cursor-pointer"
+                                    >
+                                      Stop Recording
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <div className="space-y-4">
+                                    <span className="text-[9.5px] font-mono text-[var(--color-text-tertiary)] uppercase font-black">Speech-to-Text Transcription</span>
+                                    <button
+                                      type="button"
+                                      onClick={startRecording}
+                                      disabled={evaluatingAnswer}
+                                      className="w-16 h-16 rounded-full bg-[#6D5DF6] text-white flex items-center justify-center shadow-lg shadow-indigo-500/25 hover:scale-105 transition cursor-pointer disabled:opacity-50"
+                                    >
+                                      <Mic className="w-5 h-5" />
+                                    </button>
+                                    <p className="text-[10.5px] text-[var(--color-text-secondary)] font-medium font-sans">Click to speak answer or edit text box below</p>
+                                  </div>
+                                )}
+                              </div>
+
+                              <textarea
+                                value={userAnswer}
+                                onChange={(e) => setUserAnswer(e.target.value)}
+                                placeholder="Type your simulated response here..."
+                                rows={4}
+                                required
+                                disabled={evaluatingAnswer || currentEvaluation}
+                                className="w-full clay-input px-4 py-3 text-xs focus:outline-none font-medium leading-relaxed font-sans resize-none"
+                              />
+                            </div>
+                          )}
+
+                          {/* Control buttons */}
+                          <div className="flex justify-between items-center border-t border-[var(--color-border)] pt-4 gap-4">
+                            <button
+                              type="button"
+                              onClick={handleSkipQuestion}
+                              disabled={evaluatingAnswer || currentEvaluation}
+                              className="px-5 py-3 clay-btn clay-btn-secondary text-xs font-mono uppercase tracking-wider font-bold shadow-sm cursor-pointer disabled:opacity-50"
+                            >
+                              Skip Question
+                            </button>
+
+                            {interviewType === "aptitude" ? (
+                              <button
+                                type="button"
+                                onClick={() => handleSubmitInterviewAnswer()}
+                                disabled={!selectedOption}
+                                className="px-5 py-3 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider text-white font-semibold shadow-md cursor-pointer disabled:opacity-50"
+                              >
+                                {currentQuestionIndex < interviewQuestions.length - 1 ? "Next Question" : "Finish Test"}
+                              </button>
+                            ) : (
+                              !currentEvaluation && (
+                                <button
+                                  type="button"
+                                  onClick={() => handleSubmitInterviewAnswer()}
+                                  disabled={evaluatingAnswer || !userAnswer.trim()}
+                                  className="px-5 py-3 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider text-white font-semibold shadow-md cursor-pointer disabled:opacity-50"
+                                >
+                                  {evaluatingAnswer ? "Evaluating..." : "Submit Answer"}
+                                </button>
+                              )
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Right: Results / evaluation review (Tech & HR only) */}
+                        {interviewType !== "aptitude" && (
+                          <div className="lg:col-span-2 glass-card p-6 flex flex-col justify-between space-y-6">
+                            {evaluatingAnswer ? (
+                              <div className="flex-grow flex flex-col items-center justify-center text-center space-y-3">
+                                <div className="w-6 h-6 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin" />
+                                <span className="text-[10px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">Agents scoring response...</span>
+                              </div>
+                            ) : currentEvaluation ? (
+                              <div className="space-y-5 flex-grow flex flex-col justify-between">
+                                <div className="flex items-center space-x-4 border-b border-[var(--color-border)] pb-4">
+                                  <CircularScoreGauge score={currentEvaluation.score} size={64} strokeWidth={5} colorClass="stroke-[#6D5DF6]" showMaxScore={false} suffix=" pts" />
+                                  <div>
+                                    <h4 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase font-bold">Answer Rating</h4>
+                                    <span className="text-[11px] font-bold text-[var(--color-text-primary)]">Evaluating overlap keywords matched</span>
+                                  </div>
+                                </div>
+
+                                <div className="space-y-4 max-h-[320px] overflow-y-auto pr-1 custom-scrollbar text-xs">
+                                  <div className="bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl p-4 shadow-inner">
+                                    <span className="text-[9px] font-mono text-indigo-600 dark:text-indigo-400 uppercase block font-black mb-1">Feedback Summary</span>
+                                    <p className="text-[11px] text-[var(--color-text-secondary)] leading-relaxed font-semibold">{currentEvaluation.feedback}</p>
+                                  </div>
+
+                                  <div className="bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl p-4 shadow-inner">
+                                    <span className="text-[9px] font-mono text-[#22C55E] uppercase block font-black mb-1.5">Expected Points Overlaps</span>
+                                    <div className="flex flex-wrap gap-1">
+                                      {currentEvaluation.expectedPointsMatched?.map((pt: string, idx: number) => (
+                                        <span key={idx} className="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-[#22C55E] rounded-md text-[9px] font-mono">{pt}</span>
+                                      )) || <span className="text-[10px] text-[var(--color-text-tertiary)] italic">None</span>}
+                                    </div>
+                                  </div>
+
+                                  <div className="bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl p-4 shadow-inner">
+                                    <span className="text-[9px] font-mono text-indigo-600 dark:text-indigo-400 uppercase block font-black mb-1.5">Key Suggestions</span>
+                                    <ul className="list-disc list-inside space-y-1 text-[10.5px] leading-relaxed font-semibold text-[var(--color-text-secondary)]">
+                                      {currentEvaluation.suggestions?.map((sug: string, idx: number) => (
+                                        <li key={idx}>{sug}</li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                </div>
+
+                                <button
+                                  onClick={handleNextQuestion}
+                                  className="w-full py-3.5 clay-btn clay-btn-secondary text-xs font-mono uppercase tracking-wider font-bold cursor-pointer"
+                                >
+                                  {currentQuestionIndex < interviewQuestions.length - 1 ? "Next Question" : "Finish Interview"}
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="flex-grow flex flex-col items-center justify-center text-center p-6">
+                                <Target className="w-10 h-10 text-[var(--color-text-tertiary)] opacity-60 mb-3" />
+                                <p className="text-xs text-[var(--color-text-secondary)] font-medium font-sans">
+                                  Submit response to activate recruiter grade evaluation.
+                                </p>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
-
                     </div>
-                  ) : (
-                    <div className="h-48 flex flex-col items-center justify-center text-center p-6">
-                      <MessageSquare className="w-10 h-10 text-[var(--color-text-tertiary)] opacity-60 mb-3" />
-                      <p className="text-xs text-[var(--color-text-secondary)] font-medium font-sans">
-                        Click 'Generate Questions' to initialize mockup simulation.
+                  )}
+
+                  {/* Generating Report view */}
+                  {interviewStatus === "generating_report" && (
+                    <div className="h-96 flex flex-col items-center justify-center text-center space-y-4 glass-card">
+                      <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin" />
+                      <h3 className="text-lg font-black text-[var(--color-text-primary)] animate-pulse">Evaluating Session Details</h3>
+                      <p className="text-xs text-[var(--color-text-secondary)] font-medium font-sans max-w-sm">
+                        Our AI models are reviewing your answer overlap metrics, communication confidence, grammar structural scores, and problem solving pointers.
                       </p>
+                    </div>
+                  )}
+
+                  {/* Final Report View */}
+                  {interviewStatus === "completed" && finalReport && (
+                    <div className="space-y-8">
+                      {/* Title block */}
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-[var(--color-border)] pb-5">
+                        <div>
+                          <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-text-primary)]">Interview Summary Report</h1>
+                          <p className="text-xs text-[var(--color-text-secondary)] mt-1 font-medium leading-relaxed font-sans">
+                            Review your competency scores and tailored career study suggestions.
+                          </p>
+                        </div>
+
+                        <div className="flex space-x-3">
+                          <button
+                            onClick={downloadReportPDF}
+                            className="px-5 py-3 clay-btn clay-btn-success text-xs font-mono uppercase tracking-wider text-white font-semibold shadow-md cursor-pointer"
+                          >
+                            Download Report PDF
+                          </button>
+                          <button
+                            onClick={() => {
+                              setInterviewStatus("setup");
+                              setInterviewType(null);
+                              setFinalReport(null);
+                            }}
+                            className="px-5 py-3 clay-btn clay-btn-secondary text-xs font-mono uppercase tracking-wider font-bold cursor-pointer"
+                          >
+                            Restart
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Main report widgets */}
+                      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-stretch">
+                        
+                        {/* Overall score card & radar chart (Left) */}
+                        <div className="lg:col-span-3 glass-card p-6 sm:p-8 flex flex-col justify-between space-y-6">
+                          <div className="flex items-center space-x-6 border-b border-[var(--color-border)] pb-6">
+                            <CircularScoreGauge score={finalReport.overallScore} size={84} strokeWidth={6} colorClass="stroke-[#6D5DF6]" suffix="/100" />
+                            <div>
+                              <span className="text-[10px] font-mono text-[var(--color-text-tertiary)] uppercase font-extrabold block">Overall Placement Index</span>
+                              <h3 className="text-xl font-black text-[var(--color-text-primary)] mt-1">
+                                {finalReport.overallScore >= 80 ? "Highly Recommended" : finalReport.overallScore >= 60 ? "Requires Training" : "Not Recommended"}
+                              </h3>
+                              <p className="text-xs text-[var(--color-text-secondary)] font-sans mt-1">
+                                Evaluation scored across core professional competency rubrics.
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Radar chart of metrics */}
+                          <div className="h-64 sm:h-72 w-full mt-4 flex items-center justify-center">
+                            <RechartsResponsiveContainer width="100%" height="100%">
+                              <RadarChart cx="50%" cy="50%" outerRadius="80%" data={[
+                                { subject: 'Communication', A: finalReport.metrics?.communication || 0, fullMark: 100 },
+                                { subject: 'Confidence', A: finalReport.metrics?.confidence || 0, fullMark: 100 },
+                                { subject: 'Tech Knowledge', A: finalReport.metrics?.technicalKnowledge || 0, fullMark: 100 },
+                                { subject: 'Grammar', A: finalReport.metrics?.grammar || 0, fullMark: 100 },
+                                { subject: 'Problem Solving', A: finalReport.metrics?.problemSolving || 0, fullMark: 100 },
+                                { subject: 'Leadership', A: finalReport.metrics?.leadership || 0, fullMark: 100 },
+                              ]}>
+                                <PolarGrid stroke="#E5E7EB" />
+                                <PolarAngleAxis dataKey="subject" tick={{ fill: 'var(--color-text-secondary)', fontSize: 10, fontWeight: 'bold', fontFamily: 'var(--font-sans)' }} />
+                                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fill: 'var(--color-text-tertiary)', fontSize: 9 }} />
+                                <Radar name="Candidate" dataKey="A" stroke="#6D5DF6" fill="#6D5DF6" fillOpacity={0.25} />
+                              </RadarChart>
+                            </RechartsResponsiveContainer>
+                          </div>
+                        </div>
+
+                        {/* Strengths & weaknesses (Right) */}
+                        <div className="lg:col-span-2 flex flex-col space-y-6">
+                          
+                          {/* Core Strengths */}
+                          <div className="glass-card p-6 flex-grow">
+                            <span className="text-[10px] font-mono text-[#22C55E] uppercase block font-black mb-3">Core Strengths</span>
+                            <ul className="space-y-2.5">
+                              {finalReport.strengths?.map((str: string, idx: number) => (
+                                <li key={idx} className="flex items-start space-x-2.5 text-xs text-[var(--color-text-secondary)] font-semibold font-sans">
+                                  <CheckCircle className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                                  <span>{str}</span>
+                                </li>
+                              )) || <span className="text-xs text-[var(--color-text-tertiary)] italic">None analyzed.</span>}
+                            </ul>
+                          </div>
+
+                          {/* Opportunities for Growth */}
+                          <div className="glass-card p-6 flex-grow">
+                            <span className="text-[10px] font-mono text-[#EF4444] uppercase block font-black mb-3">Opportunities for Growth</span>
+                            <ul className="space-y-2.5">
+                              {finalReport.weaknesses?.map((str: string, idx: number) => (
+                                <li key={idx} className="flex items-start space-x-2.5 text-xs text-[var(--color-text-secondary)] font-semibold font-sans">
+                                  <XCircle className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" />
+                                  <span>{str}</span>
+                                </li>
+                              )) || <span className="text-xs text-[var(--color-text-tertiary)] italic">None analyzed.</span>}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Suggestions & Learning resources footer widgets */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                        {/* Actionable Suggestions */}
+                        <div className="glass-card p-6 sm:p-8 space-y-4">
+                          <h4 className="text-sm font-black text-[var(--color-text-primary)]">Actionable Improvement Suggestions</h4>
+                          <ul className="space-y-3">
+                            {finalReport.improvementSuggestions?.map((str: string, idx: number) => (
+                              <li key={idx} className="flex items-start space-x-3 text-xs text-[var(--color-text-secondary)] leading-relaxed font-semibold font-sans">
+                                <span className="text-indigo-600 font-bold">{idx + 1}.</span>
+                                <span>{str}</span>
+                              </li>
+                            )) || <span className="text-xs text-[var(--color-text-tertiary)] italic">None.</span>}
+                          </ul>
+                        </div>
+
+                        {/* Learning resources */}
+                        <div className="glass-card p-6 sm:p-8 space-y-4">
+                          <h4 className="text-sm font-black text-[var(--color-text-primary)]">Recommended Learning Resources</h4>
+                          <div className="space-y-3">
+                            {finalReport.recommendedResources?.map((resObj: any, idx: number) => {
+                              const title = resObj.title || resObj;
+                              const desc = resObj.description || "";
+                              return (
+                                <div key={idx} className="p-3 bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-xl space-y-1">
+                                  <div className="flex justify-between items-center text-xs font-bold text-[#6D5DF6]">
+                                    <span>{title}</span>
+                                    <a
+                                      href={`https://www.google.com/search?q=${encodeURIComponent(title)}`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="text-[10px] text-[var(--color-text-tertiary)] hover:text-indigo-600 font-bold"
+                                    >
+                                      Search ↗
+                                    </a>
+                                  </div>
+                                  {desc && <p className="text-[10px] leading-relaxed text-[var(--color-text-secondary)] font-semibold font-sans">{desc}</p>}
+                                </div>
+                              );
+                            }) || <span className="text-xs text-[var(--color-text-tertiary)] italic">None suggested.</span>}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -2385,7 +3417,7 @@ export default function DashboardPage({
                               <div className="space-y-1">
                                 {hiringProbability.strengths?.slice(0, 3).map((st: string, idx: number) => (
                                   <div key={idx} className="flex items-center space-x-2 text-[10px] text-[var(--color-text-secondary)] font-semibold">
-                                    <span className="text-[#22C55E] font-bold shrink-0">✓</span>
+                                    <CheckCircle className="w-3.5 h-3.5 text-[#22C55E] shrink-0" />
                                     <span className="truncate">{st}</span>
                                   </div>
                                 ))}
@@ -2421,7 +3453,7 @@ export default function DashboardPage({
 
             </div>
           )}
-
+          </ResponsiveContainer>
         </main>
       </div>
 
@@ -2437,7 +3469,7 @@ export default function DashboardPage({
             >
               <div className="flex justify-between items-center border-b border-[var(--color-border)] pb-2.5">
                 <div className="flex items-center space-x-2">
-                  <SparklesIcon className="w-4.5 h-4.5 text-[#8B5CF6] animate-pulse" />
+                  <Brain className="w-4.5 h-4.5 text-[#8B5CF6]" />
                   <div>
                     <h4 className="text-xs font-bold">AI Career Mentor</h4>
                     <span className="text-[8px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider block font-bold">Generative Guide</span>
@@ -2502,7 +3534,7 @@ export default function DashboardPage({
           onClick={() => setIsAiMentorOpen(!isAiMentorOpen)}
           className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#6D5DF6] to-[#8B5CF6] text-white flex items-center justify-center shadow-lg shadow-indigo-500/20 hover:scale-105 transition cursor-pointer"
         >
-          <SparklesIcon className="w-5 h-5 animate-pulse" />
+          <Brain className="w-5 h-5" />
         </button>
       </div>
 

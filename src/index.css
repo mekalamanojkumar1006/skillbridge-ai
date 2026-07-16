@@ -293,16 +293,64 @@
   }
 }
 
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 15px;
+  }
+}
+@media (min-width: 1024px) {
+  html {
+    font-size: 16px;
+  }
+}
+
 body {
   margin: 0;
   font-family: var(--font-sans);
   font-weight: 500;
   overflow-x: hidden;
   transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 1rem;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
+}
+
+/* Responsive hero titles class */
+.responsive-hero {
+  font-size: 2.14rem; /* ~30px */
+  line-height: 1.25;
+}
+@media (min-width: 768px) {
+  .responsive-hero {
+    font-size: 2.67rem; /* ~40px */
+  }
+}
+@media (min-width: 1024px) {
+  .responsive-hero {
+    font-size: 3rem; /* ~48px */
+  }
+}
+
+/* Form controls responsiveness */
+.clay-input, textarea {
+  width: 100%;
+}
+
+/* Responsive Table Wrapper */
+.responsive-table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure all major action buttons are touch friendly */
+.clay-btn {
+  min-height: 48px;
 }
 
 /* Premium custom scrollbar styling */

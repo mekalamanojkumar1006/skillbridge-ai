@@ -16,7 +16,7 @@ import {
   Award,
   Calendar,
   Layers,
-  Sparkles,
+  Target,
   Zap,
   TrendingUp,
   FileCheck
@@ -31,6 +31,7 @@ import {
   unlink
 } from "firebase/auth";
 import { ApiService } from "../services/api";
+import ResponsiveContainer from "../components/ResponsiveContainer";
 
 interface ProfileSettingsPageProps {
   user: any;
@@ -77,7 +78,7 @@ export default function ProfileSettingsPage({
   const achievements = [
     { title: "ATS Optimized", desc: "First resume match > 80%", icon: Zap, color: "text-amber-500 bg-amber-500/10" },
     { title: "Lab Prep Complete", desc: "Answered 3 simulated Qs", icon: Award, color: "text-emerald-500 bg-emerald-500/10" },
-    { title: "Roadmap Architect", desc: "Structured custom timeline", icon: Sparkles, color: "text-purple-500 bg-purple-500/10" }
+    { title: "Roadmap Architect", desc: "Structured custom timeline", icon: Target, color: "text-purple-500 bg-purple-500/10" }
   ];
 
   useEffect(() => {
@@ -259,7 +260,8 @@ export default function ProfileSettingsPage({
   };
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 p-4 sm:p-6 pb-24 text-[var(--color-text-primary)] font-sans">
+    <div className="w-full overflow-x-hidden">
+      <ResponsiveContainer className="space-y-8 py-8 pb-24 text-[var(--color-text-primary)] font-sans">
       {/* Back Header */}
       <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-6">
         <div className="flex items-center space-x-4">
@@ -282,20 +284,25 @@ export default function ProfileSettingsPage({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* Left column: profile identity and achievements widget */}
-        <div className="space-y-6 lg:col-span-1">
-          <div className="glass-card p-6 space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 lg:col-span-1 gap-6">
+          <div className="glass-card p-6 space-y-6 flex flex-col justify-between">
             <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-extrabold border-b border-[var(--color-border)] pb-2.5">
               Candidate Card
             </h3>
             
-            <div className="flex flex-col items-center justify-center p-6 bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl shadow-inner">
+            <div className="flex flex-col items-center justify-center p-6 bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl shadow-inner my-auto">
               <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#6D5DF6] to-[#8B5CF6] flex items-center justify-center font-black text-xl text-white shadow-md mb-3 font-mono">
                 {displayName ? displayName[0].toUpperCase() : user?.email?.[0].toUpperCase() || "U"}
               </div>
               <p className="text-sm font-extrabold text-[var(--color-text-primary)] text-center truncate w-full">{displayName || "Career Professional"}</p>
               <p className="text-[10px] font-mono text-[var(--color-text-tertiary)] text-center mt-1 truncate w-full">{user?.email || "Anonymous profile"}</p>
             </div>
+          </div>
 
+          <div className="glass-card p-6 space-y-6">
+            <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-extrabold border-b border-[var(--color-border)] pb-2.5">
+              Achievements
+            </h3>
             {/* Achievements List */}
             <div className="space-y-4">
               <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider block font-black">Unlocked Achievements</span>
@@ -668,6 +675,7 @@ export default function ProfileSettingsPage({
           </section>
         </div>
       </div>
+      </ResponsiveContainer>
     </div>
   );
 }

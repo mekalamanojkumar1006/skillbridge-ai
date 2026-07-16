@@ -215,6 +215,19 @@ export class ApiService {
     return res.json();
   }
 
+  static async generateInterviewReport(interviewType: string, questionsAndAnswers: any[]) {
+    const res = await fetch(`${this.getBaseUrl()}/api/interview/report`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ interviewType, questionsAndAnswers })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to generate final report");
+    }
+    return res.json();
+  }
+
   static async predictHiringProbability(resumeId: string, jobTitle: string, company: string, userId: string) {
     const res = await fetch(`${this.getBaseUrl()}/api/hiring/probability/${resumeId}`, {
       method: "POST",

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { ArrowRight, Bot, Cpu, Briefcase, BarChart2, Award, Users, Terminal, Moon, Sun, ShieldCheck } from "lucide-react";
 import { ApiService } from "../services/api";
+import ResponsiveContainer from "../components/ResponsiveContainer";
 
 interface LandingPageProps {
   onNavigate: (page: string) => void;
@@ -114,7 +115,7 @@ export default function LandingPage({ onNavigate, user, theme, setTheme }: Landi
 
       {/* Navigation Header */}
       <header className="sticky top-0 z-40 border-b border-[var(--color-glass-border)] backdrop-blur-md bg-[var(--glass-card-bg)] shadow-[var(--glass-card-shadow)]">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <ResponsiveContainer className="h-16 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-gradient-to-br from-[#6D5DF6] to-[#8B5CF6] rounded-xl shadow-md shadow-indigo-500/20 flex items-center justify-center">
               <svg className="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -162,11 +163,12 @@ export default function LandingPage({ onNavigate, user, theme, setTheme }: Landi
               </>
             )}
           </div>
-        </div>
+        </ResponsiveContainer>
       </header>
 
       {/* Hero Section */}
-      <section className="max-w-7xl mx-auto px-6 pt-20 sm:pt-28 pb-12 text-center relative z-10">
+      <section className="pt-20 sm:pt-28 pb-12 text-center relative z-10">
+        <ResponsiveContainer>
         <div className="inline-flex items-center space-x-2 px-3 py-1 bg-[#6D5DF6]/5 border border-[#6D5DF6]/15 rounded-full mb-8 backdrop-blur-xl">
           <Terminal className="w-3.5 h-3.5 text-[#6D5DF6]" />
           <span className="text-[10px] font-mono text-[var(--color-text-secondary)] tracking-wider uppercase font-bold">
@@ -215,10 +217,12 @@ export default function LandingPage({ onNavigate, user, theme, setTheme }: Landi
             Request Access Demo
           </button>
         </motion.div>
+        </ResponsiveContainer>
       </section>
 
       {/* Features Bento Grid */}
-      <section className="max-w-7xl mx-auto px-6 py-16 relative z-10">
+      <section className="py-16 relative z-10">
+        <ResponsiveContainer>
         <div className="text-center mb-16">
           <h2 className="text-2xl sm:text-4xl font-black tracking-tight">
             Integrated Multi-Agent Intelligence
@@ -255,10 +259,12 @@ export default function LandingPage({ onNavigate, user, theme, setTheme }: Landi
             );
           })}
         </div>
+        </ResponsiveContainer>
       </section>
 
       {/* Proof Section */}
-      <section className="max-w-7xl mx-auto px-6 py-12 text-center border-t border-[var(--color-border)] mt-12 space-y-6 relative z-10">
+      <section className="py-12 text-center border-t border-[var(--color-border)] mt-12 space-y-6 relative z-10">
+        <ResponsiveContainer className="space-y-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="p-4 bg-[var(--glass-card-bg)] border border-[var(--color-glass-border)] rounded-3xl shadow-sm">
             <span className="block text-3xl font-black bg-gradient-to-r from-[#6D5DF6] to-[#8B5CF6] bg-clip-text text-transparent">
@@ -299,6 +305,7 @@ export default function LandingPage({ onNavigate, user, theme, setTheme }: Landi
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
           <span>Live analytics processed from {stats.totalExecutions || 0} operations (Uptime: {stats.uptime})</span>
         </div>
+        </ResponsiveContainer>
       </section>
     </div>
   );

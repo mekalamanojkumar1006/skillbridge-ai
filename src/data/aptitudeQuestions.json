@@ -1,0 +1,122 @@
+[
+  {
+    "id": "apt_1",
+    "question": "A train 120 m long passes a telegraph post in 6 seconds. Find the speed of the train in km/h.",
+    "options": ["60 km/h", "72 km/h", "80 km/h", "90 km/h"],
+    "correctAnswer": "72 km/h",
+    "difficulty": "Easy",
+    "topic": "Quantitative Aptitude"
+  },
+  {
+    "id": "apt_2",
+    "question": "A sum of money doubles itself in 8 years at simple interest. In how many years will it triple itself?",
+    "options": ["12 years", "14 years", "16 years", "18 years"],
+    "correctAnswer": "16 years",
+    "difficulty": "Medium",
+    "topic": "Quantitative Aptitude"
+  },
+  {
+    "id": "apt_3",
+    "question": "A shopkeeper sells an article for $240, making a 20% profit. What was the cost price of the article?",
+    "options": ["$180", "$190", "$200", "$210"],
+    "correctAnswer": "$200",
+    "difficulty": "Easy",
+    "topic": "Quantitative Aptitude"
+  },
+  {
+    "id": "apt_4",
+    "question": "Look at this series: 2, 1, 1/2, 1/4, ... What number should come next?",
+    "options": ["1/3", "1/8", "2/8", "1/16"],
+    "correctAnswer": "1/8",
+    "difficulty": "Easy",
+    "topic": "Logical Reasoning"
+  },
+  {
+    "id": "apt_5",
+    "question": "If A is the brother of B; B is the sister of C; and C is the father of D, how is A related to D?",
+    "options": ["Uncle", "Brother", "Grandfather", "Father"],
+    "correctAnswer": "Uncle",
+    "difficulty": "Medium",
+    "topic": "Logical Reasoning"
+  },
+  {
+    "id": "apt_6",
+    "question": "In a certain code, 'COMPUTER' is written as 'RFUVQNPC'. How is 'MEDICINE' written in the same code?",
+    "options": ["EOJDJEFM", "EOHDJEFM", "DJFMEOHD", "MFEJDJOE"],
+    "correctAnswer": "EOJDJEFM",
+    "difficulty": "Hard",
+    "topic": "Logical Reasoning"
+  },
+  {
+    "id": "apt_7",
+    "question": "Choose the word that is most nearly opposite in meaning to 'OBSTINATE'.",
+    "options": ["Stubborn", "Flexible", "Rigid", "Dogmatic"],
+    "correctAnswer": "Flexible",
+    "difficulty": "Easy",
+    "topic": "Verbal Ability"
+  },
+  {
+    "id": "apt_8",
+    "question": "Identify the grammatical error in the sentence: 'Neither the teacher nor the students was present in the class.'",
+    "options": ["Neither", "nor", "was", "present"],
+    "correctAnswer": "was",
+    "difficulty": "Medium",
+    "topic": "Verbal Ability"
+  },
+  {
+    "id": "apt_9",
+    "question": "Fill in the blank: The management decided to _______ the meeting until next Monday.",
+    "options": ["defer", "adjourn", "delay", "postpone"],
+    "correctAnswer": "postpone",
+    "difficulty": "Medium",
+    "topic": "Verbal Ability"
+  },
+  {
+    "id": "apt_10",
+    "question": "Six people A, B, C, D, E, and F are sitting in a circle facing the center. B is between F and C; A is between E and D; F is to the left of D. Who is between A and F?",
+    "options": ["B", "C", "D", "E"],
+    "correctAnswer": "D",
+    "difficulty": "Hard",
+    "topic": "Analytical Reasoning"
+  },
+  {
+    "id": "apt_11",
+    "question": "If P + Q means P is the husband of Q; P / Q means P is the sister of Q; and P * Q means P is the son of Q. Which of the following shows A is the daughter of B?",
+    "options": ["A * C / B", "B * C / A", "C * A / B", "A / C * B"],
+    "correctAnswer": "A / C * B",
+    "difficulty": "Medium",
+    "topic": "Analytical Reasoning"
+  },
+  {
+    "id": "apt_12",
+    "question": "Five students took a test. Alan scored higher than Bob. Charlie scored higher than Alan. Dave scored lower than Bob. Edward scored higher than Charlie. Who scored the second highest?",
+    "options": ["Edward", "Charlie", "Alan", "Bob"],
+    "correctAnswer": "Charlie",
+    "difficulty": "Medium",
+    "topic": "Analytical Reasoning"
+  },
+  {
+    "id": "apt_13",
+    "question": "In 2023, Company Alpha's sales were $120 million. In 2025, they grew to $180 million. What was the percentage growth of Company Alpha from 2023 to 2025?",
+    "options": ["30%", "40%", "50%", "60%"],
+    "correctAnswer": "50%",
+    "difficulty": "Easy",
+    "topic": "Data Interpretation"
+  },
+  {
+    "id": "apt_14",
+    "question": "Refer to the sales table: Alpha ($120M in 2023, $150M in 2024), Beta ($90M in 2023, $110M in 2024), Gamma ($150M in 2023, $140M in 2024). Which company showed a decline in sales in 2024 compared to 2023?",
+    "options": ["Alpha", "Beta", "Gamma", "None"],
+    "correctAnswer": "Gamma",
+    "difficulty": "Easy",
+    "topic": "Data Interpretation"
+  },
+  {
+    "id": "apt_15",
+    "question": "A production plant has the following output: 40% grade A steel, 40% grade B steel, and 20% grade C steel. If the plant produced 12,000 tons of grade A steel, what is the total steel production in tons?",
+    "options": ["24,000 tons", "30,000 tons", "36,000 tons", "48,000 tons"],
+    "correctAnswer": "30,000 tons",
+    "difficulty": "Medium",
+    "topic": "Data Interpretation"
+  }
+]
