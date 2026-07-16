@@ -284,6 +284,30 @@ export default function DashboardPage({
   const [isHowToUseOpen, setIsHowToUseOpen] = useState(false);
   const [isAtsTemplateOpen, setIsAtsTemplateOpen] = useState(false);
   const [copiedAts, setCopiedAts] = useState(false);
+  const [platformStats, setPlatformStats] = useState<any>({
+    totalExecutions: 0,
+    averageAtsScore: "82+",
+    matchAccuracy: "94%"
+  });
+
+  // Real-time Platform Stats Polling Effect
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const stats = await ApiService.getPlatformStats();
+        if (stats) {
+          setPlatformStats(stats);
+        }
+      } catch (err) {
+        console.error("Failed to load platform stats in dashboard:", err);
+      }
+    };
+
+    fetchStats();
+    const interval = setInterval(fetchStats, 15000);
+    return () => clearInterval(interval);
+  }, []);
+
   const [notificationsList, setNotificationsList] = useState([
     { id: 1, title: "Resume parsed successfully", time: "2 hours ago", read: false },
     { id: 2, title: "ATS Optimizer scan recommendations updated", time: "4 hours ago", read: false },
@@ -1557,6 +1581,25 @@ export default function DashboardPage({
                   </div>
                   <ChevronRight className="w-3 h-3 text-[var(--color-text-tertiary)] shrink-0" />
                 </button>
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-1.5">
+                  <span className="text-[9px] font-mono uppercase tracking-wider text-[var(--color-text-tertiary)] font-bold">Platform Activity</span>
+                  <span className="flex items-center space-x-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="text-[8px] font-mono uppercase tracking-wider text-emerald-500 font-extrabold">Live</span>
+                  </span>
+                </div>
+                <div className="p-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] shadow-inner flex items-center justify-between text-[10px] font-mono font-semibold text-[var(--color-text-secondary)]">
+                  <div className="flex items-center space-x-2">
+                    <TrendingUp className="w-3.5 h-3.5 text-[#6D5DF6]" />
+                    <span>App Executions</span>
+                  </div>
+                  <span className="text-[11px] font-black text-[var(--color-text-primary)] transition-all duration-300">
+                    {platformStats.totalExecutions || 0}
+                  </span>
+                </div>
               </div>
             </div>
           )}
