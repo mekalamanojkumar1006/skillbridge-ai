@@ -1683,10 +1683,14 @@ export default function DashboardPage({
             {navigationItems.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
+              const isAiLocked = !resume && ["ats", "jobs", "roadmap", "career-roadmap", "interview", "probability"].includes(tab.id);
+              
               return (
                 <button
                   key={tab.id}
+                  disabled={isAiLocked}
                   onClick={() => {
+                    if (isAiLocked) return;
                     setActiveTab(tab.id as any);
                     setError(null);
                     setIsMobileMenuOpen(false);
@@ -1697,30 +1701,40 @@ export default function DashboardPage({
                       fetchCareerRoadmaps();
                     }
                   }}
-                  className={`w-full flex items-center px-3.5 py-3 rounded-2xl text-[11px] font-mono font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer relative ${
+                  className={`w-full flex items-center px-3.5 py-3 rounded-2xl text-[11px] font-mono font-bold tracking-wider uppercase transition-all duration-200 relative ${
                     isSidebarCollapsed ? "justify-center" : "justify-between"
                   } ${
-                    isActive
+                    isAiLocked
+                      ? "opacity-40 cursor-not-allowed select-none"
+                      : "cursor-pointer"
+                  } ${
+                    isActive && !isAiLocked
                       ? "text-[#6D5DF6] font-extrabold bg-[#6D5DF6]/8"
+                      : isAiLocked
+                      ? "text-[var(--color-text-tertiary)]"
                       : "text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[#6D5DF6]/4"
                   }`}
-                  title={tab.label}
+                  title={isAiLocked ? "Upload your resume to unlock this feature." : tab.label}
                 >
                   <div className="flex items-center space-x-3.5 min-w-0">
-                    <div className={`p-1.5 rounded-lg shrink-0 ${isActive ? "bg-[#6D5DF6]/10 text-[#6D5DF6]" : "bg-transparent text-[var(--color-text-secondary)]"}`}>
-                      <Icon className={`w-4 h-4 ${tab.iconColor || ""}`} />
+                    <div className={`p-1.5 rounded-lg shrink-0 ${isActive && !isAiLocked ? "bg-[#6D5DF6]/10 text-[#6D5DF6]" : "bg-transparent text-[var(--color-text-secondary)]"}`}>
+                      {isAiLocked ? (
+                        <Lock className="w-4 h-4 text-[var(--color-text-tertiary)]" />
+                      ) : (
+                        <Icon className={`w-4 h-4 ${tab.iconColor || ""}`} />
+                      )}
                     </div>
                     {!isSidebarCollapsed && <span className="truncate">{tab.label}</span>}
                   </div>
                   
                   {/* Indicators / Badges */}
-                  {!isSidebarCollapsed && tab.badge && tab.badge > 0 ? (
+                  {!isSidebarCollapsed && tab.badge && tab.badge > 0 && !isAiLocked ? (
                     <span className="bg-[#6D5DF6] text-white text-[9px] font-mono font-bold px-1.5 py-0.5 rounded-full">
                       {tab.badge}
                     </span>
                   ) : null}
 
-                  {isActive && !isSidebarCollapsed && (
+                  {isActive && !isSidebarCollapsed && !isAiLocked && (
                     <div className="absolute right-0 top-3 bottom-3 w-1 bg-[#6D5DF6] rounded-l-full" />
                   )}
                 </button>
@@ -2474,204 +2488,147 @@ export default function DashboardPage({
                     </span>
                   </div>
 
-                  {/* KPI Analytics Dials Grid */}
-                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-                    {/* Career Score */}
-                    <div className="glass-card p-5 flex flex-col items-center justify-between text-center min-h-[170px] relative overflow-hidden group">
-                      <span className="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">Career Score</span>
-                      {resume && atsResult && skillGapResult && Object.values(profileItems).some(Boolean) && (resume?.parsedData?.projects && resume?.parsedData?.projects.length > 0) ? (
-                        <>
-                          <div className="my-2">
-                            <CircularScoreGauge 
-                              score={Math.round(
-                                ((Object.values(profileItems).filter(Boolean).length / Object.keys(profileItems).length) * 100 + 
-                                (qualityAnalysis?.qualityScore || 80) + 
-                                (atsResult?.score || 85) + 
-                                (interviewHistory.length > 0 ? getInterviewOverallScore() : 75)) / 4
-                              )} 
-                              colorClass="stroke-[#6D5DF6]" 
-                              size={70} 
-                              strokeWidth={5} 
-                              showMaxScore={false} 
-                            />
-                          </div>
-                          <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold">Overall Readiness</span>
-                        </>
-                      ) : (
-                        <>
-                          <div className="my-2 flex flex-col items-center justify-center space-y-1">
-                            <Lock className="w-5 h-5 text-[var(--color-text-tertiary)] animate-pulse" />
-                            <span className="text-[10px] font-bold text-red-500">Locked</span>
-                          </div>
-                          <span className="text-[8px] leading-tight text-[var(--color-text-tertiary)] font-sans px-1 select-none">
-                            Career Score is locked. Upload your resume to generate personalized career insights.
-                          </span>
-                        </>
-                      )}
-                    </div>
-
-                    {/* ATS Score */}
-                    <div className="glass-card p-5 flex flex-col items-center justify-between text-center min-h-[170px]">
-                      <span className="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">ATS Score</span>
-                      <div className="my-2">
-                        <CircularScoreGauge score={atsResult?.score || 0} colorClass="stroke-indigo-500" size={70} strokeWidth={5} showMaxScore={false} suffix="%" />
-                      </div>
-                      <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold">{atsResult ? "Calculated Fit" : "Not scanned"}</span>
-                    </div>
-
-                    {/* Interview Readiness */}
-                    <div className="glass-card p-5 flex flex-col items-center justify-between text-center min-h-[170px]">
-                      <span className="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">Interview Prep</span>
-                      <div className="my-2">
-                        <CircularScoreGauge score={interviewAnswers.length > 0 ? getInterviewOverallScore() : 0} colorClass="stroke-amber-500" size={70} strokeWidth={5} showMaxScore={false} suffix="%" />
-                      </div>
-                      <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold">Mock Performance</span>
-                    </div>
-
-                    {/* Skill Readiness */}
-                    <div className="glass-card p-5 flex flex-col items-center justify-between text-center min-h-[170px]">
-                      <span className="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">Skill Match</span>
-                      <div className="my-2">
-                        <CircularScoreGauge score={Math.max(0, 100 - (skillGapResult?.missingSkills?.length || 0) * 10)} colorClass="stroke-emerald-500" size={70} strokeWidth={5} showMaxScore={false} suffix="%" />
-                      </div>
-                      <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold">{skillGapResult ? "Target Skills Fit" : "No roadmap"}</span>
-                    </div>
-
-                    {/* Resume Health */}
-                    <div className="glass-card p-5 flex flex-col items-center justify-between text-center min-h-[170px]">
-                      <span className="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">Resume Health</span>
-                      <div className="my-2">
-                        <CircularScoreGauge score={resume?.content ? (resume.content.length > 1500 ? 95 : 75) : 0} colorClass="stroke-pink-500" size={70} strokeWidth={5} showMaxScore={false} suffix="%" />
-                      </div>
-                      <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold">Format & Word count</span>
-                    </div>
-
-                    {/* Job Match Percentage */}
-                    <div className="glass-card p-5 flex flex-col items-center justify-between text-center min-h-[170px]">
-                      <span className="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">Job Matches</span>
-                      <div className="my-2">
-                        <CircularScoreGauge score={recommendedOpps.length > 0 ? 92 : 0} colorClass="stroke-purple-500" size={70} strokeWidth={5} showMaxScore={false} suffix="%" />
-                      </div>
-                      <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold">{recommendedOpps.length} opportunities</span>
-                    </div>
-                  </div>
-
-                  {/* Profile Completion & AI Insights Bento Block */}
+                  {/* Premium Parsed Profile Overview (Replaces all deleted mock widgets) */}
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Profile Completion Checklist */}
-                    <div className="glass-card p-6 space-y-4">
-                      <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black">Profile Completion</h3>
-                      <div className="flex items-center space-x-3">
-                        <div className="flex-1 bg-[var(--color-border)] h-2 rounded-full overflow-hidden p-[1px]">
-                          <div
-                            className="bg-[#6D5DF6] h-full rounded-full transition-all duration-500"
-                            style={{ width: `${Math.round((Object.values(profileItems).filter(Boolean).length / Object.keys(profileItems).length) * 100)}%` }}
-                          />
-                        </div>
-                        <span className="text-[11px] font-mono font-bold text-[#6D5DF6]">
-                          {Math.round((Object.values(profileItems).filter(Boolean).length / Object.keys(profileItems).length) * 100)}%
-                        </span>
-                      </div>
-                      <div className="grid grid-cols-1 gap-2 text-[10px] font-mono">
-                        {Object.keys(profileItems).map((key) => (
-                          <div
-                            key={key}
-                            onClick={() => toggleProfileItem(key)}
-                            className="flex items-center space-x-2.5 p-2 bg-[var(--color-bg-page)]/50 hover:bg-[#6D5DF6]/5 border border-[var(--color-border)]/45 rounded-xl cursor-pointer transition duration-155"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={profileItems[key]}
-                              readOnly
-                              className="accent-[#6D5DF6] cursor-pointer"
-                            />
-                            <span className="text-[var(--color-text-primary)] font-bold capitalize">{key.replace("linkedin", "LinkedIn").replace("github", "GitHub")}</span>
+                    
+                    {/* Left Column: Contact & Skills */}
+                    <div className="space-y-6">
+                      {/* Contact & Bio Card */}
+                      <div className="glass-card p-6 space-y-4 relative overflow-hidden">
+                        <div className="absolute top-[-50px] right-[-50px] w-36 h-36 bg-[#6D5DF6]/5 rounded-full blur-2xl pointer-events-none" />
+                        <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black border-b border-[var(--color-border)] pb-2.5">
+                          Candidate Identity
+                        </h3>
+                        <div className="space-y-3">
+                          <div>
+                            <span className="text-[10px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold block">Full Name</span>
+                            <span className="text-sm font-black text-[var(--color-text-primary)]">
+                              {resume?.parsedData?.name || user?.displayName || "Professional Candidate"}
+                            </span>
                           </div>
-                        ))}
+                          {resume?.parsedData?.email && (
+                            <div>
+                              <span className="text-[10px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold block">Email Address</span>
+                              <span className="text-xs font-bold text-[var(--color-text-secondary)] break-all">{resume.parsedData.email}</span>
+                            </div>
+                          )}
+                          {resume?.parsedData?.phone && (
+                            <div>
+                              <span className="text-[10px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold block">Phone Number</span>
+                              <span className="text-xs font-bold text-[var(--color-text-secondary)]">{resume.parsedData.phone}</span>
+                            </div>
+                          )}
+                          {resume?.parsedData?.summary && (
+                            <div className="pt-2 border-t border-[var(--color-border)]/50">
+                              <span className="text-[10px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold block mb-1">Executive Summary</span>
+                              <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed font-sans font-medium">
+                                {resume.parsedData.summary}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Technical Skills Card */}
+                      <div className="glass-card p-6 space-y-4">
+                        <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black border-b border-[var(--color-border)] pb-2.5">
+                          Core Competencies ({resume?.parsedData?.skills?.length || 0})
+                        </h3>
+                        {resume?.parsedData?.skills && resume.parsedData.skills.length > 0 ? (
+                          <div className="flex flex-wrap gap-1.5 max-h-[250px] overflow-y-auto pr-1 custom-scrollbar">
+                            {resume.parsedData.skills.map((skill, idx) => (
+                              <span
+                                key={idx}
+                                className="px-2.5 py-1.5 rounded-lg bg-[#6D5DF6]/5 border border-[#6D5DF6]/15 text-[#6D5DF6] text-[10px] font-bold font-mono"
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-xs text-[var(--color-text-tertiary)] font-sans">No parsed skills detected. Try re-uploading.</p>
+                        )}
                       </div>
                     </div>
 
-                    {/* AI Insights & Recommendations */}
-                    <div className="lg:col-span-2 glass-card p-6 space-y-4 flex flex-col justify-between">
-                      <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black">AI Insights & Coaching</h3>
-                      <div className="space-y-4 flex-1">
-                        {aiInsights.map((insight, idx) => (
-                          <div key={idx} className="flex justify-between items-start space-x-4 p-3 bg-[var(--color-bg-page)]/30 border border-[var(--color-border)]/30 rounded-2xl text-[10.5px]">
-                            <div className="space-y-1">
-                              <span className={`text-[8px] font-mono uppercase font-black px-1.5 py-0.5 rounded-lg ${
-                                insight.type === "ats" ? "bg-indigo-500/10 text-indigo-500" :
-                                insight.type === "skill" ? "bg-emerald-500/10 text-emerald-500" :
-                                insight.type === "interview" ? "bg-amber-500/10 text-amber-500" :
-                                "bg-[#6D5DF6]/10 text-[#6D5DF6]"
-                              }`}>
-                                {insight.type || "AI Suggestion"}
-                              </span>
-                              <p className="text-[var(--color-text-secondary)] leading-relaxed font-sans font-medium">{insight.text}</p>
-                            </div>
-                            <button
-                              onClick={() => {
-                                if (insight.type === "ats") setActiveTab("ats");
-                                else if (insight.type === "skill") setActiveTab("roadmap");
-                                else if (insight.type === "interview") setActiveTab("interview");
-                                else if (insight.type === "jobs") setActiveTab("jobs");
-                              }}
-                              className="px-2.5 py-1.5 border border-[#6D5DF6]/20 text-[#6D5DF6] font-mono text-[9px] font-bold rounded-lg hover:bg-[#6D5DF6]/5 transition duration-150 shrink-0"
-                            >
-                              {insight.action || "Resolve"}
-                            </button>
+                    {/* Right Column: Work History & Education */}
+                    <div className="lg:col-span-2 space-y-6">
+                      {/* Work Experience Timeline */}
+                      <div className="glass-card p-6 space-y-4">
+                        <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black border-b border-[var(--color-border)] pb-2.5">
+                          Professional Timeline
+                        </h3>
+                        {resume?.parsedData?.experience && resume.parsedData.experience.length > 0 ? (
+                          <div className="relative border-l border-[var(--color-border)]/80 ml-3 pl-5 space-y-6">
+                            {resume.parsedData.experience.map((exp, idx) => (
+                              <div key={idx} className="relative">
+                                <span className="absolute left-[-26px] top-[2px] w-3 h-3 rounded-full bg-[#6D5DF6] border-2 border-white dark:border-gray-950" />
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                                  <h4 className="text-xs font-bold text-[var(--color-text-primary)]">{exp.role}</h4>
+                                  <span className="text-[10px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold">{exp.duration}</span>
+                                </div>
+                                <span className="text-[10px] font-mono text-[#6D5DF6] font-bold block mt-0.5">{exp.company}</span>
+                                {exp.description && (
+                                  <p className="text-[10.5px] text-[var(--color-text-secondary)] leading-relaxed font-sans font-medium mt-1.5 whitespace-pre-line">
+                                    {exp.description}
+                                  </p>
+                                )}
+                              </div>
+                            ))}
                           </div>
-                        ))}
+                        ) : (
+                          <p className="text-xs text-[var(--color-text-tertiary)] font-sans">No work experience blocks parsed.</p>
+                        )}
+                      </div>
+
+                      {/* Academic Background */}
+                      <div className="glass-card p-6 space-y-4">
+                        <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black border-b border-[var(--color-border)] pb-2.5">
+                          Academic Record
+                        </h3>
+                        {resume?.parsedData?.education && resume.parsedData.education.length > 0 ? (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {resume.parsedData.education.map((edu, idx) => (
+                              <div key={idx} className="p-3 bg-[var(--color-bg-page)]/40 border border-[var(--color-border)]/40 rounded-xl space-y-1">
+                                <div className="flex justify-between items-start gap-2">
+                                  <h4 className="text-xs font-bold text-[var(--color-text-primary)]">{edu.degree}</h4>
+                                  <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] shrink-0">{edu.duration}</span>
+                                </div>
+                                <span className="text-[10px] font-mono text-[#6D5DF6] font-bold block">{edu.institution}</span>
+                                <span className="text-[9.5px] font-mono text-[var(--color-text-secondary)] block font-semibold">{edu.fieldOfStudy}</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="text-xs text-[var(--color-text-tertiary)] font-sans">No education details parsed.</p>
+                        )}
                       </div>
                     </div>
                   </div>
 
-                  {/* Activity Grid & Activity Log Timeline */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Activity Commit Grid */}
-                    <div className="glass-card p-6 space-y-4">
-                      <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black">Activity Commit Grid</h3>
-                      <div className="grid grid-cols-7 gap-1.5 w-fit mx-auto">
-                        {Array.from({ length: 35 }).map((_, i) => {
-                          const count = [0, 1, 3, 2, 4, 0, 2, 1, 0, 3, 0, 4, 2, 1, 0][i % 15];
-                          return (
-                            <div
-                              key={i}
-                              className={`w-3.5 h-3.5 rounded-sm transition duration-150 ${
-                                count === 0 ? "bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800" :
-                                count === 1 ? "bg-[#6D5DF6]/20" :
-                                count === 2 ? "bg-[#6D5DF6]/40" :
-                                count === 3 ? "bg-[#6D5DF6]/70" :
-                                "bg-[#6D5DF6] shadow-sm shadow-[#6D5DF6]/30"
-                              }`}
-                              title={`${count} executions`}
-                            />
-                          );
-                        })}
-                      </div>
-                      <div className="flex justify-between items-center text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold pt-2 border-t border-[var(--color-border)]/50">
-                        <span>Less active</span>
-                        <span>More active</span>
-                      </div>
-                    </div>
-
-                    {/* Recent Activity Timeline */}
-                    <div className="md:col-span-2 glass-card p-6 space-y-4">
-                      <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black">Recent Activity Timeline</h3>
-                      <div className="relative border-l border-[var(--color-border)]/80 ml-3 pl-5 space-y-4.5 text-[10.5px]">
-                        {[
-                          { text: "Optimized Resume quality score", time: "Just now", type: "file" },
-                          { text: "Assigned Software Engineering career roadmap", time: "2 hours ago", type: "roadmap" },
-                          { text: "Completed Behavioral mock interview session", time: "1 day ago", type: "interview" }
-                        ].map((act, idx) => (
-                          <div key={idx} className="relative">
-                            <span className="absolute left-[-26px] top-[2px] w-3 h-3 rounded-full bg-[#6D5DF6] border-2 border-white dark:border-gray-950" />
-                            <p className="font-sans font-medium text-[var(--color-text-secondary)] leading-relaxed">
-                              {act.text}
-                            </p>
-                            <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase mt-0.5 block font-bold">{act.time}</span>
-                          </div>
-                        ))}
-                      </div>
+                  {/* Action Center Grid */}
+                  <div className="space-y-4 pt-4 border-t border-[var(--color-border)]/50">
+                    <span className="text-[10px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider font-black block">
+                      AI Integration Hub
+                    </span>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+                      {[
+                        { id: "ats", label: "ATS Optimiser", desc: "Scan keyword density", color: "text-[#6D5DF6]", bg: "bg-[#6D5DF6]/5 border-[#6D5DF6]/10" },
+                        { id: "jobs", label: "Job Matcher", desc: "Find open roles", color: "text-sky-500", bg: "bg-sky-500/5 border-sky-500/10" },
+                        { id: "roadmap", label: "Skill Gaps", desc: "Find missing skills", color: "text-amber-500", bg: "bg-amber-500/5 border-amber-500/10" },
+                        { id: "career-roadmap", label: "Career Roadmap", desc: "Chart learning path", color: "text-[#8B5CF6]", bg: "bg-[#8B5CF6]/5 border-[#8B5CF6]/10" },
+                        { id: "interview", label: "Interview Lab", desc: "Practice mock Qs", color: "text-rose-500", bg: "bg-rose-500/5 border-rose-500/10" },
+                        { id: "probability", label: "Hiring Predictor", desc: "Predict placements", color: "text-emerald-500", bg: "bg-emerald-500/5 border-emerald-500/10" }
+                      ].map((hub, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setActiveTab(hub.id as any)}
+                          className={`glass-card p-4 text-left border ${hub.bg} hover:scale-[1.03] active:scale-[0.98] transition duration-200 cursor-pointer flex flex-col justify-between min-h-[105px]`}
+                        >
+                          <span className={`text-[11px] font-black font-mono leading-tight ${hub.color}`}>{hub.label}</span>
+                          <span className="text-[9px] text-[var(--color-text-tertiary)] font-sans font-medium mt-1 leading-snug">{hub.desc}</span>
+                        </button>
+                      ))}
                     </div>
                   </div>
                 </div>
