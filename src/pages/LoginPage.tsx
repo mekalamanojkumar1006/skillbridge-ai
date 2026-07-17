@@ -118,6 +118,9 @@ export default function LoginPage({ onNavigate, onLoginSuccess, theme, setTheme 
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
+      // Immediately reload user to fetch latest verification status
+      await user.reload();
+
       // Handle remember me persistence
       try {
         if (rememberMe) {
@@ -134,13 +137,26 @@ export default function LoginPage({ onNavigate, onLoginSuccess, theme, setTheme 
         return ApiService.registerUser(user.uid, user.email || "", user.displayName || "");
       });
 
+      if (!user.emailVerified) {
+        executeLoginSuccess(user);
+        onNavigate("verify-email");
+        return;
+      }
+
       executeLoginSuccess(user);
+      onNavigate("dashboard");
     } catch (err: any) {
       console.error(err);
       if (err.code === "auth/user-not-found" || err.code === "auth/wrong-password" || err.code === "auth/invalid-credential") {
         setError("Invalid email or password combination.");
       } else if (err.code === "auth/operation-not-allowed") {
         setError("Email & Password sign-in is not enabled in Firebase Console.");
+      } else if (err.code === "auth/too-many-requests") {
+        setError("Too many failed login attempts. This account has been temporarily locked. Please try again later or reset password.");
+      } else if (err.code === "auth/user-disabled") {
+        setError("This user account has been disabled by administrators.");
+      } else if (err.code === "auth/invalid-email") {
+        setError("Invalid email address format.");
       } else {
         setError(err.message || "Authentication failed. Please try again.");
       }

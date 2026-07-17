@@ -9,6 +9,7 @@ import SignupPage from "./pages/SignupPage";
 import DashboardPage from "./pages/DashboardPage";
 import ResumeUploadPage from "./pages/ResumeUploadPage";
 import AnalysisPage from "./pages/AnalysisPage";
+import VerifyEmailPage from "./pages/VerifyEmailPage";
 
 export default function App() {
   const [splashComplete, setSplashComplete] = useState(false);
@@ -46,13 +47,24 @@ export default function App() {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setAuthChecking(true);
       if (firebaseUser) {
-        // Build local user object
+        try {
+          await firebaseUser.reload();
+        } catch (e) {
+          console.warn("Auth listener reload failed:", e);
+        }
+
         const localUser = {
           uid: firebaseUser.uid,
           email: firebaseUser.email,
           displayName: firebaseUser.displayName || firebaseUser.email?.split("@")[0] || "Career Practitioner"
         };
         setUser(localUser);
+
+        if (!firebaseUser.emailVerified) {
+          setCurrentPage("verify-email");
+          setAuthChecking(false);
+          return;
+        }
 
         // Fetch latest resume from Firestore automatically in background
         const loadResume = async () => {
@@ -139,6 +151,9 @@ export default function App() {
       )}
       {currentPage === "signup" && (
         <SignupPage onNavigate={setCurrentPage} onLoginSuccess={handleLoginSuccess} theme={theme} setTheme={setTheme} />
+      )}
+      {currentPage === "verify-email" && (
+        <VerifyEmailPage onNavigate={setCurrentPage} theme={theme} setTheme={setTheme} onLogout={handleLogout} />
       )}
       {currentPage === "dashboard" && user && (
         <DashboardPage

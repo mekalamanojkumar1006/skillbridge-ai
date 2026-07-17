@@ -494,8 +494,8 @@ export class ApiService {
     return res.json();
   }
 
-  static async getNotifications() {
-    const res = await fetch(`${this.getBaseUrl()}/api/notifications/all`, {
+  static async getNotifications(limit = 20, offset = 0, search = "", category = "") {
+    const res = await fetch(`${this.getBaseUrl()}/api/notifications/all?limit=${limit}&offset=${offset}&search=${encodeURIComponent(search)}&category=${encodeURIComponent(category)}`, {
       headers: this.getHeaders()
     });
     if (!res.ok) {
@@ -504,14 +504,50 @@ export class ApiService {
     return res.json();
   }
 
-  static async markNotificationRead(id?: string) {
+  static async createNotification(title: string, message: string, type: string, priority = "normal", icon = "bell") {
+    const res = await fetch(`${this.getBaseUrl()}/api/notifications/add`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify({ title, message, type, priority, icon })
+    });
+    if (!res.ok) {
+      throw new Error("Failed to create notification");
+    }
+    return res.json();
+  }
+
+  static async markNotificationRead(id?: string, all?: boolean) {
     const res = await fetch(`${this.getBaseUrl()}/api/notifications/mark-read`, {
       method: "POST",
       headers: this.getHeaders(),
-      body: JSON.stringify({ id })
+      body: JSON.stringify({ id, all })
     });
     if (!res.ok) {
       throw new Error("Failed to mark notifications read");
+    }
+    return res.json();
+  }
+
+  static async archiveNotification(id?: string, all?: boolean) {
+    const res = await fetch(`${this.getBaseUrl()}/api/notifications/archive`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify({ id, all })
+    });
+    if (!res.ok) {
+      throw new Error("Failed to archive notification");
+    }
+    return res.json();
+  }
+
+  static async deleteNotification(id?: string, all?: boolean) {
+    const res = await fetch(`${this.getBaseUrl()}/api/notifications/delete`, {
+      method: "DELETE",
+      headers: this.getHeaders(),
+      body: JSON.stringify({ id, all })
+    });
+    if (!res.ok) {
+      throw new Error("Failed to delete notification");
     }
     return res.json();
   }
@@ -575,6 +611,18 @@ export class ApiService {
     });
     if (!res.ok) {
       throw new Error("Failed to retrieve system health logs");
+    }
+    return res.json();
+  }
+
+  static async verifySuccess() {
+    const res = await fetch(`${this.getBaseUrl()}/api/auth/verify-success`, {
+      method: "POST",
+      headers: this.getHeaders()
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to update verification status on database");
     }
     return res.json();
   }

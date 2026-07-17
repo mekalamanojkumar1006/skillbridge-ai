@@ -53,7 +53,8 @@ import {
   Target,
   Mic,
   Check,
-  Copy
+  Copy,
+  Trash
 } from "lucide-react";
 import ProfileSettingsPage from "./ProfileSettingsPage";
 import ApplicationTracker from "../components/ApplicationTracker";
@@ -339,11 +340,70 @@ export default function DashboardPage({
     return () => clearInterval(interval);
   }, [user, resume]);
 
-  const [notificationsList, setNotificationsList] = useState([
-    { id: 1, title: "Resume parsed successfully", time: "2 hours ago", read: false },
-    { id: 2, title: "ATS Optimizer scan recommendations updated", time: "4 hours ago", read: false },
-    { id: 3, title: "Your simulated Interview feedback is ready", time: "1 day ago", read: true }
-  ]);
+  const [notificationsList, setNotificationsList] = useState<any[]>([]);
+  const [notifLimit] = useState(20);
+  const [notifOffset, setNotifOffset] = useState(0);
+  const [notifHasMore, setNotifHasMore] = useState(false);
+  const [notifSearch, setNotifSearch] = useState("");
+  const [notifCategory, setNotifCategory] = useState("all");
+  const [loadingNotifications, setLoadingNotifications] = useState(false);
+
+  const getRelativeTime = (timestamp: string | Date) => {
+    if (!timestamp) return "Just now";
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return "Just now";
+    if (diffMins < 60) return `${diffMins} ${diffMins === 1 ? "minute" : "minutes"} ago`;
+    if (diffHours < 24) return `${diffHours} ${diffHours === 1 ? "hour" : "hours"} ago`;
+    if (diffDays === 1) return "Yesterday";
+    if (diffDays < 7) return `${diffDays} days ago`;
+    return date.toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" });
+  };
+
+  const fetchNotifications = async (reset = false) => {
+    if (!user) return;
+    setLoadingNotifications(true);
+    const currentOffset = reset ? 0 : notifOffset;
+    try {
+      const data = await ApiService.getNotifications(notifLimit, currentOffset, notifSearch, notifCategory);
+      const list = data.notifications || [];
+      if (reset) {
+        setNotificationsList(list);
+        setNotifOffset(list.length);
+      } else {
+        setNotificationsList(prev => {
+          const existingIds = new Set(prev.map(n => n.id));
+          const newItems = list.filter((n: any) => !existingIds.has(n.id));
+          return [...prev, ...newItems];
+        });
+        setNotifOffset(prev => prev + list.length);
+      }
+      setNotifHasMore(data.hasMore || false);
+    } catch (e) {
+      console.error("Failed to fetch notifications:", e);
+    } finally {
+      setLoadingNotifications(false);
+    }
+  };
+
+  useEffect(() => {
+    if (showNotifications) {
+      fetchNotifications(true);
+    }
+  }, [showNotifications, notifSearch, notifCategory]);
+
+  useEffect(() => {
+    if (user) {
+      ApiService.getNotifications(20, 0, "", "").then(data => {
+        setNotificationsList(data.notifications || []);
+      }).catch(err => console.error("Initial notifications load failed:", err));
+    }
+  }, [user, resume]);
 
   // Clock, Greetings & Viewport Resize Effect
   useEffect(() => {
@@ -704,6 +764,7 @@ export default function DashboardPage({
 
     try {
       await ApiService.saveRoadmapProgress(user.uid, careerId, updatedCompleted);
+      fetchNotifications(true);
     } catch (err) {
       console.error("Failed to save progress to server:", err);
     }
@@ -780,6 +841,7 @@ export default function DashboardPage({
       const res = await ApiService.matchOpportunities(resume.id, user.uid);
       setRecommendedOpps(res.matches || []);
       fetchStats();
+      fetchNotifications(true);
     } catch (err: any) {
       console.error("Failed to calculate recommended opportunities:", err);
       setError("Failed to calculate recommended opportunities: " + err.message);
@@ -796,6 +858,7 @@ export default function DashboardPage({
       const res = await ApiService.analyzeQuality(resume.id, user.uid);
       setQualityAnalysis(res);
       fetchStats();
+      fetchNotifications(true);
     } catch (err: any) {
       console.error(err);
       setError("Failed to run quality analysis: " + err.message);
@@ -821,6 +884,7 @@ export default function DashboardPage({
       const res = await ApiService.getAtsScore(resume.id, jobDescription, user.uid);
       setAtsResult(res);
       fetchStats();
+      fetchNotifications(true);
     } catch (err: any) {
       console.error(err);
       setError("ATS Scan failed: " + err.message);
@@ -837,6 +901,7 @@ export default function DashboardPage({
       const res = await ApiService.matchJobs(resume.id, user.uid);
       setJobMatches(res.matches || []);
       fetchStats();
+      fetchNotifications(true);
     } catch (err: any) {
       console.error(err);
       setError("Job Matcher failed: " + err.message);
@@ -859,6 +924,7 @@ export default function DashboardPage({
       const res = await ApiService.analyzeSkillGaps(resume.id, targetCareerRole, user.uid);
       setSkillGapResult(res);
       fetchStats();
+      fetchNotifications(true);
     } catch (err: any) {
       console.error(err);
       setError("Skill Gap Analysis failed: " + err.message);
@@ -1155,16 +1221,21 @@ export default function DashboardPage({
       fetchStats();
 
       // Persist compiled mock interview report in history
-      ApiService.saveInterview({
-        role: targetCareerRole || (interviewType === "technical" ? "Technical Developer" : interviewType === "aptitude" ? "Aptitude Analyst" : "HR Representative"),
-        difficulty: "Medium",
-        overallScore: report.overallScore,
-        metrics: report.metrics,
-        strengths: report.strengths || [],
-        weaknesses: report.weaknesses || [],
-        improvementSuggestions: report.improvementSuggestions || [],
-        recommendedResources: report.recommendedResources || []
-      }).catch(err => console.error("Failed to save mock interview record:", err));
+      try {
+        await ApiService.saveInterview({
+          role: targetCareerRole || (interviewType === "technical" ? "Technical Developer" : interviewType === "aptitude" ? "Aptitude Analyst" : "HR Representative"),
+          difficulty: "Medium",
+          overallScore: report.overallScore,
+          metrics: report.metrics,
+          strengths: report.strengths || [],
+          weaknesses: report.weaknesses || [],
+          improvementSuggestions: report.improvementSuggestions || [],
+          recommendedResources: report.recommendedResources || []
+        });
+        fetchNotifications(true);
+      } catch (err) {
+        console.error("Failed to save mock interview record:", err);
+      }
 
     } catch (err: any) {
       console.error("Report generation failed:", err);
@@ -1816,7 +1887,7 @@ export default function DashboardPage({
                 className="p-2 sm:p-2.5 rounded-2xl border border-[var(--color-glass-border)] bg-[var(--glass-card-bg)] text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] shadow-[var(--clay-btn-secondary-shadow)] transition duration-200 cursor-pointer relative"
               >
                 <Bell className="w-4 h-4" />
-                {notificationsList.some(n => !n.read) && (
+                {notificationsList.some(n => !n.isRead) && (
                   <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full animate-ping" />
                 )}
               </button>
@@ -1827,26 +1898,184 @@ export default function DashboardPage({
                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    className="absolute right-0 mt-3 w-72 sm:w-80 glass-card p-4 space-y-3 z-50 text-[var(--color-text-primary)] text-xs"
+                    className="absolute right-0 mt-3 w-80 sm:w-96 glass-card p-4 space-y-3.5 z-50 text-[var(--color-text-primary)] text-xs shadow-2xl"
                   >
                     <div className="flex justify-between items-center border-b border-[var(--color-border)] pb-2">
-                      <span className="font-mono uppercase font-black tracking-wider text-[10px] text-[var(--color-text-secondary)]">Inbox Notifications</span>
-                      <button
-                        onClick={() => {
-                          setNotificationsList(prev => prev.map(n => ({ ...n, read: true })));
-                        }}
-                        className="text-[9px] font-bold text-[#6D5DF6]"
-                      >
-                        Clear All
-                      </button>
+                      <span className="font-mono uppercase font-black tracking-wider text-[10px] text-[var(--color-text-secondary)]">
+                        Inbox Notifications
+                      </span>
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={async () => {
+                            try {
+                              await ApiService.markNotificationRead(undefined, true);
+                              fetchNotifications(true);
+                            } catch (e) {
+                              console.error(e);
+                            }
+                          }}
+                          className="text-[9px] font-bold text-[#6D5DF6] hover:underline cursor-pointer"
+                        >
+                          Mark All Read
+                        </button>
+                        <span className="text-[var(--color-text-tertiary)]">|</span>
+                        <button
+                          onClick={async () => {
+                            try {
+                              await ApiService.deleteNotification(undefined, true);
+                              fetchNotifications(true);
+                            } catch (e) {
+                              console.error(e);
+                            }
+                          }}
+                          className="text-[9px] font-bold text-red-500 hover:underline cursor-pointer"
+                        >
+                          Clear All
+                        </button>
+                      </div>
                     </div>
-                    <div className="space-y-2 max-h-56 overflow-y-auto custom-scrollbar">
-                      {notificationsList.map(n => (
-                        <div key={n.id} className={`p-2 rounded-xl transition duration-200 ${n.read ? "bg-transparent" : "bg-[#6D5DF6]/5 border border-[#6D5DF6]/12"}`}>
-                          <p className="font-bold text-[11px] leading-tight text-[var(--color-text-primary)]">{n.title}</p>
-                          <span className="text-[9px] text-[var(--color-text-tertiary)] font-mono block mt-1">{n.time}</span>
-                        </div>
+
+                    {/* Search Input */}
+                    <div className="relative">
+                      <input
+                        type="text"
+                        placeholder="Search notifications..."
+                        value={notifSearch}
+                        onChange={(e) => setNotifSearch(e.target.value)}
+                        className="w-full px-3 py-1.5 rounded-xl border border-[var(--color-glass-border)] bg-[var(--input-bg-focus)] focus:outline-none focus:ring-1 focus:ring-[#6D5DF6] text-[10px]"
+                      />
+                    </div>
+
+                    {/* Category Chips - Scrollable Row */}
+                    <div className="flex space-x-1.5 overflow-x-auto pb-1.5 custom-scrollbar scrollbar-none">
+                      {[
+                        { label: "All", value: "all" },
+                        { label: "Today", value: "today" },
+                        { label: "Yesterday", value: "yesterday" },
+                        { label: "This Week", value: "this_week" },
+                        { label: "System", value: "system" },
+                        { label: "Career", value: "career" },
+                        { label: "Jobs", value: "jobs" },
+                        { label: "Interview", value: "interview" },
+                        { label: "ATS", value: "ats" },
+                        { label: "Security", value: "security" }
+                      ].map((chip) => (
+                        <button
+                          key={chip.value}
+                          onClick={() => setNotifCategory(chip.value)}
+                          className={`px-2.5 py-1 rounded-full text-[9px] font-bold tracking-wide border cursor-pointer shrink-0 transition duration-150 ${
+                            notifCategory === chip.value
+                              ? "bg-[#6D5DF6] text-white border-transparent"
+                              : "bg-transparent text-[var(--color-text-secondary)] border-[var(--color-glass-border)] hover:bg-[var(--color-border)]"
+                          }`}
+                        >
+                          {chip.label}
+                        </button>
                       ))}
+                    </div>
+
+                    {/* Notifications List */}
+                    <div className="space-y-2 max-h-64 overflow-y-auto custom-scrollbar pr-1">
+                      {loadingNotifications && notificationsList.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-6 space-y-2">
+                          <div className="w-5 h-5 border-2 border-indigo-500/20 border-t-[#6D5DF6] rounded-full animate-spin" />
+                          <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider">
+                            Loading alerts...
+                          </span>
+                        </div>
+                      ) : notificationsList.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-8 text-center space-y-3">
+                          <div className="w-12 h-12 rounded-full bg-[#6D5DF6]/5 flex items-center justify-center text-[var(--color-text-tertiary)]">
+                            <Bell className="w-6 h-6 stroke-1" />
+                          </div>
+                          <div>
+                            <p className="font-bold text-[11px] text-[var(--color-text-secondary)]">No notifications yet</p>
+                            <p className="text-[9px] text-[var(--color-text-tertiary)] mt-0.5">We will alert you when activity updates.</p>
+                          </div>
+                          <button
+                            onClick={() => setShowNotifications(false)}
+                            className="px-4 py-1.5 rounded-xl bg-[#6D5DF6] text-white font-bold text-[10px] hover:shadow-lg hover:shadow-indigo-500/20 active:scale-95 transition cursor-pointer"
+                          >
+                            Return to Dashboard
+                          </button>
+                        </div>
+                      ) : (
+                        <>
+                          {notificationsList.map((n) => (
+                            <div
+                              key={n.id}
+                              className={`p-2.5 rounded-xl transition duration-200 flex items-start justify-between space-x-2.5 border group relative ${
+                                n.isRead
+                                  ? "bg-transparent border-transparent"
+                                  : "bg-[#6D5DF6]/5 border-[#6D5DF6]/12 dark:border-[#6D5DF6]/20"
+                              }`}
+                            >
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center space-x-1.5">
+                                  {!n.isRead && (
+                                    <span className="w-1.5 h-1.5 bg-[#6D5DF6] rounded-full shrink-0" />
+                                  )}
+                                  <p className="font-bold text-[11px] leading-tight text-[var(--color-text-primary)]">
+                                    {n.title}
+                                  </p>
+                                </div>
+                                <p className="text-[10px] text-[var(--color-text-secondary)] leading-snug mt-0.5">
+                                  {n.message}
+                                </p>
+                                <span className="text-[8px] text-[var(--color-text-tertiary)] font-mono block mt-1">
+                                  {getRelativeTime(n.createdAt)}
+                                </span>
+                              </div>
+
+                              <div className="flex space-x-1 shrink-0 opacity-0 group-hover:opacity-100 transition duration-150 self-center">
+                                {!n.isRead && (
+                                  <button
+                                    onClick={async (e) => {
+                                      e.stopPropagation();
+                                      try {
+                                        await ApiService.markNotificationRead(n.id);
+                                        fetchNotifications(true);
+                                      } catch (err) {
+                                        console.error(err);
+                                      }
+                                    }}
+                                    title="Mark as Read"
+                                    className="p-1 rounded-lg bg-[var(--color-border)] hover:bg-[#6D5DF6]/20 hover:text-[#6D5DF6] cursor-pointer"
+                                  >
+                                    <Check className="w-3.5 h-3.5" />
+                                  </button>
+                                )}
+                                <button
+                                  onClick={async (e) => {
+                                    e.stopPropagation();
+                                    try {
+                                      await ApiService.deleteNotification(n.id);
+                                      fetchNotifications(true);
+                                    } catch (err) {
+                                      console.error(err);
+                                    }
+                                  }}
+                                  title="Delete"
+                                  className="p-1 rounded-lg bg-[var(--color-border)] hover:bg-red-500/20 hover:text-red-500 cursor-pointer"
+                                >
+                                  <Trash className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+                            </div>
+                          ))}
+
+                          {/* Pagination Load More */}
+                          {notifHasMore && (
+                            <button
+                              onClick={() => fetchNotifications(false)}
+                              disabled={loadingNotifications}
+                              className="w-full py-2 border border-dashed border-[var(--color-glass-border)] rounded-xl text-[10px] font-bold text-[#6D5DF6] hover:bg-[#6D5DF6]/5 transition cursor-pointer text-center"
+                            >
+                              {loadingNotifications ? "Loading more..." : "Load More"}
+                            </button>
+                          )}
+                        </>
+                      )}
                     </div>
                   </motion.div>
                 )}
@@ -1999,7 +2228,7 @@ export default function DashboardPage({
             />
           ) : activeTab === "admin" ? (
             <AdminPanel />
-          ) : !resume && !["overview", "resumes", "applications", "admin", "settings"].includes(activeTab) ? (
+          ) : !resume && !["resumes", "applications", "admin", "settings"].includes(activeTab) ? (
             /* Redesigned blank slate workflow diagram when no resume exists */
             <div className="max-w-3xl mx-auto my-6 space-y-8 animate-fade-in">
               <div className="glass-card glowing-border p-8 sm:p-10 text-center relative overflow-hidden">
@@ -2010,9 +2239,17 @@ export default function DashboardPage({
                     <FileText className="w-10 h-10" />
                   </div>
                   <h2 className="text-xl sm:text-2xl font-black tracking-tight">No Resume Uploaded</h2>
-                  <p className="text-xs text-[var(--color-text-secondary)] mt-2 font-medium leading-relaxed font-sans">
-                    SkillBridge AI requires a parsed profile document to calculate match scores, skill deficits, and mock interview questions.
+                  <p className="text-xs text-[var(--color-text-secondary)] mt-2 font-semibold font-sans">
+                    Upload your resume to unlock:
                   </p>
+                  <ul className="mt-4 text-left text-xs font-bold text-[var(--color-text-secondary)] space-y-1.5 font-sans">
+                    <li>• ATS Analysis</li>
+                    <li>• Career Score</li>
+                    <li>• Skill Gap Analysis</li>
+                    <li>• Job Matching</li>
+                    <li>• Interview Preparation</li>
+                    <li>• Career Roadmap</li>
+                  </ul>
                   
                   <button
                     onClick={() => onNavigate("upload")}
@@ -2117,23 +2354,37 @@ export default function DashboardPage({
                   {/* KPI Analytics Dials Grid */}
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
                     {/* Career Score */}
-                    <div className="glass-card p-5 flex flex-col items-center justify-between text-center min-h-[170px]">
+                    <div className="glass-card p-5 flex flex-col items-center justify-between text-center min-h-[170px] relative overflow-hidden group">
                       <span className="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">Career Score</span>
-                      <div className="my-2">
-                        <CircularScoreGauge 
-                          score={Math.round(
-                            ((Object.values(profileItems).filter(Boolean).length / Object.keys(profileItems).length) * 100 + 
-                            (qualityAnalysis?.qualityScore || 80) + 
-                            (atsResult?.score || 85) + 
-                            (interviewAnswers.length > 0 ? getInterviewOverallScore() : 75)) / 4
-                          )} 
-                          colorClass="stroke-[#6D5DF6]" 
-                          size={70} 
-                          strokeWidth={5} 
-                          showMaxScore={false} 
-                        />
-                      </div>
-                      <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold">Overall Readiness</span>
+                      {resume && atsResult && skillGapResult && Object.values(profileItems).some(Boolean) && (resume?.parsedData?.projects && resume?.parsedData?.projects.length > 0) ? (
+                        <>
+                          <div className="my-2">
+                            <CircularScoreGauge 
+                              score={Math.round(
+                                ((Object.values(profileItems).filter(Boolean).length / Object.keys(profileItems).length) * 100 + 
+                                (qualityAnalysis?.qualityScore || 80) + 
+                                (atsResult?.score || 85) + 
+                                (interviewHistory.length > 0 ? getInterviewOverallScore() : 75)) / 4
+                              )} 
+                              colorClass="stroke-[#6D5DF6]" 
+                              size={70} 
+                              strokeWidth={5} 
+                              showMaxScore={false} 
+                            />
+                          </div>
+                          <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold">Overall Readiness</span>
+                        </>
+                      ) : (
+                        <>
+                          <div className="my-2 flex flex-col items-center justify-center space-y-1">
+                            <Lock className="w-5 h-5 text-[var(--color-text-tertiary)] animate-pulse" />
+                            <span className="text-[10px] font-bold text-red-500">Locked</span>
+                          </div>
+                          <span className="text-[8px] leading-tight text-[var(--color-text-tertiary)] font-sans px-1 select-none">
+                            Career Score is locked. Upload your resume to generate personalized career insights.
+                          </span>
+                        </>
+                      )}
                     </div>
 
                     {/* ATS Score */}

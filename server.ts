@@ -561,9 +561,13 @@ app.post("/api/auth/register", async (req, res) => {
     const userRef = doc(db, "users", uid);
     await setDoc(userRef, {
       uid,
-      email,
+      name: displayName || email.split("@")[0],
       displayName: displayName || email.split("@")[0],
-      createdAt: new Date().toISOString()
+      email,
+      photo: "",
+      emailVerified: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     });
 
     const token = signToken({ uid, email });
@@ -961,6 +965,8 @@ Special Instructions:
       createdAt: new Date().toISOString()
     });
 
+    await createDbNotification(userId, "Resume Uploaded", `Your resume ${fileName} has been uploaded successfully.`, "system", "normal", "file");
+
     res.status(200).json({
       id: docRef.id,
       userId,
@@ -1129,6 +1135,47 @@ Return ONLY valid raw JSON — no markdown:
       detectedRole,
       createdAt: new Date().toISOString()
     });
+
+    // Check for previous analyses to trigger score improvement/drop notification
+    let prevScore = 0;
+    try {
+      const targetUserId = userId || resumeData.userId;
+      let prevList: any[] = [];
+      if (useMemoryFallback || !dbAdmin) {
+        const allAnalyses = inMemoryStore["analyses"] || {};
+        prevList = Object.values(allAnalyses).filter((a: any) => a.userId === targetUserId);
+      } else {
+        const prevSnap = await dbAdmin.collection("analyses")
+          .where("userId", "==", targetUserId)
+          .get();
+        prevSnap.forEach((ds: any) => { prevList.push(ds.data()); });
+      }
+      if (prevList.length > 0) {
+        prevList.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        // Filter out the one we just saved (using ID comparison if possible, or timestamp)
+        const otherAnalyses = prevList.filter(x => x.createdAt !== docRef.id && x.score !== undefined);
+        if (otherAnalyses.length > 0) {
+          prevScore = otherAnalyses[0].score || otherAnalyses[0].qualityScore || 0;
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to check previous analyses:", e);
+    }
+
+    const uId = userId || resumeData.userId;
+    if (prevScore > 0) {
+      if (qualityScore > prevScore) {
+        await createDbNotification(uId, "ATS Score Improved", `🎉 Great progress! Your ATS score improved from ${prevScore} to ${qualityScore}.`, "ats", "high", "trending-up");
+      } else if (qualityScore < prevScore) {
+        await createDbNotification(uId, "ATS Score Dropped", `Your ATS score decreased by ${prevScore - qualityScore} points after recent edits.`, "ats", "normal", "trending-down");
+      }
+    } else {
+      await createDbNotification(uId, "Resume Analyzed", `Your resume ATS analysis is ready with score: ${qualityScore}/100.`, "ats", "normal", "check-circle");
+    }
+
+    if (missingKeywords && missingKeywords.length > 0) {
+      await createDbNotification(uId, "Resume Suggestions", `Your resume is missing ${missingKeywords.length} important keywords.`, "ats", "normal", "alert-triangle");
+    }
 
     res.status(200).json({
       id: docRef.id,
@@ -1515,6 +1562,13 @@ ${JSON.stringify(resumeData.parsedData || resumeData.content)}`;
       createdAt: new Date().toISOString()
     });
 
+    await createDbNotification(userId || resumeData.userId, "Skill Gap Analysis", "Skill gap analysis completed.", "career", "normal", "activity");
+
+    if (skillGapResult.missingSkills && skillGapResult.missingSkills.length > 0) {
+      const topSkill = skillGapResult.missingSkills[0];
+      await createDbNotification(userId || resumeData.userId, "Skill Recommendation", `Learning ${topSkill} can improve your target career job matches.`, "career", "normal", "trending-up");
+    }
+
     res.status(200).json({
       id: docRef.id,
       resumeId,
@@ -1587,6 +1641,12 @@ app.post("/api/career-roadmap/progress", async (req, res) => {
       completedMilestones,
       updatedAt: new Date().toISOString()
     });
+
+    const percent = Math.round((completedMilestones.length / 4) * 100);
+    await createDbNotification(userId, "Career Roadmap Progress", `You completed ${percent}% of your roadmap.`, "career", "normal", "map");
+    if (completedMilestones.length < 4) {
+      await createDbNotification(userId, "Career Roadmap Unlocked", `Week ${completedMilestones.length + 1} roadmap has been unlocked.`, "career", "normal", "lock-open");
+    }
 
     res.status(200).json({ message: "Progress saved successfully", completedMilestones });
   } catch (error: any) {
@@ -1748,6 +1808,8 @@ ${JSON.stringify(resumeData.parsedData || resumeData.content)}`;
       roadmapData,
       createdAt: new Date().toISOString()
     });
+
+    await createDbNotification(userId || resumeData.userId, "Career Roadmap", "Week 1 roadmap has been unlocked.", "career", "normal", "map");
 
     res.status(200).json({
       id: docRef.id,
@@ -2194,6 +2256,14 @@ app.post("/api/opportunities/match", async (req, res) => {
       createdAt: new Date().toISOString()
     });
 
+    // Generate Job Match and Company Match notifications
+    const highMatches = matchResults.filter(m => m.matchScore >= 70);
+    if (highMatches.length > 0) {
+      await createDbNotification(userId, "Job Match", `${highMatches.length} new jobs match your profile.`, "jobs", "normal", "briefcase");
+      const topMatch = highMatches[0];
+      await createDbNotification(userId, "New Company Match", `${topMatch.company} ${topMatch.title} is a ${Math.round(topMatch.matchScore)}% match!`, "jobs", "normal", "award");
+    }
+
     res.status(200).json({
       id: savedDoc.id,
       resumeId,
@@ -2392,9 +2462,11 @@ app.post("/api/profile/update", async (req, res) => {
     if (useMemoryFallback || !dbAdmin) {
       inMemoryStore["users"] = inMemoryStore["users"] || {};
       inMemoryStore["users"][uid] = { ...inMemoryStore["users"][uid], displayName };
+      await createDbNotification(uid, "Profile Updated", "Your profile has been updated.", "system", "normal", "user");
       return res.status(200).json({ message: "Profile updated successfully" });
     }
     await dbAdmin.collection("users").doc(uid).set({ displayName }, { merge: true });
+    await createDbNotification(uid, "Profile Updated", "Your profile has been updated.", "system", "normal", "user");
     res.status(200).json({ message: "Profile updated successfully" });
   } catch (error: any) {
     console.error("Profile update error:", error);
@@ -2469,6 +2541,28 @@ const checkAuth = (req: any, res: any, next: any) => {
   }
   return res.status(401).json({ error: "Unauthorized: valid JWT token or userId required." });
 };
+
+// POST /api/auth/verify-success
+app.post("/api/auth/verify-success", checkAuth, async (req: any, res) => {
+  try {
+    const userId = req.user.uid;
+    const userRef = doc(db, "users", userId);
+    const snap = await getDoc(userRef);
+    if (!snap.exists()) {
+      return res.status(404).json({ error: "User profile not found in Firestore" });
+    }
+    const data = snap.data();
+    await setDoc(userRef, {
+      ...data,
+      emailVerified: true,
+      updatedAt: new Date().toISOString()
+    });
+    res.status(200).json({ message: "Verification status updated successfully" });
+  } catch (error: any) {
+    console.error("verify-success error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // GET /api/dashboard/insights
 app.get("/api/dashboard/insights", checkAuth, async (req, res) => {
@@ -2554,6 +2648,8 @@ app.post("/api/applications/add", checkAuth, async (req, res) => {
       createdAt: new Date().toISOString()
     });
 
+    await createDbNotification(userId, "Application Submitted", `Application for ${role} at ${company} submitted successfully.`, "jobs", "normal", "briefcase");
+
     res.status(200).json({ id: docRef.id, message: "Application added successfully" });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -2576,6 +2672,11 @@ app.post("/api/applications/update-status", checkAuth, async (req, res) => {
 
     const data = snap.data();
     await setDoc(docRef, { ...data, status, updatedAt: new Date().toISOString() });
+
+    if (status === "Interview" || status === "HR Round") {
+      await createDbNotification(data.userId, "Interview Scheduled", `You have an interview scheduled for ${data.role} at ${data.company}!`, "interview", "high", "calendar");
+    }
+
     res.status(200).json({ message: "Application status updated successfully" });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -2725,30 +2826,210 @@ app.post("/api/interview/save", checkAuth, async (req, res) => {
   }
 });
 
+// Helper to create notifications in Firestore or Memory Fallback
+async function createDbNotification(userId: string, title: string, message: string, type: string, priority = "normal", icon = "bell") {
+  try {
+    const payload = {
+      userId,
+      title,
+      message,
+      type,
+      priority,
+      icon,
+      isRead: false,
+      isArchived: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    if (useMemoryFallback || !dbAdmin) {
+      inMemoryStore["notifications"] = inMemoryStore["notifications"] || {};
+      const id = "notif_" + Math.random().toString(36).substring(2, 11);
+      inMemoryStore["notifications"][id] = { id, ...payload };
+      return id;
+    }
+
+    const notificationsRef = dbAdmin.collection("notifications");
+    const docRef = await notificationsRef.add(payload);
+    return docRef.id;
+  } catch (err) {
+    console.error("Failed to create db notification:", err);
+    return null;
+  }
+}
+
 // GET /api/notifications/all
 app.get("/api/notifications/all", checkAuth, async (req, res) => {
   try {
     const userId = req.user.uid;
-    const notificationsRef = collection(db, "notifications");
-    const q = query(notificationsRef, where("userId", "==", userId));
-    const snapshot = await getDocs(q);
-    const list: any[] = [];
-    snapshot.forEach((docSnap: any) => {
-      list.push({ id: docSnap.id, ...docSnap.data() });
-    });
+    const limitVal = parseInt(req.query.limit as string) || 20;
+    const offsetVal = parseInt(req.query.offset as string) || 0;
+    const searchVal = ((req.query.search as string) || "").toLowerCase().trim();
+    const categoryVal = ((req.query.category as string) || "").toLowerCase().trim();
 
-    // Default notifications if none exist
-    if (list.length === 0) {
-      const defaults = [
-        { id: "d1", title: "New Job Match: Software Engineer at Google", text: "You have a 95% Match Score! Click to apply.", read: false, createdAt: new Date(Date.now() - 3600000).toISOString() },
-        { id: "d2", title: "ATS Improvement Alert", text: "Adding 'Docker' and 'AWS' keywords can boost your score by 12 points.", read: false, createdAt: new Date(Date.now() - 12000000).toISOString() },
-        { id: "d3", title: "Mock Interview Checklist", text: "Schedule your next Technical Round to test your TypeScript skills.", read: true, createdAt: new Date(Date.now() - 86400000).toISOString() }
-      ];
-      return res.status(200).json({ notifications: defaults });
+    // Validate resume presence before returning any real notifications
+    let hasResume = false;
+    if (useMemoryFallback || !dbAdmin) {
+      const allResumes = inMemoryStore["resumes"] || {};
+      hasResume = Object.values(allResumes).some((r: any) => r.userId === userId);
+    } else {
+      const resumesSnap = await dbAdmin.collection("resumes")
+        .where("userId", "==", userId)
+        .limit(1)
+        .get();
+      hasResume = !resumesSnap.empty;
     }
 
-    list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    res.status(200).json({ notifications: list });
+    if (!hasResume) {
+      // First-Time User Experience Onboarding Notifications Only
+      const onboardingDefaults = [
+        {
+          id: "onb1",
+          userId,
+          title: "👋 Welcome to SkillBridge AI!",
+          message: "Complete your profile to unlock AI-powered career insights.",
+          type: "system",
+          priority: "normal",
+          icon: "user",
+          isRead: false,
+          isArchived: false,
+          createdAt: new Date(Date.now() - 60000).toISOString(),
+          updatedAt: new Date(Date.now() - 60000).toISOString()
+        },
+        {
+          id: "onb2",
+          userId,
+          title: "Upload Resume Required",
+          message: "Upload your first resume to begin your career analysis.",
+          type: "system",
+          priority: "high",
+          icon: "upload",
+          isRead: false,
+          isArchived: false,
+          createdAt: new Date(Date.now() - 50000).toISOString(),
+          updatedAt: new Date(Date.now() - 50000).toISOString()
+        },
+        {
+          id: "onb3",
+          userId,
+          title: "Improve Recommendations",
+          message: "Finish your profile to improve job recommendations.",
+          type: "career",
+          priority: "normal",
+          icon: "user-check",
+          isRead: false,
+          isArchived: false,
+          createdAt: new Date(Date.now() - 40000).toISOString(),
+          updatedAt: new Date(Date.now() - 40000).toISOString()
+        },
+        {
+          id: "onb4",
+          userId,
+          title: "Mock Interview Alert",
+          message: "Enable notifications to receive interview reminders.",
+          type: "interview",
+          priority: "normal",
+          icon: "bell",
+          isRead: false,
+          isArchived: false,
+          createdAt: new Date(Date.now() - 30000).toISOString(),
+          updatedAt: new Date(Date.now() - 30000).toISOString()
+        }
+      ];
+
+      let onboardingFiltered = onboardingDefaults;
+      if (searchVal) {
+        onboardingFiltered = onboardingFiltered.filter(
+          n => n.title.toLowerCase().includes(searchVal) || n.message.toLowerCase().includes(searchVal)
+        );
+      }
+      if (categoryVal && categoryVal !== "all" && categoryVal !== "any") {
+        onboardingFiltered = onboardingFiltered.filter(
+          n => n.type === categoryVal
+        );
+      }
+      return res.status(200).json({ notifications: onboardingFiltered, hasMore: false });
+    }
+
+    let list: any[] = [];
+
+    if (useMemoryFallback || !dbAdmin) {
+      const allNotifs = inMemoryStore["notifications"] || {};
+      list = Object.values(allNotifs).filter((n: any) => n.userId === userId);
+    } else {
+      const notificationsRef = dbAdmin.collection("notifications");
+      const q = notificationsRef.where("userId", "==", userId);
+      const snapshot = await q.get();
+      snapshot.forEach((docSnap: any) => {
+        list.push({ id: docSnap.id, ...docSnap.data() });
+      });
+    }
+
+    // Filter out archived
+    let filteredList = list.filter(n => !n.isArchived);
+
+    // Apply search filter
+    if (searchVal) {
+      filteredList = filteredList.filter(
+        n => (n.title || "").toLowerCase().includes(searchVal) || 
+             (n.message || "").toLowerCase().includes(searchVal)
+      );
+    }
+
+    // Apply category filter
+    if (categoryVal && categoryVal !== "all" && categoryVal !== "any") {
+      // Time categories
+      if (categoryVal === "today") {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        filteredList = filteredList.filter(n => new Date(n.createdAt) >= today);
+      } else if (categoryVal === "yesterday") {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const yesterday = new Date(today);
+        yesterday.setDate(yesterday.getDate() - 1);
+        filteredList = filteredList.filter(n => {
+          const d = new Date(n.createdAt);
+          return d >= yesterday && d < today;
+        });
+      } else if (categoryVal === "this_week") {
+        const today = new Date();
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() - today.getDay());
+        startOfWeek.setHours(0, 0, 0, 0);
+        filteredList = filteredList.filter(n => new Date(n.createdAt) >= startOfWeek);
+      } else {
+        // Type categories
+        filteredList = filteredList.filter(
+          n => (n.type || "").toLowerCase() === categoryVal
+        );
+      }
+    }
+
+    // Sort descending by date
+    filteredList.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+    // Paginate
+    const paginatedList = filteredList.slice(offsetVal, offsetVal + limitVal);
+    const hasMore = filteredList.length > offsetVal + limitVal;
+
+    res.status(200).json({ notifications: paginatedList, hasMore });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/notifications/add
+app.post("/api/notifications/add", checkAuth, async (req, res) => {
+  try {
+    const userId = req.user.uid;
+    const { title, message, type, priority, icon } = req.body;
+    if (!title || !message || !type) {
+      return res.status(400).json({ error: "Missing title, message, or type" });
+    }
+
+    const notifId = await createDbNotification(userId, title, message, type, priority || "normal", icon || "bell");
+    res.status(200).json({ id: notifId, message: "Notification created successfully" });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
@@ -2757,16 +3038,145 @@ app.get("/api/notifications/all", checkAuth, async (req, res) => {
 // POST /api/notifications/mark-read
 app.post("/api/notifications/mark-read", checkAuth, async (req, res) => {
   try {
-    const { id } = req.body;
-    if (id) {
-      const docRef = doc(db, "notifications", id);
-      const snap = await getDoc(docRef);
-      if (snap.exists()) {
-        const data = snap.data();
-        await setDoc(docRef, { ...data, read: true });
+    const userId = req.user.uid;
+    const { id, all } = req.body;
+
+    if (all) {
+      if (useMemoryFallback || !dbAdmin) {
+        const allNotifs = inMemoryStore["notifications"] || {};
+        Object.keys(allNotifs).forEach(key => {
+          if (allNotifs[key].userId === userId) {
+            allNotifs[key].isRead = true;
+            allNotifs[key].updatedAt = new Date().toISOString();
+          }
+        });
+      } else {
+        const batch = dbAdmin.batch();
+        const snapshot = await dbAdmin.collection("notifications")
+          .where("userId", "==", userId)
+          .where("isRead", "==", false)
+          .get();
+        snapshot.forEach((docSnap: any) => {
+          batch.update(docSnap.ref, { isRead: true, updatedAt: new Date().toISOString() });
+        });
+        await batch.commit();
       }
+      return res.status(200).json({ message: "All notifications marked as read" });
     }
-    res.status(200).json({ message: "Notifications updated successfully" });
+
+    if (!id) {
+      return res.status(400).json({ error: "Missing notification id" });
+    }
+
+    if (useMemoryFallback || !dbAdmin) {
+      if (inMemoryStore["notifications"] && inMemoryStore["notifications"][id]) {
+        inMemoryStore["notifications"][id].isRead = true;
+        inMemoryStore["notifications"][id].updatedAt = new Date().toISOString();
+        return res.status(200).json({ message: "Notification marked as read" });
+      }
+      return res.status(404).json({ error: "Notification not found" });
+    }
+
+    const docRef = dbAdmin.collection("notifications").doc(id);
+    await docRef.update({ isRead: true, updatedAt: new Date().toISOString() });
+    res.status(200).json({ message: "Notification marked as read" });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// POST /api/notifications/archive
+app.post("/api/notifications/archive", checkAuth, async (req, res) => {
+  try {
+    const userId = req.user.uid;
+    const { id, all } = req.body;
+
+    if (all) {
+      if (useMemoryFallback || !dbAdmin) {
+        const allNotifs = inMemoryStore["notifications"] || {};
+        Object.keys(allNotifs).forEach(key => {
+          if (allNotifs[key].userId === userId) {
+            allNotifs[key].isArchived = true;
+            allNotifs[key].updatedAt = new Date().toISOString();
+          }
+        });
+      } else {
+        const batch = dbAdmin.batch();
+        const snapshot = await dbAdmin.collection("notifications")
+          .where("userId", "==", userId)
+          .where("isArchived", "==", false)
+          .get();
+        snapshot.forEach((docSnap: any) => {
+          batch.update(docSnap.ref, { isArchived: true, updatedAt: new Date().toISOString() });
+        });
+        await batch.commit();
+      }
+      return res.status(200).json({ message: "All notifications archived" });
+    }
+
+    if (!id) {
+      return res.status(400).json({ error: "Missing notification id" });
+    }
+
+    if (useMemoryFallback || !dbAdmin) {
+      if (inMemoryStore["notifications"] && inMemoryStore["notifications"][id]) {
+        inMemoryStore["notifications"][id].isArchived = true;
+        inMemoryStore["notifications"][id].updatedAt = new Date().toISOString();
+        return res.status(200).json({ message: "Notification archived" });
+      }
+      return res.status(404).json({ error: "Notification not found" });
+    }
+
+    const docRef = dbAdmin.collection("notifications").doc(id);
+    await docRef.update({ isArchived: true, updatedAt: new Date().toISOString() });
+    res.status(200).json({ message: "Notification archived" });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// DELETE /api/notifications/delete
+app.delete("/api/notifications/delete", checkAuth, async (req, res) => {
+  try {
+    const userId = req.user.uid;
+    const { id, all } = req.body;
+
+    if (all) {
+      if (useMemoryFallback || !dbAdmin) {
+        const allNotifs = inMemoryStore["notifications"] || {};
+        Object.keys(allNotifs).forEach(key => {
+          if (allNotifs[key].userId === userId) {
+            delete allNotifs[key];
+          }
+        });
+      } else {
+        const batch = dbAdmin.batch();
+        const snapshot = await dbAdmin.collection("notifications")
+          .where("userId", "==", userId)
+          .get();
+        snapshot.forEach((docSnap: any) => {
+          batch.delete(docSnap.ref);
+        });
+        await batch.commit();
+      }
+      return res.status(200).json({ message: "All notifications deleted" });
+    }
+
+    if (!id) {
+      return res.status(400).json({ error: "Missing notification id" });
+    }
+
+    if (useMemoryFallback || !dbAdmin) {
+      if (inMemoryStore["notifications"] && inMemoryStore["notifications"][id]) {
+        delete inMemoryStore["notifications"][id];
+        return res.status(200).json({ message: "Notification deleted" });
+      }
+      return res.status(404).json({ error: "Notification not found" });
+    }
+
+    const docRef = dbAdmin.collection("notifications").doc(id);
+    await docRef.delete();
+    res.status(200).json({ message: "Notification deleted" });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendEmailVerification } from "firebase/auth";
 import { auth } from "../lib/firebase";
 import { ApiService } from "../services/api";
 import { motion } from "motion/react";
@@ -18,6 +18,8 @@ export default function SignupPage({ onNavigate, onLoginSuccess, theme, setTheme
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,8 +27,14 @@ export default function SignupPage({ onNavigate, onLoginSuccess, theme, setTheme
     e.preventDefault();
     setError(null);
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !confirmPassword) {
       setError("Please fill in all details.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
       return;
     }
 
@@ -35,10 +43,18 @@ export default function SignupPage({ onNavigate, onLoginSuccess, theme, setTheme
       return;
     }
 
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
     setLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+
+      // Immediately send verification email
+      await sendEmailVerification(user);
 
       // Call backend to save user profile doc in Firestore
       await ApiService.registerUser(user.uid, email, name);
@@ -47,13 +63,17 @@ export default function SignupPage({ onNavigate, onLoginSuccess, theme, setTheme
         ...user,
         displayName: name
       });
-      onNavigate("dashboard");
+      onNavigate("verify-email");
     } catch (err: any) {
       console.error(err);
       if (err.code === "auth/email-already-in-use") {
         setError("This email address is already in use.");
       } else if (err.code === "auth/operation-not-allowed") {
         setError("Email & Password registration is not enabled in the Firebase Console. Please ask the developer to enable it.");
+      } else if (err.code === "auth/weak-password") {
+        setError("The password is too weak. Please use a password containing at least 6 characters with letters and numbers.");
+      } else if (err.code === "auth/invalid-email") {
+        setError("Invalid email address format.");
       } else {
         setError(err.message || "Registration failed. Please try again.");
       }
@@ -244,6 +264,33 @@ export default function SignupPage({ onNavigate, onLoginSuccess, theme, setTheme
                 className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition animate-fade-in"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-[10px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider mb-1.5 font-bold">
+              Confirm Password
+            </label>
+            <div className="relative">
+              <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[var(--color-text-tertiary)]">
+                <Lock className="w-4 h-4" />
+              </span>
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="••••••••••••"
+                required
+                disabled={loading}
+                className="w-full clay-input pl-10 pr-10 py-3 text-sm text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition animate-fade-in"
+              >
+                {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </div>
