@@ -759,7 +759,8 @@ app.post("/api/resumes/upload", upload.single("resume"), async (req, res) => {
       "database": ["Database/ORM 1", "Database/ORM 2"],
       "tools": ["Tool/Cloud/DevOps/CICD 1", "Tool/Cloud/DevOps/CICD 2"],
       "core_concepts": ["Core computer science concept 1", "Core computer science concept 2"],
-      "ai_ml": ["AI/ML Tool/Framework/Model 1", "AI/ML Tool/Framework/Model 2"]
+      "ai_ml": ["AI/ML Tool/Framework/Model 1", "AI/ML Tool/Framework/Model 2"],
+      "soft_skills": ["Soft Skill 1", "Soft Skill 2"]
     },
     "education": [
       {
@@ -886,19 +887,21 @@ Special Instructions:
       database: [],
       tools: [],
       core_concepts: [],
-      ai_ml: []
+      ai_ml: [],
+      soft_skills: []
     };
 
     // Gather and map AI parsed skills
     if (aiSkills && typeof aiSkills === "object" && !Array.isArray(aiSkills)) {
       const keysMap: Record<string, string[]> = {
-        programming_languages: ["programming_languages", "languages"],
+        programming_languages: ["programming_languages", "languages", "programming"],
         frontend: ["frontend", "frameworks", "libraries"],
         backend: ["backend"],
         database: ["database", "databases"],
         tools: ["tools", "devTools", "devops", "cloud"],
         core_concepts: ["core_concepts", "all"],
-        ai_ml: ["ai_ml", "aiMlTools"]
+        ai_ml: ["ai_ml", "aiMlTools"],
+        soft_skills: ["soft_skills", "softSkills", "soft", "interpersonal", "soft_skills_list"]
       };
 
       Object.entries(keysMap).forEach(([targetKey, sourceKeys]) => {
@@ -955,6 +958,16 @@ Special Instructions:
     // Logging: Print the parsed JSON
     console.log("=== PARSED SKILLS JSON ===\n", JSON.stringify(mergedSkills, null, 2));
 
+    // Calculate baseline ATS score immediately after parsing
+    let baselineAtsScore = 50;
+    try {
+      const atsResult = calculateATSScore(extractedContent, parsedData);
+      baselineAtsScore = atsResult.score || 50;
+      console.log("=== CALCULATION LOGS: BASELINE ATS ===", baselineAtsScore);
+    } catch (calcErr: any) {
+      console.warn("Failed to pre-calculate baseline ATS score, using fallback. Error:", calcErr.message);
+    }
+
     // Save parsed resume to Firestore
     const resumeRef = collection(db, "resumes");
     const docRef = await addDoc(resumeRef, {
@@ -962,6 +975,7 @@ Special Instructions:
       fileName,
       content: extractedContent,
       parsedData,
+      atsScore: baselineAtsScore,
       createdAt: new Date().toISOString()
     });
 
@@ -973,6 +987,7 @@ Special Instructions:
       fileName,
       content: extractedContent,
       parsedData,
+      atsScore: baselineAtsScore,
       createdAt: new Date().toISOString()
     });
   } catch (error: any) {
@@ -2692,7 +2707,16 @@ app.get("/api/resumes/all", checkAuth, async (req, res) => {
     const snapshot = await getDocs(q);
     const list: any[] = [];
     snapshot.forEach((docSnap: any) => {
-      list.push({ id: docSnap.id, ...docSnap.data() });
+      const data = docSnap.data();
+      let atsScore = data.atsScore;
+      if (atsScore === undefined) {
+        try {
+          atsScore = calculateATSScore(data.content || "", data.parsedData || {}).score || 50;
+        } catch {
+          atsScore = 50;
+        }
+      }
+      list.push({ id: docSnap.id, ...data, atsScore });
     });
     res.status(200).json({ resumes: list });
   } catch (error: any) {

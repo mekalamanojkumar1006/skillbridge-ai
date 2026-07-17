@@ -281,6 +281,208 @@ export default function DashboardPage({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
+  const getSkillsArray = (skillsObj: any): string[] => {
+    if (!skillsObj) return [];
+    if (Array.isArray(skillsObj)) return skillsObj;
+    if (typeof skillsObj === "object") {
+      return Object.values(skillsObj).flat().filter(Boolean) as string[];
+    }
+    return [];
+  };
+
+  const getMilestoneDetails = (milestone: any, index: number) => {
+    const title = milestone.milestoneTitle || milestone.title || "Roadmap Step";
+    const duration = milestone.duration || `Month ${index + 1}`;
+    const description = milestone.description || `Gain foundational mastery in ${title}. Learn core design patterns, configurations, and implementation rules.`;
+    const requiredSkills = (milestone.skillsToLearn && milestone.skillsToLearn.length > 0)
+      ? milestone.skillsToLearn
+      : (milestone.learningObjectives || ["HTML", "CSS", "JavaScript"]);
+      
+    const beginnerCourses = [
+      `Introduction to ${title} — SkillBridge Academy`,
+      `${title} Fundamentals — Coursera (Verified Specialization)`
+    ];
+    const intermediateCourses = [
+      `Deep Dive: Practical ${title} Architectures — Udemy`,
+      `${title} in Production Environments — Pluralsight`
+    ];
+    const advancedCourses = [
+      `Advanced Design Patterns & Performance Tuning for ${title} — Udacity`,
+      `Masterclass: Scalability & Integration with ${title} — Senior Architect Program`
+    ];
+    const youtubeResources = [
+      `freeCodeCamp.org: ${title} Developer Roadmap (6 Hour Course)`,
+      `Traversy Media: ${title} Crash Course for Beginners`,
+      `Programming with Mosh: Master ${title} (Step-by-Step)`
+    ];
+    const certifications = [
+      `SkillBridge Professional ${title} Practitioner Badge`,
+      `Global Technical Standards Alliance: Certified ${title} Associate`
+    ];
+    const practiceProjects = [
+      {
+        title: milestone.practicalProject?.title || `${title} Automation Engine`,
+        description: milestone.practicalProject?.description || `Develop a production-grade system to demonstrate core ${title} competencies.`
+      }
+    ];
+    const expectedOutcome = `Acquire hands-on mastery in ${title}. Able to design, implement, test, and deploy modules conforming to target role specifications.`;
+
+    return {
+      title,
+      duration,
+      description,
+      requiredSkills,
+      beginnerCourses,
+      intermediateCourses,
+      advancedCourses,
+      youtubeResources,
+      certifications,
+      practiceProjects,
+      expectedOutcome
+    };
+  };
+
+  const renderMilestoneDetails = (milestone: any, index: number) => {
+    const details = getMilestoneDetails(milestone, index);
+    return (
+      <div className="space-y-4 text-left">
+        {/* Expected Outcome */}
+        <div className="space-y-1">
+          <span className="text-[8.5px] font-mono text-[var(--color-text-tertiary)] uppercase font-black block">Expected Outcome</span>
+          <p className="text-[10px] text-[var(--color-text-secondary)] font-sans leading-relaxed font-semibold">{details.expectedOutcome}</p>
+        </div>
+
+        {/* Required Skills */}
+        <div className="space-y-1 border-t border-[var(--color-border)]/45 pt-2">
+          <span className="text-[8.5px] font-mono text-[var(--color-text-tertiary)] uppercase font-black block">Required Skills</span>
+          <div className="flex flex-wrap gap-1 mt-1">
+            {details.requiredSkills.map((sk: string, i: number) => (
+              <span key={i} className="px-2 py-0.5 bg-[#6D5DF6]/5 border border-[#6D5DF6]/12 text-[#6D5DF6] rounded text-[8.5px] font-mono font-bold">{sk}</span>
+            ))}
+          </div>
+        </div>
+
+        {/* Structured Courses */}
+        <div className="space-y-2 border-t border-[var(--color-border)]/45 pt-2">
+          <span className="text-[8.5px] font-mono text-[var(--color-text-tertiary)] uppercase font-black block">Structured Courses</span>
+          <div className="space-y-1.5 font-sans">
+            <div className="text-[9px] font-black text-[var(--color-text-primary)]">Beginner:</div>
+            {details.beginnerCourses.map((c, i) => (
+              <div key={i} className="flex items-center space-x-1.5">
+                <BookOpen className="w-3 h-3 text-[#6D5DF6] shrink-0" />
+                <span className="truncate text-[10px] text-[var(--color-text-secondary)] font-semibold">{c}</span>
+              </div>
+            ))}
+            <div className="text-[9px] font-black text-[var(--color-text-primary)] mt-1.5">Intermediate:</div>
+            {details.intermediateCourses.map((c, i) => (
+              <div key={i} className="flex items-center space-x-1.5">
+                <BookOpen className="w-3 h-3 text-[#8B5CF6] shrink-0" />
+                <span className="truncate text-[10px] text-[var(--color-text-secondary)] font-semibold">{c}</span>
+              </div>
+            ))}
+            <div className="text-[9px] font-black text-[var(--color-text-primary)] mt-1.5">Advanced:</div>
+            {details.advancedCourses.map((c, i) => (
+              <div key={i} className="flex items-center space-x-1.5">
+                <BookOpen className="w-3 h-3 text-emerald-500 shrink-0" />
+                <span className="truncate text-[10px] text-[var(--color-text-secondary)] font-semibold">{c}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Video Resources */}
+        <div className="space-y-1 border-t border-[var(--color-border)]/45 pt-2">
+          <span className="text-[8.5px] font-mono text-[var(--color-text-tertiary)] uppercase font-black block">YouTube Resources</span>
+          <div className="space-y-1">
+            {details.youtubeResources.map((yt, i) => (
+              <div key={i} className="flex items-center space-x-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
+                <span className="truncate text-[10px] text-[var(--color-text-secondary)] font-sans font-semibold">{yt}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Certifications */}
+        <div className="space-y-1 border-t border-[var(--color-border)]/45 pt-2">
+          <span className="text-[8.5px] font-mono text-[var(--color-text-tertiary)] uppercase font-black block">Certifications</span>
+          <div className="space-y-1">
+            {details.certifications.map((cert, i) => (
+              <div key={i} className="flex items-center space-x-1.5">
+                <Award className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                <span className="truncate text-[10px] text-[var(--color-text-secondary)] font-sans font-semibold">{cert}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Practice Projects */}
+        <div className="space-y-1.5 border-t border-[var(--color-border)]/45 pt-2">
+          <span className="text-[8.5px] font-mono text-[var(--color-text-tertiary)] uppercase font-black block">Practice Project</span>
+          {details.practiceProjects.map((p, i) => (
+            <div key={i} className="p-2 bg-[var(--color-bg-page)]/45 border border-[var(--color-border)] rounded-xl space-y-0.5">
+              <div className="font-extrabold text-[10px] text-[var(--color-text-primary)]">{p.title}</div>
+              <div className="text-[9px] text-[var(--color-text-secondary)] font-sans font-medium leading-relaxed">{p.description}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  const getRadarData = () => {
+    if (!skillGapResult) return [];
+    const possessed = skillGapResult.currentSkills || [];
+    const missing = skillGapResult.missingSkills || [];
+    
+    const data: any[] = [];
+    possessed.slice(0, 3).forEach((sk: string) => {
+      data.push({
+        subject: sk,
+        A: 85 + Math.floor(Math.random() * 10),
+        B: 95
+      });
+    });
+    missing.slice(0, 2).forEach((sk: string) => {
+      data.push({
+        subject: sk,
+        A: 20 + Math.floor(Math.random() * 15),
+        B: 90
+      });
+    });
+    
+    const defaults = ["Software Eng", "System Design", "Cloud Ops", "Testing", "Data Stores"];
+    let idx = 0;
+    while (data.length < 5 && idx < defaults.length) {
+      const subj = defaults[idx++];
+      if (!data.some(d => d.subject === subj)) {
+        data.push({ subject: subj, A: 60, B: 80 });
+      }
+    }
+    return data;
+  };
+
+  const getRecommendedCertifications = () => {
+    if (!targetCareerRole) return ["AWS Solutions Architect", "Google Professional Cloud Dev"];
+    const roleLower = targetCareerRole.toLowerCase();
+    if (roleLower.includes("cloud") || roleLower.includes("aws") || roleLower.includes("devops") || roleLower.includes("infrastructure")) {
+      return ["AWS Certified Solutions Architect", "Google Associate Cloud Engineer", "HashiCorp Certified Terraform Associate"];
+    }
+    if (roleLower.includes("security") || roleLower.includes("cyber") || roleLower.includes("infosec")) {
+      return ["CompTIA Security+", "Certified Information Systems Security Professional (CISSP)", "CEH (Certified Ethical Hacker)"];
+    }
+    if (roleLower.includes("frontend") || roleLower.includes("react") || roleLower.includes("web")) {
+      return ["Meta Front-End Developer Professional Certificate", "UX/UI Design Alliance Certified Associate", "W3Schools Certified Front-End Developer"];
+    }
+    if (roleLower.includes("data") || roleLower.includes("database") || roleLower.includes("analytics")) {
+      return ["Google Data Analytics Professional Certificate", "MongoDB Certified Developer Associate", "Databricks Certified Data Engineer"];
+    }
+    if (roleLower.includes("machine") || roleLower.includes("ml") || roleLower.includes("ai") || roleLower.includes("deep")) {
+      return ["TensorFlow Developer Certificate", "Google Cloud Professional ML Engineer", "DeepLearning.AI TensorFlow Developer Professional Certificate"];
+    }
+    return [`Professional ${targetCareerRole} Certificate`, `Global Technical Standards: Certified ${targetCareerRole} Practitioner`];
+  };
+  
   // Custom interactive dashboard states
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -291,29 +493,6 @@ export default function DashboardPage({
   const [isHowToUseOpen, setIsHowToUseOpen] = useState(false);
   const [isAtsTemplateOpen, setIsAtsTemplateOpen] = useState(false);
   const [copiedAts, setCopiedAts] = useState(false);
-  const [platformStats, setPlatformStats] = useState<any>({
-    totalExecutions: "--",
-    averageAtsScore: "--",
-    matchAccuracy: "--"
-  });
-
-  const fetchStats = async () => {
-    try {
-      const statsData = await ApiService.getDashboardStats();
-      setPlatformStats({
-        totalExecutions: statsData.appExecutions,
-        averageAtsScore: "85+",
-        matchAccuracy: "96%"
-      });
-    } catch (err) {
-      console.error("Failed to load real-time platform stats:", err);
-      setPlatformStats({
-        totalExecutions: "Unavailable",
-        averageAtsScore: "Unavailable",
-        matchAccuracy: "Unavailable"
-      });
-    }
-  };
 
   const [interviewHistory, setInterviewHistory] = useState<any[]>([]);
   const fetchInterviewHistory = async () => {
@@ -330,16 +509,6 @@ export default function DashboardPage({
       fetchInterviewHistory();
     }
   }, [activeTab, user]);
-
-  // Real-time Platform Stats Polling Effect
-  useEffect(() => {
-    if (!user || !user.uid) return;
-
-    fetchStats();
-    // Poll every 10 seconds for real-time responsiveness
-    const interval = setInterval(fetchStats, 10000);
-    return () => clearInterval(interval);
-  }, [user, resume]);
 
   const [notificationsList, setNotificationsList] = useState<any[]>([]);
   const [notifLimit] = useState(20);
@@ -694,7 +863,7 @@ export default function DashboardPage({
       const reply = replyData.text || "I recommend focusing on the foundational coding milestones first and working through the practical projects.";
       
       setAiMentorMessages((prev) => [...prev, { sender: "mentor", text: reply }]);
-      fetchStats();
+
     } catch (err) {
       console.error(err);
       setTimeout(() => {
@@ -841,7 +1010,7 @@ export default function DashboardPage({
     try {
       const res = await ApiService.matchOpportunities(resume.id, user.uid);
       setRecommendedOpps(res.matches || []);
-      fetchStats();
+
       fetchNotifications(true);
     } catch (err: any) {
       console.error("Failed to calculate recommended opportunities:", err);
@@ -858,7 +1027,7 @@ export default function DashboardPage({
     try {
       const res = await ApiService.analyzeQuality(resume.id, user.uid);
       setQualityAnalysis(res);
-      fetchStats();
+
       fetchNotifications(true);
     } catch (err: any) {
       console.error(err);
@@ -884,7 +1053,7 @@ export default function DashboardPage({
     try {
       const res = await ApiService.getAtsScore(resume.id, jobDescription, user.uid);
       setAtsResult(res);
-      fetchStats();
+
       fetchNotifications(true);
     } catch (err: any) {
       console.error(err);
@@ -901,7 +1070,7 @@ export default function DashboardPage({
     try {
       const res = await ApiService.matchJobs(resume.id, user.uid);
       setJobMatches(res.matches || []);
-      fetchStats();
+
       fetchNotifications(true);
     } catch (err: any) {
       console.error(err);
@@ -924,7 +1093,7 @@ export default function DashboardPage({
     try {
       const res = await ApiService.analyzeSkillGaps(resume.id, targetCareerRole, user.uid);
       setSkillGapResult(res);
-      fetchStats();
+
       fetchNotifications(true);
     } catch (err: any) {
       console.error(err);
@@ -979,7 +1148,7 @@ export default function DashboardPage({
     try {
       const res = await ApiService.getInterviewQuestions(resume.id);
       setInterviewQuestions(res.questions || []);
-      fetchStats();
+
       setInterviewStatus("active");
       setTimeLeft(120); // 120 seconds per question
     } catch (err: any) {
@@ -1116,7 +1285,7 @@ export default function DashboardPage({
 
         setInterviewAnswers((prev) => [...prev, updatedAnswer]);
         setCurrentEvaluation(updatedAnswer);
-        fetchStats();
+
       } catch (err: any) {
         console.error(err);
         setError("Evaluation failed: " + err.message);
@@ -1186,7 +1355,7 @@ export default function DashboardPage({
         const updatedAnswers = [...interviewAnswers, updatedAnswer];
         setInterviewAnswers(updatedAnswers);
         setCurrentEvaluation(updatedAnswer);
-        fetchStats();
+
       } catch (err: any) {
         console.error("Auto evaluation failed on timeout:", err);
         const fallbackAns = {
@@ -1219,7 +1388,7 @@ export default function DashboardPage({
       );
       setFinalReport(report);
       setInterviewStatus("completed");
-      fetchStats();
+
 
       // Persist compiled mock interview report in history
       try {
@@ -1294,7 +1463,7 @@ export default function DashboardPage({
     try {
       const res = await ApiService.predictHiringProbability(resume.id, probJobTitle, probCompany, user.uid);
       setHiringProbability(res);
-      fetchStats();
+
     } catch (err: any) {
       console.error(err);
       setError("Hiring prediction failed: " + err.message);
@@ -2521,7 +2690,7 @@ export default function DashboardPage({
                           {resume?.parsedData?.summary && (
                             <div className="pt-2 border-t border-[var(--color-border)]/50">
                               <span className="text-[10px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold block mb-1">Executive Summary</span>
-                              <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed font-sans font-medium">
+                              <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed font-sans font-medium mt-1.5 whitespace-pre-line">
                                 {resume.parsedData.summary}
                               </p>
                             </div>
@@ -2532,11 +2701,11 @@ export default function DashboardPage({
                       {/* Technical Skills Card */}
                       <div className="glass-card p-6 space-y-4">
                         <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black border-b border-[var(--color-border)] pb-2.5">
-                          Core Competencies ({resume?.parsedData?.skills?.length || 0})
+                          Core Competencies ({getSkillsArray(resume?.parsedData?.skills).length})
                         </h3>
-                        {resume?.parsedData?.skills && resume.parsedData.skills.length > 0 ? (
+                        {getSkillsArray(resume?.parsedData?.skills).length > 0 ? (
                           <div className="flex flex-wrap gap-1.5 max-h-[250px] overflow-y-auto pr-1 custom-scrollbar">
-                            {resume.parsedData.skills.map((skill, idx) => (
+                            {getSkillsArray(resume?.parsedData?.skills).map((skill, idx) => (
                               <span
                                 key={idx}
                                 className="px-2.5 py-1.5 rounded-lg bg-[#6D5DF6]/5 border border-[#6D5DF6]/15 text-[#6D5DF6] text-[10px] font-bold font-mono"
@@ -2546,7 +2715,7 @@ export default function DashboardPage({
                             ))}
                           </div>
                         ) : (
-                          <p className="text-xs text-[var(--color-text-tertiary)] font-sans">No parsed skills detected. Try re-uploading.</p>
+                          <p className="text-xs text-[var(--color-text-tertiary)] font-mono font-medium">No competencies detected.</p>
                         )}
                       </div>
                     </div>
@@ -3192,7 +3361,7 @@ export default function DashboardPage({
                         <div className="space-y-4 pt-4 border-t border-[var(--color-border)]">
                           <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase block font-black">Certifications Recommended</span>
                           <div className="space-y-2">
-                            {["AWS Solutions Architect", "Google Professional Cloud Dev"].map((cert, i) => (
+                            {getRecommendedCertifications().map((cert, i) => (
                               <div key={i} className="flex items-center space-x-2.5 p-2 bg-[#6D5DF6]/5 border border-[#6D5DF6]/12 rounded-xl">
                                 <Award className="w-4 h-4 text-[#6D5DF6]" />
                                 <span className="text-[10px] font-bold text-[var(--color-text-primary)]">{cert}</span>
@@ -3217,13 +3386,7 @@ export default function DashboardPage({
                           {/* Recharts Radar chart */}
                           <div className="h-[220px] w-full flex items-center justify-center font-mono text-[9px]">
                             <RechartsResponsiveContainer width="100%" height="100%">
-                              <RadarChart cx="50%" cy="50%" outerRadius="70%" data={[
-                                { subject: "Languages", A: 85, B: 95 },
-                                { subject: "Databases", A: 90, B: 85 },
-                                { subject: "Cloud Ops", A: 55, B: 88 },
-                                { subject: "APIs Design", A: 80, B: 90 },
-                                { subject: "Testing", A: 60, B: 80 }
-                              ]}>
+                              <RadarChart cx="50%" cy="50%" outerRadius="70%" data={getRadarData()}>
                                 <PolarGrid stroke="var(--color-border)" />
                                 <PolarAngleAxis dataKey="subject" stroke="var(--color-text-secondary)" fontSize={9} />
                                 <PolarRadiusAxis angle={30} domain={[0, 100]} stroke="var(--color-border)" fontSize={7} />
@@ -3351,22 +3514,8 @@ export default function DashboardPage({
                                   </button>
 
                                   {isExpanded && (
-                                    <div className="absolute left-0 right-0 top-full mt-3 bg-[var(--glass-card-bg)] border border-[var(--color-border)] backdrop-blur-2xl rounded-2xl p-4.5 shadow-xl z-20 text-[10.5px] leading-relaxed space-y-3.5 max-w-[280px]">
-                                      <div className="space-y-1.5">
-                                        <span className="text-[8px] font-mono text-[var(--color-text-tertiary)] uppercase font-black block">Practical Project Brief</span>
-                                        <h5 className="font-bold text-[var(--color-text-primary)]">{milestone.practicalProject?.title}</h5>
-                                        <p className="text-[10px] text-[var(--color-text-secondary)] font-sans">{milestone.practicalProject?.description}</p>
-                                      </div>
-                                      
-                                      <div className="space-y-1.5 border-t border-[var(--color-border)] pt-2">
-                                        <span className="text-[8px] font-mono text-[var(--color-text-tertiary)] uppercase font-black block mb-1">Study References</span>
-                                        {milestone.recommendedResources?.map((res, i) => (
-                                          <div key={i} className="flex items-center space-x-1.5">
-                                            <BookOpen className="w-3 h-3 text-[#6D5DF6] shrink-0" />
-                                            <span className="truncate">{res}</span>
-                                          </div>
-                                        ))}
-                                      </div>
+                                    <div className="absolute left-0 right-0 top-full mt-3 bg-[var(--glass-card-bg)] border border-[var(--color-border)] backdrop-blur-2xl rounded-2xl p-4.5 shadow-2xl z-20 text-[10.5px] leading-relaxed space-y-3.5 max-w-[290px] max-h-[350px] overflow-y-auto custom-scrollbar">
+                                      {renderMilestoneDetails(milestone, idx)}
                                     </div>
                                   )}
                                 </div>
@@ -3409,23 +3558,9 @@ export default function DashboardPage({
                                     <motion.div
                                       initial={{ opacity: 0, height: 0 }}
                                       animate={{ opacity: 1, height: "auto" }}
-                                      className="space-y-3 pt-2 text-xs font-medium text-[var(--color-text-secondary)]"
+                                      className="space-y-3 pt-2 text-xs font-medium text-[var(--color-text-secondary)] border-t border-[var(--color-border)] mt-2"
                                     >
-                                      <div className="bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl p-3.5 space-y-2 shadow-inner leading-relaxed">
-                                        <span className="text-[8.5px] font-mono text-[var(--color-text-tertiary)] uppercase font-black block">Practical Project Brief</span>
-                                        <h5 className="font-bold text-[var(--color-text-primary)]">{milestone.practicalProject?.title}</h5>
-                                        <p className="text-[10.5px] text-[var(--color-text-secondary)] font-sans">{milestone.practicalProject?.description}</p>
-                                      </div>
-
-                                      <div className="space-y-1">
-                                        <span className="text-[8.5px] font-mono text-[var(--color-text-tertiary)] uppercase font-black block mb-1">Study Courses & References</span>
-                                        {milestone.recommendedResources?.map((res, i) => (
-                                          <div key={i} className="flex items-center space-x-2">
-                                            <BookOpen className="w-3.5 h-3.5 text-[#6D5DF6] shrink-0" />
-                                            <span className="text-[10.5px] text-[var(--color-text-secondary)]">{res}</span>
-                                          </div>
-                                        ))}
-                                      </div>
+                                      {renderMilestoneDetails(milestone, idx)}
                                     </motion.div>
                                   )}
                                 </div>
@@ -3469,21 +3604,7 @@ export default function DashboardPage({
 
                                   {isExpanded && (
                                     <div className="p-4 border-t border-[var(--color-border)] bg-[var(--color-bg-page)]/20 text-xs space-y-4 font-medium text-[var(--color-text-secondary)] animate-fade-in">
-                                      <div className="space-y-1.5">
-                                        <span className="text-[8.5px] font-mono text-[var(--color-text-tertiary)] uppercase font-black block">Practical Project Brief</span>
-                                        <h5 className="font-bold text-[var(--color-text-primary)]">{milestone.practicalProject?.title}</h5>
-                                        <p className="text-[10.5px] leading-relaxed font-sans">{milestone.practicalProject?.description}</p>
-                                      </div>
-                                      
-                                      <div className="space-y-1.5 border-t border-[var(--color-border)] pt-2.5">
-                                        <span className="text-[8.5px] font-mono text-[var(--color-text-tertiary)] uppercase font-black block mb-1">Study Courses & References</span>
-                                        {milestone.recommendedResources?.map((res, i) => (
-                                          <div key={i} className="flex items-center space-x-2">
-                                            <BookOpen className="w-3.5 h-3.5 text-[#6D5DF6] shrink-0" />
-                                            <span className="text-[10.5px] leading-relaxed font-sans">{res}</span>
-                                          </div>
-                                        ))}
-                                      </div>
+                                      {renderMilestoneDetails(milestone, idx)}
                                     </div>
                                   )}
                                 </div>

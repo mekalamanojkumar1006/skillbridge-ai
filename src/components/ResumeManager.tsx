@@ -11,9 +11,10 @@ interface Resume {
   parsedData?: {
     name?: string;
     email?: string;
-    skills?: string[];
+    skills?: any;
     experience?: any[];
   };
+  atsScore?: number;
   createdAt: string;
 }
 
@@ -28,6 +29,15 @@ export default function ResumeManager({ userId, activeResume, onSelectResume }: 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  const getFlatSkillsCount = (skillsObj: any): number => {
+    if (!skillsObj) return 0;
+    if (Array.isArray(skillsObj)) return skillsObj.length;
+    if (typeof skillsObj === "object") {
+      return Object.values(skillsObj).flat().filter(Boolean).length;
+    }
+    return 0;
+  };
 
   // File Upload State
   const [file, setFile] = useState<File | null>(null);
@@ -445,7 +455,7 @@ export default function ResumeManager({ userId, activeResume, onSelectResume }: 
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="glass-card w-full max-w-4xl p-6 space-y-5 text-left relative overflow-hidden"
+              className="glass-card w-full max-w-2xl p-6 space-y-5 text-left relative overflow-hidden"
             >
               <button
                 onClick={() => setShowCompareModal(false)}
@@ -461,58 +471,63 @@ export default function ResumeManager({ userId, activeResume, onSelectResume }: 
                 </h3>
               </div>
 
-              <div className="overflow-x-auto text-[11px] font-mono">
-                <table className="w-full min-w-[600px] border-collapse">
-                  <thead>
-                    <tr className="border-b border-[var(--color-border)]">
-                      <th className="py-3 px-4 text-left text-[9px] text-[var(--color-text-tertiary)] uppercase tracking-wider">Metrics</th>
-                      {resumes.map(res => (
-                        <th key={res.id} className="py-3 px-4 text-left font-extrabold text-[var(--color-text-primary)]">
-                          {res.fileName}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr className="border-b border-[var(--color-border)]/50">
-                      <td className="py-3 px-4 text-[var(--color-text-secondary)] font-bold">Skills Count</td>
-                      {resumes.map(res => (
-                        <td key={res.id} className="py-3 px-4 font-bold text-indigo-500">
-                          {res.parsedData?.skills?.length || 0} Skills
-                        </td>
-                      ))}
-                    </tr>
-                    <tr className="border-b border-[var(--color-border)]/50">
-                      <td className="py-3 px-4 text-[var(--color-text-secondary)] font-bold">Formatting Quality</td>
-                      {resumes.map(res => (
-                        <td key={res.id} className="py-3 px-4 font-bold text-emerald-500">
-                          Good (92%)
-                        </td>
-                      ))}
-                    </tr>
-                    <tr className="border-b border-[var(--color-border)]/50">
-                      <td className="py-3 px-4 text-[var(--color-text-secondary)] font-bold">Keywords Match</td>
-                      {resumes.map(res => {
-                        const len = res.parsedData?.skills?.length || 0;
-                        const keywordsScore = Math.min(100, 50 + len * 3);
-                        return (
-                          <td key={res.id} className="py-3 px-4 font-bold text-purple-500">
-                            {keywordsScore}%
-                          </td>
-                        );
-                      })}
-                    </tr>
-                    <tr className="border-b border-[var(--color-border)]/50">
-                      <td className="py-3 px-4 text-[var(--color-text-secondary)] font-bold">Experience Fit</td>
-                      {resumes.map(res => (
-                        <td key={res.id} className="py-3 px-4 font-bold text-yellow-500">
-                          Strong Fit
-                        </td>
-                      ))}
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              {(() => {
+                const sorted = [...resumes].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+                if (sorted.length < 2) {
+                  return (
+                    <div className="p-8 text-center space-y-3">
+                      <AlertCircle className="w-8 h-8 text-amber-500 mx-auto" />
+                      <p className="text-xs text-[var(--color-text-secondary)] font-sans font-medium">
+                        Upload another resume to compare ATS improvements.
+                      </p>
+                    </div>
+                  );
+                }
+
+                const current = activeResume || sorted[0];
+                const previous = sorted.find(r => r.id !== current?.id) || sorted[1];
+
+                const currentSkillsCount = getFlatSkillsCount(current.parsedData?.skills);
+                const previousSkillsCount = getFlatSkillsCount(previous.parsedData?.skills);
+
+                const currentScore = current.atsScore !== undefined ? current.atsScore : 50;
+                const previousScore = previous.atsScore !== undefined ? previous.atsScore : 50;
+
+                const currentLength = current.content?.length || 0;
+                const previousLength = previous.content?.length || 0;
+
+                return (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-3 gap-4 border-b border-[var(--color-border)] pb-2 text-[10px] font-mono font-bold text-[var(--color-text-tertiary)] uppercase">
+                      <div>Metric</div>
+                      <div className="text-indigo-500">Current ({current.fileName})</div>
+                      <div className="text-[var(--color-text-secondary)] font-bold">Previous ({previous.fileName})</div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-4 border-b border-[var(--color-border)]/45 py-2 text-[11px] font-mono">
+                      <div className="text-[var(--color-text-secondary)] font-bold">ATS Score</div>
+                      <div className="text-indigo-500 font-extrabold text-xs">{currentScore}%</div>
+                      <div className="text-[var(--color-text-primary)] font-bold">{previousScore}%</div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-4 border-b border-[var(--color-border)]/45 py-2 text-[11px] font-mono">
+                      <div className="text-[var(--color-text-secondary)] font-bold">Skills Count</div>
+                      <div className="text-indigo-500 font-extrabold text-xs">{currentSkillsCount} Skills</div>
+                      <div className="text-[var(--color-text-primary)] font-bold">{previousSkillsCount} Skills</div>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-4 border-b border-[var(--color-border)]/45 py-2 text-[11px] font-mono">
+                      <div className="text-[var(--color-text-secondary)] font-bold">Word Length</div>
+                      <div className="text-indigo-500 font-extrabold text-xs">{currentLength} chars</div>
+                      <div className="text-[var(--color-text-primary)] font-bold">{previousLength} chars</div>
+                    </div>
+                    
+                    <div className="pt-2 text-[10px] text-[var(--color-text-tertiary)] font-sans italic">
+                      * Uploading new resumes automatically computes matching coefficients. Target roles will leverage these comparison models.
+                    </div>
+                  </div>
+                );
+              })()}
             </motion.div>
           </div>
         )}
