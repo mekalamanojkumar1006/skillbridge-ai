@@ -3440,8 +3440,42 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
-    app.get("*", (req, res) => {
+
+    // ── SEO: Set X-Robots-Tag on all responses so Google's HTTP-level check passes ──
+    app.use((_req: any, res: any, next: any) => {
+      res.setHeader("X-Robots-Tag", "index, follow");
+      next();
+    });
+
+    // ── SEO: Serve robots.txt with explicit MIME type (prevents Express guessing wrong type) ──
+    app.get("/robots.txt", (_req: any, res: any) => {
+      res.setHeader("Content-Type", "text/plain; charset=utf-8");
+      res.setHeader("Cache-Control", "public, max-age=86400");
+      res.sendFile(path.join(distPath, "robots.txt"));
+    });
+
+    // ── SEO: Serve sitemap.xml with explicit MIME type ──
+    app.get("/sitemap.xml", (_req: any, res: any) => {
+      res.setHeader("Content-Type", "application/xml; charset=utf-8");
+      res.setHeader("Cache-Control", "public, max-age=86400");
+      res.sendFile(path.join(distPath, "sitemap.xml"));
+    });
+
+    // ── Static assets (JS, CSS, images, favicons, etc.) ──
+    app.use(express.static(distPath, {
+      setHeaders: (res: any, filePath: string) => {
+        // Cache static assets for 7 days, but not HTML (so re-crawl picks up changes)
+        if (filePath.endsWith(".html")) {
+          res.setHeader("Cache-Control", "no-cache");
+        } else {
+          res.setHeader("Cache-Control", "public, max-age=604800, immutable");
+        }
+      }
+    }));
+
+    // ── SPA fallback: serve index.html for all unmatched routes ──
+    app.get("*", (_req: any, res: any) => {
+      res.setHeader("Cache-Control", "no-cache");
       res.sendFile(path.join(distPath, "index.html"));
     });
   }

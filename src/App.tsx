@@ -18,6 +18,10 @@ export default function App() {
   const [resume, setResume] = useState<any>(null);
   const [authChecking, setAuthChecking] = useState(true);
 
+  // Global resume gate state — drives sidebar locking and post-login routing
+  const [resumeUploaded, setResumeUploaded] = useState(false);
+  const [profileParsed, setProfileParsed] = useState(false);
+
   // Global theme synchronized with local storage key matching DashboardPage
   const [theme, setTheme] = useState<"light" | "dark">(() => {
     try {
@@ -80,7 +84,11 @@ export default function App() {
             if (list.length > 0) {
               // Sort by createdAt descending
               list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-              setResume(list[0]);
+              const latestResume = list[0];
+              setResume(latestResume);
+              // Mark resume as uploaded & parsed if one exists
+              setResumeUploaded(true);
+              setProfileParsed(true);
             }
           } catch (error) {
             console.error("Failed to restore latest resume:", error);
@@ -88,7 +96,7 @@ export default function App() {
         };
         loadResume();
 
-        // Direct authenticated users to workspace
+        // Direct authenticated users to workspace (resume gate handled inside DashboardPage)
         setCurrentPage("dashboard");
       } else {
         setUser(null);
@@ -106,6 +114,8 @@ export default function App() {
       await signOut(auth);
       setUser(null);
       setResume(null);
+      setResumeUploaded(false);
+      setProfileParsed(false);
       setCurrentPage("landing");
     } catch (error) {
       console.error("Logout failed:", error);
@@ -122,6 +132,8 @@ export default function App() {
 
   const handleResumeUploadSuccess = (uploadedResume: any) => {
     setResume(uploadedResume);
+    setResumeUploaded(true);
+    setProfileParsed(true);
   };
 
   if (!splashComplete) {
@@ -162,9 +174,15 @@ export default function App() {
           onNavigate={setCurrentPage}
           onLogout={handleLogout}
           onUpdateUser={(updatedUser: any) => setUser(updatedUser)}
-          onResetResume={() => setResume(null)}
+          onResetResume={() => {
+            setResume(null);
+            setResumeUploaded(false);
+            setProfileParsed(false);
+          }}
           theme={theme}
           setTheme={setTheme}
+          resumeUploaded={resumeUploaded}
+          profileParsed={profileParsed}
         />
       )}
       {currentPage === "upload" && user && (

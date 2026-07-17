@@ -54,7 +54,8 @@ import {
   Mic,
   Check,
   Copy,
-  Trash
+  Trash,
+  Upload
 } from "lucide-react";
 import ProfileSettingsPage from "./ProfileSettingsPage";
 import ApplicationTracker from "../components/ApplicationTracker";
@@ -2229,76 +2230,198 @@ export default function DashboardPage({
           ) : activeTab === "admin" ? (
             <AdminPanel />
           ) : !resume && !["resumes", "applications", "admin", "settings"].includes(activeTab) ? (
-            /* Redesigned blank slate workflow diagram when no resume exists */
-            <div className="max-w-3xl mx-auto my-6 space-y-8 animate-fade-in">
-              <div className="glass-card glowing-border p-8 sm:p-10 text-center relative overflow-hidden">
-                <div className="absolute top-[-50px] right-[-50px] w-48 h-48 bg-[#6D5DF6]/5 rounded-full blur-3xl pointer-events-none" />
-                
-                <div className="flex flex-col items-center justify-center max-w-md mx-auto">
-                  <div className="p-4.5 bg-[#6D5DF6]/10 border border-[#6D5DF6]/20 text-[#6D5DF6] rounded-3xl mb-5 animate-pulse shadow-md">
-                    <FileText className="w-10 h-10" />
-                  </div>
-                  <h2 className="text-xl sm:text-2xl font-black tracking-tight">No Resume Uploaded</h2>
-                  <p className="text-xs text-[var(--color-text-secondary)] mt-2 font-semibold font-sans">
-                    Upload your resume to unlock:
-                  </p>
-                  <ul className="mt-4 text-left text-xs font-bold text-[var(--color-text-secondary)] space-y-1.5 font-sans">
-                    <li>• ATS Analysis</li>
-                    <li>• Career Score</li>
-                    <li>• Skill Gap Analysis</li>
-                    <li>• Job Matching</li>
-                    <li>• Interview Preparation</li>
-                    <li>• Career Roadmap</li>
-                  </ul>
-                  
-                  <button
-                    onClick={() => onNavigate("upload")}
-                    className="mt-6 px-6 py-3.5 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider font-semibold text-white shadow-md"
-                  >
-                    Upload Profile Resume
-                  </button>
+            /* Premium onboarding hero — no resume uploaded */
+            <div className="animate-fade-in w-full space-y-6">
+
+              {/* ── HERO: Two-column layout ── */}
+              <div className="relative glass-card glowing-border overflow-hidden">
+                {/* Ambient glow */}
+                <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                  <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#6D5DF6]/10 rounded-full blur-[100px]" />
+                  <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-[#8B5CF6]/8 rounded-full blur-[100px]" />
                 </div>
 
-                {/* Workflow timeline stepper illustration */}
-                <div className="mt-12 pt-8 border-t border-[var(--color-border)]">
-                  <span className="text-[10px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider block mb-6 font-black">AI Pipeline Workflow</span>
-                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 text-center text-[10px] font-mono font-bold text-[var(--color-text-secondary)]">
-                    {[
-                      { step: "01", label: "Upload Resume", color: "text-[#6D5DF6]" },
-                      { step: "02", label: "AI Analysis" },
-                      { step: "03", label: "Skill gaps" },
-                      { step: "04", label: "Career roadmap" },
-                      { step: "05", label: "Job match" },
-                      { step: "06", label: "Interview Prep" }
-                    ].map((step, idx) => (
-                      <div key={idx} className="space-y-2 flex flex-col items-center">
-                        <div className={`w-8 h-8 rounded-full border flex items-center justify-center shadow-inner ${idx === 0 ? "border-[#6D5DF6]/30 bg-[#6D5DF6]/5 text-[#6D5DF6]" : "border-[var(--color-border)]"}`}>
-                          {step.step}
+                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-0">
+
+                  {/* LEFT: AI illustration */}
+                  <div className="flex items-center justify-center p-8 sm:p-12 lg:border-r border-[var(--color-border)]">
+                    <div className="relative w-full max-w-[260px]">
+                      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }} className="relative">
+                        {/* Resume mockup */}
+                        <div className="glass-card p-6 shadow-2xl border border-[var(--color-glass-border)]">
+                          <div className="flex items-center space-x-2 mb-4 pb-3 border-b border-[var(--color-border)]">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#6D5DF6] to-[#8B5CF6] flex items-center justify-center shadow-md">
+                              <FileText className="w-4 h-4 text-white" />
+                            </div>
+                            <div>
+                              <div className="h-2 w-24 bg-[var(--color-border)] rounded-full" />
+                              <div className="h-1.5 w-16 bg-[var(--color-border)]/60 rounded-full mt-1.5" />
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <div className="h-1.5 w-full bg-[var(--color-border)] rounded-full" />
+                            <div className="h-1.5 w-4/5 bg-[var(--color-border)]/80 rounded-full" />
+                            <div className="h-1.5 w-full bg-[var(--color-border)] rounded-full" />
+                            <div className="h-1.5 w-3/4 bg-[var(--color-border)]/60 rounded-full" />
+                          </div>
+                          <div className="mt-4 space-y-2">
+                            <div className="h-1.5 w-full bg-[var(--color-border)] rounded-full" />
+                            <div className="h-1.5 w-5/6 bg-[var(--color-border)]/80 rounded-full" />
+                          </div>
+                          <div className="mt-4 flex space-x-2">
+                            <div className="h-5 w-12 bg-[#6D5DF6]/15 border border-[#6D5DF6]/25 rounded-lg" />
+                            <div className="h-5 w-14 bg-[#8B5CF6]/15 border border-[#8B5CF6]/25 rounded-lg" />
+                            <div className="h-5 w-10 bg-emerald-500/15 border border-emerald-500/25 rounded-lg" />
+                          </div>
                         </div>
-                        <span className={`block truncate w-full ${step.color || ""}`}>{step.label}</span>
-                      </div>
-                    ))}
+                        {/* Floating AI score */}
+                        <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} className="absolute -top-4 -right-4 glass-card px-3 py-2 border border-[#6D5DF6]/25 shadow-lg flex items-center space-x-2">
+                          <div className="w-5 h-5 rounded-full bg-gradient-to-br from-[#6D5DF6] to-[#8B5CF6] flex items-center justify-center">
+                            <Brain className="w-3 h-3 text-white" />
+                          </div>
+                          <div>
+                            <div className="text-[9px] font-mono font-black text-[#6D5DF6] uppercase tracking-wider">AI Score</div>
+                            <div className="text-[11px] font-black text-[var(--color-text-primary)]">Ready</div>
+                          </div>
+                        </motion.div>
+                        {/* Floating ATS */}
+                        <motion.div animate={{ y: [0, 5, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.5 }} className="absolute -bottom-4 -left-4 glass-card px-3 py-2 border border-emerald-500/25 shadow-lg flex items-center space-x-2">
+                          <div className="w-5 h-5 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center">
+                            <ShieldCheck className="w-3 h-3 text-emerald-500" />
+                          </div>
+                          <div>
+                            <div className="text-[9px] font-mono font-black text-emerald-500 uppercase tracking-wider">ATS</div>
+                            <div className="text-[11px] font-black text-[var(--color-text-primary)]">Optimized</div>
+                          </div>
+                        </motion.div>
+                        {/* Floating match */}
+                        <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }} className="absolute top-1/2 -right-8 glass-card px-3 py-2 border border-amber-500/25 shadow-lg">
+                          <div className="text-[9px] font-mono font-black text-amber-500 uppercase tracking-wider">Match</div>
+                          <div className="text-[13px] font-black text-[var(--color-text-primary)]">96%</div>
+                        </motion.div>
+                      </motion.div>
+                    </div>
+                  </div>
+
+                  {/* RIGHT: Onboarding content */}
+                  <div className="flex flex-col justify-center p-8 sm:p-12">
+                    {/* Badge */}
+                    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="mb-5">
+                      <span className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-[#6D5DF6]/10 to-[#8B5CF6]/10 border border-[#6D5DF6]/20 text-[#6D5DF6] text-[10px] font-mono font-black uppercase tracking-wider">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#6D5DF6] animate-pulse" />
+                        <span>Unlock Your Career with AI</span>
+                      </span>
+                    </motion.div>
+
+                    {/* Heading */}
+                    <motion.h2 initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.18 }} className="text-2xl sm:text-3xl font-black tracking-tight leading-tight mb-3">
+                      No Resume Uploaded
+                    </motion.h2>
+
+                    {/* Subtitle */}
+                    <motion.p initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.25 }} className="text-sm text-[var(--color-text-secondary)] font-medium leading-relaxed mb-6 font-sans">
+                      Upload your resume to unlock AI-powered ATS analysis, job matching, skill gap analysis, career roadmap, interview preparation, and career insights.
+                    </motion.p>
+
+                    {/* 6 Feature mini-cards */}
+                    <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.32 }} className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 mb-7">
+                      {[
+                        { label: "ATS Analysis",       icon: ShieldCheck,   color: "text-[#6D5DF6]",    bg: "bg-[#6D5DF6]/8 border-[#6D5DF6]/15"    },
+                        { label: "Career Score",       icon: TrendingUp,    color: "text-emerald-500",  bg: "bg-emerald-500/8 border-emerald-500/15" },
+                        { label: "Skill Gap Analysis", icon: Map,           color: "text-amber-500",    bg: "bg-amber-500/8 border-amber-500/15"    },
+                        { label: "Job Matching",       icon: Briefcase,     color: "text-sky-500",      bg: "bg-sky-500/8 border-sky-500/15"        },
+                        { label: "Career Roadmap",     icon: Target,        color: "text-[#8B5CF6]",    bg: "bg-[#8B5CF6]/8 border-[#8B5CF6]/15"   },
+                        { label: "Interview Prep",     icon: MessageSquare, color: "text-rose-500",     bg: "bg-rose-500/8 border-rose-500/15"      }
+                      ].map((feat, i) => {
+                        const FIcon = feat.icon;
+                        return (
+                          <motion.div key={i} initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.35, delay: 0.36 + i * 0.05 }} className={`flex items-center space-x-2 p-2.5 rounded-xl border ${feat.bg} group hover:scale-[1.02] transition-transform duration-200`}>
+                            <div className="p-1.5 rounded-lg bg-[var(--color-bg-page)] border border-[var(--color-border)] shrink-0">
+                              <FIcon className={`w-3.5 h-3.5 ${feat.color}`} />
+                            </div>
+                            <span className="text-[10px] font-bold font-mono text-[var(--color-text-primary)] leading-tight">{feat.label}</span>
+                          </motion.div>
+                        );
+                      })}
+                    </motion.div>
+
+                    {/* CTA */}
+                    <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.58 }}>
+                      <button
+                        onClick={() => onNavigate("upload")}
+                        className="w-full sm:w-auto px-8 py-3.5 clay-btn clay-btn-primary text-sm font-mono uppercase tracking-wider font-bold text-white shadow-lg flex items-center justify-center space-x-2.5 group"
+                      >
+                        <Upload className="w-4 h-4 transition-transform duration-200 group-hover:-translate-y-0.5" />
+                        <span>Upload Resume &amp; Start AI Analysis</span>
+                        <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                      </button>
+                      <p className="flex items-center space-x-1.5 mt-3 text-[10px] text-[var(--color-text-tertiary)] font-mono font-semibold">
+                        <Lock className="w-3 h-3 shrink-0" />
+                        <span>Your resume is encrypted and processed securely.</span>
+                      </p>
+                    </motion.div>
                   </div>
                 </div>
               </div>
 
-              {/* Benefits list details */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                  { title: "ATS Checkers", desc: "Instantly scan matched keywords.", icon: Cpu },
-                  { title: "Simulator Labs", desc: "Interact with real interview mock modules.", icon: Monitor },
-                  { title: "Hiring Dials", desc: "Predict placement probability.", icon: Award }
-                ].map((b, i) => {
-                  const Icon = b.icon;
-                  return (
-                    <div key={i} className="glass-card p-5 space-y-3">
-                      <Icon className="w-5 h-5 text-[#6D5DF6]" />
-                      <h4 className="text-xs font-bold">{b.title}</h4>
-                      <p className="text-[10.5px] text-[var(--color-text-secondary)] leading-relaxed font-sans font-medium">{b.desc}</p>
+              {/* ── AI PIPELINE WORKFLOW ── */}
+              <div className="glass-card p-6 sm:p-8 overflow-hidden relative">
+                <div className="absolute inset-0 pointer-events-none">
+                  <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-[500px] h-32 bg-[#6D5DF6]/5 rounded-full blur-[60px]" />
+                </div>
+                <div className="relative z-10">
+                  <div className="text-center mb-8">
+                    <span className="text-[9px] font-mono uppercase tracking-[0.2em] text-[var(--color-text-tertiary)] font-black block">AI Pipeline Workflow</span>
+                    <p className="text-[11px] text-[var(--color-text-secondary)] mt-1 font-medium">Your resume powers 7 intelligent career engines</p>
+                  </div>
+                  <div className="overflow-x-auto pb-2">
+                    <div className="flex items-center justify-start sm:justify-center min-w-max sm:min-w-0 px-2">
+                      {[
+                        { step: 1, label: "Upload\nResume",      icon: Upload,        color: "#6D5DF6", active: true  },
+                        { step: 2, label: "AI\nParsing",         icon: Cpu,           color: "#8B5CF6", active: false },
+                        { step: 3, label: "Profile\nAnalysis",   icon: User,          color: "#A78BFA", active: false },
+                        { step: 4, label: "Skill Gap\nAnalysis", icon: Map,           color: "#22C55E", active: false },
+                        { step: 5, label: "Job\nMatching",       icon: Briefcase,     color: "#F59E0B", active: false },
+                        { step: 6, label: "Career\nRoadmap",     icon: Target,        color: "#0EA5E9", active: false },
+                        { step: 7, label: "Interview\nPrep",     icon: MessageSquare, color: "#F43F5E", active: false }
+                      ].map((s, idx, arr) => {
+                        const SIcon = s.icon;
+                        return (
+                          <div key={idx} className="flex items-center">
+                            <div className="flex flex-col items-center space-y-2 w-[76px]">
+                              <motion.div initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.45, delay: 0.1 + idx * 0.07, ease: [0.16, 1, 0.3, 1] }} className="relative">
+                                {s.active && (
+                                  <div className="absolute inset-0 rounded-full animate-ping opacity-20" style={{ background: `radial-gradient(circle, ${s.color}50, transparent)` }} />
+                                )}
+                                <div
+                                  className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg relative z-10 border-2 ${
+                                    s.active ? "border-transparent" : "border-[var(--color-border)] bg-[var(--color-bg-card)]"
+                                  }`}
+                                  style={s.active ? { background: `linear-gradient(135deg, ${s.color}cc, ${s.color}88)`, boxShadow: `0 0 18px ${s.color}40` } : {}}
+                                >
+                                  <SIcon className="w-5 h-5" style={{ color: s.active ? "#fff" : s.color }} />
+                                </div>
+                                <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-black z-20 border border-[var(--color-bg-page)]" style={{ background: s.color, color: "#fff" }}>
+                                  {s.step}
+                                </div>
+                              </motion.div>
+                              <span className="text-[9px] font-mono font-bold text-center text-[var(--color-text-secondary)] whitespace-pre-line leading-snug">{s.label}</span>
+                            </div>
+                            {idx < arr.length - 1 && (
+                              <div className="relative w-8 shrink-0 -mt-5 overflow-hidden">
+                                <div className="h-px bg-[var(--color-border)]">
+                                  <motion.div animate={{ x: ["-100%", "200%"] }} transition={{ duration: 1.8, repeat: Infinity, ease: "linear", delay: idx * 0.25 }} className="absolute inset-0 w-1/2 bg-gradient-to-r from-transparent via-[#6D5DF6]/60 to-transparent" />
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
-                  );
-                })}
+                  </div>
+                </div>
               </div>
+
             </div>
           ) : (
             /* Active tab view contents */
