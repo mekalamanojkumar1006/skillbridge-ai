@@ -4,6 +4,41 @@ export class ApiService {
     return "";
   }
 
+  static setToken(token?: string) {
+    if (token) {
+      localStorage.setItem("skillbridge_jwt_token", token);
+    }
+  }
+
+  static getToken() {
+    return localStorage.getItem("skillbridge_jwt_token") || "";
+  }
+
+  static getHeaders(extraHeaders: Record<string, string> = {}) {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      ...extraHeaders
+    };
+    const token = this.getToken();
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    return headers;
+  }
+
+  static getAuthHeaders(extraHeaders: Record<string, string> = {}) {
+    const headers: Record<string, string> = { ...extraHeaders };
+    const token = this.getToken();
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    return headers;
+  }
+
+  static clearToken() {
+    localStorage.removeItem("skillbridge_jwt_token");
+  }
+
   static async registerUser(uid: string, email: string, displayName?: string) {
     const res = await fetch(`${this.getBaseUrl()}/api/auth/register`, {
       method: "POST",
@@ -14,7 +49,11 @@ export class ApiService {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || "Failed to register profile");
     }
-    return res.json();
+    const data = await res.json();
+    if (data.token) {
+      this.setToken(data.token);
+    }
+    return data;
   }
 
   static async loginUser(uid: string) {
@@ -27,11 +66,17 @@ export class ApiService {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || "Failed to retrieve user profile");
     }
-    return res.json();
+    const data = await res.json();
+    if (data.token) {
+      this.setToken(data.token);
+    }
+    return data;
   }
 
   static async getProfile(uid: string) {
-    const res = await fetch(`${this.getBaseUrl()}/api/auth/me?uid=${encodeURIComponent(uid)}`);
+    const res = await fetch(`${this.getBaseUrl()}/api/auth/me?uid=${encodeURIComponent(uid)}`, {
+      headers: this.getHeaders()
+    });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || "Failed to load user profile");
@@ -41,7 +86,7 @@ export class ApiService {
 
   static async uploadResume(userId: string, fileName: string, contentOrFile: string | File) {
     let body: any;
-    let headers: Record<string, string> = {};
+    let headers: Record<string, string> = this.getAuthHeaders();
 
     if (contentOrFile instanceof File) {
       const formData = new FormData();
@@ -69,7 +114,7 @@ export class ApiService {
   static async analyzeQuality(resumeId: string, userId: string) {
     const res = await fetch(`${this.getBaseUrl()}/api/analysis/quality/${resumeId}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(),
       body: JSON.stringify({ userId })
     });
     if (!res.ok) {
@@ -82,7 +127,7 @@ export class ApiService {
   static async getAtsScore(resumeId: string, jobDescription: string, userId: string) {
     const res = await fetch(`${this.getBaseUrl()}/api/analysis/ats-score`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(),
       body: JSON.stringify({ resumeId, jobDescription, userId })
     });
     if (!res.ok) {
@@ -95,7 +140,7 @@ export class ApiService {
   static async matchJobs(resumeId: string, userId: string) {
     const res = await fetch(`${this.getBaseUrl()}/api/jobs/match`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(),
       body: JSON.stringify({ resumeId, userId })
     });
     if (!res.ok) {
@@ -106,7 +151,9 @@ export class ApiService {
   }
 
   static async getTopMatches(userId: string) {
-    const res = await fetch(`${this.getBaseUrl()}/api/jobs/top-matches?userId=${encodeURIComponent(userId)}`);
+    const res = await fetch(`${this.getBaseUrl()}/api/jobs/top-matches?userId=${encodeURIComponent(userId)}`, {
+      headers: this.getHeaders()
+    });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || "Failed to retrieve top job matches");
@@ -117,7 +164,7 @@ export class ApiService {
   static async analyzeSkillGaps(resumeId: string, targetRole: string, userId: string) {
     const res = await fetch(`${this.getBaseUrl()}/api/skills/gap-analysis`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(),
       body: JSON.stringify({ resumeId, targetRole, userId })
     });
     if (!res.ok) {
@@ -129,7 +176,8 @@ export class ApiService {
 
   static async getLearningRoadmap(assessmentId: string) {
     const res = await fetch(`${this.getBaseUrl()}/api/skills/learning-roadmap/${assessmentId}`, {
-      method: "POST"
+      method: "POST",
+      headers: this.getHeaders()
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
@@ -139,7 +187,9 @@ export class ApiService {
   }
 
   static async getCareerRoadmaps(userId: string) {
-    const res = await fetch(`${this.getBaseUrl()}/api/career-roadmap/all?userId=${encodeURIComponent(userId)}`);
+    const res = await fetch(`${this.getBaseUrl()}/api/career-roadmap/all?userId=${encodeURIComponent(userId)}`, {
+      headers: this.getHeaders()
+    });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || "Failed to load career roadmaps");
@@ -150,7 +200,7 @@ export class ApiService {
   static async generateCareerRoadmap(resumeId: string, targetPath: string, userId: string) {
     const res = await fetch(`${this.getBaseUrl()}/api/career-roadmap/generate`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(),
       body: JSON.stringify({ resumeId, targetPath, userId })
     });
     if (!res.ok) {
@@ -159,8 +209,11 @@ export class ApiService {
     }
     return res.json();
   }
+
   static async getRoadmapProgress(userId: string, careerId: string) {
-    const res = await fetch(`${this.getBaseUrl()}/api/career-roadmap/progress?userId=${encodeURIComponent(userId)}&careerId=${encodeURIComponent(careerId)}`);
+    const res = await fetch(`${this.getBaseUrl()}/api/career-roadmap/progress?userId=${encodeURIComponent(userId)}&careerId=${encodeURIComponent(careerId)}`, {
+      headers: this.getHeaders()
+    });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || "Failed to load roadmap progress");
@@ -171,7 +224,7 @@ export class ApiService {
   static async saveRoadmapProgress(userId: string, careerId: string, completedMilestones: number[]) {
     const res = await fetch(`${this.getBaseUrl()}/api/career-roadmap/progress`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(),
       body: JSON.stringify({ userId, careerId, completedMilestones })
     });
     if (!res.ok) {
@@ -180,10 +233,11 @@ export class ApiService {
     }
     return res.json();
   }
+
   static async chatWithMentor(prompt: string) {
     const res = await fetch(`${this.getBaseUrl()}/api/mentor/chat`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(),
       body: JSON.stringify({ prompt })
     });
     if (!res.ok) {
@@ -194,7 +248,9 @@ export class ApiService {
   }
 
   static async getInterviewQuestions(resumeId: string) {
-    const res = await fetch(`${this.getBaseUrl()}/api/interview/questions?resumeId=${encodeURIComponent(resumeId)}`);
+    const res = await fetch(`${this.getBaseUrl()}/api/interview/questions?resumeId=${encodeURIComponent(resumeId)}`, {
+      headers: this.getHeaders()
+    });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || "Failed to generate interview questions");
@@ -205,7 +261,7 @@ export class ApiService {
   static async evaluateInterviewAnswer(questionText: string, expectedPoints: string[], userAnswer: string) {
     const res = await fetch(`${this.getBaseUrl()}/api/interview/evaluate`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(),
       body: JSON.stringify({ questionText, expectedPoints, userAnswer })
     });
     if (!res.ok) {
@@ -218,7 +274,7 @@ export class ApiService {
   static async generateInterviewReport(interviewType: string, questionsAndAnswers: any[]) {
     const res = await fetch(`${this.getBaseUrl()}/api/interview/report`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(),
       body: JSON.stringify({ interviewType, questionsAndAnswers })
     });
     if (!res.ok) {
@@ -231,7 +287,7 @@ export class ApiService {
   static async predictHiringProbability(resumeId: string, jobTitle: string, company: string, userId: string) {
     const res = await fetch(`${this.getBaseUrl()}/api/hiring/probability/${resumeId}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(),
       body: JSON.stringify({ jobTitle, company, userId })
     });
     if (!res.ok) {
@@ -244,7 +300,7 @@ export class ApiService {
   static async matchOpportunities(resumeId: string, userId: string) {
     const res = await fetch(`${this.getBaseUrl()}/api/opportunities/match`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(),
       body: JSON.stringify({ resumeId, userId })
     });
     if (!res.ok) {
@@ -255,7 +311,9 @@ export class ApiService {
   }
 
   static async getLatestOpportunities(userId: string) {
-    const res = await fetch(`${this.getBaseUrl()}/api/opportunities/latest?userId=${encodeURIComponent(userId)}`);
+    const res = await fetch(`${this.getBaseUrl()}/api/opportunities/latest?userId=${encodeURIComponent(userId)}`, {
+      headers: this.getHeaders()
+    });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || "Failed to retrieve recommended opportunities");
@@ -264,7 +322,9 @@ export class ApiService {
   }
 
   static async getAllOpportunities() {
-    const res = await fetch(`${this.getBaseUrl()}/api/opportunities/all`);
+    const res = await fetch(`${this.getBaseUrl()}/api/opportunities/all`, {
+      headers: this.getHeaders()
+    });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || "Failed to retrieve raw opportunities database");
@@ -273,7 +333,9 @@ export class ApiService {
   }
 
   static async getPlatformStats() {
-    const res = await fetch(`${this.getBaseUrl()}/api/stats`);
+    const res = await fetch(`${this.getBaseUrl()}/api/stats`, {
+      headers: this.getHeaders()
+    });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || "Failed to retrieve platform statistics");
@@ -281,10 +343,21 @@ export class ApiService {
     return res.json();
   }
 
+  static async getDashboardStats() {
+    const res = await fetch(`${this.getBaseUrl()}/api/dashboard/stats`, {
+      headers: this.getHeaders()
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to retrieve dashboard stats");
+    }
+    return res.json();
+  }
+
   static async updateProfile(uid: string, displayName: string) {
     const res = await fetch(`${this.getBaseUrl()}/api/profile/update`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(),
       body: JSON.stringify({ uid, displayName })
     });
     if (!res.ok) {
@@ -297,12 +370,211 @@ export class ApiService {
   static async resetResumeData(uid: string) {
     const res = await fetch(`${this.getBaseUrl()}/api/profile/reset-data`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: this.getHeaders(),
       body: JSON.stringify({ uid })
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || "Failed to reset resume data");
+    }
+    return res.json();
+  }
+
+  // --- NEW PRODUCTION ENDPOINTS ---
+
+  static async getDashboardInsights() {
+    const res = await fetch(`${this.getBaseUrl()}/api/dashboard/insights`, {
+      headers: this.getHeaders()
+    });
+    if (!res.ok) {
+      throw new Error("Failed to retrieve dashboard insights");
+    }
+    return res.json();
+  }
+
+  static async getApplications() {
+    const res = await fetch(`${this.getBaseUrl()}/api/applications/all`, {
+      headers: this.getHeaders()
+    });
+    if (!res.ok) {
+      throw new Error("Failed to retrieve applications list");
+    }
+    return res.json();
+  }
+
+  static async addApplication(app: { company: string; role: string; status: string; salary?: string; appliedDate?: string; notes?: string }) {
+    const res = await fetch(`${this.getBaseUrl()}/api/applications/add`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify(app)
+    });
+    if (!res.ok) {
+      throw new Error("Failed to add application");
+    }
+    return res.json();
+  }
+
+  static async updateApplicationStatus(id: string, status: string) {
+    const res = await fetch(`${this.getBaseUrl()}/api/applications/update-status`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify({ id, status })
+    });
+    if (!res.ok) {
+      throw new Error("Failed to update application status");
+    }
+    return res.json();
+  }
+
+  static async getResumes() {
+    const res = await fetch(`${this.getBaseUrl()}/api/resumes/all`, {
+      headers: this.getHeaders()
+    });
+    if (!res.ok) {
+      throw new Error("Failed to retrieve resumes list");
+    }
+    return res.json();
+  }
+
+  static async renameResume(id: string, newName: string) {
+    const res = await fetch(`${this.getBaseUrl()}/api/resumes/rename`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify({ id, newName })
+    });
+    if (!res.ok) {
+      throw new Error("Failed to rename resume");
+    }
+    return res.json();
+  }
+
+  static async duplicateResume(id: string) {
+    const res = await fetch(`${this.getBaseUrl()}/api/resumes/duplicate`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify({ id })
+    });
+    if (!res.ok) {
+      throw new Error("Failed to duplicate resume");
+    }
+    return res.json();
+  }
+
+  static async deleteResume(id: string) {
+    const res = await fetch(`${this.getBaseUrl()}/api/resumes/delete`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify({ id })
+    });
+    if (!res.ok) {
+      throw new Error("Failed to delete resume");
+    }
+    return res.json();
+  }
+
+  static async getInterviewHistory() {
+    const res = await fetch(`${this.getBaseUrl()}/api/interview/history`, {
+      headers: this.getHeaders()
+    });
+    if (!res.ok) {
+      throw new Error("Failed to retrieve interview history");
+    }
+    return res.json();
+  }
+
+  static async saveInterview(payload: { role: string; difficulty: string; overallScore: number; metrics: any; strengths: string[]; weaknesses: string[]; improvementSuggestions: string[]; recommendedResources: any[] }) {
+    const res = await fetch(`${this.getBaseUrl()}/api/interview/save`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      throw new Error("Failed to save interview session");
+    }
+    return res.json();
+  }
+
+  static async getNotifications() {
+    const res = await fetch(`${this.getBaseUrl()}/api/notifications/all`, {
+      headers: this.getHeaders()
+    });
+    if (!res.ok) {
+      throw new Error("Failed to retrieve notifications");
+    }
+    return res.json();
+  }
+
+  static async markNotificationRead(id?: string) {
+    const res = await fetch(`${this.getBaseUrl()}/api/notifications/mark-read`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify({ id })
+    });
+    if (!res.ok) {
+      throw new Error("Failed to mark notifications read");
+    }
+    return res.json();
+  }
+
+  static async exportUserData() {
+    const res = await fetch(`${this.getBaseUrl()}/api/profile/export-data`, {
+      headers: this.getHeaders()
+    });
+    if (!res.ok) {
+      throw new Error("Failed to export user data");
+    }
+    return res.json();
+  }
+
+  static async deleteAccount() {
+    const res = await fetch(`${this.getBaseUrl()}/api/profile/delete-account`, {
+      method: "POST",
+      headers: this.getHeaders()
+    });
+    if (!res.ok) {
+      throw new Error("Failed to delete account");
+    }
+    return res.json();
+  }
+
+  static async submitFeedback(type: string, feedbackText: string) {
+    const res = await fetch(`${this.getBaseUrl()}/api/feedback/submit`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify({ type, feedbackText })
+    });
+    if (!res.ok) {
+      throw new Error("Failed to submit feedback");
+    }
+    return res.json();
+  }
+
+  static async globalSearch(queryStr: string) {
+    const res = await fetch(`${this.getBaseUrl()}/api/search/global?q=${encodeURIComponent(queryStr)}`, {
+      headers: this.getHeaders()
+    });
+    if (!res.ok) {
+      throw new Error("Failed to perform global search");
+    }
+    return res.json();
+  }
+
+  static async getAdminStats() {
+    const res = await fetch(`${this.getBaseUrl()}/api/admin/stats`, {
+      headers: this.getHeaders()
+    });
+    if (!res.ok) {
+      throw new Error("Failed to retrieve admin stats");
+    }
+    return res.json();
+  }
+
+  static async getAdminSystemHealth() {
+    const res = await fetch(`${this.getBaseUrl()}/api/admin/system-health`, {
+      headers: this.getHeaders()
+    });
+    if (!res.ok) {
+      throw new Error("Failed to retrieve system health logs");
     }
     return res.json();
   }

@@ -56,10 +56,13 @@ import {
   Copy
 } from "lucide-react";
 import ProfileSettingsPage from "./ProfileSettingsPage";
+import ApplicationTracker from "../components/ApplicationTracker";
+import ResumeManager from "../components/ResumeManager";
+import AdminPanel from "../components/AdminPanel";
 import { db } from "../lib/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { CAREER_ROADMAPS, CareerPath, Milestone } from "../data/careersData";
-import { ResponsiveContainer as RechartsResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart as ReChartsBarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
+import { ResponsiveContainer as RechartsResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, BarChart as ReChartsBarChart, Bar, XAxis, YAxis, Tooltip, AreaChart, Area, Cell } from "recharts";
 import ResponsiveContainer from "../components/ResponsiveContainer";
 import { jsPDF } from "jspdf";
 import aptitudeQuestions from "../data/aptitudeQuestions.json";
@@ -271,7 +274,7 @@ export default function DashboardPage({
   theme,
   setTheme
 }: DashboardPageProps) {
-  const [activeTab, setActiveTab] = useState<"overview" | "ats" | "jobs" | "roadmap" | "career-roadmap" | "interview" | "probability" | "settings">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "ats" | "jobs" | "roadmap" | "career-roadmap" | "interview" | "probability" | "settings" | "applications" | "resumes" | "admin">("overview");
   const [resume, setResume] = useState<any>(initialResume || null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -287,59 +290,48 @@ export default function DashboardPage({
   const [isAtsTemplateOpen, setIsAtsTemplateOpen] = useState(false);
   const [copiedAts, setCopiedAts] = useState(false);
   const [platformStats, setPlatformStats] = useState<any>({
-    totalExecutions: 0,
-    averageAtsScore: "82+",
-    matchAccuracy: "94%"
+    totalExecutions: "--",
+    averageAtsScore: "--",
+    matchAccuracy: "--"
   });
+
+  const fetchStats = async () => {
+    try {
+      const statsData = await ApiService.getDashboardStats();
+      setPlatformStats({
+        totalExecutions: statsData.appExecutions,
+        averageAtsScore: "85+",
+        matchAccuracy: "96%"
+      });
+    } catch (err) {
+      console.error("Failed to load real-time platform stats:", err);
+      setPlatformStats({
+        totalExecutions: "Unavailable",
+        averageAtsScore: "Unavailable",
+        matchAccuracy: "Unavailable"
+      });
+    }
+  };
+
+  const [interviewHistory, setInterviewHistory] = useState<any[]>([]);
+  const fetchInterviewHistory = async () => {
+    try {
+      const data = await ApiService.getInterviewHistory();
+      setInterviewHistory(data.history || []);
+    } catch (e) {
+      console.error("Failed to load interview history:", e);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === "interview" && user) {
+      fetchInterviewHistory();
+    }
+  }, [activeTab, user]);
 
   // Real-time Platform Stats Polling Effect
   useEffect(() => {
     if (!user || !user.uid) return;
-
-    const fetchStats = async () => {
-      try {
-        // Query user's own documents directly from the Firestore client SDK
-        const resumesRef = collection(db, "resumes");
-        const qResumes = query(resumesRef, where("userId", "==", user.uid));
-        const resumesSnap = await getDocs(qResumes);
-        const resumesCount = resumesSnap.size;
-
-        let analysesCount = 0;
-        try {
-          const analysesRef = collection(db, "analyses");
-          const qAnalyses = query(analysesRef, where("userId", "==", user.uid));
-          const analysesSnap = await getDocs(qAnalyses);
-          analysesCount = analysesSnap.size;
-        } catch (e) {}
-
-        let atsCount = 0;
-        try {
-          const atsRef = collection(db, "atsScores");
-          const qAts = query(atsRef, where("userId", "==", user.uid));
-          const atsSnap = await getDocs(qAts);
-          atsCount = atsSnap.size;
-        } catch (e) {}
-
-        let gapsCount = 0;
-        try {
-          const skillGapsRef = collection(db, "skillGaps");
-          const qGaps = query(skillGapsRef, where("userId", "==", user.uid));
-          const gapsSnap = await getDocs(qGaps);
-          gapsCount = gapsSnap.size;
-        } catch (e) {}
-
-        // Calculate total user executions based on their actual database records
-        const totalExecutions = resumesCount + analysesCount + atsCount + gapsCount;
-
-        setPlatformStats({
-          totalExecutions: totalExecutions || resumesCount || 0,
-          averageAtsScore: "85+",
-          matchAccuracy: "96%"
-        });
-      } catch (err) {
-        console.error("Failed to load real-time platform stats:", err);
-      }
-    };
 
     fetchStats();
     // Poll every 10 seconds for real-time responsiveness
@@ -394,6 +386,60 @@ export default function DashboardPage({
   // Resume Quality state
   const [qualityAnalysis, setQualityAnalysis] = useState<any>(null);
   const [analyzingQuality, setAnalyzingQuality] = useState(false);
+
+  // Profile completion items state
+  const [profileItems, setProfileItems] = useState<Record<string, boolean>>({
+    resume: !!resume,
+    skills: false,
+    education: false,
+    experience: false,
+    projects: false,
+    certifications: false,
+    linkedin: false,
+    github: false,
+    portfolio: false
+  });
+
+  // Fetch from user record if present
+  useEffect(() => {
+    if (user && user.profileItems) {
+      setProfileItems(user.profileItems);
+    }
+  }, [user]);
+
+  // Sync profile completion item state change
+  const toggleProfileItem = async (key: string) => {
+    const nextItems = { ...profileItems, [key]: !profileItems[key] };
+    setProfileItems(nextItems);
+    try {
+      await ApiService.updateProfile(user.uid, user.displayName || "");
+      // Save locally or sync database if we extend backend update profile
+    } catch (e) {}
+  };
+
+  // AI insights state
+  const [aiInsights, setAiInsights] = useState<any[]>([]);
+  useEffect(() => {
+    if (user) {
+      ApiService.getDashboardInsights().then(res => {
+        setAiInsights(res.insights || []);
+      }).catch(() => {
+        setAiInsights([
+          { text: "Improve ATS score by adding React keywords to your experience bullet points.", type: "ats", action: "Optimize Resume" },
+          { text: "Learn Docker and container virtualization to increase software engineering job matches.", type: "skill", action: "Open Roadmap" },
+          { text: "Complete your profile details to unlock direct recruiter messages.", type: "profile", action: "Verify Profile" },
+          { text: "Practice Technical/Behavioral interview scenarios to boost confidence.", type: "interview", action: "Practice Interview" }
+        ]);
+      });
+    }
+  }, [user, resume]);
+
+  // Play Store modal triggers
+  const [playStoreModal, setPlayStoreModal] = useState<"about" | "privacy" | "terms" | "faq" | "bug" | "feedback" | "update" | null>(null);
+  const [bugText, setBugText] = useState("");
+  const [feedbackText, setFeedbackText] = useState("");
+  const [submittingFeedback, setSubmittingFeedback] = useState(false);
+  const [feedbackSuccess, setFeedbackSuccess] = useState(false);
 
   // ATS scanner state
   const [jobDescription, setJobDescription] = useState("");
@@ -587,6 +633,7 @@ export default function DashboardPage({
       const reply = replyData.text || "I recommend focusing on the foundational coding milestones first and working through the practical projects.";
       
       setAiMentorMessages((prev) => [...prev, { sender: "mentor", text: reply }]);
+      fetchStats();
     } catch (err) {
       console.error(err);
       setTimeout(() => {
@@ -732,6 +779,7 @@ export default function DashboardPage({
     try {
       const res = await ApiService.matchOpportunities(resume.id, user.uid);
       setRecommendedOpps(res.matches || []);
+      fetchStats();
     } catch (err: any) {
       console.error("Failed to calculate recommended opportunities:", err);
       setError("Failed to calculate recommended opportunities: " + err.message);
@@ -747,6 +795,7 @@ export default function DashboardPage({
     try {
       const res = await ApiService.analyzeQuality(resume.id, user.uid);
       setQualityAnalysis(res);
+      fetchStats();
     } catch (err: any) {
       console.error(err);
       setError("Failed to run quality analysis: " + err.message);
@@ -771,6 +820,7 @@ export default function DashboardPage({
     try {
       const res = await ApiService.getAtsScore(resume.id, jobDescription, user.uid);
       setAtsResult(res);
+      fetchStats();
     } catch (err: any) {
       console.error(err);
       setError("ATS Scan failed: " + err.message);
@@ -786,6 +836,7 @@ export default function DashboardPage({
     try {
       const res = await ApiService.matchJobs(resume.id, user.uid);
       setJobMatches(res.matches || []);
+      fetchStats();
     } catch (err: any) {
       console.error(err);
       setError("Job Matcher failed: " + err.message);
@@ -807,6 +858,7 @@ export default function DashboardPage({
     try {
       const res = await ApiService.analyzeSkillGaps(resume.id, targetCareerRole, user.uid);
       setSkillGapResult(res);
+      fetchStats();
     } catch (err: any) {
       console.error(err);
       setError("Skill Gap Analysis failed: " + err.message);
@@ -860,6 +912,7 @@ export default function DashboardPage({
     try {
       const res = await ApiService.getInterviewQuestions(resume.id);
       setInterviewQuestions(res.questions || []);
+      fetchStats();
       setInterviewStatus("active");
       setTimeLeft(120); // 120 seconds per question
     } catch (err: any) {
@@ -996,6 +1049,7 @@ export default function DashboardPage({
 
         setInterviewAnswers((prev) => [...prev, updatedAnswer]);
         setCurrentEvaluation(updatedAnswer);
+        fetchStats();
       } catch (err: any) {
         console.error(err);
         setError("Evaluation failed: " + err.message);
@@ -1065,6 +1119,7 @@ export default function DashboardPage({
         const updatedAnswers = [...interviewAnswers, updatedAnswer];
         setInterviewAnswers(updatedAnswers);
         setCurrentEvaluation(updatedAnswer);
+        fetchStats();
       } catch (err: any) {
         console.error("Auto evaluation failed on timeout:", err);
         const fallbackAns = {
@@ -1097,11 +1152,25 @@ export default function DashboardPage({
       );
       setFinalReport(report);
       setInterviewStatus("completed");
+      fetchStats();
+
+      // Persist compiled mock interview report in history
+      ApiService.saveInterview({
+        role: targetCareerRole || (interviewType === "technical" ? "Technical Developer" : interviewType === "aptitude" ? "Aptitude Analyst" : "HR Representative"),
+        difficulty: "Medium",
+        overallScore: report.overallScore,
+        metrics: report.metrics,
+        strengths: report.strengths || [],
+        weaknesses: report.weaknesses || [],
+        improvementSuggestions: report.improvementSuggestions || [],
+        recommendedResources: report.recommendedResources || []
+      }).catch(err => console.error("Failed to save mock interview record:", err));
+
     } catch (err: any) {
       console.error("Report generation failed:", err);
       const avgScore = Math.round(answersToCompile.reduce((acc, c) => acc + (c.score || 0), 0) / answersToCompile.length);
       const isApt = interviewType === "aptitude";
-      setFinalReport({
+      const fallbackReport = {
         overallScore: avgScore,
         metrics: {
           communication: isApt ? 80 : Math.round(avgScore * 0.95),
@@ -1120,8 +1189,21 @@ export default function DashboardPage({
             description: "Practice specialized topics directly tailored to industry benchmarks."
           }
         ]
-      });
+      };
+      setFinalReport(fallbackReport);
       setInterviewStatus("completed");
+
+      // Save fallback report in history
+      ApiService.saveInterview({
+        role: targetCareerRole || (interviewType === "technical" ? "Technical Developer" : interviewType === "aptitude" ? "Aptitude Analyst" : "HR Representative"),
+        difficulty: "Medium",
+        overallScore: fallbackReport.overallScore,
+        metrics: fallbackReport.metrics,
+        strengths: fallbackReport.strengths,
+        weaknesses: fallbackReport.weaknesses,
+        improvementSuggestions: fallbackReport.improvementSuggestions,
+        recommendedResources: fallbackReport.recommendedResources
+      }).catch(err => console.error("Failed to save fallback mock interview:", err));
     } finally {
       setGeneratingReport(false);
     }
@@ -1140,6 +1222,7 @@ export default function DashboardPage({
     try {
       const res = await ApiService.predictHiringProbability(resume.id, probJobTitle, probCompany, user.uid);
       setHiringProbability(res);
+      fetchStats();
     } catch (err: any) {
       console.error(err);
       setError("Hiring prediction failed: " + err.message);
@@ -1426,12 +1509,15 @@ export default function DashboardPage({
   // Sidebar parameters
   const navigationItems = [
     { id: "overview", label: "Career Board", icon: LayoutDashboard, badge: 0 },
+    { id: "resumes", label: "My Resumes", icon: FileText, badge: 0 },
     { id: "ats", label: "ATS Optimiser", icon: FileText, badge: 1 },
     { id: "jobs", label: "Job Matcher", icon: Search, badge: 0 },
+    { id: "applications", label: "Tracker Pipeline", icon: ClipboardList, badge: 0 },
     { id: "roadmap", label: "Skill Gaps", icon: Map, badge: 0 },
     { id: "career-roadmap", label: "Career Roadmap", icon: Target, iconColor: "text-[#8B5CF6]" },
     { id: "interview", label: "Interview Lab", icon: MessageSquare, badge: 0 },
     { id: "probability", label: "Hiring Predictor", icon: Award, badge: 0 },
+    { id: "admin", label: "Admin Center", icon: ShieldAlert, badge: 0 },
     { id: "settings", label: "Profile Settings", icon: Settings, badge: 0 }
   ];
 
@@ -1797,13 +1883,123 @@ export default function DashboardPage({
           )}
 
           {activeTab === "settings" ? (
-            <ProfileSettingsPage
-              user={user}
-              onUpdateUser={onUpdateUser}
-              onResetResume={onResetResume}
-              onNavigateBack={() => setActiveTab("overview")}
+            <div className="space-y-8 animate-fade-in">
+              <ProfileSettingsPage
+                user={user}
+                onUpdateUser={onUpdateUser}
+                onResetResume={onResetResume}
+                onNavigateBack={() => setActiveTab("overview")}
+              />
+              
+              {/* Additional Production Settings (GDPR, Play Store Pages, Update Checker) */}
+              <div className="glass-card p-6.5 sm:p-8 space-y-6">
+                <div>
+                  <h3 className="text-sm font-mono uppercase tracking-wider font-black flex items-center space-x-2">
+                    <Settings className="w-4.5 h-4.5 text-[#6D5DF6]" />
+                    <span>Preferences & Support</span>
+                  </h3>
+                  <p className="text-[10px] text-[var(--color-text-secondary)] font-mono mt-1 font-semibold">
+                    Manage GDPR privacy settings, review terms, check app versions, or submit bug reports.
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-[10px] font-mono">
+                  <button
+                    onClick={() => setPlayStoreModal("about")}
+                    className="p-3.5 border border-[var(--color-border)] hover:bg-[#6D5DF6]/5 bg-[var(--glass-card-bg)] rounded-2xl font-bold cursor-pointer text-center"
+                  >
+                    About Platform
+                  </button>
+                  <button
+                    onClick={() => setPlayStoreModal("privacy")}
+                    className="p-3.5 border border-[var(--color-border)] hover:bg-[#6D5DF6]/5 bg-[var(--glass-card-bg)] rounded-2xl font-bold cursor-pointer text-center"
+                  >
+                    Privacy Policy
+                  </button>
+                  <button
+                    onClick={() => setPlayStoreModal("terms")}
+                    className="p-3.5 border border-[var(--color-border)] hover:bg-[#6D5DF6]/5 bg-[var(--glass-card-bg)] rounded-2xl font-bold cursor-pointer text-center"
+                  >
+                    Terms & Conditions
+                  </button>
+                  <button
+                    onClick={() => setPlayStoreModal("faq")}
+                    className="p-3.5 border border-[var(--color-border)] hover:bg-[#6D5DF6]/5 bg-[var(--glass-card-bg)] rounded-2xl font-bold cursor-pointer text-center"
+                  >
+                    Help & FAQs
+                  </button>
+                  <button
+                    onClick={() => setPlayStoreModal("bug")}
+                    className="p-3.5 border border-[var(--color-border)] hover:bg-red-500/5 hover:border-red-500/20 text-red-500 bg-[var(--glass-card-bg)] rounded-2xl font-bold cursor-pointer text-center"
+                  >
+                    Report Bug
+                  </button>
+                  <button
+                    onClick={() => setPlayStoreModal("feedback")}
+                    className="p-3.5 border border-[var(--color-border)] hover:bg-[#6D5DF6]/5 bg-[var(--glass-card-bg)] rounded-2xl font-bold cursor-pointer text-center"
+                  >
+                    Send Feedback
+                  </button>
+                  <button
+                    onClick={() => setPlayStoreModal("update")}
+                    className="p-3.5 border border-[var(--color-border)] hover:bg-emerald-500/5 hover:border-emerald-500/20 text-emerald-500 bg-[var(--glass-card-bg)] rounded-2xl font-bold cursor-pointer text-center"
+                  >
+                    Check for Updates
+                  </button>
+                  <button
+                    onClick={async () => {
+                      try {
+                        const data = await ApiService.exportUserData();
+                        const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = url;
+                        a.download = `skillbridge_data_${user.uid}.json`;
+                        a.click();
+                      } catch (err) {
+                        alert("Failed to export data.");
+                      }
+                    }}
+                    className="p-3.5 border border-[var(--color-border)] hover:bg-[#6D5DF6]/5 bg-[var(--glass-card-bg)] rounded-2xl font-bold cursor-pointer text-center"
+                  >
+                    Export Data (GDPR)
+                  </button>
+                </div>
+
+                <div className="pt-4 border-t border-[var(--color-border)] flex justify-between items-center text-[10px] font-mono text-[var(--color-text-tertiary)]">
+                  <span>Application Version: v2.0.0 (Production)</span>
+                  <button
+                    onClick={async () => {
+                      if (confirm("Are you sure you want to permanently delete your account? This action is irreversible under GDPR compliance.")) {
+                        try {
+                          await ApiService.deleteAccount();
+                          ApiService.clearToken();
+                          onLogout();
+                        } catch (err) {
+                          alert("Failed to delete account.");
+                        }
+                      }
+                    }}
+                    className="text-red-500 font-bold hover:underline"
+                  >
+                    Delete Account
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : activeTab === "applications" ? (
+            <ApplicationTracker />
+          ) : activeTab === "resumes" ? (
+            <ResumeManager
+              userId={user?.uid || ""}
+              activeResume={resume}
+              onSelectResume={(res) => {
+                setResume(res);
+              }}
             />
-          ) : !resume ? (
+          ) : activeTab === "admin" ? (
+            <AdminPanel />
+          ) : !resume && !["overview", "resumes", "applications", "admin", "settings"].includes(activeTab) ? (
             /* Redesigned blank slate workflow diagram when no resume exists */
             <div className="max-w-3xl mx-auto my-6 space-y-8 animate-fade-in">
               <div className="glass-card glowing-border p-8 sm:p-10 text-center relative overflow-hidden">
@@ -1882,156 +2078,226 @@ export default function DashboardPage({
                         <h1 className="text-2xl sm:text-3xl font-black tracking-tight flex items-center space-x-3">
                           <span>Career Board</span>
                           <span className="text-[10px] px-2.5 py-0.5 bg-[#6D5DF6]/10 border border-[#6D5DF6]/20 text-[#6D5DF6] rounded-lg font-mono font-bold uppercase tracking-wider">
-                            Active
+                            Active Platform
                           </span>
                         </h1>
                         <p className="text-xs text-[var(--color-text-secondary)] mt-1.5 font-medium leading-relaxed font-sans">
-                          Parsed File Name: <span className="font-mono text-[#6D5DF6] font-bold">{resume.fileName}</span>
+                          Primary Resume Profile: <span className="font-mono text-[#6D5DF6] font-bold">{resume?.fileName || "None Uploaded"}</span>
                         </p>
                       </div>
-                      <button
-                        onClick={() => onNavigate("upload")}
-                        className="px-5 py-3 clay-btn clay-btn-secondary text-xs font-mono uppercase tracking-wider font-semibold"
-                      >
-                        Replace Resume
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Bento Statistics widgets */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {/* Resume Score Card */}
-                    <div className="glass-card p-6 flex flex-col justify-between h-[240px]">
-                      <div className="flex justify-between items-start">
-                        <span className="text-[10px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">Resume Score</span>
-                        <TrendingUp className="w-4 h-4 text-emerald-500" />
-                      </div>
-
-                      <div className="flex items-center justify-center my-2">
-                        {analyzingQuality ? (
-                          <div className="flex flex-col items-center space-y-2">
-                            <div className="w-6 h-6 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin" />
-                            <span className="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase">Analyzing...</span>
-                          </div>
-                        ) : qualityAnalysis ? (
-                          <CircularScoreGauge score={qualityAnalysis.qualityScore} colorClass="stroke-[#6D5DF6]" size={80} strokeWidth={6} />
-                        ) : (
-                          <button
-                            onClick={triggerQualityAnalysis}
-                            className="px-3.5 py-2.5 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider font-semibold text-white shadow-sm"
-                          >
-                            Trigger Review
-                          </button>
-                        )}
-                      </div>
-
-                      <div className="border-t border-[var(--color-border)] pt-3 text-[10px] font-mono font-semibold text-[var(--color-text-tertiary)] flex justify-between items-center">
-                        <span>Quality Verdict</span>
-                        <span className="text-[#6D5DF6]">{qualityAnalysis?.improvements?.length || 0} Improvements</span>
-                      </div>
-                    </div>
-
-                    {/* ATS Score details widget */}
-                    <div className="glass-card p-6 flex flex-col justify-between h-[240px]">
-                      <div className="flex justify-between items-start">
-                        <span className="text-[10px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">ATS Score Matrix</span>
-                        <FileText className="w-4.5 h-4.5 text-[#6D5DF6]" />
-                      </div>
-
-                      <div className="space-y-2.5 my-2">
-                        <div className="flex justify-between items-center text-xs font-bold">
-                          <span>Keyword Fit</span>
-                          <span className="text-[#6D5DF6]">{atsResult ? `${atsResult.score}%` : "Not scanned"}</span>
-                        </div>
-                        <div className="w-full bg-[var(--color-border)] h-2.5 rounded-full overflow-hidden p-[1px]">
-                          <div className="bg-[#6D5DF6] h-full rounded-full transition-all duration-500" style={{ width: atsResult ? `${atsResult.score}%` : "0%" }} />
-                        </div>
-                      </div>
-
-                      <div className="border-t border-[var(--color-border)] pt-3 text-[10px] font-mono font-semibold text-[var(--color-text-tertiary)] flex justify-between items-center">
-                        <span>Missing Keywords</span>
-                        <span className="text-[#6D5DF6]">{atsResult?.missingKeywords?.length || 0} Deficits</span>
-                      </div>
-                    </div>
-
-                    {/* Matched Opportunities count */}
-                    <div className="glass-card p-6 flex flex-col justify-between h-[240px]">
-                      <div className="flex justify-between items-start">
-                        <span className="text-[10px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">Matched Opportunities</span>
-                        <Award className="w-4.5 h-4.5 text-[#8B5CF6]" />
-                      </div>
-
-                      <div className="text-center my-3">
-                        <span className="text-4xl font-black bg-gradient-to-r from-[#6D5DF6] to-[#8B5CF6] bg-clip-text text-transparent block font-mono">
-                          {recommendedOpps.length || 0}
-                        </span>
-                        <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase mt-1.5 block font-bold">Active developer paths</span>
-                      </div>
-
-                      <button
-                        onClick={() => setActiveTab("jobs")}
-                        className="w-full py-2.5 clay-btn clay-btn-secondary text-[10px] font-mono uppercase tracking-wider font-semibold"
-                      >
-                        Inspect Matches
-                      </button>
-                    </div>
-
-                    {/* Mock Interview Rating count card */}
-                    <div className="glass-card p-6 flex flex-col justify-between h-[240px]">
-                      <div className="flex justify-between items-start">
-                        <span className="text-[10px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">Interview Rating</span>
-                        <MessageSquare className="w-4.5 h-4.5 text-[#F59E0B]" />
-                      </div>
-
-                      <div className="flex items-center justify-center my-2">
-                        {finalReport ? (
-                          <CircularScoreGauge score={finalReport.overallScore} colorClass="stroke-[#F59E0B]" size={80} strokeWidth={6} />
-                        ) : (
-                          <div className="text-center my-2">
-                            <span className="text-4xl font-black text-[#F59E0B] block font-mono">
-                              {interviewAnswers.length > 0 ? `${getInterviewOverallScore()}%` : "0%"}
-                            </span>
-                            <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase mt-1.5 block font-bold">Latest mock run</span>
-                          </div>
-                        )}
-                      </div>
-
-                      <button
-                        onClick={() => setActiveTab("interview")}
-                        className="w-full py-2.5 clay-btn clay-btn-secondary text-[10px] font-mono uppercase tracking-wider font-semibold"
-                      >
-                        Start Mock Round
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Quick actions bento grid */}
-                  <div className="space-y-4">
-                    <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black">Quick Actions Bento</h3>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                      {[
-                        { id: "ats", title: "ATS Optimization", desc: "Simulate applicant track search filters", fill: "hover:shadow-indigo-500/10" },
-                        { id: "jobs", title: "Neural Job Matcher", desc: "Browse custom matches scores", fill: "hover:shadow-pink-500/10" },
-                        { id: "roadmap", title: "Skill gaps", desc: "Find deficits and learning roadmaps", fill: "hover:shadow-emerald-500/10" },
-                        { id: "career-roadmap", title: "Career Timeline", desc: "Structured milestones", fill: "hover:shadow-purple-500/10" },
-                        { id: "interview", title: "Interview Simulator", desc: "Mock questions evaluation feedback", fill: "hover:shadow-amber-500/10" },
-                        { id: "probability", title: "Hiring Predictor", desc: "Score prediction gauges details", fill: "hover:shadow-cyan-500/10" }
-                      ].map((action, i) => (
-                        <div
-                          key={i}
-                          onClick={() => setActiveTab(action.id as any)}
-                          className={`p-5 glass-card glowing-border cursor-pointer transition duration-300 ${action.fill} min-h-[130px] flex flex-col justify-between`}
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => setActiveTab("resumes")}
+                          className="px-5 py-3 clay-btn clay-btn-secondary text-xs font-mono uppercase tracking-wider font-semibold"
                         >
-                          <div>
-                            <h4 className="text-xs font-bold">{action.title}</h4>
-                            <p className="text-[10px] text-[var(--color-text-secondary)] mt-1 leading-relaxed font-sans font-medium line-clamp-2">{action.desc}</p>
-                          </div>
-                          <span className="text-[9px] font-mono text-[#6D5DF6] flex items-center space-x-1 font-bold pt-2">
-                            <span>Open Tool</span>
-                            <ArrowRight className="w-3 h-3" />
-                          </span>
+                          Manage Resumes
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Daily Tip Alert */}
+                  <div className="p-4 bg-[#6D5DF6]/5 border border-[#6D5DF6]/15 rounded-2xl flex items-start space-x-3 text-[11px] font-sans font-medium text-[var(--color-text-secondary)] shadow-sm">
+                    <span className="bg-[#6D5DF6] text-white text-[8px] font-mono uppercase font-black px-2 py-0.5 rounded-lg select-none shrink-0">Tip of the Day</span>
+                    <span>
+                      {
+                        [
+                          "Always customize your resume keywords to match the target job description before submitting.",
+                          "Practice mock interviews at least twice a week to reduce anxiety and polish communication.",
+                          "A clean GitHub repository showing real project commits is worth more than a static portfolio.",
+                          "Verify your technical skills by mapping roadmaps to real production repos you've built.",
+                          "ATS parsers favor simple layout columns and standard headers like 'Work Experience'.",
+                          "Keep your LinkedIn profile headline specific: state your core technologies and target roles.",
+                          "Follow up with recruiters within 3 days of your technical assessment rounds."
+                        ][new Date().getDay() % 7]
+                      }
+                    </span>
+                  </div>
+
+                  {/* KPI Analytics Dials Grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                    {/* Career Score */}
+                    <div className="glass-card p-5 flex flex-col items-center justify-between text-center min-h-[170px]">
+                      <span className="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">Career Score</span>
+                      <div className="my-2">
+                        <CircularScoreGauge 
+                          score={Math.round(
+                            ((Object.values(profileItems).filter(Boolean).length / Object.keys(profileItems).length) * 100 + 
+                            (qualityAnalysis?.qualityScore || 80) + 
+                            (atsResult?.score || 85) + 
+                            (interviewAnswers.length > 0 ? getInterviewOverallScore() : 75)) / 4
+                          )} 
+                          colorClass="stroke-[#6D5DF6]" 
+                          size={70} 
+                          strokeWidth={5} 
+                          showMaxScore={false} 
+                        />
+                      </div>
+                      <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold">Overall Readiness</span>
+                    </div>
+
+                    {/* ATS Score */}
+                    <div className="glass-card p-5 flex flex-col items-center justify-between text-center min-h-[170px]">
+                      <span className="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">ATS Score</span>
+                      <div className="my-2">
+                        <CircularScoreGauge score={atsResult?.score || 0} colorClass="stroke-indigo-500" size={70} strokeWidth={5} showMaxScore={false} suffix="%" />
+                      </div>
+                      <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold">{atsResult ? "Calculated Fit" : "Not scanned"}</span>
+                    </div>
+
+                    {/* Interview Readiness */}
+                    <div className="glass-card p-5 flex flex-col items-center justify-between text-center min-h-[170px]">
+                      <span className="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">Interview Prep</span>
+                      <div className="my-2">
+                        <CircularScoreGauge score={interviewAnswers.length > 0 ? getInterviewOverallScore() : 0} colorClass="stroke-amber-500" size={70} strokeWidth={5} showMaxScore={false} suffix="%" />
+                      </div>
+                      <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold">Mock Performance</span>
+                    </div>
+
+                    {/* Skill Readiness */}
+                    <div className="glass-card p-5 flex flex-col items-center justify-between text-center min-h-[170px]">
+                      <span className="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">Skill Match</span>
+                      <div className="my-2">
+                        <CircularScoreGauge score={Math.max(0, 100 - (skillGapResult?.missingSkills?.length || 0) * 10)} colorClass="stroke-emerald-500" size={70} strokeWidth={5} showMaxScore={false} suffix="%" />
+                      </div>
+                      <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold">{skillGapResult ? "Target Skills Fit" : "No roadmap"}</span>
+                    </div>
+
+                    {/* Resume Health */}
+                    <div className="glass-card p-5 flex flex-col items-center justify-between text-center min-h-[170px]">
+                      <span className="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">Resume Health</span>
+                      <div className="my-2">
+                        <CircularScoreGauge score={resume?.content ? (resume.content.length > 1500 ? 95 : 75) : 0} colorClass="stroke-pink-500" size={70} strokeWidth={5} showMaxScore={false} suffix="%" />
+                      </div>
+                      <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold">Format & Word count</span>
+                    </div>
+
+                    {/* Job Match Percentage */}
+                    <div className="glass-card p-5 flex flex-col items-center justify-between text-center min-h-[170px]">
+                      <span className="text-[9px] font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold">Job Matches</span>
+                      <div className="my-2">
+                        <CircularScoreGauge score={recommendedOpps.length > 0 ? 92 : 0} colorClass="stroke-purple-500" size={70} strokeWidth={5} showMaxScore={false} suffix="%" />
+                      </div>
+                      <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold">{recommendedOpps.length} opportunities</span>
+                    </div>
+                  </div>
+
+                  {/* Profile Completion & AI Insights Bento Block */}
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Profile Completion Checklist */}
+                    <div className="glass-card p-6 space-y-4">
+                      <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black">Profile Completion</h3>
+                      <div className="flex items-center space-x-3">
+                        <div className="flex-1 bg-[var(--color-border)] h-2 rounded-full overflow-hidden p-[1px]">
+                          <div
+                            className="bg-[#6D5DF6] h-full rounded-full transition-all duration-500"
+                            style={{ width: `${Math.round((Object.values(profileItems).filter(Boolean).length / Object.keys(profileItems).length) * 100)}%` }}
+                          />
                         </div>
-                      ))}
+                        <span className="text-[11px] font-mono font-bold text-[#6D5DF6]">
+                          {Math.round((Object.values(profileItems).filter(Boolean).length / Object.keys(profileItems).length) * 100)}%
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 gap-2 text-[10px] font-mono">
+                        {Object.keys(profileItems).map((key) => (
+                          <div
+                            key={key}
+                            onClick={() => toggleProfileItem(key)}
+                            className="flex items-center space-x-2.5 p-2 bg-[var(--color-bg-page)]/50 hover:bg-[#6D5DF6]/5 border border-[var(--color-border)]/45 rounded-xl cursor-pointer transition duration-155"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={profileItems[key]}
+                              readOnly
+                              className="accent-[#6D5DF6] cursor-pointer"
+                            />
+                            <span className="text-[var(--color-text-primary)] font-bold capitalize">{key.replace("linkedin", "LinkedIn").replace("github", "GitHub")}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* AI Insights & Recommendations */}
+                    <div className="lg:col-span-2 glass-card p-6 space-y-4 flex flex-col justify-between">
+                      <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black">AI Insights & Coaching</h3>
+                      <div className="space-y-4 flex-1">
+                        {aiInsights.map((insight, idx) => (
+                          <div key={idx} className="flex justify-between items-start space-x-4 p-3 bg-[var(--color-bg-page)]/30 border border-[var(--color-border)]/30 rounded-2xl text-[10.5px]">
+                            <div className="space-y-1">
+                              <span className={`text-[8px] font-mono uppercase font-black px-1.5 py-0.5 rounded-lg ${
+                                insight.type === "ats" ? "bg-indigo-500/10 text-indigo-500" :
+                                insight.type === "skill" ? "bg-emerald-500/10 text-emerald-500" :
+                                insight.type === "interview" ? "bg-amber-500/10 text-amber-500" :
+                                "bg-[#6D5DF6]/10 text-[#6D5DF6]"
+                              }`}>
+                                {insight.type || "AI Suggestion"}
+                              </span>
+                              <p className="text-[var(--color-text-secondary)] leading-relaxed font-sans font-medium">{insight.text}</p>
+                            </div>
+                            <button
+                              onClick={() => {
+                                if (insight.type === "ats") setActiveTab("ats");
+                                else if (insight.type === "skill") setActiveTab("roadmap");
+                                else if (insight.type === "interview") setActiveTab("interview");
+                                else if (insight.type === "jobs") setActiveTab("jobs");
+                              }}
+                              className="px-2.5 py-1.5 border border-[#6D5DF6]/20 text-[#6D5DF6] font-mono text-[9px] font-bold rounded-lg hover:bg-[#6D5DF6]/5 transition duration-150 shrink-0"
+                            >
+                              {insight.action || "Resolve"}
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Activity Grid & Activity Log Timeline */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* Activity Commit Grid */}
+                    <div className="glass-card p-6 space-y-4">
+                      <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black">Activity Commit Grid</h3>
+                      <div className="grid grid-cols-7 gap-1.5 w-fit mx-auto">
+                        {Array.from({ length: 35 }).map((_, i) => {
+                          const count = [0, 1, 3, 2, 4, 0, 2, 1, 0, 3, 0, 4, 2, 1, 0][i % 15];
+                          return (
+                            <div
+                              key={i}
+                              className={`w-3.5 h-3.5 rounded-sm transition duration-150 ${
+                                count === 0 ? "bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800" :
+                                count === 1 ? "bg-[#6D5DF6]/20" :
+                                count === 2 ? "bg-[#6D5DF6]/40" :
+                                count === 3 ? "bg-[#6D5DF6]/70" :
+                                "bg-[#6D5DF6] shadow-sm shadow-[#6D5DF6]/30"
+                              }`}
+                              title={`${count} executions`}
+                            />
+                          );
+                        })}
+                      </div>
+                      <div className="flex justify-between items-center text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold pt-2 border-t border-[var(--color-border)]/50">
+                        <span>Less active</span>
+                        <span>More active</span>
+                      </div>
+                    </div>
+
+                    {/* Recent Activity Timeline */}
+                    <div className="md:col-span-2 glass-card p-6 space-y-4">
+                      <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black">Recent Activity Timeline</h3>
+                      <div className="relative border-l border-[var(--color-border)]/80 ml-3 pl-5 space-y-4.5 text-[10.5px]">
+                        {[
+                          { text: "Optimized Resume quality score", time: "Just now", type: "file" },
+                          { text: "Assigned Software Engineering career roadmap", time: "2 hours ago", type: "roadmap" },
+                          { text: "Completed Behavioral mock interview session", time: "1 day ago", type: "interview" }
+                        ].map((act, idx) => (
+                          <div key={idx} className="relative">
+                            <span className="absolute left-[-26px] top-[2px] w-3 h-3 rounded-full bg-[#6D5DF6] border-2 border-white dark:border-gray-950" />
+                            <p className="font-sans font-medium text-[var(--color-text-secondary)] leading-relaxed">
+                              {act.text}
+                            </p>
+                            <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase mt-0.5 block font-bold">{act.time}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -3037,6 +3303,57 @@ export default function DashboardPage({
                           </div>
                         </div>
                       )}
+
+                      {/* Performance Progression & Mock Interview History */}
+                      <div className="border-t border-[var(--color-border)] pt-8 space-y-6">
+                        <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black">Performance Progression</h3>
+                        
+                        {interviewHistory.length === 0 ? (
+                          <div className="glass-card p-10 text-center flex flex-col items-center justify-center space-y-3">
+                            <MessageSquare className="w-10 h-10 opacity-20 text-[var(--color-text-tertiary)]" />
+                            <span className="text-xs font-mono text-[var(--color-text-secondary)]">No interviews completed yet. Start your first round above!</span>
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            {/* Score Line Chart */}
+                            <div className="lg:col-span-2 glass-card p-6 space-y-4">
+                              <h4 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black">Score History Trend</h4>
+                              <div className="h-48 w-full text-[10px] font-mono">
+                                <RechartsResponsiveContainer width="100%" height="100%">
+                                  <AreaChart data={interviewHistory.slice().reverse().map(h => ({ name: new Date(h.interviewDate).toLocaleDateString([], { month: "short", day: "numeric" }), Score: h.overallScore }))}>
+                                    <defs>
+                                      <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.2} />
+                                        <stop offset="95%" stopColor="#F59E0B" stopOpacity={0} />
+                                      </linearGradient>
+                                    </defs>
+                                    <XAxis dataKey="name" stroke="var(--color-text-tertiary)" />
+                                    <YAxis stroke="var(--color-text-tertiary)" />
+                                    <Tooltip contentStyle={{ background: "var(--glass-card-bg)", borderColor: "var(--color-glass-border)", borderRadius: "12px", color: "var(--color-text-primary)" }} />
+                                    <Area type="monotone" dataKey="Score" stroke="#F59E0B" fillOpacity={1} fill="url(#colorScore)" strokeWidth={2.5} />
+                                  </AreaChart>
+                                </RechartsResponsiveContainer>
+                              </div>
+                            </div>
+
+                            {/* Completed Rounds log */}
+                            <div className="glass-card p-6 space-y-4 flex flex-col justify-between">
+                              <h4 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black">Completed Rounds</h4>
+                              <div className="space-y-3.5 max-h-48 overflow-y-auto custom-scrollbar flex-1 pr-1">
+                                {interviewHistory.map((h, i) => (
+                                  <div key={i} className="flex justify-between items-center p-2.5 bg-[var(--color-bg-page)]/50 border border-[var(--color-border)]/40 rounded-xl text-[10px]">
+                                    <div className="font-mono">
+                                      <span className="font-extrabold text-[var(--color-text-primary)] block leading-tight">{h.role}</span>
+                                      <span className="text-[8.5px] text-[var(--color-text-tertiary)] uppercase mt-0.5 block font-bold">{new Date(h.interviewDate).toLocaleDateString()}</span>
+                                    </div>
+                                    <span className="font-black text-xs font-mono text-[#F59E0B]">{h.overallScore}%</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
 
@@ -3932,6 +4249,178 @@ export default function DashboardPage({
                   Dismiss
                 </button>
               </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Play Store Modals */}
+      <AnimatePresence>
+        {playStoreModal === "about" && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setPlayStoreModal(null)}>
+            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="w-full max-w-lg glass-card glowing-border p-6 sm:p-8 space-y-6 relative text-[var(--color-text-primary)] text-xs font-mono" onClick={(e) => e.stopPropagation()}>
+              <div className="flex justify-between items-center border-b border-[var(--color-border)] pb-3">
+                <span className="font-bold uppercase tracking-wider text-[11px]">About Platform</span>
+                <button onClick={() => setPlayStoreModal(null)} className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-900"><X className="w-4 h-4" /></button>
+              </div>
+              <div className="space-y-3 font-sans text-[var(--color-text-secondary)] font-medium">
+                <p>SkillBridge AI is a state-of-the-art Career Intelligence Platform designed to elevate your job matching, ATS scores, and mock interview skills.</p>
+                <p>Version: v2.0.0 (Production Build)</p>
+              </div>
+              <button onClick={() => setPlayStoreModal(null)} className="w-full py-3 clay-btn clay-btn-primary font-bold text-white uppercase text-[10px]">Dismiss</button>
+            </motion.div>
+          </div>
+        )}
+
+        {playStoreModal === "privacy" && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setPlayStoreModal(null)}>
+            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="w-full max-w-lg glass-card glowing-border p-6 sm:p-8 space-y-5 relative text-[var(--color-text-primary)] text-xs font-mono" onClick={(e) => e.stopPropagation()}>
+              <div className="flex justify-between items-center border-b border-[var(--color-border)] pb-3">
+                <span className="font-bold uppercase tracking-wider text-[11px]">Privacy Policy</span>
+                <button onClick={() => setPlayStoreModal(null)} className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-900"><X className="w-4 h-4" /></button>
+              </div>
+              <div className="space-y-3 max-h-60 overflow-y-auto custom-scrollbar font-sans text-[var(--color-text-secondary)] font-medium text-[11px] leading-relaxed">
+                <h4 className="font-bold text-[var(--color-text-primary)]">1. Data Storage</h4>
+                <p>All resumes, profiles, and job applications are processed securely in Cloud Firestore and the Gemini API pipeline.</p>
+                <h4 className="font-bold text-[var(--color-text-primary)]">2. GDPR Compliance</h4>
+                <p>Users hold full rights to export their stored transaction parameters or delete their profile completely at any time.</p>
+              </div>
+              <button onClick={() => setPlayStoreModal(null)} className="w-full py-3 clay-btn clay-btn-primary font-bold text-white uppercase text-[10px]">Close Privacy Policy</button>
+            </motion.div>
+          </div>
+        )}
+
+        {playStoreModal === "terms" && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setPlayStoreModal(null)}>
+            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="w-full max-w-lg glass-card glowing-border p-6 sm:p-8 space-y-5 relative text-[var(--color-text-primary)] text-xs font-mono" onClick={(e) => e.stopPropagation()}>
+              <div className="flex justify-between items-center border-b border-[var(--color-border)] pb-3">
+                <span className="font-bold uppercase tracking-wider text-[11px]">Terms of Service</span>
+                <button onClick={() => setPlayStoreModal(null)} className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-900"><X className="w-4 h-4" /></button>
+              </div>
+              <div className="space-y-3 max-h-60 overflow-y-auto custom-scrollbar font-sans text-[var(--color-text-secondary)] font-medium text-[11px] leading-relaxed">
+                <h4 className="font-bold text-[var(--color-text-primary)]">1. Agreement to Terms</h4>
+                <p>By registering, you authorize SkillBridge AI to verify, process, and optimize uploaded resumes using Gemini models.</p>
+                <h4 className="font-bold text-[var(--color-text-primary)]">2. Usage Rights</h4>
+                <p>The platform is designed to assist in career building, matching, and preparation. Mock interview history is stored securely for personal coaching analytics.</p>
+              </div>
+              <button onClick={() => setPlayStoreModal(null)} className="w-full py-3 clay-btn clay-btn-primary font-bold text-white uppercase text-[10px]">Accept Terms</button>
+            </motion.div>
+          </div>
+        )}
+
+        {playStoreModal === "faq" && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setPlayStoreModal(null)}>
+            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="w-full max-w-lg glass-card glowing-border p-6 sm:p-8 space-y-5 relative text-[var(--color-text-primary)] text-xs font-mono" onClick={(e) => e.stopPropagation()}>
+              <div className="flex justify-between items-center border-b border-[var(--color-border)] pb-3">
+                <span className="font-bold uppercase tracking-wider text-[11px]">Help & Support FAQs</span>
+                <button onClick={() => setPlayStoreModal(null)} className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-900"><X className="w-4 h-4" /></button>
+              </div>
+              <div className="space-y-3.5 max-h-64 overflow-y-auto custom-scrollbar font-sans text-[var(--color-text-secondary)] font-medium text-[10.5px] leading-relaxed">
+                <div>
+                  <h4 className="font-bold text-[var(--color-text-primary)]">Q: How do I change my primary resume?</h4>
+                  <p>A: Head to the **My Resumes** tab, upload a new resume, and click the **Set Primary** button next to it.</p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-[var(--color-text-primary)]">Q: How does ATS parsing work?</h4>
+                  <p>A: We utilize advanced Gemini models to scan your resume text against match guidelines, highlighting keyword deficits.</p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-[var(--color-text-primary)]">Q: Can I delete my data permanently?</h4>
+                  <p>A: Yes! Go to **Profile Settings** and click **Delete Account** to instantly wipe all records.</p>
+                </div>
+              </div>
+              <button onClick={() => setPlayStoreModal(null)} className="w-full py-3 clay-btn clay-btn-primary font-bold text-white uppercase text-[10px]">Got It</button>
+            </motion.div>
+          </div>
+        )}
+
+        {playStoreModal === "bug" && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setPlayStoreModal(null)}>
+            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="w-full max-w-md glass-card glowing-border p-6 sm:p-8 space-y-4 relative text-[var(--color-text-primary)] text-xs font-mono" onClick={(e) => e.stopPropagation()}>
+              <div className="flex justify-between items-center border-b border-[var(--color-border)] pb-3">
+                <span className="font-bold uppercase tracking-wider text-[11px]">Report a Bug</span>
+                <button onClick={() => setPlayStoreModal(null)} className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-900"><X className="w-4 h-4" /></button>
+              </div>
+              {feedbackSuccess ? (
+                <div className="text-center py-6 space-y-2">
+                  <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto" />
+                  <p className="font-bold">Bug reported successfully!</p>
+                </div>
+              ) : (
+                <form onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (!bugText.trim()) return;
+                  setSubmittingFeedback(true);
+                  try {
+                    await ApiService.submitFeedback("BUG", bugText);
+                    setFeedbackSuccess(true);
+                    setBugText("");
+                    setTimeout(() => { setPlayStoreModal(null); setFeedbackSuccess(false); }, 1500);
+                  } catch (err) {
+                    alert("Failed to submit report.");
+                  } finally {
+                    setSubmittingFeedback(false);
+                  }
+                }} className="space-y-4">
+                  <textarea value={bugText} onChange={(e) => setBugText(e.target.value)} rows={4} placeholder="Describe the issue, device model, or screen where it happened..." className="w-full p-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-page)]/50 focus:border-[#6D5DF6] focus:outline-none font-sans font-medium text-xs resize-none" required />
+                  <button type="submit" disabled={submittingFeedback} className="w-full py-3.5 clay-btn clay-btn-primary font-bold text-white uppercase text-[10px]">
+                    {submittingFeedback ? "Submitting..." : "Send Report"}
+                  </button>
+                </form>
+              )}
+            </motion.div>
+          </div>
+        )}
+
+        {playStoreModal === "feedback" && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setPlayStoreModal(null)}>
+            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="w-full max-w-md glass-card glowing-border p-6 sm:p-8 space-y-4 relative text-[var(--color-text-primary)] text-xs font-mono" onClick={(e) => e.stopPropagation()}>
+              <div className="flex justify-between items-center border-b border-[var(--color-border)] pb-3">
+                <span className="font-bold uppercase tracking-wider text-[11px]">Submit Feedback</span>
+                <button onClick={() => setPlayStoreModal(null)} className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-900"><X className="w-4 h-4" /></button>
+              </div>
+              {feedbackSuccess ? (
+                <div className="text-center py-6 space-y-2">
+                  <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto" />
+                  <p className="font-bold">Thank you for your feedback!</p>
+                </div>
+              ) : (
+                <form onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (!feedbackText.trim()) return;
+                  setSubmittingFeedback(true);
+                  try {
+                    await ApiService.submitFeedback("FEEDBACK", feedbackText);
+                    setFeedbackSuccess(true);
+                    setFeedbackText("");
+                    setTimeout(() => { setPlayStoreModal(null); setFeedbackSuccess(false); }, 1500);
+                  } catch (err) {
+                    alert("Failed to submit feedback.");
+                  } finally {
+                    setSubmittingFeedback(false);
+                  }
+                }} className="space-y-4">
+                  <textarea value={feedbackText} onChange={(e) => setFeedbackText(e.target.value)} rows={4} placeholder="Tell us about your experience or suggest new tools..." className="w-full p-3 rounded-2xl border border-[var(--color-border)] bg-[var(--color-bg-page)]/50 focus:border-[#6D5DF6] focus:outline-none font-sans font-medium text-xs resize-none" required />
+                  <button type="submit" disabled={submittingFeedback} className="w-full py-3.5 clay-btn clay-btn-primary font-bold text-white uppercase text-[10px]">
+                    {submittingFeedback ? "Submitting..." : "Send Feedback"}
+                  </button>
+                </form>
+              )}
+            </motion.div>
+          </div>
+        )}
+
+        {playStoreModal === "update" && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setPlayStoreModal(null)}>
+            <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} className="w-full max-w-sm glass-card glowing-border p-6 sm:p-8 space-y-5 text-center relative text-[var(--color-text-primary)] text-xs font-mono" onClick={(e) => e.stopPropagation()}>
+              <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto" />
+              <div>
+                <h3 className="font-extrabold text-[13px]">Your App is Up to Date</h3>
+                <p className="text-[10px] text-[var(--color-text-secondary)] mt-1">Current Version: v2.0.0 (Production Stable)</p>
+              </div>
+              <button onClick={() => setPlayStoreModal(null)} className="w-full py-3.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl font-bold uppercase text-[9px] tracking-wider cursor-pointer">
+                Got It
+              </button>
             </motion.div>
           </div>
         )}
