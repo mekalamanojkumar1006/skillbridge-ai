@@ -18,6 +18,7 @@ import {
   HelpCircle,
   Briefcase,
   CheckCircle,
+  CheckCircle2,
   XCircle,
   ShieldCheck,
   ChevronRight,
@@ -277,6 +278,21 @@ export default function DashboardPage({
   const [resume, setResume] = useState<any>(initialResume || null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [platformStats, setPlatformStats] = useState<{ totalExecutions: number }>({ totalExecutions: 1254 });
+
+  useEffect(() => {
+    const fetchPlatformStats = async () => {
+      try {
+        const data = await ApiService.getPlatformStats();
+        if (data && typeof data.appExecutions === "number") {
+          setPlatformStats({ totalExecutions: data.appExecutions });
+        }
+      } catch (err) {
+        console.warn("Failed to fetch platform stats:", err);
+      }
+    };
+    fetchPlatformStats();
+  }, []);
   
   const getSkillsArray = (skillsObj: any): string[] => {
     if (!skillsObj) return [];

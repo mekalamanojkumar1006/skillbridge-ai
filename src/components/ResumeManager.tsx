@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ApiService } from "../services/api";
-import { FileText, Plus, Edit2, Trash2, Copy, Check, CheckCircle2, ChevronRight, AlertCircle, Download, FilePlus, RefreshCw, Layers } from "lucide-react";
+import { FileText, Plus, Edit2, Trash2, Copy, Check, CheckCircle2, ChevronRight, AlertCircle, Download, FilePlus, RefreshCw, Layers, X } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { jsPDF } from "jspdf";
 
