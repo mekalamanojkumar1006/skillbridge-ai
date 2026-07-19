@@ -595,26 +595,6 @@ export class ApiService {
     return res.json();
   }
 
-  static async getAdminStats() {
-    const res = await fetch(`${this.getBaseUrl()}/api/admin/stats`, {
-      headers: this.getHeaders()
-    });
-    if (!res.ok) {
-      throw new Error("Failed to retrieve admin stats");
-    }
-    return res.json();
-  }
-
-  static async getAdminSystemHealth() {
-    const res = await fetch(`${this.getBaseUrl()}/api/admin/system-health`, {
-      headers: this.getHeaders()
-    });
-    if (!res.ok) {
-      throw new Error("Failed to retrieve system health logs");
-    }
-    return res.json();
-  }
-
   static async verifySuccess() {
     const res = await fetch(`${this.getBaseUrl()}/api/auth/verify-success`, {
       method: "POST",

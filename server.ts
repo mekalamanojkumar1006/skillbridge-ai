@@ -3333,55 +3333,19 @@ app.get("/api/search/global", checkAuth, async (req, res) => {
   }
 });
 
-// GET /api/admin/stats
-app.get("/api/admin/stats", checkAuth, async (req, res) => {
-  try {
-    // Collect counts across collections
-    const totalUsers = (await getDocs(collection(db, "users"))).size || 24;
-    const totalResumes = (await getDocs(collection(db, "resumes"))).size || 38;
-    const totalAnalyses = (await getDocs(collection(db, "analyses"))).size || 45;
-    const totalRoadmaps = (await getDocs(collection(db, "careerPathRoadmaps"))).size || 18;
-    const totalInterviews = (await getDocs(collection(db, "mockInterviews"))).size || 32;
-    const totalApplications = (await getDocs(collection(db, "jobApplications"))).size || 15;
-    const appExecutions = await getAppExecutionsCount();
-
-    res.status(200).json({
-      usersCount: totalUsers,
-      dau: Math.round(totalUsers * 0.42) || 8,
-      resumesCount: totalResumes,
-      atsAnalysesCount: totalAnalyses,
-      roadmapsCount: totalRoadmaps,
-      interviewsCount: totalInterviews,
-      applicationsCount: totalApplications,
-      appExecutions
-    });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
+// Redirect legacy admin and system monitor routes to /dashboard
+app.get([
+  "/admin",
+  "/admin-center",
+  "/admin-dashboard",
+  "/system",
+  "/system-monitor",
+  "/logs",
+  "/analytics"
+], (req, res) => {
+  res.redirect("/dashboard");
 });
 
-// GET /api/admin/system-health
-app.get("/api/admin/system-health", checkAuth, async (req, res) => {
-  try {
-    const memoryUsage = process.memoryUsage();
-    const systemLogs = [
-      { id: 1, level: "INFO", source: "API Gateway", message: "JWT verify handler initialized.", time: new Date().toISOString() },
-      { id: 2, level: "INFO", source: "Firestore Pipeline", message: "Relational sync check completed successfully.", time: new Date(Date.now() - 30000).toISOString() },
-      { id: 3, level: "WARNING", source: "Gemini Model Client", message: "Model overloaded. Fallback triggered.", time: new Date(Date.now() - 120000).toISOString() }
-    ];
-
-    res.status(200).json({
-      healthStatus: "Operational",
-      uptimeSeconds: Math.floor(process.uptime()),
-      memoryAllocatedMB: Math.round(memoryUsage.heapUsed / 1024 / 1024),
-      databaseLatencyMs: 42,
-      apiAvgResponseTimeMs: 110,
-      logs: systemLogs
-    });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
-  }
-});
 
 // Seed function to pre-populate peer resumes in Firestore to improve roadmaps
 async function seedSampleResumes() {

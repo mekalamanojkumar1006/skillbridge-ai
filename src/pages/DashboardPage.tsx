@@ -32,7 +32,6 @@ import {
   BarChart,
   Brain,
   Cloud,
-  ShieldAlert,
   ArrowLeft,
   Clock,
   ArrowUpRight,
@@ -60,7 +59,6 @@ import {
 import ProfileSettingsPage from "./ProfileSettingsPage";
 import ApplicationTracker from "../components/ApplicationTracker";
 import ResumeManager from "../components/ResumeManager";
-import AdminPanel from "../components/AdminPanel";
 import { db } from "../lib/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { CAREER_ROADMAPS, CareerPath, Milestone } from "../data/careersData";
@@ -250,7 +248,6 @@ const renderCareerIcon = (iconName: string) => {
     case "TrendingUp": return <TrendingUp {...props} />;
     case "Settings": return <Settings {...props} />;
     case "Cloud": return <Cloud {...props} />;
-    case "ShieldAlert": return <ShieldAlert {...props} />;
     default: return <Briefcase {...props} />;
   }
 };
@@ -276,7 +273,7 @@ export default function DashboardPage({
   theme,
   setTheme
 }: DashboardPageProps) {
-  const [activeTab, setActiveTab] = useState<"overview" | "ats" | "jobs" | "roadmap" | "career-roadmap" | "interview" | "probability" | "settings" | "applications" | "resumes" | "admin">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "ats" | "jobs" | "roadmap" | "career-roadmap" | "interview" | "probability" | "settings" | "applications" | "resumes">("overview");
   const [resume, setResume] = useState<any>(initialResume || null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -1758,7 +1755,6 @@ export default function DashboardPage({
     { id: "career-roadmap", label: "Career Roadmap", icon: Target, iconColor: "text-[#8B5CF6]" },
     { id: "interview", label: "Interview Lab", icon: MessageSquare, badge: 0 },
     { id: "probability", label: "Hiring Predictor", icon: Award, badge: 0 },
-    { id: "admin", label: "Admin Center", icon: ShieldAlert, badge: 0 },
     { id: "settings", label: "Profile Settings", icon: Settings, badge: 0 }
   ];
 
@@ -2410,9 +2406,7 @@ export default function DashboardPage({
                 setResume(res);
               }}
             />
-          ) : activeTab === "admin" ? (
-            <AdminPanel />
-          ) : !resume && !["resumes", "applications", "admin", "settings"].includes(activeTab) ? (
+          ) : !resume && !["resumes", "applications", "settings"].includes(activeTab) ? (
             /* Premium onboarding hero — no resume uploaded */
             <div className="animate-fade-in w-full space-y-6">
 
