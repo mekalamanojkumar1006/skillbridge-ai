@@ -2413,7 +2413,7 @@ export default function DashboardPage({
               </div>
             </div>
           ) : activeTab === "applications" ? (
-            <ApplicationTracker />
+            <ApplicationTracker user={user} resume={resume} />
           ) : activeTab === "resumes" ? (
             <ResumeManager
               userId={user?.uid || ""}

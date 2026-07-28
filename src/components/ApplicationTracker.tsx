@@ -12,6 +12,12 @@ interface Application {
   salary?: string;
   appliedDate: string;
   notes?: string;
+  atsScore?: number;
+}
+
+interface ApplicationTrackerProps {
+  user?: any;
+  resume?: any;
 }
 
 const STATUS_COLUMNS = [
@@ -36,7 +42,7 @@ const STATUS_COLORS: Record<string, string> = {
   "Rejected": "bg-red-500/10 border-red-500/20 text-red-500"
 };
 
-export default function ApplicationTracker() {
+export default function ApplicationTracker({ user, resume }: ApplicationTrackerProps) {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -82,6 +88,17 @@ export default function ApplicationTracker() {
       return;
     }
     setSubmitting(true);
+    let atsScore: number | undefined = undefined;
+    try {
+      if (resume && user) {
+        // Use role + company as a lightweight job description for ATS matching
+        const jd = `${role} ${company}`;
+        const atsRes = await ApiService.getAtsScore(resume.id, jd, user.uid);
+        atsScore = atsRes.score || atsRes.qualityScore || undefined;
+      }
+    } catch (e) {
+      console.warn("ATS scan for application failed:", e);
+    }
     try {
       await ApiService.addApplication({
         company,
@@ -89,7 +106,8 @@ export default function ApplicationTracker() {
         status,
         salary,
         appliedDate,
-        notes
+        notes,
+        atsScore
       });
       setShowAddModal(false);
       // Reset form
@@ -212,6 +230,11 @@ export default function ApplicationTracker() {
                             <h4 className="text-xs font-extrabold text-[var(--color-text-primary)] leading-tight">{app.role}</h4>
                             <span className="text-[10px] font-mono text-[#6D5DF6] font-bold block mt-0.5">{app.company}</span>
                           </div>
+                          {app.atsScore !== undefined && (
+                            <div className="text-xs font-mono text-[var(--color-text-tertiary)] font-bold">
+                              ATS: <span className="text-indigo-500">{app.atsScore}%</span>
+                            </div>
+                          )}
                         </div>
 
                         {app.salary && (

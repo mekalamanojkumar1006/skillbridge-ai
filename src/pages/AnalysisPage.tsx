@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { ArrowLeft, User, Mail, Phone, Award, Briefcase, FileText, CheckCircle2, ChevronRight, Sun, Moon } from "lucide-react";
+import { ApiService } from "../services/api";
 import { ResponsiveContainer as RechartsResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
 import ResponsiveContainer from "../components/ResponsiveContainer";
 
@@ -41,6 +43,48 @@ export default function AnalysisPage({ user, resume, onNavigate, theme, setTheme
     { name: "Layout", score: 95, fill: "#3B82F6" },
     { name: "Density", score: 78, fill: "#F59E0B" }
   ];
+
+  // Centralized ATS analysis state
+  const [analysis, setAnalysis] = useState<any>(null);
+  const [atsLoading, setAtsLoading] = useState<boolean>(false);
+  const [atsError, setAtsError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    const fetchAnalysis = async () => {
+      if (!resume) {
+        setAnalysis(null);
+        setAtsLoading(false);
+        setAtsError(null);
+        return;
+      }
+      setAtsLoading(true);
+      setAtsError(null);
+      try {
+        const res = await ApiService.analyzeQuality(resume.id, user?.uid || "");
+        if (!mounted) return;
+        const safe = {
+          atsScore: typeof res.atsScore === 'number' ? res.atsScore : (typeof res.score === 'number' ? res.score : (typeof res.qualityScore === 'number' ? res.qualityScore : undefined)),
+          resumeHealth: res.resumeHealth || undefined,
+          strengths: Array.isArray(res.strengths) ? res.strengths : (res.strengths ? [res.strengths] : []),
+          improvements: Array.isArray(res.improvements) ? res.improvements : (res.improvements ? res.improvements : []),
+          missingKeywords: Array.isArray(res.missingKeywords) ? res.missingKeywords : (res.missingKeywords ? [res.missingKeywords] : []),
+          formattingIssues: Array.isArray(res.formattingIssues) ? res.formattingIssues : (res.formatting ? res.formatting : []),
+          raw: res
+        };
+        setAnalysis(safe);
+      } catch (e: any) {
+        console.warn("Failed to fetch ATS analysis:", e);
+        if (!mounted) return;
+        setAnalysis(null);
+        setAtsError(e?.message || "Unable to calculate ATS Score.");
+      } finally {
+        if (mounted) setAtsLoading(false);
+      }
+    };
+    fetchAnalysis();
+    return () => { mounted = false; };
+  }, [resume?.id]);
 
   return (
     <div className="min-h-screen relative bg-[var(--color-bg-page)] text-[var(--color-text-primary)] transition-colors duration-300 font-sans pb-24 overflow-x-hidden">
@@ -114,6 +158,9 @@ export default function AnalysisPage({ user, resume, onNavigate, theme, setTheme
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
+
+        {/* ATS Score Card */}
+        <ATSSummaryCard analysis={analysis} loading={atsLoading} error={atsError} />
 
         {/* Bento Summary & Stats */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -240,6 +287,38 @@ export default function AnalysisPage({ user, resume, onNavigate, theme, setTheme
           </div>
         </div>
 
+        {/* Formatting Issues & Recommendations */}
+        <div className="glass-card p-6">
+          <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider mb-4 font-bold border-b border-[var(--color-border)] pb-3">
+            Recommendations & Formatting Issues
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 className="text-[10px] font-mono text-[var(--color-text-secondary)] uppercase font-black mb-2">Formatting Issues</h4>
+              <ul className="list-disc ml-4 text-[11px] text-[var(--color-text-primary)]">
+                {(analysis?.formattingIssues || []).slice(0,5).map((f: string, i: number) => (
+                  <li key={i}>{f}</li>
+                ))}
+                {!(analysis?.formattingIssues && analysis.formattingIssues.length) && (
+                  <li className="text-[11px] text-[var(--color-text-tertiary)]">No formatting issues detected.</li>
+                )}
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-[10px] font-mono text-[var(--color-text-secondary)] uppercase font-black mb-2">Recommended Improvements</h4>
+              <ul className="list-disc ml-4 text-[11px] text-[var(--color-text-primary)]">
+                {(analysis?.improvements || []).slice(0,6).map((imp: any, i: number) => (
+                  <li key={i}>{typeof imp === 'string' ? imp : imp.text || JSON.stringify(imp)}</li>
+                ))}
+                {!(analysis?.improvements && analysis.improvements.length) && (
+                  <li className="text-[11px] text-[var(--color-text-tertiary)]">No recommendations available yet.</li>
+                )}
+              </ul>
+            </div>
+          </div>
+        </div>
+
         {/* Timelines grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
@@ -301,6 +380,100 @@ export default function AnalysisPage({ user, resume, onNavigate, theme, setTheme
         </div>
         </ResponsiveContainer>
       </main>
+    </div>
+  );
+}
+
+function ATSSummaryCard({ analysis, loading, error }: { analysis: any; loading: boolean; error: string | null }) {
+  const score = analysis?.atsScore ?? analysis?.score ?? analysis?.qualityScore;
+
+  const getColor = (s: number | undefined) => {
+    if (s === undefined || s === null) return "text-gray-400";
+    if (s >= 90) return "#16A34A"; // green
+    if (s >= 75) return "#6D5DF6"; // blue
+    if (s >= 60) return "#F59E0B"; // orange
+    return "#EF4444"; // red
+  };
+
+  const health = analysis?.resumeHealth;
+
+  const circumference = 2 * Math.PI * 36; // radius 36
+  const dashOffset = typeof score === "number" ? circumference * (1 - Math.max(0, Math.min(100, score)) / 100) : circumference;
+
+  // UI states
+  if (loading) {
+    return (
+      <div className="glass-card p-6">
+        <div className="text-sm font-mono text-[var(--color-text-secondary)]">Calculating ATS Score...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="glass-card p-6">
+        <div className="text-sm font-mono text-red-500">Unable to calculate ATS Score.</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="glass-card p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="flex items-center gap-6">
+        <div className="w-28 h-28 flex items-center justify-center">
+          {typeof score === "number" ? (
+            <svg width="84" height="84" viewBox="0 0 84 84">
+              <circle cx="42" cy="42" r="36" stroke="#E6E7F2" strokeWidth="8" fill="none" />
+              <circle
+                cx="42"
+                cy="42"
+                r="36"
+                stroke={getColor(score)}
+                strokeWidth="8"
+                strokeLinecap="round"
+                fill="none"
+                strokeDasharray={`${circumference} ${circumference}`}
+                strokeDashoffset={dashOffset}
+                transform="rotate(-90 42 42)"
+              />
+              <text x="42" y="46" textAnchor="middle" fontSize="18" fontWeight={700} fill="var(--color-text-primary)">{score}</text>
+              <text x="42" y="60" textAnchor="middle" fontSize="9" fill="var(--color-text-tertiary)">/100</text>
+            </svg>
+          ) : (
+            <div className="text-sm font-mono text-[var(--color-text-secondary)]">Calculating ATS Score...</div>
+          )}
+        </div>
+
+        <div>
+          <div className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black">ATS Score</div>
+          <div className="text-xl font-extrabold mt-1" style={{ color: typeof score === "number" ? getColor(score) : undefined }}>{typeof score === "number" ? `${score}/100` : "Calculating ATS Score..."}</div>
+          <div className="text-sm mt-1 text-[var(--color-text-secondary)]">{health || (typeof score === "number" ? (score >= 90 ? "Excellent" : score >= 75 ? "Good" : score >= 60 ? "Average" : "Needs Improvement") : "Analyzing...")}</div>
+        </div>
+      </div>
+
+      <div className="w-full md:w-auto border-l md:border-l-0 md:border-l-transparent md:pl-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-1">
+            <div className="text-[10px] font-mono text-[var(--color-text-secondary)] uppercase font-black">Strengths</div>
+            <ul className="text-sm text-[var(--color-text-primary)] list-disc ml-4">
+              {(analysis?.strengths || []).slice(0, 4).map((s: string, i: number) => (
+                <li key={i} className="text-[11px]">{s}</li>
+              ))}
+              {(!(analysis?.strengths && analysis.strengths.length)) && <li className="text-[11px] text-[var(--color-text-tertiary)]">No strengths available yet.</li>}
+            </ul>
+          </div>
+
+          <div className="space-y-1">
+            <div className="text-[10px] font-mono text-[var(--color-text-secondary)] uppercase font-black">Missing Keywords</div>
+            <ul className="text-sm text-[var(--color-text-primary)] list-disc ml-4">
+              {(analysis?.missingKeywords || []).slice(0, 6).map((k: string, i: number) => (
+                <li key={i} className="text-[11px]">{k}</li>
+              ))}
+              {(!(analysis?.missingKeywords && analysis.missingKeywords.length)) && <li className="text-[11px] text-[var(--color-text-tertiary)]">No missing keywords detected.</li>}
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

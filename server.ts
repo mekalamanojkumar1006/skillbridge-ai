@@ -1131,6 +1131,16 @@ Return ONLY valid raw JSON — no markdown:
     const missingSkills = aiInsights.missingSkills || missingKeywords.slice(0, 8);
     const formattingTips = ["Ensure consistent spacing between sections", "Use standard section headings for ATS compatibility"];
 
+    // Normalize response fields required by frontend
+    const atsScore = typeof qualityScore === "number" ? Math.max(0, Math.min(100, Math.round(qualityScore))) : 50;
+    const mapScoreToHealth = (s: number) => {
+      if (s >= 90) return "Excellent";
+      if (s >= 75) return "Good";
+      if (s >= 60) return "Average";
+      return "Needs Improvement";
+    };
+    const resumeHealth = mapScoreToHealth(atsScore);
+
     // Save to Firestore
     const analysisRef = collection(db, "analyses");
     const docRef = await addDoc(analysisRef, {
@@ -1195,12 +1205,14 @@ Return ONLY valid raw JSON — no markdown:
     res.status(200).json({
       id: docRef.id,
       resumeId: resume_id,
+      atsScore,
+      resumeHealth,
       qualityScore,
       score: qualityScore,
       breakdown,
       strengths,
       improvements,
-      formatting: formattingTips,
+      formattingIssues: formattingTips,
       companyCompatibility,
       verdict,
       missingSkills,
@@ -1349,6 +1361,15 @@ Return ONLY valid raw JSON — no markdown:
     const verdict = aiInsights.verdict || `ATS Score: ${score}/100. Score calculated deterministically against the provided job description.`;
     const suggestions = improvements.map((i: any) => `${i.text} (+${i.impact})`);
 
+    const atsScore = typeof score === "number" ? Math.max(0, Math.min(100, Math.round(score))) : 50;
+    const mapScoreToHealth = (s: number) => {
+      if (s >= 90) return "Excellent";
+      if (s >= 75) return "Good";
+      if (s >= 60) return "Average";
+      return "Needs Improvement";
+    };
+    const resumeHealth = mapScoreToHealth(atsScore);
+
     // Save to Firestore
     const atsRef = collection(db, "atsScores");
     const docRef = await addDoc(atsRef, {
@@ -1356,6 +1377,8 @@ Return ONLY valid raw JSON — no markdown:
       userId: userId || resumeData.userId,
       score,
       qualityScore: score,
+      atsScore,
+      resumeHealth,
       breakdown,
       strengths,
       improvements,
@@ -1371,6 +1394,8 @@ Return ONLY valid raw JSON — no markdown:
     res.status(200).json({
       id: docRef.id,
       resumeId,
+      atsScore,
+      resumeHealth,
       score,
       qualityScore: score,
       breakdown,
@@ -1378,7 +1403,7 @@ Return ONLY valid raw JSON — no markdown:
       improvements,
       companyCompatibility,
       verdict,
-      keywordsMatched: matchedKeywords,
+      keywordsMatched,
       missingKeywords,
       suggestions,
       detectedRole,
