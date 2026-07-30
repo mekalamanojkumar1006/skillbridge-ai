@@ -81,7 +81,6 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate, 
         setError("Please select a file or paste your resume text.");
         return;
       }
-      setLoading(true);
       nameToUpload = file.name;
       dataToUpload = file;
 
@@ -94,13 +93,19 @@ export default function ResumeUploadPage({ userId, onUploadSuccess, onNavigate, 
       }, 150);
     }
 
+    console.log("Resume selected:", nameToUpload);
+    console.log("Upload started");
     setLoading(true);
     try {
       const result = await ApiService.uploadResume(userId, nameToUpload, dataToUpload);
+      console.log("Upload successful");
+      if (result.atsScore !== undefined) {
+        console.log("Frontend received atsScore:", result.atsScore);
+      }
       onUploadSuccess(result);
       onNavigate("analysis");
     } catch (err: any) {
-      console.error(err);
+      console.error("Upload error in ResumeUploadPage:", err);
       setError(err.message || "Failed to analyze resume. Please ensure the file is valid.");
     } finally {
       setLoading(false);

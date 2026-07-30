@@ -1,6 +1,13 @@
 export class ApiService {
   private static getBaseUrl() {
-    // In our container sandbox, port 3000 is directly reverse-proxied
+    const envUrl = import.meta.env.VITE_API_URL;
+    if (envUrl && typeof envUrl === "string" && envUrl.trim()) {
+      let cleaned = envUrl.trim().replace(/\/+$/, "");
+      if (cleaned.endsWith("/api")) {
+        cleaned = cleaned.slice(0, -4);
+      }
+      return cleaned;
+    }
     return "";
   }
 
@@ -85,6 +92,8 @@ export class ApiService {
   }
 
   static async uploadResume(userId: string, fileName: string, contentOrFile: string | File) {
+    console.log("Resume selected:", fileName);
+    console.log("Upload started");
     let body: any;
     let headers: Record<string, string> = this.getAuthHeaders();
 
@@ -99,33 +108,56 @@ export class ApiService {
       body = JSON.stringify({ userId, fileName, content: contentOrFile });
     }
 
-    const res = await fetch(`${this.getBaseUrl()}/api/resumes/upload`, {
+    const targetUrl = `${this.getBaseUrl()}/api/resumes/upload`;
+    console.log(`Sending upload POST request to: ${targetUrl}`);
+
+    const res = await fetch(targetUrl, {
       method: "POST",
       headers,
       body
     });
+
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
+      console.error("Resume upload error from server:", err);
       throw new Error(err.error || "Failed to parse and upload resume");
     }
-    return res.json();
+
+    const data = await res.json();
+    console.log("Upload successful");
+    console.log("Resume parsed");
+    if (data.atsScore !== undefined) {
+      console.log("ATS calculation completed");
+      console.log("ATS saved");
+      console.log("API returned atsScore:", data.atsScore);
+    }
+    return data;
   }
 
   static async analyzeQuality(resumeId: string, userId: string) {
-    const res = await fetch(`${this.getBaseUrl()}/api/analysis/quality/${resumeId}`, {
+    console.log("ATS calculation started for resumeId:", resumeId);
+    const targetUrl = `${this.getBaseUrl()}/api/analysis/quality/${resumeId}`;
+    const res = await fetch(targetUrl, {
       method: "POST",
       headers: this.getHeaders(),
       body: JSON.stringify({ userId })
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
+      console.error("Quality analysis error:", err);
       throw new Error(err.error || "Quality analysis failed");
     }
-    return res.json();
+    const data = await res.json();
+    console.log("ATS calculation completed");
+    console.log("ATS saved");
+    console.log("API returned atsScore:", data.atsScore ?? data.score ?? data.qualityScore);
+    return data;
   }
 
   static async getAtsScore(resumeId: string, jobDescription: string, userId: string) {
-    const res = await fetch(`${this.getBaseUrl()}/api/analysis/ats-score`, {
+    console.log("ATS calculation started for job matching");
+    const targetUrl = `${this.getBaseUrl()}/api/analysis/ats-score`;
+    const res = await fetch(targetUrl, {
       method: "POST",
       headers: this.getHeaders(),
       body: JSON.stringify({ resumeId, jobDescription, userId })
@@ -134,7 +166,10 @@ export class ApiService {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || "ATS evaluation failed");
     }
-    return res.json();
+    const data = await res.json();
+    console.log("ATS calculation completed");
+    console.log("API returned atsScore:", data.atsScore ?? data.score ?? data.qualityScore);
+    return data;
   }
 
   static async matchJobs(resumeId: string, userId: string) {

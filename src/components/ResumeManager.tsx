@@ -343,9 +343,22 @@ export default function ResumeManager({ userId, activeResume, onSelectResume }: 
                       </div>
                       <div className="min-w-0 font-mono">
                         <span className="text-xs font-extrabold truncate block text-[var(--color-text-primary)]">{res.fileName}</span>
-                        <span className="text-[9px] text-[var(--color-text-tertiary)] block mt-0.5">
-                          Uploaded: {new Date(res.createdAt).toLocaleDateString()}
-                        </span>
+                        <div className="flex items-center gap-2 mt-0.5 flex-wrap">
+                          <span className="text-[9px] text-[var(--color-text-tertiary)]">
+                            Uploaded: {new Date(res.createdAt).toLocaleDateString()}
+                          </span>
+                          {res.atsScore !== undefined && (
+                            <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-md border font-mono ${
+                              res.atsScore >= 75
+                                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
+                                : res.atsScore >= 60
+                                ? "bg-amber-500/10 border-amber-500/20 text-amber-500"
+                                : "bg-red-500/10 border-red-500/20 text-red-500"
+                            }`}>
+                              ATS: {res.atsScore}%
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
 

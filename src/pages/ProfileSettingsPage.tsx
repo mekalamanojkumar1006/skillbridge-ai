@@ -51,6 +51,33 @@ export default function ProfileSettingsPage({
   const [profileSuccess, setProfileSuccess] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
 
+  // Resume ATS summary for Candidate Card
+  const [resumeAtsScore, setResumeAtsScore] = useState<number | undefined>(undefined);
+  const [resumeHealth, setResumeHealth] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const fetchResumeAts = async () => {
+      try {
+        const res = await ApiService.getResumes();
+        const resumes: any[] = res.resumes || [];
+        if (resumes.length > 0) {
+          // Pick the most recently uploaded resume
+          const sorted = [...resumes].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+          const latest = sorted[0];
+          if (typeof latest.atsScore === 'number') {
+            setResumeAtsScore(latest.atsScore);
+            const health = latest.resumeHealth || (latest.atsScore >= 90 ? "Excellent" : latest.atsScore >= 75 ? "Good" : latest.atsScore >= 60 ? "Average" : "Needs Improvement");
+            setResumeHealth(health);
+            console.log("Frontend rendered atsScore:", latest.atsScore);
+          }
+        }
+      } catch (e) {
+        console.warn("ProfileSettings: failed to load resume ATS score", e);
+      }
+    };
+    fetchResumeAts();
+  }, []);
+
   // Link Account States
   const [linkEmail, setLinkEmail] = useState("");
   const [linkPassword, setLinkPassword] = useState("");
@@ -290,12 +317,33 @@ export default function ProfileSettingsPage({
               Candidate Card
             </h3>
             
-            <div className="flex flex-col items-center justify-center p-6 bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl shadow-inner my-auto">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#6D5DF6] to-[#8B5CF6] flex items-center justify-center font-black text-xl text-white shadow-md mb-3 font-mono">
+            <div className="flex flex-col items-center justify-center p-6 bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-2xl shadow-inner my-auto space-y-3">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#6D5DF6] to-[#8B5CF6] flex items-center justify-center font-black text-xl text-white shadow-md font-mono">
                 {displayName ? displayName[0].toUpperCase() : user?.email?.[0].toUpperCase() || "U"}
               </div>
               <p className="text-sm font-extrabold text-[var(--color-text-primary)] text-center truncate w-full">{displayName || "Career Professional"}</p>
-              <p className="text-[10px] font-mono text-[var(--color-text-tertiary)] text-center mt-1 truncate w-full">{user?.email || "Anonymous profile"}</p>
+              <p className="text-[10px] font-mono text-[var(--color-text-tertiary)] text-center truncate w-full">{user?.email || "Anonymous profile"}</p>
+              {resumeAtsScore !== undefined && (
+                <div className="flex flex-col items-center gap-2 pt-2 border-t border-[var(--color-border)] w-full">
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[10px] font-black font-mono px-2.5 py-1 rounded-lg border ${
+                      resumeAtsScore >= 75
+                        ? "bg-emerald-500/10 border-emerald-500/25 text-emerald-500"
+                        : resumeAtsScore >= 60
+                        ? "bg-amber-500/10 border-amber-500/25 text-amber-500"
+                        : "bg-red-500/10 border-red-500/25 text-red-500"
+                    }`}>
+                      ATS: {resumeAtsScore}%
+                    </span>
+                    {resumeHealth && (
+                      <span className="text-[9px] font-mono font-bold text-[var(--color-text-secondary)] px-2 py-1 bg-[var(--color-bg-card)] border border-[var(--color-border)] rounded-lg">
+                        {resumeHealth}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-[8px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider">Resume Score</span>
+                </div>
+              )}
             </div>
           </div>
 
