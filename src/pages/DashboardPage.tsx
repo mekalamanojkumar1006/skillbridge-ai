@@ -1103,10 +1103,12 @@ export default function DashboardPage({
   const triggerQualityAnalysis = async () => {
     if (!resume) return;
     setAnalyzingQuality(true);
+    setAtsLoading(true);
     setError(null);
     try {
       const res = await ApiService.analyzeQuality(resume.id, user.uid);
       setQualityAnalysis(res);
+      setAtsAnalysis(res);
 
       fetchNotifications(true);
     } catch (err: any) {
@@ -1114,8 +1116,10 @@ export default function DashboardPage({
       setError("Failed to run quality analysis: " + err.message);
     } finally {
       setAnalyzingQuality(false);
+      setAtsLoading(false);
     }
   };
+
 
   const handleAtsScan = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -2774,6 +2778,256 @@ export default function DashboardPage({
                           )}
                         </div>
                       </div>
+
+                      {/* ── ATS RESUME SCORE WIDGET ── */}
+                      {(() => {
+                        const score = atsAnalysis?.atsScore ?? atsAnalysis?.score ?? atsAnalysis?.qualityScore;
+                        const health = atsAnalysis?.resumeHealth ?? (
+                          score === undefined ? undefined :
+                          score >= 90 ? "Excellent" : score >= 75 ? "Good" : score >= 60 ? "Average" : "Needs Improvement"
+                        );
+                        const rank = score === undefined ? undefined :
+                          score >= 90 ? "Top 5%" : score >= 80 ? "Top 15%" : score >= 70 ? "Top 30%" : score >= 60 ? "Top 50%" : "Bottom 50%";
+                        const lastAnalyzed = atsAnalysis?.updatedAt ? getRelativeTime(atsAnalysis.updatedAt) : (resume?.updatedAt ? getRelativeTime(resume.updatedAt) : null);
+                        const scoreColor = score === undefined ? "stroke-gray-400" :
+                          score >= 90 ? "stroke-emerald-500" : score >= 75 ? "stroke-[#6D5DF6]" : score >= 60 ? "stroke-amber-500" : "stroke-red-500";
+                        const scoreBg = score === undefined ? "" :
+                          score >= 90 ? "from-emerald-500/10 to-emerald-500/5 border-emerald-500/20" :
+                          score >= 75 ? "from-[#6D5DF6]/10 to-[#6D5DF6]/5 border-[#6D5DF6]/20" :
+                          score >= 60 ? "from-amber-500/10 to-amber-500/5 border-amber-500/20" :
+                                        "from-red-500/10 to-red-500/5 border-red-500/20";
+                        const scoreText = score === undefined ? "text-gray-400" :
+                          score >= 90 ? "text-emerald-500" : score >= 75 ? "text-[#6D5DF6]" : score >= 60 ? "text-amber-500" : "text-red-500";
+
+                        // Category score breakdown — normalize all sub-scores to 0-100
+                        const rawCats = atsAnalysis?.categoryScores ?? atsAnalysis?.breakdown ?? {};
+                        const catMap: Record<string, { label: string; key: string; max: number }> = {
+                          formatting:    { label: "Resume Structure",  key: "formatting",    max: 20 },
+                          contactInfo:   { label: "Contact Info",      key: "contactInfo",   max: 10 },
+                          summary:       { label: "Summary",           key: "summary",       max: 10 },
+                          skills:        { label: "Skills Match",      key: "skills",        max: 15 },
+                          experience:    { label: "Experience",        key: "experience",    max: 10 },
+                          projects:      { label: "Projects",          key: "projects",      max: 20 },
+                          education:     { label: "Education",         key: "education",     max: 5  },
+                          keywords:      { label: "Keyword Match",     key: "keywords",      max: 10 },
+                          certifications:{ label: "Certifications",    key: "certifications",max: 5  },
+                        };
+                        const categories = Object.entries(catMap)
+                          .filter(([k]) => rawCats[k] !== undefined)
+                          .map(([k, meta]) => ({
+                            label: meta.label,
+                            value: Math.round((rawCats[k] / meta.max) * 100)
+                          }))
+                          .slice(0, 6);
+
+                        // AI Insights — blend strengths + keyword warnings + formatting issues + recommendations
+                        const strengths: string[] = Array.isArray(atsAnalysis?.strengths) ? atsAnalysis.strengths.slice(0, 3) : [];
+                        const warnings: string[] = [
+                          ...(Array.isArray(atsAnalysis?.missingKeywords) && atsAnalysis.missingKeywords.length > 0
+                            ? [`Missing ${atsAnalysis.missingKeywords.length} ATS keyword${atsAnalysis.missingKeywords.length > 1 ? "s" : ""}: ${atsAnalysis.missingKeywords.slice(0, 3).join(", ")}`]
+                            : []),
+                          ...(Array.isArray(atsAnalysis?.formattingIssues) ? atsAnalysis.formattingIssues.slice(0, 1) : []),
+                          ...(Array.isArray(atsAnalysis?.recommendations)
+                            ? atsAnalysis.recommendations.slice(0, 2).map((r: any) => typeof r === "string" ? r : r?.text ?? "")
+                            : [])
+                        ].filter(Boolean).slice(0, 3);
+
+                        return (
+                          <div className="glass-card p-5 space-y-4 relative overflow-hidden">
+                            {/* Ambient glow */}
+                            <div className="absolute top-[-40px] right-[-40px] w-32 h-32 bg-[#6D5DF6]/8 rounded-full blur-2xl pointer-events-none" />
+
+                            {/* Header */}
+                            <div className="flex items-center justify-between">
+                              <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black flex items-center space-x-2">
+                                <ShieldCheck className="w-3.5 h-3.5 text-[#6D5DF6] shrink-0" />
+                                <span>ATS Resume Score</span>
+                              </h3>
+                              {atsLoading && (
+                                <span className="flex items-center space-x-1 text-[9px] font-mono text-[var(--color-text-tertiary)]">
+                                  <RefreshCw className="w-2.5 h-2.5 animate-spin" />
+                                  <span>Analyzing...</span>
+                                </span>
+                              )}
+                              {!atsLoading && lastAnalyzed && (
+                                <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] flex items-center space-x-1">
+                                  <Clock className="w-2.5 h-2.5 shrink-0" />
+                                  <span>{lastAnalyzed}</span>
+                                </span>
+                              )}
+                            </div>
+
+                            {/* No ATS data — empty state */}
+                            {!atsLoading && score === undefined && (
+                              <div className="flex flex-col items-center justify-center py-6 space-y-3 text-center">
+                                <div className="w-12 h-12 rounded-2xl bg-[var(--color-bg-page)] border border-[var(--color-border)] flex items-center justify-center">
+                                  <ShieldCheck className="w-5 h-5 text-[var(--color-text-tertiary)]" />
+                                </div>
+                                <div>
+                                  <p className="text-[11px] font-bold text-[var(--color-text-primary)]">No ATS Analysis Yet</p>
+                                  <p className="text-[10px] font-mono text-[var(--color-text-tertiary)] mt-0.5">
+                                    Analyze your resume to generate your first ATS report.
+                                  </p>
+                                </div>
+                                <button
+                                  onClick={() => setActiveTab("ats")}
+                                  className="px-4 py-2 clay-btn clay-btn-primary text-[10px] font-mono uppercase tracking-wider font-bold text-white"
+                                >
+                                  Analyze Resume
+                                </button>
+                              </div>
+                            )}
+
+                            {/* Score loaded */}
+                            {!atsLoading && score !== undefined && (
+                              <div className="space-y-4">
+                                {/* Main Score Row */}
+                                <div className={`flex items-center space-x-4 p-3.5 rounded-2xl bg-gradient-to-br border ${scoreBg}`}>
+                                  <CircularScoreGauge
+                                    score={score}
+                                    size={78}
+                                    strokeWidth={7}
+                                    colorClass={scoreColor}
+                                    duration={1.4}
+                                  />
+                                  <div className="flex-1 min-w-0 space-y-2">
+                                    {/* Health */}
+                                    <div>
+                                      <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold block">Resume Health</span>
+                                      <span className={`text-sm font-black tracking-tight ${scoreText}`}>{health}</span>
+                                    </div>
+                                    {/* Rank */}
+                                    <div>
+                                      <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-semibold block">Resume Rank</span>
+                                      <span className="text-xs font-black text-[var(--color-text-primary)]">{rank}</span>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Category Breakdown */}
+                                {categories.length > 0 && (
+                                  <div className="space-y-2">
+                                    <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider font-black block">Score Breakdown</span>
+                                    <div className="space-y-1.5">
+                                      {categories.map((cat, i) => (
+                                        <div key={i} className="space-y-0.5">
+                                          <div className="flex justify-between items-center">
+                                            <span className="text-[9.5px] font-mono font-semibold text-[var(--color-text-secondary)] truncate">{cat.label}</span>
+                                            <span className={`text-[9.5px] font-black font-mono ${
+                                              cat.value >= 85 ? "text-emerald-500" : cat.value >= 70 ? "text-[#6D5DF6]" : cat.value >= 55 ? "text-amber-500" : "text-red-400"
+                                            }`}>{cat.value}%</span>
+                                          </div>
+                                          <div className="h-1 bg-[var(--color-bg-page)] rounded-full overflow-hidden">
+                                            <motion.div
+                                              className={`h-full rounded-full ${
+                                                cat.value >= 85 ? "bg-emerald-500" : cat.value >= 70 ? "bg-[#6D5DF6]" : cat.value >= 55 ? "bg-amber-500" : "bg-red-400"
+                                              }`}
+                                              initial={{ width: 0 }}
+                                              animate={{ width: `${Math.min(cat.value, 100)}%` }}
+                                              transition={{ duration: 0.9, delay: i * 0.08, ease: "easeOut" }}
+                                            />
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* AI Insights */}
+                                {(strengths.length > 0 || warnings.length > 0) && (
+                                  <div className="space-y-1.5">
+                                    <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase tracking-wider font-black block">AI Resume Insights</span>
+                                    <div className="space-y-1">
+                                      {strengths.map((s, i) => (
+                                        <div key={`s-${i}`} className="flex items-start space-x-1.5">
+                                          <CheckCircle2 className="w-3 h-3 text-emerald-500 shrink-0 mt-0.5" />
+                                          <span className="text-[10px] font-sans font-medium text-[var(--color-text-secondary)] leading-snug">{s}</span>
+                                        </div>
+                                      ))}
+                                      {warnings.map((w, i) => (
+                                        <div key={`w-${i}`} className="flex items-start space-x-1.5">
+                                          <AlertCircle className="w-3 h-3 text-amber-500 shrink-0 mt-0.5" />
+                                          <span className="text-[10px] font-sans font-medium text-[var(--color-text-secondary)] leading-snug">{w}</span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+
+                                {/* Quick Actions */}
+                                <div className="grid grid-cols-2 gap-1.5 pt-1 border-t border-[var(--color-border)]/50">
+                                  <button
+                                    onClick={() => setActiveTab("ats")}
+                                    className="flex items-center justify-center space-x-1.5 px-2.5 py-2 rounded-xl bg-[#6D5DF6]/5 border border-[#6D5DF6]/15 hover:bg-[#6D5DF6]/10 text-[#6D5DF6] transition duration-150 cursor-pointer"
+                                  >
+                                    <FileText className="w-3 h-3 shrink-0" />
+                                    <span className="text-[9px] font-mono font-bold truncate">Full ATS Report</span>
+                                  </button>
+                                  <button
+                                    onClick={() => setActiveTab("roadmap")}
+                                    className="flex items-center justify-center space-x-1.5 px-2.5 py-2 rounded-xl bg-amber-500/5 border border-amber-500/15 hover:bg-amber-500/10 text-amber-500 transition duration-150 cursor-pointer"
+                                  >
+                                    <TrendingUp className="w-3 h-3 shrink-0" />
+                                    <span className="text-[9px] font-mono font-bold truncate">Improve Resume</span>
+                                  </button>
+                                  <button
+                                    onClick={triggerQualityAnalysis}
+                                    disabled={analyzingQuality}
+                                    className="flex items-center justify-center space-x-1.5 px-2.5 py-2 rounded-xl bg-[var(--color-bg-page)] border border-[var(--color-border)] hover:border-[#6D5DF6]/20 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                  >
+                                    <RefreshCw className={`w-3 h-3 shrink-0 ${analyzingQuality ? "animate-spin" : ""}`} />
+                                    <span className="text-[9px] font-mono font-bold truncate">{analyzingQuality ? "Analyzing..." : "Analyze Again"}</span>
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      if (!atsAnalysis) return;
+                                      const doc = new jsPDF();
+                                      doc.setFont("helvetica", "bold");
+                                      doc.setFontSize(18);
+                                      doc.text("ATS Resume Score Report", 15, 20);
+                                      doc.setFont("helvetica", "normal");
+                                      doc.setFontSize(10);
+                                      doc.text(`Candidate: ${resume?.parsedData?.name || user?.displayName || "Candidate"}`, 15, 32);
+                                      doc.text(`Overall ATS Score: ${score}/100`, 15, 40);
+                                      doc.text(`Resume Health: ${health}`, 15, 48);
+                                      doc.text(`Resume Rank: ${rank}`, 15, 56);
+                                      doc.text(`Last Analyzed: ${lastAnalyzed || "N/A"}`, 15, 64);
+                                      doc.setFont("helvetica", "bold");
+                                      doc.setFontSize(12);
+                                      doc.text("Category Breakdown:", 15, 76);
+                                      doc.setFont("helvetica", "normal");
+                                      doc.setFontSize(10);
+                                      let y = 84;
+                                      categories.forEach(cat => { doc.text(`${cat.label}: ${cat.value}%`, 20, y); y += 8; });
+                                      if (strengths.length > 0) {
+                                        doc.setFont("helvetica", "bold");
+                                        doc.setFontSize(12);
+                                        doc.text("Strengths:", 15, y + 4); y += 12;
+                                        doc.setFont("helvetica", "normal");
+                                        doc.setFontSize(10);
+                                        strengths.forEach(s => { const lines = doc.splitTextToSize(`• ${s}`, 175); doc.text(lines, 20, y); y += lines.length * 6 + 2; });
+                                      }
+                                      if (warnings.length > 0) {
+                                        doc.setFont("helvetica", "bold");
+                                        doc.setFontSize(12);
+                                        doc.text("Recommendations:", 15, y + 4); y += 12;
+                                        doc.setFont("helvetica", "normal");
+                                        doc.setFontSize(10);
+                                        warnings.forEach(w => { const lines = doc.splitTextToSize(`⚠ ${w}`, 175); doc.text(lines, 20, y); y += lines.length * 6 + 2; });
+                                      }
+                                      doc.save(`ats_report_${resume?.fileName || "resume"}.pdf`);
+                                    }}
+                                    className="flex items-center justify-center space-x-1.5 px-2.5 py-2 rounded-xl bg-emerald-500/5 border border-emerald-500/15 hover:bg-emerald-500/10 text-emerald-500 transition duration-150 cursor-pointer"
+                                  >
+                                    <ArrowUpRight className="w-3 h-3 shrink-0" />
+                                    <span className="text-[9px] font-mono font-bold truncate">Download PDF</span>
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
 
                       {/* Technical Skills Card */}
                       <div className="glass-card p-6 space-y-4">
