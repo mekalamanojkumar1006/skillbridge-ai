@@ -734,7 +734,18 @@ export class ApiService {
     return res.json();
   }
 
-  static async predictSalary(payload: { roleTitle: string; skills?: string[]; experienceYears?: number; location?: string; companyTier?: string }) {
+  static async predictSalary(payload: {
+    roleTitle: string;
+    skills?: string[];
+    experienceYears?: number;
+    country?: string;
+    state?: string;
+    city?: string;
+    companyType?: string;
+    education?: string;
+    location?: string;
+    companyTier?: string;
+  }) {
     const res = await fetch(`${this.getBaseUrl()}/api/ai/salary-predictor`, {
       method: "POST",
       headers: this.getHeaders(),
@@ -743,6 +754,17 @@ export class ApiService {
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
       throw new Error(err.error || "Failed to predict salary range");
+    }
+    return res.json();
+  }
+
+  static async getWorkspaceActivity() {
+    const res = await fetch(`${this.getBaseUrl()}/api/workspace/activity`, {
+      headers: this.getHeaders()
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to fetch workspace activity");
     }
     return res.json();
   }
