@@ -666,4 +666,95 @@ export class ApiService {
     }
     return res.json();
   }
+
+  // =======================================================
+  // AI CAREER INTELLIGENCE MODULE METHODS
+  // =======================================================
+
+  static async generateCoverLetter(payload: { jobDescription: string; companyName: string; roleTitle?: string; targetTone?: string; candidateProfile?: any }) {
+    const res = await fetch(`${this.getBaseUrl()}/api/ai/cover-letter`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to generate cover letter");
+    }
+    return res.json();
+  }
+
+  static async rewriteResumeContent(payload: { textToRewrite: string; sectionType?: string; rewriteMode?: string; targetKeywords?: string[] }) {
+    const res = await fetch(`${this.getBaseUrl()}/api/ai/resume-rewrite`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to rewrite resume content");
+    }
+    return res.json();
+  }
+
+  static async chatWithCareerCoach(payload: { message: string; conversationHistory?: any[]; userContext?: any }) {
+    const res = await fetch(`${this.getBaseUrl()}/api/ai/career-coach`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to chat with AI Career Coach");
+    }
+    return res.json();
+  }
+
+  static async generatePortfolio(payload: { candidateName: string; targetRole?: string; skills?: string[]; experience?: any[]; projects?: any[]; theme?: string }) {
+    const res = await fetch(`${this.getBaseUrl()}/api/ai/portfolio-generator`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to generate portfolio code");
+    }
+    return res.json();
+  }
+
+  static async predictSalary(payload: { roleTitle: string; skills?: string[]; experienceYears?: number; location?: string; companyTier?: string }) {
+    const res = await fetch(`${this.getBaseUrl()}/api/ai/salary-predictor`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify(payload)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to predict salary range");
+    }
+    return res.json();
+  }
+
+  static async getAdminStats() {
+    const res = await fetch(`${this.getBaseUrl()}/api/admin/stats`, {
+      headers: this.getHeaders()
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to fetch admin stats");
+    }
+    return res.json();
+  }
+
+  static async getAdminHealth() {
+    const res = await fetch(`${this.getBaseUrl()}/api/admin/health`, {
+      headers: this.getHeaders()
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to fetch admin health status");
+    }
+    return res.json();
+  }
 }

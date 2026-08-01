@@ -60,6 +60,14 @@ import {
 import ProfileSettingsPage from "./ProfileSettingsPage";
 import ApplicationTracker from "../components/ApplicationTracker";
 import ResumeManager from "../components/ResumeManager";
+import CoverLetterGenerator from "../components/CoverLetterGenerator";
+import ResumeRewriter from "../components/ResumeRewriter";
+import CareerCoach from "../components/CareerCoach";
+import PortfolioGenerator from "../components/PortfolioGenerator";
+import SalaryPredictor from "../components/SalaryPredictor";
+import AdminDashboard from "../components/AdminDashboard";
+import JobDescriptionAnalyzer from "../components/JobDescriptionAnalyzer";
+import ResumeBuilder from "../components/ResumeBuilder";
 import { db } from "../lib/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { CAREER_ROADMAPS, CareerPath, Milestone } from "../data/careersData";
@@ -276,7 +284,7 @@ export default function DashboardPage({
   theme,
   setTheme
 }: DashboardPageProps) {
-  const [activeTab, setActiveTab] = useState<"overview" | "ats" | "jobs" | "roadmap" | "career-roadmap" | "interview" | "probability" | "settings" | "applications" | "resumes">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "ats" | "jobs" | "roadmap" | "career-roadmap" | "interview" | "probability" | "settings" | "applications" | "resumes" | "cover-letter" | "resume-rewriter" | "career-coach" | "portfolio-generator" | "salary-predictor" | "resume-builder" | "jd-analyzer" | "admin-panel">("overview");
   const [resume, setResume] = useState<any>(initialResume || null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -1840,13 +1848,21 @@ export default function DashboardPage({
   const navigationItems = [
     { id: "overview", label: "Career Board", icon: LayoutDashboard, badge: 0 },
     { id: "resumes", label: "My Resumes", icon: FileText, badge: 0 },
+    { id: "resume-builder", label: "Resume Builder", icon: FileText, badge: 0, iconColor: "text-[#6D5DF6]" },
     { id: "ats", label: "ATS Optimiser", icon: FileText, badge: 1 },
+    { id: "jd-analyzer", label: "JD Analyzer", icon: Search, badge: 0, iconColor: "text-sky-500" },
+    { id: "cover-letter", label: "Cover Letter", icon: Send, badge: 0, iconColor: "text-emerald-500" },
+    { id: "resume-rewriter", label: "Resume Rewriter", icon: BookOpen, badge: 0, iconColor: "text-amber-500" },
+    { id: "career-coach", label: "Career Coach", icon: Brain, badge: 0, iconColor: "text-[#8B5CF6]" },
+    { id: "portfolio-generator", label: "Portfolio Gen.", icon: Code, badge: 0, iconColor: "text-pink-500" },
+    { id: "salary-predictor", label: "Salary Predictor", icon: TrendingUp, badge: 0, iconColor: "text-emerald-500" },
     { id: "jobs", label: "Job Matcher", icon: Search, badge: 0 },
     { id: "applications", label: "Tracker Pipeline", icon: ClipboardList, badge: 0 },
     { id: "roadmap", label: "Skill Gaps", icon: Map, badge: 0 },
     { id: "career-roadmap", label: "Career Roadmap", icon: Target, iconColor: "text-[#8B5CF6]" },
     { id: "interview", label: "Interview Lab", icon: MessageSquare, badge: 0 },
     { id: "probability", label: "Hiring Predictor", icon: Award, badge: 0 },
+    { id: "admin-panel", label: "Admin Console", icon: ShieldCheck, badge: 0, iconColor: "text-[#6D5DF6]" },
     { id: "settings", label: "Profile Settings", icon: Settings, badge: 0 }
   ];
 
@@ -4636,6 +4652,46 @@ export default function DashboardPage({
 
                   </div>
                 </div>
+              )}
+
+              {/* Tab Content: Cover Letter Generator */}
+              {activeTab === "cover-letter" && (
+                <CoverLetterGenerator user={user} resume={resume} />
+              )}
+
+              {/* Tab Content: Resume Rewriter */}
+              {activeTab === "resume-rewriter" && (
+                <ResumeRewriter user={user} resume={resume} />
+              )}
+
+              {/* Tab Content: Career Coach */}
+              {activeTab === "career-coach" && (
+                <CareerCoach user={user} resume={resume} />
+              )}
+
+              {/* Tab Content: Portfolio Generator */}
+              {activeTab === "portfolio-generator" && (
+                <PortfolioGenerator user={user} resume={resume} />
+              )}
+
+              {/* Tab Content: Salary Predictor */}
+              {activeTab === "salary-predictor" && (
+                <SalaryPredictor user={user} resume={resume} />
+              )}
+
+              {/* Tab Content: Resume Builder */}
+              {activeTab === "resume-builder" && (
+                <ResumeBuilder user={user} resume={resume} />
+              )}
+
+              {/* Tab Content: JD Analyzer */}
+              {activeTab === "jd-analyzer" && (
+                <JobDescriptionAnalyzer user={user} resume={resume} />
+              )}
+
+              {/* Tab Content: Admin Console */}
+              {activeTab === "admin-panel" && (
+                <AdminDashboard user={user} />
               )}
 
             </div>

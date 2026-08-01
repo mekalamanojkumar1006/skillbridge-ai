@@ -445,6 +445,7 @@ export default function ResumeManager({ userId, activeResume, onSelectResume }: 
                   required
                   value={renameValue}
                   onChange={(e) => setRenameValue(e.target.value)}
+                  placeholder="e.g. Google Swe Version, Microsoft Version, Campus"
                   className="w-full p-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-page)]/50 focus:border-[#6D5DF6] focus:outline-none"
                 />
 

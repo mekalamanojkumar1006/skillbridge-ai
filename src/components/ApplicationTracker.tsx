@@ -23,10 +23,10 @@ interface ApplicationTrackerProps {
 const STATUS_COLUMNS = [
   "Saved",
   "Applied",
-  "Assessment",
-  "Interview",
-  "HR Round",
-  "Offer Received",
+  "Shortlisted",
+  "Technical",
+  "HR",
+  "Offer",
   "Accepted",
   "Rejected"
 ];
@@ -34,10 +34,10 @@ const STATUS_COLUMNS = [
 const STATUS_COLORS: Record<string, string> = {
   "Saved": "bg-blue-500/10 border-blue-500/20 text-blue-500",
   "Applied": "bg-indigo-500/10 border-indigo-500/20 text-indigo-500",
-  "Assessment": "bg-yellow-500/10 border-yellow-500/20 text-yellow-500",
-  "Interview": "bg-purple-500/10 border-purple-500/20 text-purple-500",
-  "HR Round": "bg-pink-500/10 border-pink-500/20 text-pink-500",
-  "Offer Received": "bg-emerald-500/10 border-emerald-500/20 text-emerald-500 font-bold animate-pulse",
+  "Shortlisted": "bg-yellow-500/10 border-yellow-500/20 text-yellow-500",
+  "Technical": "bg-purple-500/10 border-purple-500/20 text-purple-500",
+  "HR": "bg-pink-500/10 border-pink-500/20 text-pink-500",
+  "Offer": "bg-emerald-500/10 border-emerald-500/20 text-emerald-500 font-bold animate-pulse",
   "Accepted": "bg-green-500/15 border-green-500/30 text-green-500 font-extrabold",
   "Rejected": "bg-red-500/10 border-red-500/20 text-red-500"
 };
