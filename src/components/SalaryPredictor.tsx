@@ -56,7 +56,7 @@ export default function SalaryPredictor({ user, resume }: SalaryPredictorProps) 
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
         {/* Input Parameters */}
         <form onSubmit={handlePredict} className="glass-card p-6 space-y-4">
           <h3 className="text-xs font-mono uppercase tracking-wider font-bold text-[var(--color-text-secondary)] border-b border-[var(--color-border)] pb-2">

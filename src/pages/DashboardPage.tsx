@@ -299,7 +299,13 @@ export default function DashboardPage({
   const [resume, setResume] = useState<any>(initialResume || null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [platformStats, setPlatformStats] = useState<{ totalExecutions: number }>({ totalExecutions: 1254 });
+  const [platformStats, setPlatformStats] = useState<{
+    totalExecutions: number;
+    totalUsers: number;
+    totalResumes: number;
+    totalAtsAnalyses: number;
+    totalApplications: number;
+  }>({ totalExecutions: 0, totalUsers: 0, totalResumes: 0, totalAtsAnalyses: 0, totalApplications: 0 });
 
   // Centralized ATS Analysis state for Dashboard
   const [atsAnalysis, setAtsAnalysis] = useState<any>(() => {
@@ -374,12 +380,26 @@ export default function DashboardPage({
   useEffect(() => {
     const fetchPlatformStats = async () => {
       try {
-        const data = await ApiService.getPlatformStats();
-        if (data && typeof data.appExecutions === "number") {
-          setPlatformStats({ totalExecutions: data.appExecutions });
+        // Primary: hit the rich analytics endpoint
+        const data = await ApiService.getPlatformAnalytics();
+        setPlatformStats({
+          totalExecutions: typeof data.appExecutions === "number" ? data.appExecutions : 0,
+          totalUsers: typeof data.totalUsers === "number" ? data.totalUsers : 0,
+          totalResumes: typeof data.totalResumes === "number" ? data.totalResumes : 0,
+          totalAtsAnalyses: typeof data.totalAtsAnalyses === "number" ? data.totalAtsAnalyses : 0,
+          totalApplications: typeof data.totalApplications === "number" ? data.totalApplications : 0
+        });
+      } catch {
+        // Fallback to legacy stats endpoint
+        try {
+          const data = await ApiService.getPlatformStats();
+          setPlatformStats(prev => ({
+            ...prev,
+            totalExecutions: typeof data.appExecutions === "number" ? data.appExecutions : prev.totalExecutions
+          }));
+        } catch (err) {
+          console.warn("Failed to fetch platform stats:", err);
         }
-      } catch (err) {
-        console.warn("Failed to fetch platform stats:", err);
       }
     };
     fetchPlatformStats();
@@ -796,6 +816,7 @@ export default function DashboardPage({
   const [sortBy, setSortBy] = useState("match");
   const [currentPageNum, setCurrentPageNum] = useState(1);
   const [copiedJobId, setCopiedJobId] = useState<string | null>(null);
+  const [expandedJobIdx, setExpandedJobIdx] = useState<number | null>(null);
 
   // Skill gap analysis state
   const [targetCareerRole, setTargetCareerRole] = useState("");
@@ -1873,7 +1894,7 @@ export default function DashboardPage({
     { id: "career-roadmap", label: "Career Roadmap", icon: Target, iconColor: "text-[#8B5CF6]" },
     { id: "interview", label: "Interview Lab", icon: MessageSquare, badge: 0 },
     { id: "probability", label: "Hiring Predictor", icon: Award, badge: 0 },
-    { id: "admin-panel", label: "Admin Console", icon: ShieldCheck, badge: 0, iconColor: "text-[#6D5DF6]" },
+    ...(user?.role === "admin" ? [{ id: "admin-panel", label: "Admin Console", icon: ShieldCheck, badge: 0, iconColor: "text-[#6D5DF6]" }] : []),
     { id: "settings", label: "Profile Settings", icon: Settings, badge: 0 }
   ];
 
@@ -2086,14 +2107,18 @@ export default function DashboardPage({
                     <span className="text-[8px] font-mono uppercase tracking-wider text-emerald-500 font-extrabold">Live</span>
                   </span>
                 </div>
-                <div className="p-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] shadow-inner flex items-center justify-between text-[10px] font-mono font-semibold text-[var(--color-text-secondary)]">
-                  <div className="flex items-center space-x-2">
-                    <TrendingUp className="w-3.5 h-3.5 text-[#6D5DF6]" />
-                    <span>App Executions</span>
-                  </div>
-                  <span className="text-[11px] font-black text-[var(--color-text-primary)] transition-all duration-300">
-                    {platformStats.totalExecutions || 0}
-                  </span>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {[
+                    { label: "Users", value: platformStats.totalUsers, icon: "👤" },
+                    { label: "Resumes", value: platformStats.totalResumes, icon: "📄" },
+                    { label: "Analyses", value: platformStats.totalAtsAnalyses, icon: "🔍" },
+                    { label: "Apps", value: platformStats.totalApplications, icon: "📋" }
+                  ].map((stat) => (
+                    <div key={stat.label} className="p-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-page)] shadow-inner text-center">
+                      <div className="text-[10px] font-black text-[var(--color-text-primary)]">{stat.value}</div>
+                      <div className="text-[8px] font-mono text-[var(--color-text-tertiary)] uppercase font-bold">{stat.label}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -3056,9 +3081,9 @@ export default function DashboardPage({
                     </div>
 
                     {/* Bottom Row: Work History & Education (2 Columns on Desktop) */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
                       {/* Professional Timeline */}
-                      <div className="glass-card p-6 space-y-4">
+                      <div className="glass-card p-6 space-y-4 flex flex-col">
                         <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black border-b border-[var(--color-border)] pb-2.5">
                           Professional Timeline
                         </h3>
@@ -3086,7 +3111,7 @@ export default function DashboardPage({
                       </div>
 
                       {/* Academic Background */}
-                      <div className="glass-card p-6 space-y-4">
+                      <div className="glass-card p-6 space-y-4 flex flex-col">
                         <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black border-b border-[var(--color-border)] pb-2.5">
                           Academic Record
                         </h3>
@@ -3438,10 +3463,12 @@ export default function DashboardPage({
                   ) : filteredJobs.length > 0 ? (
                     <>
                       {/* Paginated Job Grid */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
                         {filteredJobs.slice((currentPageNum - 1) * 6, currentPageNum * 6).map((job, idx) => {
+                          const pageIdx = (currentPageNum - 1) * 6 + idx;
                           const isBookmarked = bookmarkedJobs.includes(job.company);
                           const isCopied = copiedJobId === job.applyUrl;
+                          const isExpanded = expandedJobIdx === pageIdx;
 
                           return (
                             <div key={idx} className="p-6 glass-card flex flex-col justify-between space-y-6 hover:shadow-md transition duration-300 relative group">
@@ -3494,10 +3521,20 @@ export default function DashboardPage({
                                   </span>
                                 </div>
 
-                                {/* Description */}
-                                <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed font-medium line-clamp-3">
-                                  {job.description}
-                                </p>
+                                {/* Description with View More/Less */}
+                                <div>
+                                  <p className={`text-xs text-[var(--color-text-secondary)] leading-relaxed font-medium ${isExpanded ? "" : "line-clamp-3"}`}>
+                                    {job.description}
+                                  </p>
+                                  {job.description && job.description.length > 120 && (
+                                    <button
+                                      onClick={() => setExpandedJobIdx(isExpanded ? null : pageIdx)}
+                                      className="text-[9.5px] font-mono font-bold text-[#6D5DF6] mt-1 hover:underline cursor-pointer"
+                                    >
+                                      {isExpanded ? "View Less ▲" : "View More ▼"}
+                                    </button>
+                                  )}
+                                </div>
 
                                 {/* Skills overlapping lists */}
                                 <div className="space-y-1.5 pt-1">
@@ -4703,7 +4740,7 @@ export default function DashboardPage({
               )}
 
               {/* Tab Content: Admin Console */}
-              {activeTab === "admin-panel" && renderWithSuspense(
+              {activeTab === "admin-panel" && user?.role === "admin" && renderWithSuspense(
                 <AdminDashboard user={user} />
               )}
 
@@ -4827,27 +4864,59 @@ export default function DashboardPage({
                 </button>
               </div>
 
-              <div className="space-y-4 text-xs leading-relaxed font-sans text-[var(--color-text-secondary)]">
-                <p className="font-semibold">
-                  SkillBridge AI is an AI-powered Career Intelligence Platform that empowers students, fresh graduates, and job seekers with resume analysis, ATS optimization, personalized career roadmaps, real-time job matching, and simulated mock interviews.
-                </p>
-                
-                <div className="grid grid-cols-2 gap-4 border-t border-b border-[var(--color-border)] py-4 font-mono text-[10px]">
+              <div className="space-y-4 text-xs leading-relaxed font-sans text-[var(--color-text-secondary)] max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                <div>
+                  <h4 className="text-xs font-bold text-[var(--color-text-primary)] font-mono uppercase mb-1">Platform Overview</h4>
+                  <p className="font-semibold">
+                    SkillBridge AI is an enterprise-grade Career Intelligence Platform designed to empower students, job seekers, and working professionals. By unifying automated ATS resume optimization, deep skill gap vectorization, real-time job aggregation, and simulated AI interviews, SkillBridge eliminates hiring opacity and accelerates career progression.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 p-3 bg-[var(--color-bg-page)] rounded-xl border border-[var(--color-border)] font-mono text-[10px]">
                   <div>
-                    <span className="text-[9px] text-[var(--color-text-tertiary)] uppercase block font-bold">Developer</span>
+                    <span className="text-[9px] text-[var(--color-text-tertiary)] uppercase block font-bold">Mission</span>
+                    <span className="font-bold text-[var(--color-text-primary)]">Bridge academic learning & industry demands</span>
+                  </div>
+                  <div>
+                    <span className="text-[9px] text-[var(--color-text-tertiary)] uppercase block font-bold">Architecture</span>
+                    <span className="font-bold text-[#6D5DF6]">Clean Architecture & REST APIs</span>
+                  </div>
+                </div>
+
+                <div className="space-y-2 pt-2 border-t border-[var(--color-border)] font-mono text-[10px]">
+                  <span className="text-[9px] text-[var(--color-text-tertiary)] uppercase block font-bold">Core Engine Capabilities</span>
+                  <div className="grid grid-cols-2 gap-2 text-[10px]">
+                    <div className="p-2 rounded-lg bg-[var(--color-bg-page)] border border-[var(--color-border)]">
+                      <span className="font-extrabold text-[#6D5DF6] block">ATS Optimizer</span>
+                      <span className="text-[9px] text-[var(--color-text-secondary)]">Parse, score, & match resumes against job keywords.</span>
+                    </div>
+                    <div className="p-2 rounded-lg bg-[var(--color-bg-page)] border border-[var(--color-border)]">
+                      <span className="font-extrabold text-[#8B5CF6] block">Skill Gap Analysis</span>
+                      <span className="text-[9px] text-[var(--color-text-secondary)]">Identify missing competencies for dream roles.</span>
+                    </div>
+                    <div className="p-2 rounded-lg bg-[var(--color-bg-page)] border border-[var(--color-border)]">
+                      <span className="font-extrabold text-emerald-500 block">Interview Lab</span>
+                      <span className="text-[9px] text-[var(--color-text-secondary)]">Practice technical, aptitude, & HR interview scenarios.</span>
+                    </div>
+                    <div className="p-2 rounded-lg bg-[var(--color-bg-page)] border border-[var(--color-border)]">
+                      <span className="font-extrabold text-amber-500 block">Career Roadmap</span>
+                      <span className="text-[9px] text-[var(--color-text-secondary)]">Multi-month structured milestone learning paths.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 border-t border-[var(--color-border)] pt-4 font-mono text-[10px]">
+                  <div>
+                    <span className="text-[9px] text-[var(--color-text-tertiary)] uppercase block font-bold">Lead Engineer & Architect</span>
                     <span className="font-bold text-[var(--color-text-primary)]">Mekala Manoj Kumar</span>
                   </div>
                   <div>
-                    <span className="text-[9px] text-[var(--color-text-tertiary)] uppercase block font-bold">Contact Email</span>
+                    <span className="text-[9px] text-[var(--color-text-tertiary)] uppercase block font-bold">Support & Contact</span>
                     <a href="mailto:mekalamanojkumar6@gmail.com" className="font-bold text-[#6D5DF6] hover:underline">
                       mekalamanojkumar6@gmail.com
                     </a>
                   </div>
                 </div>
-
-                <p className="text-[10px] text-[var(--color-text-tertiary)]">
-                  Built using React, TypeScript, Tailwind CSS, and the Google Gemini API to bridge the gap between academic education and modern professional employment.
-                </p>
               </div>
 
               <div className="pt-2">

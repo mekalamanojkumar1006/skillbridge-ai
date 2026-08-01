@@ -231,9 +231,9 @@ export default function ResumeManager({ userId, activeResume, onSelectResume }: 
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
         {/* Upload Form Block */}
-        <div className="glass-card p-6 space-y-5 h-fit">
+        <div className="glass-card p-6 space-y-5 flex flex-col">
           <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-black flex items-center space-x-2">
             <Plus className="w-4 h-4 text-[#6D5DF6]" />
             <span>Upload New Resume</span>

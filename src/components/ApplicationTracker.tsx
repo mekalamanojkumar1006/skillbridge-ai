@@ -200,7 +200,7 @@ export default function ApplicationTracker({ user, resume }: ApplicationTrackerP
           <span className="text-xs font-mono text-[var(--color-text-secondary)]">Retrieving pipeline database...</span>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
           {STATUS_COLUMNS.map(column => {
             const columnApps = applications.filter(app => app.status === column);
             return (

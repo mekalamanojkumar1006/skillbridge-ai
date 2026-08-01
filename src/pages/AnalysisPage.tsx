@@ -189,10 +189,10 @@ export default function AnalysisPage({ user, resume, onNavigate, theme, setTheme
         <ATSSummaryCard analysis={analysis} loading={atsLoading} error={atsError} />
 
         {/* Bento Summary & Stats */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
           
           {/* Identity Info Panel */}
-          <div className="glass-card p-6 flex flex-col justify-between h-auto">
+          <div className="glass-card p-6 flex flex-col justify-between">
             <div>
               <div className="flex items-center space-x-3 mb-6">
                 <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#6D5DF6] to-[#8B5CF6] flex items-center justify-center text-white font-bold shadow-md">
@@ -346,10 +346,10 @@ export default function AnalysisPage({ user, resume, onNavigate, theme, setTheme
         </div>
 
         {/* Timelines grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
           
           {/* Experience Timeline */}
-          <div className="glass-card p-6 space-y-6">
+          <div className="glass-card p-6 space-y-6 flex flex-col">
             <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-extrabold border-b border-[var(--color-border)] pb-3 flex items-center space-x-2">
               <Briefcase className="w-4.5 h-4.5 text-[#6D5DF6]" />
               <span>Professional History</span>
@@ -377,7 +377,7 @@ export default function AnalysisPage({ user, resume, onNavigate, theme, setTheme
           </div>
 
           {/* Education Timeline */}
-          <div className="glass-card p-6 space-y-6">
+          <div className="glass-card p-6 space-y-6 flex flex-col">
             <h3 className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-extrabold border-b border-[var(--color-border)] pb-3 flex items-center space-x-2">
               <Award className="w-4.5 h-4.5 text-[#8B5CF6]" />
               <span>Academic Credentials</span>

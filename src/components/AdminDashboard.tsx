@@ -64,7 +64,7 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
       )}
 
       {/* Health Status Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 items-stretch">
         <div className="glass-card p-4 space-y-1.5">
           <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase font-bold flex items-center space-x-1">
             <Server className="w-3.5 h-3.5 text-[#6D5DF6]" />
@@ -111,7 +111,7 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
       </div>
 
       {/* Key System Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-stretch">
         <div className="glass-card p-5 space-y-2">
           <div className="flex items-center space-x-2 text-[10px] font-mono text-[var(--color-text-tertiary)] uppercase font-bold">
             <Users className="w-4 h-4 text-[#6D5DF6]" />

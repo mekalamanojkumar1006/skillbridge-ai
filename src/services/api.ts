@@ -403,6 +403,17 @@ export class ApiService {
     return res.json();
   }
 
+  static async getPlatformAnalytics() {
+    const res = await fetch(`${this.getBaseUrl()}/api/platform/analytics`, {
+      headers: this.getHeaders()
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to retrieve platform analytics");
+    }
+    return res.json();
+  }
+
   static async getDashboardStats() {
     const res = await fetch(`${this.getBaseUrl()}/api/dashboard/stats`, {
       headers: this.getHeaders()

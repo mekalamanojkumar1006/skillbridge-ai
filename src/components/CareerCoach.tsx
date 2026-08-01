@@ -65,7 +65,7 @@ export default function CareerCoach({ user, resume }: CareerCoachProps) {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-stretch">
         {/* Quick Prompts Sidebar */}
         <div className="glass-card p-5 space-y-4">
           <h3 className="text-xs font-mono uppercase tracking-wider font-bold text-[var(--color-text-secondary)] border-b border-[var(--color-border)] pb-2 flex items-center space-x-1.5">
