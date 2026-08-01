@@ -135,13 +135,36 @@ export class ApiService {
     return data;
   }
 
-  static async analyzeQuality(resumeId: string, userId: string) {
+  static async getLatestAtsAnalysis(userId: string, resumeId?: string) {
+    const query = new URLSearchParams();
+    if (userId) query.append("userId", userId);
+    if (resumeId) query.append("resumeId", resumeId);
+    const targetUrl = `${this.getBaseUrl()}/api/analysis/latest?${query.toString()}`;
+    const res = await fetch(targetUrl, { headers: this.getHeaders() });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to fetch latest ATS analysis");
+    }
+    return res.json();
+  }
+
+  static async getLatestResume(userId: string) {
+    const targetUrl = `${this.getBaseUrl()}/api/resumes/latest?userId=${encodeURIComponent(userId)}`;
+    const res = await fetch(targetUrl, { headers: this.getHeaders() });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || "Failed to fetch latest resume");
+    }
+    return res.json();
+  }
+
+  static async analyzeQuality(resumeId: string, userId: string, parsedData?: any) {
     console.log("ATS calculation started for resumeId:", resumeId);
-    const targetUrl = `${this.getBaseUrl()}/api/analysis/quality/${resumeId}`;
+    const targetUrl = `${this.getBaseUrl()}/api/analysis/quality/${resumeId || "latest"}`;
     const res = await fetch(targetUrl, {
       method: "POST",
       headers: this.getHeaders(),
-      body: JSON.stringify({ userId })
+      body: JSON.stringify({ userId, parsedData })
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
@@ -154,6 +177,7 @@ export class ApiService {
     console.log("API returned atsScore:", data.atsScore ?? data.score ?? data.qualityScore);
     return data;
   }
+
 
   static async getAtsScore(resumeId: string, jobDescription: string, userId: string) {
     console.log("ATS calculation started for job matching");

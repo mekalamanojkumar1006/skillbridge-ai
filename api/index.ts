@@ -1020,23 +1020,146 @@ Special Instructions:
 app.post("/api/resumes/upload", upload.single("resume"), handleResumeUpload);
 app.post("/api/resume/upload", upload.single("resume"), handleResumeUpload);
 
+app.get("/api/analysis/latest", async (req, res) => {
+  try {
+    const userId = (req.query.userId as string) || (req.user?.uid);
+    const resumeId = req.query.resumeId as string;
+    if (!userId && !resumeId) {
+      return res.status(400).json({ error: "Missing userId or resumeId parameter" });
+    }
+
+    let latestDoc: any = null;
+    if (useMemoryFallback || !dbAdmin) {
+      const allAnalyses = Object.values(inMemoryStore["analyses"] || {});
+      const userAnalyses = allAnalyses.filter((a: any) => 
+        (userId && a.userId === userId) || (resumeId && a.resumeId === resumeId)
+      );
+      if (userAnalyses.length > 0) {
+        userAnalyses.sort((a: any, b: any) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+        latestDoc = userAnalyses[0];
+      }
+    } else {
+      let query: any = dbAdmin.collection("analyses");
+      if (userId) {
+        query = query.where("userId", "==", userId);
+      } else if (resumeId) {
+        query = query.where("resumeId", "==", resumeId);
+      }
+      const snap = await query.get();
+      const list: any[] = [];
+      snap.forEach((d: any) => list.push({ id: d.id, ...d.data() }));
+      if (list.length > 0) {
+        list.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+        latestDoc = list[0];
+      }
+    }
+
+    if (!latestDoc) {
+      return res.status(404).json({ error: "No ATS analysis record found" });
+    }
+
+    return res.json(latestDoc);
+  } catch (err: any) {
+    console.error("Error fetching latest analysis:", err);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+app.get(["/api/resumes/latest", "/api/resume/latest"], async (req, res) => {
+  try {
+    const userId = (req.query.userId as string) || (req.user?.uid);
+    if (!userId) {
+      return res.status(400).json({ error: "Missing userId parameter" });
+    }
+
+    let latestResume: any = null;
+    if (useMemoryFallback || !dbAdmin) {
+      const allResumes = Object.values(inMemoryStore["resumes"] || {});
+      const userResumes = allResumes.filter((r: any) => r.userId === userId);
+      if (userResumes.length > 0) {
+        userResumes.sort((a: any, b: any) => new Date(b.updatedAt || b.createdAt || 0).getTime() - new Date(a.updatedAt || a.createdAt || 0).getTime());
+        latestResume = userResumes[0];
+      }
+    } else {
+      const snap = await dbAdmin.collection("resumes").where("userId", "==", userId).get();
+      const list: any[] = [];
+      snap.forEach((d: any) => list.push({ id: d.id, ...d.data() }));
+      if (list.length > 0) {
+        list.sort((a, b) => new Date(b.updatedAt || b.createdAt || 0).getTime() - new Date(a.updatedAt || a.createdAt || 0).getTime());
+        latestResume = list[0];
+      }
+    }
+
+    if (!latestResume) {
+      return res.status(404).json({ error: "No resume found for user" });
+    }
+
+    return res.json(latestResume);
+  } catch (err: any) {
+    console.error("Error fetching latest resume:", err);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
 app.post("/api/analysis/quality/:resume_id", async (req, res) => {
   try {
     const { resume_id } = req.params;
-    const { userId } = req.body;
+    const { userId, parsedData: clientParsedData } = req.body;
 
     if (!resume_id) {
       return res.status(400).json({ error: "Missing resume_id parameter" });
     }
 
-    const resumeSnap = await getDoc(doc(db, "resumes", resume_id));
-    if (!resumeSnap.exists()) {
-      return res.status(404).json({ error: "Resume not found" });
+    let resumeData: any = null;
+    let effectiveResumeId = resume_id;
+
+    // 1. Direct document lookup by ID
+    try {
+      const resumeSnap = await getDoc(doc(db, "resumes", resume_id));
+      if (resumeSnap.exists()) {
+        resumeData = resumeSnap.data();
+      }
+    } catch {
+      // Ignore initial getDoc error and proceed to fallbacks
     }
 
-    const resumeData = resumeSnap.data();
+    // 2. Fallback lookup by userId if resume_id is not directly found (or is 'latest'/'default')
+    if (!resumeData && userId) {
+      try {
+        if (useMemoryFallback || !dbAdmin) {
+          const allResumes = Object.values(inMemoryStore["resumes"] || {});
+          const userResumes = allResumes.filter((r: any) => r.userId === userId);
+          if (userResumes.length > 0) {
+            userResumes.sort((a: any, b: any) => new Date(b.updatedAt || b.createdAt || 0).getTime() - new Date(a.updatedAt || a.createdAt || 0).getTime());
+            resumeData = userResumes[0];
+            if (resumeData.id) effectiveResumeId = resumeData.id;
+          }
+        } else {
+          const snap = await dbAdmin.collection("resumes").where("userId", "==", userId).get();
+          const list: any[] = [];
+          snap.forEach((d: any) => list.push({ id: d.id, ...d.data() }));
+          if (list.length > 0) {
+            list.sort((a, b) => new Date(b.updatedAt || b.createdAt || 0).getTime() - new Date(a.updatedAt || a.createdAt || 0).getTime());
+            resumeData = list[0];
+            if (resumeData.id) effectiveResumeId = resumeData.id;
+          }
+        }
+      } catch (fErr: any) {
+        console.warn("Fallback resume lookup failed:", fErr.message);
+      }
+    }
+
+    // 3. Fallback to client-provided parsedData if no document is stored yet
+    if (!resumeData && clientParsedData) {
+      resumeData = { parsedData: clientParsedData, userId };
+    }
+
+    if (!resumeData) {
+      return res.status(404).json({ error: "No resume found for this user. Please upload a resume first." });
+    }
+
     const resumeText = resumeData.content || JSON.stringify(resumeData.parsedData || {});
-    const parsedData = resumeData.parsedData || {};
+    const parsedData = resumeData.parsedData || clientParsedData || {};
 
     console.log("=== ATS Extracted Resume JSON ===");
     console.log(JSON.stringify(parsedData, null, 2));
