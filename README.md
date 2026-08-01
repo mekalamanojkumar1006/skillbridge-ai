@@ -1,5 +1,5 @@
 # 🚀 SkillBridge AI
-deployed link https://skillbridge-ai-7m05.onrender.com
+ https://skillbridge-ai-chinnu.vercel.app/
 ### AI-Powered Career Intelligence Platform
 
 > **Bridge Your Skills. Build Your Future.**
