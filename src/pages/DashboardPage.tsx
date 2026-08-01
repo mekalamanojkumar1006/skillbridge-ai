@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { ApiService } from "../services/api";
 import {
@@ -58,16 +58,16 @@ import {
   Upload
 } from "lucide-react";
 import ProfileSettingsPage from "./ProfileSettingsPage";
-import ApplicationTracker from "../components/ApplicationTracker";
-import ResumeManager from "../components/ResumeManager";
-import CoverLetterGenerator from "../components/CoverLetterGenerator";
-import ResumeRewriter from "../components/ResumeRewriter";
-import CareerCoach from "../components/CareerCoach";
-import PortfolioGenerator from "../components/PortfolioGenerator";
-import SalaryPredictor from "../components/SalaryPredictor";
-import AdminDashboard from "../components/AdminDashboard";
-import JobDescriptionAnalyzer from "../components/JobDescriptionAnalyzer";
-import ResumeBuilder from "../components/ResumeBuilder";
+const ApplicationTracker = lazy(() => import("../components/ApplicationTracker"));
+const ResumeManager = lazy(() => import("../components/ResumeManager"));
+const CoverLetterGenerator = lazy(() => import("../components/CoverLetterGenerator"));
+const ResumeRewriter = lazy(() => import("../components/ResumeRewriter"));
+const CareerCoach = lazy(() => import("../components/CareerCoach"));
+const PortfolioGenerator = lazy(() => import("../components/PortfolioGenerator"));
+const SalaryPredictor = lazy(() => import("../components/SalaryPredictor"));
+const AdminDashboard = lazy(() => import("../components/AdminDashboard"));
+const JobDescriptionAnalyzer = lazy(() => import("../components/JobDescriptionAnalyzer"));
+const ResumeBuilder = lazy(() => import("../components/ResumeBuilder"));
 import { db } from "../lib/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { CAREER_ROADMAPS, CareerPath, Milestone } from "../data/careersData";
@@ -76,6 +76,17 @@ import ResponsiveContainer from "../components/ResponsiveContainer";
 import { jsPDF } from "jspdf";
 import aptitudeQuestions from "../data/aptitudeQuestions.json";
 import hrQuestions from "../data/hrQuestions.json";
+
+const renderWithSuspense = (component: React.ReactNode) => (
+  <Suspense fallback={
+    <div className="h-64 flex flex-col items-center justify-center space-y-3 glass-card p-12 my-6">
+      <div className="w-8 h-8 border-4 border-indigo-500/20 border-t-indigo-600 rounded-full animate-spin" />
+      <span className="text-xs font-mono text-[var(--color-text-secondary)] uppercase tracking-wider font-bold animate-pulse">Loading Intelligent Engine Module...</span>
+    </div>
+  }>
+    {component}
+  </Suspense>
+);
 
 const ATS_FRIENDLY_TEMPLATE = `[FIRST NAME] [LAST NAME]
 [City, State, Zip Code] | [Phone Number] | [Email Address] | [LinkedIn Profile URL] | [GitHub Profile URL]
@@ -2505,15 +2516,17 @@ export default function DashboardPage({
               </div>
             </div>
           ) : activeTab === "applications" ? (
-            <ApplicationTracker user={user} resume={resume} />
+            renderWithSuspense(<ApplicationTracker user={user} resume={resume} />)
           ) : activeTab === "resumes" ? (
-            <ResumeManager
-              userId={user?.uid || ""}
-              activeResume={resume}
-              onSelectResume={(res) => {
-                setResume(res);
-              }}
-            />
+            renderWithSuspense(
+              <ResumeManager
+                userId={user?.uid || ""}
+                activeResume={resume}
+                onSelectResume={(res) => {
+                  setResume(res);
+                }}
+              />
+            )
           ) : !resume && !["resumes", "applications", "settings"].includes(activeTab) ? (
             /* Premium onboarding hero — no resume uploaded */
             <div className="animate-fade-in w-full space-y-6">
@@ -4655,42 +4668,42 @@ export default function DashboardPage({
               )}
 
               {/* Tab Content: Cover Letter Generator */}
-              {activeTab === "cover-letter" && (
+              {activeTab === "cover-letter" && renderWithSuspense(
                 <CoverLetterGenerator user={user} resume={resume} />
               )}
 
               {/* Tab Content: Resume Rewriter */}
-              {activeTab === "resume-rewriter" && (
+              {activeTab === "resume-rewriter" && renderWithSuspense(
                 <ResumeRewriter user={user} resume={resume} />
               )}
 
               {/* Tab Content: Career Coach */}
-              {activeTab === "career-coach" && (
+              {activeTab === "career-coach" && renderWithSuspense(
                 <CareerCoach user={user} resume={resume} />
               )}
 
               {/* Tab Content: Portfolio Generator */}
-              {activeTab === "portfolio-generator" && (
+              {activeTab === "portfolio-generator" && renderWithSuspense(
                 <PortfolioGenerator user={user} resume={resume} />
               )}
 
               {/* Tab Content: Salary Predictor */}
-              {activeTab === "salary-predictor" && (
+              {activeTab === "salary-predictor" && renderWithSuspense(
                 <SalaryPredictor user={user} resume={resume} />
               )}
 
               {/* Tab Content: Resume Builder */}
-              {activeTab === "resume-builder" && (
+              {activeTab === "resume-builder" && renderWithSuspense(
                 <ResumeBuilder user={user} resume={resume} />
               )}
 
               {/* Tab Content: JD Analyzer */}
-              {activeTab === "jd-analyzer" && (
+              {activeTab === "jd-analyzer" && renderWithSuspense(
                 <JobDescriptionAnalyzer user={user} resume={resume} />
               )}
 
               {/* Tab Content: Admin Console */}
-              {activeTab === "admin-panel" && (
+              {activeTab === "admin-panel" && renderWithSuspense(
                 <AdminDashboard user={user} />
               )}
 
