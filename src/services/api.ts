@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 export class ApiService {
   private static getBaseUrl() {
     const envUrl = import.meta.env.VITE_API_URL;
@@ -437,7 +438,7 @@ export class ApiService {
     return res.json();
   }
 
-  static async addApplication(app: { company: string; role: string; status: string; salary?: string; appliedDate?: string; notes?: string }) {
+  static async addApplication(app: { company: string; role: string; status: string; salary?: string; appliedDate?: string; notes?: string; atsScore?: number }) {
     const res = await fetch(`${this.getBaseUrl()}/api/applications/add`, {
       method: "POST",
       headers: this.getHeaders(),

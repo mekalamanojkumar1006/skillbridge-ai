@@ -262,6 +262,8 @@ interface DashboardPageProps {
   onResetResume: () => void;
   theme: "light" | "dark";
   setTheme: (theme: "light" | "dark") => void;
+  resumeUploaded?: any;
+  profileParsed?: any;
 }
 
 export default function DashboardPage({ 

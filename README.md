@@ -35,8 +35,9 @@ SkillBridge AI is an AI-powered career platform that empowers students, fresh gr
 
 ### Backend
 
-- FastAPI
-- Python
+- Node.js
+- Express
+- TypeScript
 
 ### Database
 
@@ -71,7 +72,6 @@ SkillBridge AI is an AI-powered career platform that empowers students, fresh gr
 ### Prerequisites
 
 - Node.js 18+
-- Python 3.11+
 - MongoDB
 - Google Gemini API Key
 
@@ -93,8 +93,8 @@ npm run dev
 
 ```bash
 cd backend
-pip install -r requirements.txt
-uvicorn main:app --reload
+npm install
+npm run dev
 ```
 
 ---
@@ -115,14 +115,10 @@ JWT_SECRET=YOUR_SECRET_KEY
 
 ```
 SkillBridgeAI/
-├── frontend/
-├── backend/
-├── components/
-├── services/
-├── models/
-├── routes/
-├── utils/
-├── assets/
+├── client/          # Frontend React application
+├── server/          # Backend Express/Node.js API
+├── .env
+├── .gitignore
 └── README.md
 ```
 
