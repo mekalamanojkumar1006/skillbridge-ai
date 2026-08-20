@@ -837,7 +837,10 @@ export default function DashboardPage({
   const [recordingIntervalId, setRecordingIntervalId] = useState<any>(null);
 
   // New Interview States
-  const [interviewStatus, setInterviewStatus] = useState<"setup" | "active" | "generating_report" | "completed">("setup");
+  const [interviewStatus, setInterviewStatus] = useState<"setup" | "technical-setup" | "active" | "generating_report" | "completed">("setup");
+  const [technicalLevel, setTechnicalLevel] = useState<"low" | "medium" | "high">("low");
+  const [technicalAnswers, setTechnicalAnswers] = useState<Record<string, number>>({});
+  const [technicalScoreReport, setTechnicalScoreReport] = useState<any>(null);
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [finalReport, setFinalReport] = useState<any>(null);
@@ -1259,30 +1262,32 @@ export default function DashboardPage({
   };
 
   // Start Technical Round
-  const handleStartTechnical = async () => {
-    if (!resume) {
-      setError("Please upload a resume first to generate custom technical questions.");
-      return;
-    }
+  const handleStartTechnical = () => {
+    setInterviewType("technical");
+    setInterviewStatus("technical-setup");
+    setTechnicalLevel("low");
+  };
+
+  const handleBeginTechnicalExam = async (level: "low" | "medium" | "high") => {
     setGeneratingQuestions(true);
     setError(null);
     setInterviewQuestions([]);
     setCurrentQuestionIndex(0);
-    setUserAnswer("");
-    setCurrentEvaluation(null);
-    setInterviewAnswers([]);
-    setFinalReport(null);
-    setInterviewType("technical");
+    setTechnicalAnswers({});
+    setTechnicalScoreReport(null);
+    setInterviewStatus("active");
+    setTechnicalLevel(level);
 
     try {
-      const res = await ApiService.getInterviewQuestions(resume.id);
-      setInterviewQuestions(res.questions || []);
-
-      setInterviewStatus("active");
-      setTimeLeft(120); // 120 seconds per question
+      const res = await fetch(`/api/exams/python/${level}`);
+      if (!res.ok) throw new Error("Failed to load questions");
+      const data = await res.json();
+      setInterviewQuestions(data.questions || []);
+      setTimeLeft(1800); // 30 minutes for 30 questions
     } catch (err: any) {
       console.error(err);
       setError("Failed to generate technical questions: " + err.message);
+      setInterviewStatus("technical-setup");
     } finally {
       setGeneratingQuestions(false);
     }
@@ -1879,7 +1884,6 @@ export default function DashboardPage({
   // Sidebar parameters
   const navigationItems = [
     { id: "overview", label: "Career Board", icon: LayoutDashboard, badge: 0 },
-    { id: "python-exam", label: "Python Mock Exam", icon: Code, badge: 0, iconColor: "text-blue-500" },
     { id: "resumes", label: "My Resumes", icon: FileText, badge: 0 },
     { id: "resume-builder", label: "Resume Builder", icon: FileText, badge: 0, iconColor: "text-[#6D5DF6]" },
     { id: "ats", label: "ATS Optimiser", icon: FileText, badge: 1 },
@@ -4061,44 +4065,26 @@ export default function DashboardPage({
 
                           {/* Card 2: Technical */}
                           <div className="glass-card hover:border-[#6D5DF6]/30 transition p-6 flex flex-col justify-between space-y-6 relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 p-4 bg-purple-500/10 text-purple-600 rounded-bl-2xl font-mono text-[10px] font-bold">RESUME-DRIVEN</div>
-                            <div className="space-y-3">
-                              <div className="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-600">
-                                <Code className="w-5 h-5" />
+                            <div className="absolute top-0 right-0 p-4 bg-[#6D5DF6]/10 text-[#6D5DF6] rounded-bl-2xl font-mono text-[10px] font-bold">TECHNICAL</div>
+                            
+                            <div className="space-y-4 pt-4">
+                              <div className="w-12 h-12 rounded-xl bg-[#6D5DF6]/10 flex items-center justify-center">
+                                <Code className="w-6 h-6 text-[#6D5DF6]" />
                               </div>
-                              <h3 className="text-lg font-black text-[var(--color-text-primary)]">Technical Round</h3>
-                              <p className="text-[11.5px] leading-relaxed text-[var(--color-text-secondary)] font-medium font-sans">
-                                5 dynamic questions based on your profile's coding languages, frameworks, projects, education, and career experience. Evaluated by AI.
-                              </p>
-                              <div className="text-[9.5px] font-mono text-[var(--color-text-tertiary)] flex flex-col space-y-1.5 pt-2">
-                                <span className="flex items-center space-x-1.5">
-                                  <Clock className="w-3.5 h-3.5 text-purple-500 shrink-0" />
-                                  <span>120s per question</span>
-                                </span>
-                                <span className="flex items-center space-x-1.5">
-                                  <Mic className="w-3.5 h-3.5 text-purple-500 shrink-0" />
-                                  <span>Voice and Text responses</span>
-                                </span>
+                              <div>
+                                <h3 className="text-xl font-black text-[var(--color-text-primary)]">Python MCQ Assessment</h3>
+                                <p className="text-xs text-[var(--color-text-secondary)] font-medium mt-2 leading-relaxed">
+                                  30 questions | Choose Low, Medium or High difficulty
+                                </p>
                               </div>
                             </div>
-                            {resume ? (
-                              <button
-                                onClick={handleStartTechnical}
-                                className="w-full py-3 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider font-bold text-white shadow-md cursor-pointer"
-                              >
-                                Start Round
-                              </button>
-                            ) : (
-                              <div className="space-y-2">
-                                <button
-                                  disabled
-                                  className="w-full py-3 clay-btn clay-btn-secondary text-xs font-mono uppercase tracking-wider font-bold text-[var(--color-text-tertiary)] opacity-50 cursor-not-allowed"
-                                >
-                                  Locked
-                                </button>
-                                <span className="text-[9.5px] text-red-500 font-semibold block text-center">Please upload a resume to unlock.</span>
-                              </div>
-                            )}
+
+                            <button
+                              onClick={handleStartTechnical}
+                              className="w-full py-3 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider font-bold text-white shadow-md cursor-pointer"
+                            >
+                              Start Round
+                            </button>
                           </div>
 
                           {/* Card 3: HR */}
