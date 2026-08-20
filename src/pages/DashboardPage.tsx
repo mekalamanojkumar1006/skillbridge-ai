@@ -1879,6 +1879,7 @@ export default function DashboardPage({
   // Sidebar parameters
   const navigationItems = [
     { id: "overview", label: "Career Board", icon: LayoutDashboard, badge: 0 },
+    { id: "python-exam", label: "Python Mock Exam", icon: Code, badge: 0, iconColor: "text-blue-500" },
     { id: "resumes", label: "My Resumes", icon: FileText, badge: 0 },
     { id: "resume-builder", label: "Resume Builder", icon: FileText, badge: 0, iconColor: "text-[#6D5DF6]" },
     { id: "ats", label: "ATS Optimiser", icon: FileText, badge: 1 },
@@ -1996,6 +1997,10 @@ export default function DashboardPage({
                   disabled={isAiLocked}
                   onClick={() => {
                     if (isAiLocked) return;
+                                        if (tab.id === "python-exam") {
+                      onNavigate("python-exam");
+                      return;
+                    }
                     setActiveTab(tab.id as any);
                     setError(null);
                     setIsMobileMenuOpen(false);

@@ -3878,6 +3878,140 @@ app.get("/api/workspace/activity", async (req, res) => {
   }
 });
 
+
+// ==========================================
+// PYTHON MCQ EXAM MODULE
+// ==========================================
+import fs from "fs";
+import path from "path";
+
+const getPythonQuestions = () => {
+  try {
+    const filePath = path.join(process.cwd(), "src", "data", "pythonQuestions.json");
+    const data = fs.readFileSync(filePath, "utf-8");
+    return JSON.parse(data);
+  } catch (e) {
+    console.error("Failed to load python questions", e);
+    return [];
+  }
+};
+
+app.get("/api/exams/python/history", checkAuth, async (req: any, res: any) => {
+  try {
+    const userId = req.user.uid;
+    const historyRef = collection(db, "pythonExamAttempts");
+    const q = query(historyRef, where("userId", "==", userId));
+    const snapshot = await getDocs(q);
+    
+    if (useMemoryFallback) {
+      const memoryHistory = Object.values(inMemoryStore.pythonExamAttempts || {}).filter((a: any) => a.userId === userId);
+      return res.json({ attempts: memoryHistory });
+    }
+
+    const attempts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    // Sort by startedAt descending
+    attempts.sort((a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime());
+    
+    res.json({ attempts });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get("/api/exams/python/:level", checkAuth, (req: any, res: any) => {
+  try {
+    const level = req.params.level.toLowerCase();
+    if (!["low", "medium", "high"].includes(level)) {
+      return res.status(400).json({ error: "Invalid level" });
+    }
+    
+    const allQuestions = getPythonQuestions();
+    const levelQuestions = allQuestions.filter((q: any) => q.level === level);
+    
+    // Strip correct answer for client
+    const clientQuestions = levelQuestions.map((q: any) => {
+      const { correctAnswer, ...rest } = q;
+      return rest;
+    });
+    
+    res.json({ questions: clientQuestions });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/api/exams/python/submit", checkAuth, async (req: any, res: any) => {
+  try {
+    const userId = req.user.uid;
+    const { level, answers, startedAt } = req.body;
+    
+    if (!level || !answers || !startedAt) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const allQuestions = getPythonQuestions();
+    const levelQuestions = allQuestions.filter((q: any) => q.level === level);
+    
+    let correct = 0;
+    let wrong = 0;
+    let unanswered = 0;
+    
+    const detailedAnswers: any[] = [];
+
+    levelQuestions.forEach((q: any) => {
+      const userAnswer = answers[q.id];
+      const isCorrect = userAnswer === q.correctAnswer;
+      const isUnanswered = userAnswer === undefined || userAnswer === null;
+      
+      if (isUnanswered) {
+        unanswered++;
+      } else if (isCorrect) {
+        correct++;
+      } else {
+        wrong++;
+      }
+      
+      detailedAnswers.push({
+        questionId: q.id,
+        userAnswer,
+        correctAnswer: q.correctAnswer,
+        isCorrect
+      });
+    });
+
+    const total = levelQuestions.length;
+    const score = correct;
+    const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
+    
+    const attemptData = {
+      userId,
+      level,
+      score,
+      percentage,
+      correctAnswers: correct,
+      wrongAnswers: wrong,
+      unanswered,
+      startedAt,
+      completedAt: new Date().toISOString(),
+      detailedAnswers
+    };
+
+    if (useMemoryFallback) {
+      if (!inMemoryStore.pythonExamAttempts) inMemoryStore.pythonExamAttempts = {};
+      const attemptId = "attempt_" + Date.now();
+      inMemoryStore.pythonExamAttempts[attemptId] = { id: attemptId, ...attemptData };
+      return res.json({ success: true, result: attemptData });
+    }
+
+    const historyRef = collection(db, "pythonExamAttempts");
+    const docRef = await addDoc(historyRef, attemptData);
+    
+    res.json({ success: true, id: docRef.id, result: attemptData });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get([
   "/admin",
   "/admin-center",

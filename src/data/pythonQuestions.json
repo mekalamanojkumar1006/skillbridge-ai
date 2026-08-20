@@ -1,0 +1,1172 @@
+[
+  {
+    "id": "py-1",
+    "level": "low",
+    "question": "Which keyword is used to define a function in Python?",
+    "options": [
+      "function",
+      "def",
+      "fun",
+      "define"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-2",
+    "level": "low",
+    "question": "Which of the following is used to print output in Python?",
+    "options": [
+      "echo()",
+      "print()",
+      "output()",
+      "display()"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-3",
+    "level": "low",
+    "question": "Which symbol is used for comments in Python?",
+    "options": [
+      "//",
+      "/* */",
+      "#",
+      "<!-- -->"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-4",
+    "level": "low",
+    "question": "Which of these is a valid variable name?",
+    "options": [
+      "2name",
+      "my-name",
+      "my_name",
+      "class"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-5",
+    "level": "low",
+    "question": "What is the output of `print(10 + 5)`?",
+    "options": [
+      "105",
+      "15",
+      "10+5",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-6",
+    "level": "low",
+    "question": "Which data type stores True or False?",
+    "options": [
+      "int",
+      "str",
+      "bool",
+      "float"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-7",
+    "level": "low",
+    "question": "What is the data type of `10`?",
+    "options": [
+      "float",
+      "int",
+      "str",
+      "bool"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-8",
+    "level": "low",
+    "question": "What is the data type of `10.5`?",
+    "options": [
+      "int",
+      "float",
+      "str",
+      "bool"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-9",
+    "level": "low",
+    "question": "Which data type is used to store text?",
+    "options": [
+      "string",
+      "int",
+      "list",
+      "tuple"
+    ],
+    "correctAnswer": 0,
+    "topic": "Python"
+  },
+  {
+    "id": "py-10",
+    "level": "low",
+    "question": "Which brackets are used to create a list?",
+    "options": [
+      "()",
+      "{}",
+      "[]",
+      "<>"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-11",
+    "level": "low",
+    "question": "Which brackets are generally used to create a tuple?",
+    "options": [
+      "[]",
+      "()",
+      "{}",
+      "<>"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-12",
+    "level": "low",
+    "question": "Which function returns the length of an object?",
+    "options": [
+      "count()",
+      "size()",
+      "length()",
+      "len()"
+    ],
+    "correctAnswer": 3,
+    "topic": "Python"
+  },
+  {
+    "id": "py-13",
+    "level": "low",
+    "question": "What is the output of `print(2 * 3)`?",
+    "options": [
+      "5",
+      "6",
+      "23",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-14",
+    "level": "low",
+    "question": "Which operator is used for exponentiation?",
+    "options": [
+      "^",
+      "**",
+      "//",
+      "%%"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-15",
+    "level": "low",
+    "question": "What does `//` perform in Python?",
+    "options": [
+      "Division",
+      "Floor division",
+      "Multiplication",
+      "Modulus"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-16",
+    "level": "low",
+    "question": "Which operator gives the remainder?",
+    "options": [
+      "/",
+      "//",
+      "%",
+      "**"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-17",
+    "level": "low",
+    "question": "Which keyword is used for a condition?",
+    "options": [
+      "if",
+      "when",
+      "check",
+      "condition"
+    ],
+    "correctAnswer": 0,
+    "topic": "Python"
+  },
+  {
+    "id": "py-18",
+    "level": "low",
+    "question": "Which keyword is used when the `if` condition is false?",
+    "options": [
+      "otherwise",
+      "else",
+      "elseif",
+      "default"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-19",
+    "level": "low",
+    "question": "Which keyword is used for another condition after `if`?",
+    "options": [
+      "elseif",
+      "elif",
+      "else if",
+      "then"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-20",
+    "level": "low",
+    "question": "Which loop is commonly used to iterate over a sequence?",
+    "options": [
+      "repeat",
+      "foreach",
+      "for",
+      "iterate"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-21",
+    "level": "low",
+    "question": "Which loop runs while a condition is true?",
+    "options": [
+      "for",
+      "while",
+      "repeat",
+      "loop"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-22",
+    "level": "low",
+    "question": "Which keyword stops a loop?",
+    "options": [
+      "stop",
+      "exit",
+      "break",
+      "end"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-23",
+    "level": "low",
+    "question": "Which keyword skips the current loop iteration?",
+    "options": [
+      "skip",
+      "continue",
+      "pass",
+      "next"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-24",
+    "level": "low",
+    "question": "Which keyword does nothing and acts as a placeholder?",
+    "options": [
+      "empty",
+      "null",
+      "pass",
+      "skip"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-25",
+    "level": "low",
+    "question": "Which function is used to get input from the user?",
+    "options": [
+      "get()",
+      "input()",
+      "scan()",
+      "read()"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-26",
+    "level": "low",
+    "question": "What does `type()` return?",
+    "options": [
+      "Value",
+      "Memory address",
+      "Data type",
+      "Variable name"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-27",
+    "level": "low",
+    "question": "Which value represents the absence of a value?",
+    "options": [
+      "empty",
+      "null",
+      "None",
+      "0"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-28",
+    "level": "low",
+    "question": "Which collection stores unique values?",
+    "options": [
+      "List",
+      "Set",
+      "Tuple",
+      "String"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-29",
+    "level": "low",
+    "question": "Which collection stores key-value pairs?",
+    "options": [
+      "List",
+      "Tuple",
+      "Dictionary",
+      "Set"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-30",
+    "level": "low",
+    "question": "Python files normally use which extension?",
+    "options": [
+      "`.pt`",
+      "`.python`",
+      "`.py`",
+      "`.pyt`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-31",
+    "level": "medium",
+    "question": "What is the output?\n\n```python\nx = [1, 2, 3]\nprint(x[1])\n```",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-32",
+    "level": "medium",
+    "question": "What is the output?\n\n```python\nprint([1, 2, 3][-1])\n```",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "Error"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-33",
+    "level": "medium",
+    "question": "What is the output?\n\n```python\nx = [1, 2, 3, 4, 5]\nprint(x[1:4])\n```",
+    "options": [
+      "`[1, 2, 3]`",
+      "`[2, 3, 4]`",
+      "`[2, 3, 4, 5]`",
+      "`[1, 2, 3, 4]`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-34",
+    "level": "medium",
+    "question": "Which method adds one element to the end of a list?",
+    "options": [
+      "add()",
+      "append()",
+      "insertEnd()",
+      "push()"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-35",
+    "level": "medium",
+    "question": "What does `pop()` normally do to a list?",
+    "options": [
+      "Adds an element",
+      "Removes and returns an element",
+      "Sorts the list",
+      "Copies the list"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-36",
+    "level": "medium",
+    "question": "What is the output?\n\n```python\nx = [3, 1, 2]\nx.sort()\nprint(x)\n```",
+    "options": [
+      "`[3, 2, 1]`",
+      "`[1, 2, 3]`",
+      "`[3, 1, 2]`",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-37",
+    "level": "medium",
+    "question": "What is the output?\n\n```python\nprint(\"Python\"[0])\n```",
+    "options": [
+      "P",
+      "y",
+      "n",
+      "Error"
+    ],
+    "correctAnswer": 0,
+    "topic": "Python"
+  },
+  {
+    "id": "py-38",
+    "level": "medium",
+    "question": "What is the output?\n\n```python\nprint(\"Python\"[::-1])\n```",
+    "options": [
+      "Python",
+      "nohtyP",
+      "P",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-39",
+    "level": "medium",
+    "question": "What does `str.upper()` do?",
+    "options": [
+      "Converts string to lowercase",
+      "Converts string to uppercase",
+      "Removes spaces",
+      "Reverses string"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-40",
+    "level": "medium",
+    "question": "What is the output?\n\n```python\nprint(\"hello\".replace(\"h\", \"H\"))\n```",
+    "options": [
+      "hello",
+      "Hello",
+      "HELLO",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-41",
+    "level": "medium",
+    "question": "What is the output?\n\n```python\nx = {1, 2, 2, 3}\nprint(len(x))\n```",
+    "options": [
+      "4",
+      "3",
+      "2",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-42",
+    "level": "medium",
+    "question": "Which method adds an element to a set?",
+    "options": [
+      "append()",
+      "add()",
+      "insert()",
+      "push()"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-43",
+    "level": "medium",
+    "question": "What is the output?\n\n```python\nd = {\"a\": 10, \"b\": 20}\nprint(d[\"a\"])\n```",
+    "options": [
+      "a",
+      "b",
+      "10",
+      "20"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-44",
+    "level": "medium",
+    "question": "Which method safely gets a dictionary value?",
+    "options": [
+      "fetch()",
+      "value()",
+      "get()",
+      "find()"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-45",
+    "level": "medium",
+    "question": "What is the output?\n\n```python\nprint(10 / 2)\n```",
+    "options": [
+      "5",
+      "5.0",
+      "10",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-46",
+    "level": "medium",
+    "question": "What is the output?\n\n```python\nprint(10 // 3)\n```",
+    "options": [
+      "3",
+      "3.33",
+      "4",
+      "1"
+    ],
+    "correctAnswer": 0,
+    "topic": "Python"
+  },
+  {
+    "id": "py-47",
+    "level": "medium",
+    "question": "What is the output?\n\n```python\nprint(10 % 3)\n```",
+    "options": [
+      "3",
+      "1",
+      "0",
+      "3.33"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-48",
+    "level": "medium",
+    "question": "What is the output?\n\n```python\nx = 10\nif x > 5:\n    print(\"Yes\")\nelse:\n    print(\"No\")\n```",
+    "options": [
+      "Yes",
+      "No",
+      "10",
+      "Error"
+    ],
+    "correctAnswer": 0,
+    "topic": "Python"
+  },
+  {
+    "id": "py-49",
+    "level": "medium",
+    "question": "What is the output?\n\n```python\nfor i in range(3):\n    print(i)\n```",
+    "options": [
+      "1 2 3",
+      "0 1 2",
+      "0 1 2 3",
+      "3 2 1"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-50",
+    "level": "medium",
+    "question": "What does `range(5)` generate?",
+    "options": [
+      "1 to 5",
+      "0 to 5",
+      "0 to 4",
+      "1 to 4"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-51",
+    "level": "medium",
+    "question": "What is the output?\n\n```python\nx = 5\n\ndef test():\n    x = 10\n    print(x)\n\ntest()\n```",
+    "options": [
+      "5",
+      "10",
+      "None",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-52",
+    "level": "medium",
+    "question": "What keyword is used to return a value from a function?",
+    "options": [
+      "output",
+      "return",
+      "send",
+      "yield"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-53",
+    "level": "medium",
+    "question": "What is the output?\n\n```python\ndef add(a, b):\n    return a + b\n\nprint(add(2, 3))\n```",
+    "options": [
+      "2",
+      "3",
+      "5",
+      "6"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-54",
+    "level": "medium",
+    "question": "Which statement handles exceptions?",
+    "options": [
+      "try-except",
+      "check-error",
+      "error-catch",
+      "handle"
+    ],
+    "correctAnswer": 0,
+    "topic": "Python"
+  },
+  {
+    "id": "py-55",
+    "level": "medium",
+    "question": "What exception occurs when dividing by zero?",
+    "options": [
+      "ValueError",
+      "TypeError",
+      "ZeroDivisionError",
+      "ArithmeticError only"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-56",
+    "level": "medium",
+    "question": "What is the purpose of `finally`?",
+    "options": [
+      "Runs only when an error occurs",
+      "Runs only when no error occurs",
+      "Generally runs whether an exception occurs or not",
+      "Stops the program"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-57",
+    "level": "medium",
+    "question": "What is a lambda function?",
+    "options": [
+      "A loop",
+      "An anonymous function",
+      "A class",
+      "A module"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-58",
+    "level": "medium",
+    "question": "What is the output?\n\n```python\nsquare = lambda x: x * x\nprint(square(4))\n```",
+    "options": [
+      "4",
+      "8",
+      "16",
+      "Error"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-59",
+    "level": "medium",
+    "question": "Which keyword creates a class?",
+    "options": [
+      "object",
+      "class",
+      "struct",
+      "type"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-60",
+    "level": "medium",
+    "question": "Which method is commonly used as a class constructor?",
+    "options": [
+      "`__start__()`",
+      "`__create__()`",
+      "`__init__()`",
+      "`__newclass__()`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-61",
+    "level": "high",
+    "question": "What is the output?\n\n```python\nx = [1, 2, 3]\ny = x\ny.append(4)\n\nprint(x)\n```",
+    "options": [
+      "`[1, 2, 3]`",
+      "`[1, 2, 3, 4]`",
+      "`[4]`",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-62",
+    "level": "high",
+    "question": "What is the output?\n\n```python\nx = [1, 2, 3]\ny = x.copy()\ny.append(4)\n\nprint(x)\n```",
+    "options": [
+      "`[1, 2, 3]`",
+      "`[1, 2, 3, 4]`",
+      "`[4]`",
+      "Error"
+    ],
+    "correctAnswer": 0,
+    "topic": "Python"
+  },
+  {
+    "id": "py-63",
+    "level": "high",
+    "question": "What is the output?\n\n```python\na = [[1, 2], [3, 4]]\nb = a.copy()\n\nb[0].append(5)\n\nprint(a)\n```",
+    "options": [
+      "`[[1, 2], [3, 4]]`",
+      "`[[1, 2, 5], [3, 4]]`",
+      "`[[5], [3, 4]]`",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-64",
+    "level": "high",
+    "question": "Which module provides `deepcopy()`?",
+    "options": [
+      "copy",
+      "deep",
+      "clone",
+      "object"
+    ],
+    "correctAnswer": 0,
+    "topic": "Python"
+  },
+  {
+    "id": "py-65",
+    "level": "high",
+    "question": "What does a shallow copy copy?",
+    "options": [
+      "Everything recursively",
+      "Only the outer object",
+      "Nothing",
+      "Only strings"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-66",
+    "level": "high",
+    "question": "What is the output?\n\n```python\ndef func(a=[]):\n    a.append(1)\n    return a\n\nprint(func())\nprint(func())\n```",
+    "options": [
+      "`[1]` and `[1]`",
+      "`[1]` and `[1, 1]`",
+      "`[1, 1]` and `[1]`",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-67",
+    "level": "high",
+    "question": "Why can mutable default arguments be dangerous?",
+    "options": [
+      "They cannot store values",
+      "They are recreated every call",
+      "The same mutable object can be reused between calls",
+      "Python doesn't support them"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-68",
+    "level": "high",
+    "question": "What is the output?\n\n```python\nx = [i * 2 for i in range(4)]\nprint(x)\n```",
+    "options": [
+      "`[0, 1, 2, 3]`",
+      "`[2, 4, 6, 8]`",
+      "`[0, 2, 4, 6]`",
+      "`[1, 2, 3, 4]`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-69",
+    "level": "high",
+    "question": "What does `map()` return in Python 3?",
+    "options": [
+      "List",
+      "Tuple",
+      "Iterator",
+      "Set"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-70",
+    "level": "high",
+    "question": "What does `filter()` do?",
+    "options": [
+      "Sorts values",
+      "Selects elements based on a condition",
+      "Converts values to strings",
+      "Removes duplicates automatically"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-71",
+    "level": "high",
+    "question": "What is the output?\n\n```python\nx = [1, 2, 3, 4]\nprint(list(filter(lambda n: n % 2 == 0, x)))\n```",
+    "options": [
+      "`[1, 3]`",
+      "`[2, 4]`",
+      "`[1, 2]`",
+      "`[2, 3, 4]`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-72",
+    "level": "high",
+    "question": "What does `*args` allow?",
+    "options": [
+      "Multiple keyword arguments",
+      "Multiple positional arguments",
+      "Only one argument",
+      "No arguments"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-73",
+    "level": "high",
+    "question": "What does `**kwargs` allow?",
+    "options": [
+      "Multiple positional arguments",
+      "Multiple keyword arguments",
+      "Only strings",
+      "Multiple loops"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-74",
+    "level": "high",
+    "question": "What is the output?\n\n```python\ndef test(*args):\n    return sum(args)\n\nprint(test(1, 2, 3))\n```",
+    "options": [
+      "3",
+      "5",
+      "6",
+      "Error"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-75",
+    "level": "high",
+    "question": "Which concept allows a function to call itself?",
+    "options": [
+      "Iteration",
+      "Recursion",
+      "Inheritance",
+      "Encapsulation"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-76",
+    "level": "high",
+    "question": "What happens if recursion has no proper stopping condition?",
+    "options": [
+      "Faster execution",
+      "RecursionError",
+      "SyntaxError",
+      "ValueError"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-77",
+    "level": "high",
+    "question": "What does `yield` create in a function?",
+    "options": [
+      "Class",
+      "Generator",
+      "List",
+      "Dictionary"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-78",
+    "level": "high",
+    "question": "What is the main advantage of generators?",
+    "options": [
+      "They always execute faster",
+      "They can produce values lazily and save memory",
+      "They store all values permanently",
+      "They only work with strings"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-79",
+    "level": "high",
+    "question": "What is the output?\n\n```python\ndef gen():\n    yield 1\n    yield 2\n\ng = gen()\nprint(next(g))\nprint(next(g))\n```",
+    "options": [
+      "1, 1",
+      "2, 2",
+      "1, 2",
+      "Error"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-80",
+    "level": "high",
+    "question": "Which keyword is used to create a generator?",
+    "options": [
+      "generate",
+      "yield",
+      "generator",
+      "next"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-81",
+    "level": "high",
+    "question": "What is inheritance?",
+    "options": [
+      "Creating variables",
+      "A class acquiring properties/methods from another class",
+      "Creating functions",
+      "Handling exceptions"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-82",
+    "level": "high",
+    "question": "What is method overriding?",
+    "options": [
+      "Deleting a method",
+      "Defining a subclass method with the same name as a parent method",
+      "Calling a method twice",
+      "Creating a private method"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-83",
+    "level": "high",
+    "question": "Which function is commonly used to call a parent implementation?",
+    "options": [
+      "parent()",
+      "super()",
+      "base()",
+      "parentClass()"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-84",
+    "level": "high",
+    "question": "What does a decorator primarily do?",
+    "options": [
+      "Deletes functions",
+      "Modifies or extends function/class behavior",
+      "Converts lists to tuples",
+      "Creates databases"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-85",
+    "level": "high",
+    "question": "Which syntax is used to apply a decorator?",
+    "options": [
+      "`#decorator`",
+      "`@decorator`",
+      "`$decorator`",
+      "`&decorator`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-86",
+    "level": "high",
+    "question": "What is the purpose of `__name__ == \"__main__\"`?",
+    "options": [
+      "It imports a module",
+      "It checks whether the file is being run directly",
+      "It creates a class",
+      "It starts a loop"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-87",
+    "level": "high",
+    "question": "Which statement imports a module?",
+    "options": [
+      "`include math`",
+      "`using math`",
+      "`import math`",
+      "`require math`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Python"
+  },
+  {
+    "id": "py-88",
+    "level": "high",
+    "question": "What is the purpose of a virtual environment?",
+    "options": [
+      "Increase monitor resolution",
+      "Isolate Python packages and dependencies for a project",
+      "Create a database",
+      "Compile Python into Java"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-89",
+    "level": "high",
+    "question": "What does the Global Interpreter Lock (GIL) primarily affect in CPython?",
+    "options": [
+      "File names",
+      "Execution of Python bytecode by multiple threads",
+      "Database tables",
+      "List indexing"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  },
+  {
+    "id": "py-90",
+    "level": "high",
+    "question": "Which approach is generally suitable for CPU-bound parallel work in CPython when avoiding GIL limitations?",
+    "options": [
+      "`threading` only",
+      "`multiprocessing`",
+      "`print()`",
+      "`lambda`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Python"
+  }
+]

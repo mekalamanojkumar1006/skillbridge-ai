@@ -9,6 +9,8 @@ import SignupPage from "./pages/SignupPage";
 import DashboardPage from "./pages/DashboardPage";
 import ResumeUploadPage from "./pages/ResumeUploadPage";
 import AnalysisPage from "./pages/AnalysisPage";
+import PythonExamPage from "./pages/PythonExamPage";
+
 import VerifyEmailPage from "./pages/VerifyEmailPage";
 
 export default function App() {
@@ -193,6 +195,9 @@ export default function App() {
           theme={theme}
           setTheme={setTheme}
         />
+      )}
+            {currentPage === "python-exam" && user && (
+        <PythonExamPage user={user} onNavigate={setCurrentPage} theme={theme} setTheme={setTheme} />
       )}
       {currentPage === "analysis" && user && (
         <AnalysisPage user={user} resume={resume} onNavigate={setCurrentPage} theme={theme} setTheme={setTheme} />
