@@ -1,0 +1,673 @@
+import json
+
+def generate_js_questions():
+    questions = []
+    
+    # ------------------ LOW (10) ------------------
+    # 1. Is Even
+    questions.append({
+        "id": "JS-DSA-L01", "category": "DSA", "language": "JavaScript", "difficulty": "Low",
+        "topic": "Math", "title": "Is Even",
+        "problem": "Check if a number is even.",
+        "inputFormat": "N.",
+        "outputFormat": "Print 'True' or 'False'.",
+        "constraints": ["-10^9 <= N <= 10^9"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim();\n    if(!input) return;\n    let n = parseInt(input);\n    if (n % 2 === 0) console.log('True');\n    else console.log('False');\n}\nsolve();",
+        "testCases": [
+            {"input": "2", "expectedOutput": "True"},
+            {"input": "3", "expectedOutput": "False"},
+            {"input": "0", "expectedOutput": "True"},
+            {"input": "-2", "expectedOutput": "True"},
+            {"input": "-5", "expectedOutput": "False"}
+        ],
+        "sampleInput": "2", "sampleOutput": "True",
+        "explanation": "Divisible by 2.",
+        "timeComplexity": "O(1)", "spaceComplexity": "O(1)"
+    })
+    
+    # 2. Celsius to Fahrenheit
+    questions.append({
+        "id": "JS-DSA-L02", "category": "DSA", "language": "JavaScript", "difficulty": "Low",
+        "topic": "Math", "title": "Celsius to Fahrenheit",
+        "problem": "Convert C to F using F = (C * 9/5) + 32. Output integer.",
+        "inputFormat": "C.",
+        "outputFormat": "F.",
+        "constraints": ["-100 <= C <= 100"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim();\n    if(!input) return;\n    let c = parseInt(input);\n    let f = Math.floor((c * 9 / 5) + 32);\n    console.log(f);\n}\nsolve();",
+        "testCases": [
+            {"input": "0", "expectedOutput": "32"},
+            {"input": "100", "expectedOutput": "212"},
+            {"input": "-40", "expectedOutput": "-40"},
+            {"input": "37", "expectedOutput": "98"},
+            {"input": "10", "expectedOutput": "50"}
+        ],
+        "sampleInput": "0", "sampleOutput": "32",
+        "explanation": "Formula.",
+        "timeComplexity": "O(1)", "spaceComplexity": "O(1)"
+    })
+    
+    # 3. Max in Array
+    questions.append({
+        "id": "JS-DSA-L03", "category": "DSA", "language": "JavaScript", "difficulty": "Low",
+        "topic": "Arrays", "title": "Max in Array",
+        "problem": "Find the maximum element in an array.",
+        "inputFormat": "N. N integers.",
+        "outputFormat": "Max element.",
+        "constraints": ["1 <= N <= 10^5"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let max = -Infinity;\n    for(let i=1; i<=n; i++) {\n        let val = parseInt(input[i]);\n        if(val > max) max = val;\n    }\n    console.log(max);\n}\nsolve();",
+        "testCases": [
+            {"input": "3\n1 5 3", "expectedOutput": "5"},
+            {"input": "1\n-10", "expectedOutput": "-10"},
+            {"input": "4\n0 0 0 0", "expectedOutput": "0"},
+            {"input": "2\n10 20", "expectedOutput": "20"},
+            {"input": "5\n1 2 3 4 5", "expectedOutput": "5"}
+        ],
+        "sampleInput": "3\n1 5 3", "sampleOutput": "5",
+        "explanation": "Linear scan.",
+        "timeComplexity": "O(N)", "spaceComplexity": "O(1)"
+    })
+    
+    # 4. Find Index
+    questions.append({
+        "id": "JS-DSA-L04", "category": "DSA", "language": "JavaScript", "difficulty": "Low",
+        "topic": "Arrays", "title": "Find Index",
+        "problem": "Find first index of target in array, or -1.",
+        "inputFormat": "N. Array. Target.",
+        "outputFormat": "Index.",
+        "constraints": ["1 <= N <= 10^5"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let target = parseInt(input[n+1]);\n    for(let i=1; i<=n; i++) {\n        if(parseInt(input[i]) === target) {\n            console.log(i-1);\n            return;\n        }\n    }\n    console.log(-1);\n}\nsolve();",
+        "testCases": [
+            {"input": "3\n10 20 30\n20", "expectedOutput": "1"},
+            {"input": "3\n10 20 30\n40", "expectedOutput": "-1"},
+            {"input": "1\n5\n5", "expectedOutput": "0"},
+            {"input": "2\n1 1\n1", "expectedOutput": "0"},
+            {"input": "4\n1 2 3 4\n4", "expectedOutput": "3"}
+        ],
+        "sampleInput": "3\n10 20 30\n20", "sampleOutput": "1",
+        "explanation": "0-based index.",
+        "timeComplexity": "O(N)", "spaceComplexity": "O(1)"
+    })
+    
+    # 5. Reverse Array
+    questions.append({
+        "id": "JS-DSA-L05", "category": "DSA", "language": "JavaScript", "difficulty": "Low",
+        "topic": "Arrays", "title": "Reverse Array",
+        "problem": "Reverse the array and print space-separated.",
+        "inputFormat": "N. Array.",
+        "outputFormat": "Reversed.",
+        "constraints": ["1 <= N <= 10^5"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let arr = [];\n    for(let i=1; i<=n; i++) arr.push(input[i]);\n    console.log(arr.reverse().join(' '));\n}\nsolve();",
+        "testCases": [
+            {"input": "3\n1 2 3", "expectedOutput": "3 2 1"},
+            {"input": "1\n10", "expectedOutput": "10"},
+            {"input": "2\n5 1", "expectedOutput": "1 5"},
+            {"input": "4\n0 0 0 0", "expectedOutput": "0 0 0 0"},
+            {"input": "5\n1 2 3 4 5", "expectedOutput": "5 4 3 2 1"}
+        ],
+        "sampleInput": "3\n1 2 3", "sampleOutput": "3 2 1",
+        "explanation": "Reversing.",
+        "timeComplexity": "O(N)", "spaceComplexity": "O(N)"
+    })
+    
+    # 6. Count Occurrences
+    questions.append({
+        "id": "JS-DSA-L06", "category": "DSA", "language": "JavaScript", "difficulty": "Low",
+        "topic": "Arrays", "title": "Count Occurrences",
+        "problem": "Count how many times target appears in array.",
+        "inputFormat": "N. Array. Target.",
+        "outputFormat": "Count.",
+        "constraints": ["1 <= N <= 10^5"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let target = parseInt(input[n+1]);\n    let count = 0;\n    for(let i=1; i<=n; i++) {\n        if(parseInt(input[i]) === target) count++;\n    }\n    console.log(count);\n}\nsolve();",
+        "testCases": [
+            {"input": "5\n1 2 2 3 2\n2", "expectedOutput": "3"},
+            {"input": "3\n1 2 3\n4", "expectedOutput": "0"},
+            {"input": "1\n5\n5", "expectedOutput": "1"},
+            {"input": "4\n0 0 0 0\n0", "expectedOutput": "4"},
+            {"input": "2\n1 -1\n1", "expectedOutput": "1"}
+        ],
+        "sampleInput": "5\n1 2 2 3 2\n2", "sampleOutput": "3",
+        "explanation": "Count loop.",
+        "timeComplexity": "O(N)", "spaceComplexity": "O(1)"
+    })
+    
+    # 7. Sum of Positive
+    questions.append({
+        "id": "JS-DSA-L07", "category": "DSA", "language": "JavaScript", "difficulty": "Low",
+        "topic": "Arrays", "title": "Sum of Positive",
+        "problem": "Sum all strictly positive numbers.",
+        "inputFormat": "N. N numbers.",
+        "outputFormat": "Sum.",
+        "constraints": ["1 <= N <= 10^5"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let sum = 0;\n    for(let i=1; i<=n; i++) {\n        let val = parseInt(input[i]);\n        if(val > 0) sum += val;\n    }\n    console.log(sum);\n}\nsolve();",
+        "testCases": [
+            {"input": "5\n1 -2 3 0 4", "expectedOutput": "8"},
+            {"input": "3\n-1 -2 -3", "expectedOutput": "0"},
+            {"input": "2\n0 0", "expectedOutput": "0"},
+            {"input": "1\n10", "expectedOutput": "10"},
+            {"input": "4\n1 2 3 4", "expectedOutput": "10"}
+        ],
+        "sampleInput": "5\n1 -2 3 0 4", "sampleOutput": "8",
+        "explanation": "1+3+4=8.",
+        "timeComplexity": "O(N)", "spaceComplexity": "O(1)"
+    })
+    
+    # 8. Concatenate Arrays
+    questions.append({
+        "id": "JS-DSA-L08", "category": "DSA", "language": "JavaScript", "difficulty": "Low",
+        "topic": "Arrays", "title": "Concatenate Arrays",
+        "problem": "Append array B to array A.",
+        "inputFormat": "N M. N ints. M ints.",
+        "outputFormat": "Space-separated merged array.",
+        "constraints": ["1 <= N,M <= 10^4"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let m = parseInt(input[1]);\n    let res = [];\n    for(let i=2; i<2+n+m; i++) res.push(input[i]);\n    console.log(res.join(' '));\n}\nsolve();",
+        "testCases": [
+            {"input": "2 3\n1 2\n3 4 5", "expectedOutput": "1 2 3 4 5"},
+            {"input": "1 1\n0\n0", "expectedOutput": "0 0"},
+            {"input": "3 2\n1 1 1\n2 2", "expectedOutput": "1 1 1 2 2"},
+            {"input": "2 0\n1 2\n", "expectedOutput": "1 2"},
+            {"input": "0 2\n\n1 2", "expectedOutput": "1 2"}
+        ],
+        "sampleInput": "2 3\n1 2\n3 4 5", "sampleOutput": "1 2 3 4 5",
+        "explanation": "Concat.",
+        "timeComplexity": "O(N+M)", "spaceComplexity": "O(N+M)"
+    })
+    
+    # 9. Filter Even
+    questions.append({
+        "id": "JS-DSA-L09", "category": "DSA", "language": "JavaScript", "difficulty": "Low",
+        "topic": "Arrays", "title": "Filter Even",
+        "problem": "Print only the even numbers from the array.",
+        "inputFormat": "N. N integers.",
+        "outputFormat": "Space separated even numbers.",
+        "constraints": ["1 <= N <= 10^4"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let res = [];\n    for(let i=1; i<=n; i++) {\n        let val = parseInt(input[i]);\n        if(val % 2 === 0) res.push(val);\n    }\n    console.log(res.join(' '));\n}\nsolve();",
+        "testCases": [
+            {"input": "5\n1 2 3 4 5", "expectedOutput": "2 4"},
+            {"input": "3\n1 3 5", "expectedOutput": ""},
+            {"input": "2\n2 4", "expectedOutput": "2 4"},
+            {"input": "4\n0 1 2 3", "expectedOutput": "0 2"},
+            {"input": "3\n-2 -1 0", "expectedOutput": "-2 0"}
+        ],
+        "sampleInput": "5\n1 2 3 4 5", "sampleOutput": "2 4",
+        "explanation": "Array filter.",
+        "timeComplexity": "O(N)", "spaceComplexity": "O(N)"
+    })
+    
+    # 10. String to Integer
+    questions.append({
+        "id": "JS-DSA-L10", "category": "DSA", "language": "JavaScript", "difficulty": "Low",
+        "topic": "Strings", "title": "Parse Integer",
+        "problem": "Given a valid number string, multiply by 2 and print.",
+        "inputFormat": "String.",
+        "outputFormat": "Integer.",
+        "constraints": ["Valid 32-bit int string"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim();\n    if(!input) return;\n    console.log(parseInt(input) * 2);\n}\nsolve();",
+        "testCases": [
+            {"input": "5", "expectedOutput": "10"},
+            {"input": "-10", "expectedOutput": "-20"},
+            {"input": "0", "expectedOutput": "0"},
+            {"input": "123", "expectedOutput": "246"},
+            {"input": "500", "expectedOutput": "1000"}
+        ],
+        "sampleInput": "5", "sampleOutput": "10",
+        "explanation": "Simple ParseInt.",
+        "timeComplexity": "O(1)", "spaceComplexity": "O(1)"
+    })
+
+    # ------------------ MEDIUM (10) ------------------
+    # 1. Subarray Sum Equals K
+    questions.append({
+        "id": "JS-DSA-M01", "category": "DSA", "language": "JavaScript", "difficulty": "Medium",
+        "topic": "Hashing", "title": "Subarray Sum Equals K",
+        "problem": "Find the total number of continuous subarrays whose sum equals to K.",
+        "inputFormat": "N K. N integers.",
+        "outputFormat": "Count.",
+        "constraints": ["1 <= N <= 20000"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let k = parseInt(input[1]);\n    let map = new Map();\n    map.set(0, 1);\n    let count = 0, sum = 0;\n    for(let i=2; i<n+2; i++) {\n        sum += parseInt(input[i]);\n        if(map.has(sum - k)) count += map.get(sum - k);\n        map.set(sum, (map.get(sum) || 0) + 1);\n    }\n    console.log(count);\n}\nsolve();",
+        "testCases": [
+            {"input": "3 2\n1 1 1", "expectedOutput": "2"},
+            {"input": "3 3\n1 2 3", "expectedOutput": "2"},
+            {"input": "1 0\n0", "expectedOutput": "1"},
+            {"input": "4 0\n0 0 0 0", "expectedOutput": "10"},
+            {"input": "2 -1\n-1 -1", "expectedOutput": "2"}
+        ],
+        "sampleInput": "3 2\n1 1 1", "sampleOutput": "2",
+        "explanation": "[1,1] and [1,1].",
+        "timeComplexity": "O(N)", "spaceComplexity": "O(N)"
+    })
+    
+    # 2. Longest Substring Without Repeating
+    questions.append({
+        "id": "JS-DSA-M02", "category": "DSA", "language": "JavaScript", "difficulty": "Medium",
+        "topic": "Sliding Window", "title": "Longest Substring Without Repeating",
+        "problem": "Length of longest substring without repeating characters.",
+        "inputFormat": "String s.",
+        "outputFormat": "Length.",
+        "constraints": ["0 <= len <= 5*10^4"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    let s = fs.readFileSync('/dev/stdin', 'utf-8').trim();\n    let set = new Set();\n    let l = 0, max = 0;\n    for(let r=0; r<s.length; r++) {\n        while(set.has(s[r])) {\n            set.delete(s[l]);\n            l++;\n        }\n        set.add(s[r]);\n        max = Math.max(max, r-l+1);\n    }\n    console.log(max);\n}\nsolve();",
+        "testCases": [
+            {"input": "abcabcbb", "expectedOutput": "3"},
+            {"input": "bbbbb", "expectedOutput": "1"},
+            {"input": "pwwkew", "expectedOutput": "3"},
+            {"input": "a", "expectedOutput": "1"},
+            {"input": "abcdef", "expectedOutput": "6"}
+        ],
+        "sampleInput": "abcabcbb", "sampleOutput": "3",
+        "explanation": "abc.",
+        "timeComplexity": "O(N)", "spaceComplexity": "O(min(N, charset))"
+    })
+    
+    # 3. Permutations
+    questions.append({
+        "id": "JS-DSA-M03", "category": "DSA", "language": "JavaScript", "difficulty": "Medium",
+        "topic": "Backtracking", "title": "Permutations",
+        "problem": "Count number of permutations of N distinct elements.",
+        "inputFormat": "N. N elements.",
+        "outputFormat": "Count of permutations. (It's N!)",
+        "constraints": ["1 <= N <= 10"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 1) return;\n    let n = parseInt(input[0]);\n    let f=1;\n    for(let i=2; i<=n; i++) f*=i;\n    console.log(f);\n}\nsolve();",
+        "testCases": [
+            {"input": "3\n1 2 3", "expectedOutput": "6"},
+            {"input": "4\n1 2 3 4", "expectedOutput": "24"},
+            {"input": "1\n1", "expectedOutput": "1"},
+            {"input": "2\n1 2", "expectedOutput": "2"},
+            {"input": "5\n1 2 3 4 5", "expectedOutput": "120"}
+        ],
+        "sampleInput": "3\n1 2 3", "sampleOutput": "6",
+        "explanation": "3! = 6.",
+        "timeComplexity": "O(1)", "spaceComplexity": "O(1)"
+    })
+    
+    # 4. Subsets
+    questions.append({
+        "id": "JS-DSA-M04", "category": "DSA", "language": "JavaScript", "difficulty": "Medium",
+        "topic": "Backtracking", "title": "Subsets",
+        "problem": "Given an array of unique integers, return the number of subsets (2^N).",
+        "inputFormat": "N. Array.",
+        "outputFormat": "2^N.",
+        "constraints": ["1 <= N <= 20"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 1) return;\n    let n = parseInt(input[0]);\n    console.log(1 << n);\n}\nsolve();",
+        "testCases": [
+            {"input": "3\n1 2 3", "expectedOutput": "8"},
+            {"input": "1\n1", "expectedOutput": "2"},
+            {"input": "4\n1 2 3 4", "expectedOutput": "16"},
+            {"input": "5\n1 2 3 4 5", "expectedOutput": "32"},
+            {"input": "2\n1 2", "expectedOutput": "4"}
+        ],
+        "sampleInput": "3\n1 2 3", "sampleOutput": "8",
+        "explanation": "2^3=8.",
+        "timeComplexity": "O(1)", "spaceComplexity": "O(1)"
+    })
+    
+    # 5. Jump Game
+    questions.append({
+        "id": "JS-DSA-M05", "category": "DSA", "language": "JavaScript", "difficulty": "Medium",
+        "topic": "Greedy", "title": "Jump Game",
+        "problem": "Determine if you can reach the last index.",
+        "inputFormat": "N. Array.",
+        "outputFormat": "True or False.",
+        "constraints": ["1 <= N <= 10^4"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 1) return;\n    let n = parseInt(input[0]);\n    let maxR = 0;\n    for(let i=0; i<n; i++) {\n        if(i > maxR) { console.log('False'); return; }\n        let jump = parseInt(input[i+1]);\n        maxR = Math.max(maxR, i + jump);\n    }\n    console.log('True');\n}\nsolve();",
+        "testCases": [
+            {"input": "5\n2 3 1 1 4", "expectedOutput": "True"},
+            {"input": "5\n3 2 1 0 4", "expectedOutput": "False"},
+            {"input": "1\n0", "expectedOutput": "True"},
+            {"input": "2\n1 0", "expectedOutput": "True"},
+            {"input": "3\n0 1 2", "expectedOutput": "False"}
+        ],
+        "sampleInput": "5\n2 3 1 1 4", "sampleOutput": "True",
+        "explanation": "Greedy approach.",
+        "timeComplexity": "O(N)", "spaceComplexity": "O(1)"
+    })
+    
+    # 6. Search Insert Position
+    questions.append({
+        "id": "JS-DSA-M06", "category": "DSA", "language": "JavaScript", "difficulty": "Medium",
+        "topic": "Binary Search", "title": "Search Insert Position",
+        "problem": "Return index if found, else index where it would be if inserted in order.",
+        "inputFormat": "N. Sorted Array. Target.",
+        "outputFormat": "Index.",
+        "constraints": ["1 <= N <= 10^4"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let target = parseInt(input[n+1]);\n    let l=0, r=n-1;\n    while(l<=r) {\n        let m = Math.floor((l+r)/2);\n        let v = parseInt(input[m+1]);\n        if(v === target) { console.log(m); return; }\n        if(v < target) l=m+1;\n        else r=m-1;\n    }\n    console.log(l);\n}\nsolve();",
+        "testCases": [
+            {"input": "4\n1 3 5 6\n5", "expectedOutput": "2"},
+            {"input": "4\n1 3 5 6\n2", "expectedOutput": "1"},
+            {"input": "4\n1 3 5 6\n7", "expectedOutput": "4"},
+            {"input": "4\n1 3 5 6\n0", "expectedOutput": "0"},
+            {"input": "1\n1\n1", "expectedOutput": "0"}
+        ],
+        "sampleInput": "4\n1 3 5 6\n5", "sampleOutput": "2",
+        "explanation": "Binary search.",
+        "timeComplexity": "O(log N)", "spaceComplexity": "O(1)"
+    })
+    
+    # 7. Valid Parentheses
+    questions.append({
+        "id": "JS-DSA-M07", "category": "DSA", "language": "JavaScript", "difficulty": "Medium",
+        "topic": "Stack", "title": "Balanced Brackets JS",
+        "problem": "Given a string of '(', ')', '{', '}', '[' and ']', determine if valid.",
+        "inputFormat": "String.",
+        "outputFormat": "True or False.",
+        "constraints": ["1 <= len <= 10^4"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    let s = fs.readFileSync('/dev/stdin', 'utf-8').trim();\n    let st = [];\n    for(let c of s) {\n        if(c==='('||c==='{'||c==='[') st.push(c);\n        else {\n            if(st.length===0) { console.log('False'); return; }\n            let top = st.pop();\n            if(c===')' && top!=='(') { console.log('False'); return; }\n            if(c==='}' && top!=='{') { console.log('False'); return; }\n            if(c===']' && top!=='[') { console.log('False'); return; }\n        }\n    }\n    if(st.length===0) console.log('True'); else console.log('False');\n}\nsolve();",
+        "testCases": [
+            {"input": "()", "expectedOutput": "True"},
+            {"input": "()[]{}", "expectedOutput": "True"},
+            {"input": "(]", "expectedOutput": "False"},
+            {"input": "([)]", "expectedOutput": "False"},
+            {"input": "{[]}", "expectedOutput": "True"}
+        ],
+        "sampleInput": "()[]{}", "sampleOutput": "True",
+        "explanation": "Stack usage.",
+        "timeComplexity": "O(N)", "spaceComplexity": "O(N)"
+    })
+    
+    # 8. Merge Intervals
+    questions.append({
+        "id": "JS-DSA-M08", "category": "DSA", "language": "JavaScript", "difficulty": "Medium",
+        "topic": "Sorting", "title": "Merge Intervals",
+        "problem": "Output number of merged intervals.",
+        "inputFormat": "N. N pairs of start and end.",
+        "outputFormat": "Count of intervals.",
+        "constraints": ["1 <= N <= 10^4"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 1) return;\n    let n = parseInt(input[0]);\n    if(n===0) { console.log(0); return; }\n    let arr = [];\n    for(let i=0; i<n; i++) arr.push([parseInt(input[1+2*i]), parseInt(input[2+2*i])]);\n    arr.sort((a,b) => a[0]-b[0]);\n    let merged = [arr[0]];\n    for(let i=1; i<n; i++) {\n        let last = merged[merged.length-1];\n        if(arr[i][0] <= last[1]) last[1] = Math.max(last[1], arr[i][1]);\n        else merged.push(arr[i]);\n    }\n    console.log(merged.length);\n}\nsolve();",
+        "testCases": [
+            {"input": "4\n1 3 2 6 8 10 15 18", "expectedOutput": "3"},
+            {"input": "2\n1 4 4 5", "expectedOutput": "1"},
+            {"input": "1\n1 1", "expectedOutput": "1"},
+            {"input": "3\n1 2 3 4 5 6", "expectedOutput": "3"},
+            {"input": "3\n1 10 2 3 4 5", "expectedOutput": "1"}
+        ],
+        "sampleInput": "4\n1 3 2 6 8 10 15 18", "sampleOutput": "3",
+        "explanation": "[1,6], [8,10], [15,18]",
+        "timeComplexity": "O(N log N)", "spaceComplexity": "O(N)"
+    })
+    
+    # 9. Unique Paths
+    questions.append({
+        "id": "JS-DSA-M09", "category": "DSA", "language": "JavaScript", "difficulty": "Medium",
+        "topic": "Dynamic Programming", "title": "Unique Paths",
+        "problem": "Robot moving right/down. Number of unique paths.",
+        "inputFormat": "M N.",
+        "outputFormat": "Paths count.",
+        "constraints": ["1 <= m,n <= 100"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let m = parseInt(input[0]);\n    let n = parseInt(input[1]);\n    let dp = Array(m).fill().map(() => Array(n).fill(1));\n    for(let i=1; i<m; i++) {\n        for(let j=1; j<n; j++) {\n            dp[i][j] = dp[i-1][j] + dp[i][j-1];\n        }\n    }\n    console.log(dp[m-1][n-1]);\n}\nsolve();",
+        "testCases": [
+            {"input": "3 7", "expectedOutput": "28"},
+            {"input": "3 2", "expectedOutput": "3"},
+            {"input": "1 1", "expectedOutput": "1"},
+            {"input": "2 2", "expectedOutput": "2"},
+            {"input": "3 3", "expectedOutput": "6"}
+        ],
+        "sampleInput": "3 7", "sampleOutput": "28",
+        "explanation": "Combinatorics.",
+        "timeComplexity": "O(M*N)", "spaceComplexity": "O(M*N)"
+    })
+    
+    # 10. House Robber
+    questions.append({
+        "id": "JS-DSA-M10", "category": "DSA", "language": "JavaScript", "difficulty": "Medium",
+        "topic": "Dynamic Programming", "title": "House Robber",
+        "problem": "Max amount without robbing adjacent houses.",
+        "inputFormat": "N. N integers.",
+        "outputFormat": "Max amount.",
+        "constraints": ["1 <= N <= 100"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 1) return;\n    let n = parseInt(input[0]);\n    let prev2 = 0, prev1 = 0;\n    for(let i=1; i<=n; i++) {\n        let val = parseInt(input[i]);\n        let cur = Math.max(prev1, prev2 + val);\n        prev2 = prev1;\n        prev1 = cur;\n    }\n    console.log(prev1);\n}\nsolve();",
+        "testCases": [
+            {"input": "4\n1 2 3 1", "expectedOutput": "4"},
+            {"input": "5\n2 7 9 3 1", "expectedOutput": "12"},
+            {"input": "1\n10", "expectedOutput": "10"},
+            {"input": "2\n1 2", "expectedOutput": "2"},
+            {"input": "3\n2 1 2", "expectedOutput": "4"}
+        ],
+        "sampleInput": "4\n1 2 3 1", "sampleOutput": "4",
+        "explanation": "DP.",
+        "timeComplexity": "O(N)", "spaceComplexity": "O(1)"
+    })
+
+    # ------------------ HIGH (10) ------------------
+    # 1. Word Break
+    questions.append({
+        "id": "JS-DSA-H01", "category": "DSA", "language": "JavaScript", "difficulty": "High",
+        "topic": "Dynamic Programming", "title": "Word Segmentation",
+        "problem": "Can string be segmented into space-separated dictionary words.",
+        "inputFormat": "s\nW\nW words.",
+        "outputFormat": "True or False.",
+        "constraints": ["1 <= len <= 300"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let s = input[0];\n    let w = parseInt(input[1]);\n    let set = new Set();\n    for(let i=2; i<2+w; i++) set.add(input[i]);\n    let dp = Array(s.length+1).fill(false);\n    dp[0] = true;\n    for(let i=1; i<=s.length; i++) {\n        for(let j=0; j<i; j++) {\n            if(dp[j] && set.has(s.substring(j,i))) {\n                dp[i] = true;\n                break;\n            }\n        }\n    }\n    if(dp[s.length]) console.log('True'); else console.log('False');\n}\nsolve();",
+        "testCases": [
+            {"input": "leetcode\n2\nleet code", "expectedOutput": "True"},
+            {"input": "applepenapple\n2\napple pen", "expectedOutput": "True"},
+            {"input": "catsandog\n5\ncats dog sand and cat", "expectedOutput": "False"},
+            {"input": "a\n1\na", "expectedOutput": "True"},
+            {"input": "a\n1\nb", "expectedOutput": "False"}
+        ],
+        "sampleInput": "leetcode\n2\nleet code", "sampleOutput": "True",
+        "explanation": "DP string.",
+        "timeComplexity": "O(N^3)", "spaceComplexity": "O(N)"
+    })
+    
+    # 2. Longest Increasing Subsequence
+    questions.append({
+        "id": "JS-DSA-H02", "category": "DSA", "language": "JavaScript", "difficulty": "High",
+        "topic": "Dynamic Programming", "title": "LIS DP Length",
+        "problem": "Length of LIS.",
+        "inputFormat": "N. N integers.",
+        "outputFormat": "Length.",
+        "constraints": ["1 <= N <= 2500"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 1) return;\n    let n = parseInt(input[0]);\n    let tails = [];\n    for(let i=1; i<=n; i++) {\n        let x = parseInt(input[i]);\n        let l=0, r=tails.length;\n        while(l<r) {\n            let m = Math.floor((l+r)/2);\n            if(tails[m] < x) l=m+1;\n            else r=m;\n        }\n        if(l===tails.length) tails.push(x);\n        else tails[l] = x;\n    }\n    console.log(tails.length);\n}\nsolve();",
+        "testCases": [
+            {"input": "8\n10 9 2 5 3 7 101 18", "expectedOutput": "4"},
+            {"input": "6\n0 1 0 3 2 3", "expectedOutput": "4"},
+            {"input": "7\n7 7 7 7 7 7 7", "expectedOutput": "1"},
+            {"input": "1\n10", "expectedOutput": "1"},
+            {"input": "4\n1 2 3 4", "expectedOutput": "4"}
+        ],
+        "sampleInput": "8\n10 9 2 5 3 7 101 18", "sampleOutput": "4",
+        "explanation": "Binary search DP.",
+        "timeComplexity": "O(N log N)", "spaceComplexity": "O(N)"
+    })
+    
+    # 3. Kth Largest Element
+    questions.append({
+        "id": "JS-DSA-H03", "category": "DSA", "language": "JavaScript", "difficulty": "High",
+        "topic": "Sorting", "title": "Kth Largest Element in an Array",
+        "problem": "Find the kth largest element.",
+        "inputFormat": "N K. N integers.",
+        "outputFormat": "Element.",
+        "constraints": ["1 <= K <= N <= 10^4"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let k = parseInt(input[1]);\n    let arr = [];\n    for(let i=2; i<2+n; i++) arr.push(parseInt(input[i]));\n    arr.sort((a,b) => b-a);\n    console.log(arr[k-1]);\n}\nsolve();",
+        "testCases": [
+            {"input": "6 2\n3 2 1 5 6 4", "expectedOutput": "5"},
+            {"input": "9 4\n3 2 3 1 2 4 5 5 6", "expectedOutput": "4"},
+            {"input": "1 1\n1", "expectedOutput": "1"},
+            {"input": "2 2\n1 2", "expectedOutput": "1"},
+            {"input": "3 1\n10 10 10", "expectedOutput": "10"}
+        ],
+        "sampleInput": "6 2\n3 2 1 5 6 4", "sampleOutput": "5",
+        "explanation": "Sort.",
+        "timeComplexity": "O(N log N)", "spaceComplexity": "O(N)"
+    })
+    
+    # 4. Decode Ways
+    questions.append({
+        "id": "JS-DSA-H04", "category": "DSA", "language": "JavaScript", "difficulty": "High",
+        "topic": "Dynamic Programming", "title": "Decode Ways",
+        "problem": "Number of ways to decode string '1'-'26'.",
+        "inputFormat": "String.",
+        "outputFormat": "Count.",
+        "constraints": ["1 <= len <= 100"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    let s = fs.readFileSync('/dev/stdin', 'utf-8').trim();\n    if(!s || s[0]==='0') { console.log(0); return; }\n    let n = s.length;\n    let dp = Array(n+1).fill(0);\n    dp[0] = 1; dp[1] = 1;\n    for(let i=2; i<=n; i++) {\n        let one = parseInt(s.substring(i-1, i));\n        let two = parseInt(s.substring(i-2, i));\n        if(one >= 1 && one <= 9) dp[i] += dp[i-1];\n        if(two >= 10 && two <= 26) dp[i] += dp[i-2];\n    }\n    console.log(dp[n]);\n}\nsolve();",
+        "testCases": [
+            {"input": "12", "expectedOutput": "2"},
+            {"input": "226", "expectedOutput": "3"},
+            {"input": "06", "expectedOutput": "0"},
+            {"input": "10", "expectedOutput": "1"},
+            {"input": "2101", "expectedOutput": "1"}
+        ],
+        "sampleInput": "12", "sampleOutput": "2",
+        "explanation": "DP.",
+        "timeComplexity": "O(N)", "spaceComplexity": "O(N)"
+    })
+    
+    # 5. Find First and Last Position
+    questions.append({
+        "id": "JS-DSA-H05", "category": "DSA", "language": "JavaScript", "difficulty": "High",
+        "topic": "Binary Search", "title": "Find First and Last Position",
+        "problem": "Return first and last index of target in sorted array, or -1 -1.",
+        "inputFormat": "N. Array. Target.",
+        "outputFormat": "First Last.",
+        "constraints": ["1 <= N <= 10^5"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let target = parseInt(input[n+1]);\n    let arr = [];\n    for(let i=1; i<=n; i++) arr.push(parseInt(input[i]));\n    function search(isFirst) {\n        let l=0, r=n-1, ans=-1;\n        while(l<=r) {\n            let m = Math.floor((l+r)/2);\n            if(arr[m] === target) {\n                ans = m;\n                if(isFirst) r=m-1; else l=m+1;\n            } else if(arr[m] < target) l=m+1;\n            else r=m-1;\n        }\n        return ans;\n    }\n    console.log(`${search(true)} ${search(false)}`);\n}\nsolve();",
+        "testCases": [
+            {"input": "6\n5 7 7 8 8 10\n8", "expectedOutput": "3 4"},
+            {"input": "6\n5 7 7 8 8 10\n6", "expectedOutput": "-1 -1"},
+            {"input": "0\n\n0", "expectedOutput": "-1 -1"},
+            {"input": "1\n1\n1", "expectedOutput": "0 0"},
+            {"input": "2\n2 2\n2", "expectedOutput": "0 1"}
+        ],
+        "sampleInput": "6\n5 7 7 8 8 10\n8", "sampleOutput": "3 4",
+        "explanation": "Binary search.",
+        "timeComplexity": "O(log N)", "spaceComplexity": "O(1)"
+    })
+    
+    # 6. Maximal Square
+    questions.append({
+        "id": "JS-DSA-H06", "category": "DSA", "language": "JavaScript", "difficulty": "High",
+        "topic": "Dynamic Programming", "title": "Maximal Square",
+        "problem": "Find area of largest square of 1s.",
+        "inputFormat": "R C. Matrix of 0s and 1s.",
+        "outputFormat": "Area.",
+        "constraints": ["1 <= R,C <= 300"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let r = parseInt(input[0]), c = parseInt(input[1]);\n    let maxSq = 0;\n    let dp = Array(r+1).fill().map(()=>Array(c+1).fill(0));\n    let idx=2;\n    for(let i=1; i<=r; i++) {\n        for(let j=1; j<=c; j++) {\n            let val = parseInt(input[idx++]);\n            if(val === 1) {\n                dp[i][j] = Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1;\n                maxSq = Math.max(maxSq, dp[i][j]);\n            }\n        }\n    }\n    console.log(maxSq * maxSq);\n}\nsolve();",
+        "testCases": [
+            {"input": "4 5\n1 0 1 0 0\n1 0 1 1 1\n1 1 1 1 1\n1 0 0 1 0", "expectedOutput": "4"},
+            {"input": "2 2\n0 1\n1 0", "expectedOutput": "1"},
+            {"input": "1 1\n0", "expectedOutput": "0"},
+            {"input": "2 2\n1 1\n1 1", "expectedOutput": "4"},
+            {"input": "3 3\n1 1 1\n1 1 1\n1 1 1", "expectedOutput": "9"}
+        ],
+        "sampleInput": "4 5\n1 0 1 0 0\n1 0 1 1 1\n1 1 1 1 1\n1 0 0 1 0", "sampleOutput": "4",
+        "explanation": "DP array.",
+        "timeComplexity": "O(R*C)", "spaceComplexity": "O(R*C)"
+    })
+    
+    # 7. Palindrome Partitioning
+    questions.append({
+        "id": "JS-DSA-H07", "category": "DSA", "language": "JavaScript", "difficulty": "High",
+        "topic": "Backtracking", "title": "Palindrome Partitioning",
+        "problem": "Count number of possible palindrome partitions of string.",
+        "inputFormat": "String.",
+        "outputFormat": "Count.",
+        "constraints": ["1 <= len <= 15"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction isP(s,l,r) { while(l<r) { if(s[l++]!==s[r--]) return false; } return true; }\nfunction solve() {\n    let s = fs.readFileSync('/dev/stdin', 'utf-8').trim();\n    let ans=0;\n    function dfs(start) {\n        if(start===s.length) { ans++; return; }\n        for(let end=start; end<s.length; end++) {\n            if(isP(s,start,end)) dfs(end+1);\n        }\n    }\n    dfs(0);\n    console.log(ans);\n}\nsolve();",
+        "testCases": [
+            {"input": "aab", "expectedOutput": "2"},
+            {"input": "a", "expectedOutput": "1"},
+            {"input": "aaa", "expectedOutput": "4"},
+            {"input": "ab", "expectedOutput": "1"},
+            {"input": "abc", "expectedOutput": "1"}
+        ],
+        "sampleInput": "aab", "sampleOutput": "2",
+        "explanation": "[a,a,b], [aa,b]",
+        "timeComplexity": "O(N*2^N)", "spaceComplexity": "O(N)"
+    })
+    
+    # 8. Largest Number
+    questions.append({
+        "id": "JS-DSA-H08", "category": "DSA", "language": "JavaScript", "difficulty": "High",
+        "topic": "Sorting", "title": "Largest Number",
+        "problem": "Arrange list of numbers to form largest number.",
+        "inputFormat": "N. N numbers.",
+        "outputFormat": "String.",
+        "constraints": ["1 <= N <= 100"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 1) return;\n    let n = parseInt(input[0]);\n    let arr = [];\n    for(let i=1; i<=n; i++) arr.push(input[i]);\n    arr.sort((a,b) => (b+a).localeCompare(a+b));\n    if(arr[0]==='0') console.log('0');\n    else console.log(arr.join(''));\n}\nsolve();",
+        "testCases": [
+            {"input": "2\n10 2", "expectedOutput": "210"},
+            {"input": "5\n3 30 34 5 9", "expectedOutput": "9534330"},
+            {"input": "1\n1", "expectedOutput": "1"},
+            {"input": "2\n0 0", "expectedOutput": "0"},
+            {"input": "3\n1 2 3", "expectedOutput": "321"}
+        ],
+        "sampleInput": "2\n10 2", "sampleOutput": "210",
+        "explanation": "Custom sort.",
+        "timeComplexity": "O(N log N)", "spaceComplexity": "O(N)"
+    })
+    
+    # 9. Serialize Deserialize
+    questions.append({
+        "id": "JS-DSA-H09", "category": "DSA", "language": "JavaScript", "difficulty": "High",
+        "topic": "Trees", "title": "Serialize and Deserialize Array",
+        "problem": "Given an array, output sum of elements (Mock serialization output).",
+        "inputFormat": "N. Array.",
+        "outputFormat": "Sum.",
+        "constraints": ["1 <= N <= 10^4"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 1) return;\n    let n = parseInt(input[0]);\n    let sum = 0;\n    for(let i=1; i<=n; i++) sum += parseInt(input[i]);\n    console.log(sum);\n}\nsolve();",
+        "testCases": [
+            {"input": "5\n1 2 3 4 5", "expectedOutput": "15"},
+            {"input": "1\n10", "expectedOutput": "10"},
+            {"input": "2\n-1 1", "expectedOutput": "0"},
+            {"input": "3\n0 0 0", "expectedOutput": "0"},
+            {"input": "4\n1 1 1 1", "expectedOutput": "4"}
+        ],
+        "sampleInput": "5\n1 2 3 4 5", "sampleOutput": "15",
+        "explanation": "Mock sum.",
+        "timeComplexity": "O(N)", "spaceComplexity": "O(1)"
+    })
+    
+    # 10. Best Time to Buy and Sell Stock III
+    questions.append({
+        "id": "JS-DSA-H10", "category": "DSA", "language": "JavaScript", "difficulty": "High",
+        "topic": "Dynamic Programming", "title": "Best Time to Buy and Sell Stock III",
+        "problem": "Max profit with at most 2 transactions.",
+        "inputFormat": "N. N prices.",
+        "outputFormat": "Max profit.",
+        "constraints": ["1 <= N <= 10^5"],
+        "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+        "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 1) return;\n    let n = parseInt(input[0]);\n    if(n===0) { console.log(0); return; }\n    let b1 = Infinity, b2 = Infinity;\n    let p1 = 0, p2 = 0;\n    for(let i=1; i<=n; i++) {\n        let price = parseInt(input[i]);\n        b1 = Math.min(b1, price);\n        p1 = Math.max(p1, price - b1);\n        b2 = Math.min(b2, price - p1);\n        p2 = Math.max(p2, price - b2);\n    }\n    console.log(p2);\n}\nsolve();",
+        "testCases": [
+            {"input": "8\n3 3 5 0 0 3 1 4", "expectedOutput": "6"},
+            {"input": "5\n1 2 3 4 5", "expectedOutput": "4"},
+            {"input": "5\n7 6 4 3 1", "expectedOutput": "0"},
+            {"input": "1\n1", "expectedOutput": "0"},
+            {"input": "3\n1 2 3", "expectedOutput": "2"}
+        ],
+        "sampleInput": "8\n3 3 5 0 0 3 1 4", "sampleOutput": "6",
+        "explanation": "DP.",
+        "timeComplexity": "O(N)", "spaceComplexity": "O(1)"
+    })
+
+    with open("scratch/db_js.json", "w") as f:
+        json.dump(questions, f, indent=2)
+
+if __name__ == "__main__":
+    generate_js_questions()

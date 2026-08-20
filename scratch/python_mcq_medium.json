@@ -1,0 +1,2552 @@
+[
+  {
+    "id": "py-medium-ca729e47",
+    "language": "Python",
+    "topic": "Intro to Python",
+    "difficulty": "Medium",
+    "question": "How is memory managed in Python?",
+    "options": [
+      "Manually using malloc()",
+      "By the OS automatically",
+      "Through a private heap managed by the Python memory manager",
+      "It is not managed"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Python uses a private heap space and garbage collection to manage memory."
+  },
+  {
+    "id": "py-medium-21a9a874",
+    "language": "Python",
+    "topic": "Intro to Python",
+    "difficulty": "Medium",
+    "question": "What is the GIL in CPython?",
+    "options": [
+      "Global Interpreter Lock",
+      "General Interface Language",
+      "Global Integer Logic",
+      "General Interpreter Lock"
+    ],
+    "correctAnswer": 0,
+    "explanation": "The Global Interpreter Lock prevents multiple native threads from executing Python bytecodes at once."
+  },
+  {
+    "id": "py-medium-e1d0fb0e",
+    "language": "Python",
+    "topic": "Intro to Python",
+    "difficulty": "Medium",
+    "question": "What does it mean that Python is an 'interpreted' language?",
+    "options": [
+      "It translates code directly to machine language before running",
+      "It executes code line by line through an interpreter",
+      "It requires a compilation step to an executable",
+      "It is slower than JavaScript"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Interpreted means the Python interpreter executes the source code instruction by instruction."
+  },
+  {
+    "id": "py-medium-957f93d8",
+    "language": "Python",
+    "topic": "Intro to Python",
+    "difficulty": "Medium",
+    "question": "What is bytecode in Python?",
+    "options": [
+      "Machine code",
+      "An intermediate, low-level representation of the source code",
+      "A syntax error",
+      "A type of variable"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Python compiles source code to an intermediate bytecode, which the Python Virtual Machine executes."
+  },
+  {
+    "id": "py-medium-dc6747e6",
+    "language": "Python",
+    "topic": "Intro to Python",
+    "difficulty": "Medium",
+    "question": "Which of the following is true regarding Python 2 and Python 3?",
+    "options": [
+      "They are completely backward compatible",
+      "Python 3 is a major revision and not fully backward compatible with Python 2",
+      "Python 2 is faster",
+      "There are no differences"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Python 3 introduced breaking changes (e.g., print as a function) to fix design flaws."
+  },
+  {
+    "id": "py-medium-faa4ead9",
+    "language": "Python",
+    "topic": "Intro to Python",
+    "difficulty": "Medium",
+    "question": "How do you check for the identity of an object in Python?",
+    "options": [
+      "using the '==' operator",
+      "using the 'is' operator",
+      "using the 'equals()' method",
+      "using the '===' operator"
+    ],
+    "correctAnswer": 1,
+    "explanation": "The 'is' operator checks if two variables point to the same memory location."
+  },
+  {
+    "id": "py-medium-b42f3d5d",
+    "language": "Python",
+    "topic": "Intro to Python",
+    "difficulty": "Medium",
+    "question": "What is a 'docstring' in Python?",
+    "options": [
+      "A string that contains code",
+      "A string used for commenting and documenting functions/classes",
+      "A built-in data type",
+      "A type of exception"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Docstrings (enclosed in triple quotes) are used to document modules, classes, and functions."
+  },
+  {
+    "id": "py-medium-e0aa959a",
+    "language": "Python",
+    "topic": "Intro to Python",
+    "difficulty": "Medium",
+    "question": "What does the `pass` statement do?",
+    "options": [
+      "Raises an exception",
+      "Exits the program",
+      "Does nothing, used as a placeholder",
+      "Skips an iteration in a loop"
+    ],
+    "correctAnswer": 2,
+    "explanation": "The pass statement is a null operation; nothing happens when it executes."
+  },
+  {
+    "id": "py-medium-f5945b9e",
+    "language": "Python",
+    "topic": "Intro to Python",
+    "difficulty": "Medium",
+    "question": "Which module is commonly used for interacting with the operating system?",
+    "options": [
+      "sys",
+      "os",
+      "system",
+      "io"
+    ],
+    "correctAnswer": 1,
+    "explanation": "The 'os' module provides a portable way of using operating system dependent functionality."
+  },
+  {
+    "id": "py-medium-f038091a",
+    "language": "Python",
+    "topic": "Intro to Python",
+    "difficulty": "Medium",
+    "question": "What is the purpose of `__name__ == '__main__'`?",
+    "options": [
+      "To import a module",
+      "To prevent a script from executing when imported as a module",
+      "To define the main function",
+      "To name the script"
+    ],
+    "correctAnswer": 1,
+    "explanation": "It ensures that the block of code only runs if the script is executed directly, not when imported."
+  },
+  {
+    "id": "py-medium-59105a73",
+    "language": "Python",
+    "topic": "Variables & Data Types",
+    "difficulty": "Medium",
+    "question": "Which statement correctly assigns multiple variables to the same value?",
+    "options": [
+      "x = y = z = 10",
+      "x, y, z = 10",
+      "x = 10, y = 10, z = 10",
+      "10 = x = y = z"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Python allows chained assignment to assign the same value to multiple variables."
+  },
+  {
+    "id": "py-medium-a6fe133d",
+    "language": "Python",
+    "topic": "Variables & Data Types",
+    "difficulty": "Medium",
+    "question": "What is the data type of the result of `5 / 2` in Python 3?",
+    "options": [
+      "int",
+      "float",
+      "double",
+      "decimal"
+    ],
+    "correctAnswer": 1,
+    "explanation": "True division (/) always returns a float in Python 3, even if the result is a whole number."
+  },
+  {
+    "id": "py-medium-920933b6",
+    "language": "Python",
+    "topic": "Variables & Data Types",
+    "difficulty": "Medium",
+    "question": "How do you represent a complex number in Python?",
+    "options": [
+      "3 + 4i",
+      "3 + 4j",
+      "complex(3, 4i)",
+      "3j4"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Python uses 'j' or 'J' to denote the imaginary part of a complex number."
+  },
+  {
+    "id": "py-medium-61277ad4",
+    "language": "Python",
+    "topic": "Variables & Data Types",
+    "difficulty": "Medium",
+    "question": "What is the output of `type(None)`?",
+    "options": [
+      "<class 'null'>",
+      "<class 'NoneType'>",
+      "<class 'None'>",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "explanation": "None is an object of its own type, NoneType."
+  },
+  {
+    "id": "py-medium-cd9a0f34",
+    "language": "Python",
+    "topic": "Variables & Data Types",
+    "difficulty": "Medium",
+    "question": "Which of the following data types is immutable?",
+    "options": [
+      "list",
+      "set",
+      "dictionary",
+      "tuple"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Tuples are immutable sequences, unlike lists, sets, and dictionaries."
+  },
+  {
+    "id": "py-medium-8371b075",
+    "language": "Python",
+    "topic": "Variables & Data Types",
+    "difficulty": "Medium",
+    "question": "What is the value of `bool([])`?",
+    "options": [
+      "True",
+      "False",
+      "None",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Empty collections (like empty lists) are considered 'falsy' and evaluate to False."
+  },
+  {
+    "id": "py-medium-09345dcd",
+    "language": "Python",
+    "topic": "Variables & Data Types",
+    "difficulty": "Medium",
+    "question": "What does the `id()` function return?",
+    "options": [
+      "The object's value",
+      "The object's memory address/identity",
+      "The object's data type",
+      "The variable's name"
+    ],
+    "correctAnswer": 1,
+    "explanation": "id() returns an integer representing the unique memory address of the object."
+  },
+  {
+    "id": "py-medium-0694720b",
+    "language": "Python",
+    "topic": "Variables & Data Types",
+    "difficulty": "Medium",
+    "question": "What is the result of `x = (5)`?",
+    "options": [
+      "x is a tuple",
+      "x is an integer",
+      "x is a list",
+      "SyntaxError"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Without a comma, (5) is just an integer in parentheses. A tuple requires a comma: (5,)."
+  },
+  {
+    "id": "py-medium-7e038868",
+    "language": "Python",
+    "topic": "Variables & Data Types",
+    "difficulty": "Medium",
+    "question": "In Python, variables are essentially:",
+    "options": [
+      "Containers storing values",
+      "Pointers/References to objects in memory",
+      "Typed memory blocks",
+      "Constants"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Variables in Python act as names or references pointing to objects in memory."
+  },
+  {
+    "id": "py-medium-505a1751",
+    "language": "Python",
+    "topic": "Variables & Data Types",
+    "difficulty": "Medium",
+    "question": "What is the data type of `{'a', 'b', 'c'}`?",
+    "options": [
+      "dictionary",
+      "list",
+      "tuple",
+      "set"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Curly braces without key-value pairs create a set."
+  },
+  {
+    "id": "py-medium-3413905a",
+    "language": "Python",
+    "topic": "Sequence of Instructions",
+    "difficulty": "Medium",
+    "question": "What is the effect of placing an assignment operation inside an `if` condition, e.g., `if (x = 5):`?",
+    "options": [
+      "x becomes 5 and the block executes",
+      "SyntaxError",
+      "It checks if x equals 5",
+      "x is ignored"
+    ],
+    "correctAnswer": 1,
+    "explanation": "In Python, assignments cannot be used directly inside expressions unless using the walrus operator (:=)."
+  },
+  {
+    "id": "py-medium-14a04f61",
+    "language": "Python",
+    "topic": "Sequence of Instructions",
+    "difficulty": "Medium",
+    "question": "How does a `try-except` block alter the sequence of instructions?",
+    "options": [
+      "It loops the instructions",
+      "It skips instructions randomly",
+      "It jumps to the except block if an error occurs, bypassing the rest of the try block",
+      "It halts execution immediately"
+    ],
+    "correctAnswer": 2,
+    "explanation": "An exception immediately transfers control to the nearest enclosing except block."
+  },
+  {
+    "id": "py-medium-0cbd016c",
+    "language": "Python",
+    "topic": "Sequence of Instructions",
+    "difficulty": "Medium",
+    "question": "In what order are arguments evaluated when passed to a function: `func(A(), B())`?",
+    "options": [
+      "Right to left",
+      "Left to right",
+      "Simultaneously",
+      "Depends on the function"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Python evaluates function arguments sequentially from left to right before calling the function."
+  },
+  {
+    "id": "py-medium-8cc97eac",
+    "language": "Python",
+    "topic": "Sequence of Instructions",
+    "difficulty": "Medium",
+    "question": "What happens if a function definition appears after the function call in a script?",
+    "options": [
+      "It runs normally",
+      "NameError: name is not defined",
+      "The interpreter reorders the code",
+      "SyntaxError"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Because Python executes top-to-bottom, the function must be defined before it is called."
+  },
+  {
+    "id": "py-medium-ee07166b",
+    "language": "Python",
+    "topic": "Sequence of Instructions",
+    "difficulty": "Medium",
+    "question": "How do you split a long logical line into multiple physical lines?",
+    "options": [
+      "Using a forward slash /",
+      "Using a backslash \\",
+      "Using a semicolon ;",
+      "Using a comma ,"
+    ],
+    "correctAnswer": 1,
+    "explanation": "A backslash \\ at the end of a line acts as a line continuation character."
+  },
+  {
+    "id": "py-medium-cfca7335",
+    "language": "Python",
+    "topic": "Sequence of Instructions",
+    "difficulty": "Medium",
+    "question": "What happens to the sequence if `sys.exit()` is called?",
+    "options": [
+      "The script restarts",
+      "The function returns",
+      "The script terminates immediately",
+      "An exception is caught"
+    ],
+    "correctAnswer": 2,
+    "explanation": "sys.exit() raises a SystemExit exception, terminating the sequence."
+  },
+  {
+    "id": "py-medium-6d1b32da",
+    "language": "Python",
+    "topic": "Sequence of Instructions",
+    "difficulty": "Medium",
+    "question": "Does Python support `goto` statements to jump around the sequence?",
+    "options": [
+      "Yes",
+      "No",
+      "Only in Python 2",
+      "Yes, using the `jump` keyword"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Python intentionally does not support goto statements to encourage structured programming."
+  },
+  {
+    "id": "py-medium-8ad1ad76",
+    "language": "Python",
+    "topic": "Sequence of Instructions",
+    "difficulty": "Medium",
+    "question": "What does the `yield` keyword do to the sequence of instructions?",
+    "options": [
+      "Pauses the function, saving its state, to be resumed later",
+      "Stops the program",
+      "Restarts the loop",
+      "Yields CPU time to other threads"
+    ],
+    "correctAnswer": 0,
+    "explanation": "yield turns a function into a generator, allowing it to pause and resume."
+  },
+  {
+    "id": "py-medium-e99da955",
+    "language": "Python",
+    "topic": "Sequence of Instructions",
+    "difficulty": "Medium",
+    "question": "How are default arguments evaluated in a function definition?",
+    "options": [
+      "Every time the function is called",
+      "Only once, when the function is defined",
+      "At runtime",
+      "They are not evaluated"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Default arguments are evaluated once at the time the function is defined (top-to-bottom execution)."
+  },
+  {
+    "id": "py-medium-0e9f35b9",
+    "language": "Python",
+    "topic": "Sequence of Instructions",
+    "difficulty": "Medium",
+    "question": "What is the output of `x=1; y=2; x,y = y,x+y; print(x,y)`?",
+    "options": [
+      "2 3",
+      "2 4",
+      "1 2",
+      "3 3"
+    ],
+    "correctAnswer": 0,
+    "explanation": "The right-hand side is evaluated completely before assignment. y is 2, x+y is 3, so x becomes 2, y becomes 3."
+  },
+  {
+    "id": "py-medium-999e4236",
+    "language": "Python",
+    "topic": "Input & Output Basics",
+    "difficulty": "Medium",
+    "question": "How do you format a string to insert variables using f-strings?",
+    "options": [
+      "'Hello {name}'",
+      "f'Hello {name}'",
+      "format('Hello {name}')",
+      "f'Hello $name'"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Prefixing the string with 'f' allows embedding expressions inside curly braces."
+  },
+  {
+    "id": "py-medium-f16e2a7c",
+    "language": "Python",
+    "topic": "Input & Output Basics",
+    "difficulty": "Medium",
+    "question": "What does `print(f'{3 * 4}')` output?",
+    "options": [
+      "{3 * 4}",
+      "12",
+      "f'12'",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Expressions inside f-string braces are evaluated, resulting in '12'."
+  },
+  {
+    "id": "py-medium-bbbf6857",
+    "language": "Python",
+    "topic": "Input & Output Basics",
+    "difficulty": "Medium",
+    "question": "How can you read all lines from standard input until EOF?",
+    "options": [
+      "sys.stdin.read()",
+      "input().read()",
+      "sys.read()",
+      "input(EOF)"
+    ],
+    "correctAnswer": 0,
+    "explanation": "sys.stdin.read() reads the entire standard input until EOF (Ctrl-D or Ctrl-Z)."
+  },
+  {
+    "id": "py-medium-12f9167b",
+    "language": "Python",
+    "topic": "Input & Output Basics",
+    "difficulty": "Medium",
+    "question": "What is the equivalent of `print('A', end=' ')` in older Python string formatting?",
+    "options": [
+      "sys.stdout.write('A ')",
+      "sys.print('A ')",
+      "output('A ')",
+      "console.log('A ')"
+    ],
+    "correctAnswer": 0,
+    "explanation": "sys.stdout.write() allows direct writing to the output stream without automatic newlines."
+  },
+  {
+    "id": "py-medium-0e9bad35",
+    "language": "Python",
+    "topic": "Input & Output Basics",
+    "difficulty": "Medium",
+    "question": "What happens if you use `input()` and the user hits Enter without typing anything?",
+    "options": [
+      "Raises an error",
+      "Returns None",
+      "Returns an empty string ''",
+      "Returns 0"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Hitting enter immediately returns an empty string."
+  },
+  {
+    "id": "py-medium-90e91a69",
+    "language": "Python",
+    "topic": "Input & Output Basics",
+    "difficulty": "Medium",
+    "question": "How do you format a float `x = 3.14159` to 2 decimal places using an f-string?",
+    "options": [
+      "f'{x:2d}'",
+      "f'{x.2f}'",
+      "f'{x:.2f}'",
+      "f'{x,2f}'"
+    ],
+    "correctAnswer": 2,
+    "explanation": "The format specifier ':.2f' formats the float to 2 decimal places."
+  },
+  {
+    "id": "py-medium-e78f843c",
+    "language": "Python",
+    "topic": "Input & Output Basics",
+    "difficulty": "Medium",
+    "question": "What does the `%s` format specifier do in `'Hello %s' % 'World'`?",
+    "options": [
+      "Converts object to a string using str()",
+      "Converts object to a string using repr()",
+      "Raises an error",
+      "Treats the object as a string literal"
+    ],
+    "correctAnswer": 0,
+    "explanation": "%s is the old-style string formatting placeholder for strings."
+  },
+  {
+    "id": "py-medium-2009365c",
+    "language": "Python",
+    "topic": "Input & Output Basics",
+    "difficulty": "Medium",
+    "question": "Which built-in module provides functions to redirect standard output?",
+    "options": [
+      "os",
+      "sys",
+      "redirect",
+      "io"
+    ],
+    "correctAnswer": 1,
+    "explanation": "The 'sys' module allows reassignment of sys.stdout to redirect print output."
+  },
+  {
+    "id": "py-medium-32e61472",
+    "language": "Python",
+    "topic": "Input & Output Basics",
+    "difficulty": "Medium",
+    "question": "How do you evaluate a string containing a Python expression safely?",
+    "options": [
+      "eval()",
+      "ast.literal_eval()",
+      "exec()",
+      "parse()"
+    ],
+    "correctAnswer": 1,
+    "explanation": "ast.literal_eval() safely evaluates strings containing Python literals, whereas eval() is dangerous."
+  },
+  {
+    "id": "py-medium-9ce7d028",
+    "language": "Python",
+    "topic": "Input & Output Basics",
+    "difficulty": "Medium",
+    "question": "What does `print('a', 'b', file=sys.stderr)` do?",
+    "options": [
+      "Prints 'a b' to the standard error stream",
+      "Prints to a file named 'sys.stderr'",
+      "Throws an error",
+      "Prints in red text"
+    ],
+    "correctAnswer": 0,
+    "explanation": "The 'file' parameter of print() allows you to redirect the output to another file-like object, like stderr."
+  },
+  {
+    "id": "py-medium-9973eebc",
+    "language": "Python",
+    "topic": "Type Conversions",
+    "difficulty": "Medium",
+    "question": "What happens during `int('101', 2)`?",
+    "options": [
+      "Converts '101' to integer 101",
+      "Converts binary string '101' to integer 5",
+      "Throws an error",
+      "Converts integer 101 to binary"
+    ],
+    "correctAnswer": 1,
+    "explanation": "The second argument specifies the base; base 2 converts binary to decimal."
+  },
+  {
+    "id": "py-medium-314b9f2a",
+    "language": "Python",
+    "topic": "Type Conversions",
+    "difficulty": "Medium",
+    "question": "What is the output of `str([1, 2, 3])`?",
+    "options": [
+      "'1, 2, 3'",
+      "'[1, 2, 3]'",
+      "'123'",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "explanation": "str() on a list returns the string representation of the list including brackets."
+  },
+  {
+    "id": "py-medium-f5cc888e",
+    "language": "Python",
+    "topic": "Type Conversions",
+    "difficulty": "Medium",
+    "question": "How do you convert a string like '[1, 2]' into an actual list safely?",
+    "options": [
+      "list('[1, 2]')",
+      "eval('[1, 2]')",
+      "json.loads('[1, 2]')",
+      "set('[1, 2]')"
+    ],
+    "correctAnswer": 2,
+    "explanation": "json.loads() or ast.literal_eval() are safe ways to parse string representations of lists."
+  },
+  {
+    "id": "py-medium-9e316fa1",
+    "language": "Python",
+    "topic": "Type Conversions",
+    "difficulty": "Medium",
+    "question": "What is the output of `bool([0])`?",
+    "options": [
+      "True",
+      "False",
+      "None",
+      "Error"
+    ],
+    "correctAnswer": 0,
+    "explanation": "A list containing elements (even a 0) is not empty, so it is truthy."
+  },
+  {
+    "id": "py-medium-776752d2",
+    "language": "Python",
+    "topic": "Type Conversions",
+    "difficulty": "Medium",
+    "question": "What is the result of `float('inf')`?",
+    "options": [
+      "Infinity",
+      "Throws a ValueError",
+      "0.0",
+      "None"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Python can convert the string 'inf' or 'infinity' to a floating-point infinity representation."
+  },
+  {
+    "id": "py-medium-dcb63a52",
+    "language": "Python",
+    "topic": "Type Conversions",
+    "difficulty": "Medium",
+    "question": "How do you convert an integer to a hexadecimal string?",
+    "options": [
+      "hex(255)",
+      "hexadecimal(255)",
+      "to_hex(255)",
+      "base16(255)"
+    ],
+    "correctAnswer": 0,
+    "explanation": "The hex() function converts an integer to a lowercase hexadecimal string prefixed with '0x'."
+  },
+  {
+    "id": "py-medium-bd66595a",
+    "language": "Python",
+    "topic": "Type Conversions",
+    "difficulty": "Medium",
+    "question": "What does `tuple('abc')` return?",
+    "options": [
+      "('abc',)",
+      "('a', 'b', 'c')",
+      "('a', 'b', 'c',)",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "explanation": "The tuple() constructor iterates over the string and creates a tuple of characters."
+  },
+  {
+    "id": "py-medium-c4e78465",
+    "language": "Python",
+    "topic": "Type Conversions",
+    "difficulty": "Medium",
+    "question": "What is the result of `int(True) + int(False)`?",
+    "options": [
+      "0",
+      "1",
+      "2",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "explanation": "True is 1, False is 0. 1 + 0 = 1."
+  },
+  {
+    "id": "py-medium-32d768f5",
+    "language": "Python",
+    "topic": "Type Conversions",
+    "difficulty": "Medium",
+    "question": "Which function converts a unicode code point back into a character?",
+    "options": [
+      "chr()",
+      "ord()",
+      "char()",
+      "unichr()"
+    ],
+    "correctAnswer": 0,
+    "explanation": "The chr() function takes an integer code point and returns the corresponding character."
+  },
+  {
+    "id": "py-medium-06f205c2",
+    "language": "Python",
+    "topic": "Type Conversions",
+    "difficulty": "Medium",
+    "question": "What happens if you run `int('10.5')`?",
+    "options": [
+      "Returns 10",
+      "Returns 11",
+      "Raises a ValueError",
+      "Returns 10.5"
+    ],
+    "correctAnswer": 2,
+    "explanation": "int() cannot parse strings containing decimal points directly; it expects whole number strings."
+  },
+  {
+    "id": "py-medium-409c873f",
+    "language": "Python",
+    "topic": "Relational Operations",
+    "difficulty": "Medium",
+    "question": "What is the result of `10 == 10.0`?",
+    "options": [
+      "True",
+      "False",
+      "Error",
+      "None"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Python evaluates the numerical values as equal, even though they are different types (int and float)."
+  },
+  {
+    "id": "py-medium-434bde55",
+    "language": "Python",
+    "topic": "Relational Operations",
+    "difficulty": "Medium",
+    "question": "What is the result of `10 is 10.0`?",
+    "options": [
+      "True",
+      "False",
+      "Error",
+      "None"
+    ],
+    "correctAnswer": 1,
+    "explanation": "The 'is' operator checks for object identity. An int and a float are different objects in memory."
+  },
+  {
+    "id": "py-medium-8e3d3e18",
+    "language": "Python",
+    "topic": "Relational Operations",
+    "difficulty": "Medium",
+    "question": "How does Python evaluate `3 < 5 < 7`?",
+    "options": [
+      "(3 < 5) and (5 < 7)",
+      "3 < (5 < 7)",
+      "(3 < 5) < 7",
+      "SyntaxError"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Chained comparisons are implicitly combined with 'and'."
+  },
+  {
+    "id": "py-medium-2f033ec0",
+    "language": "Python",
+    "topic": "Relational Operations",
+    "difficulty": "Medium",
+    "question": "What is the result of `[1, 2] == [1, 2]`?",
+    "options": [
+      "True",
+      "False",
+      "Error",
+      "None"
+    ],
+    "correctAnswer": 0,
+    "explanation": "The '==' operator checks if the contents of the lists are equivalent."
+  },
+  {
+    "id": "py-medium-a13f57ed",
+    "language": "Python",
+    "topic": "Relational Operations",
+    "difficulty": "Medium",
+    "question": "What is the result of `[1, 2] is [1, 2]`?",
+    "options": [
+      "True",
+      "False",
+      "Error",
+      "None"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Each list literal creates a new object in memory, so they do not share the same identity."
+  },
+  {
+    "id": "py-medium-9c03ceb9",
+    "language": "Python",
+    "topic": "Relational Operations",
+    "difficulty": "Medium",
+    "question": "Which comparison is valid and evaluates to True?",
+    "options": [
+      "'b' > 'a'",
+      "'a' > 'b'",
+      "'a' == 'A'",
+      "10 > '5'"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Strings are compared by Unicode points. 'b' (98) is greater than 'a' (97)."
+  },
+  {
+    "id": "py-medium-34872f93",
+    "language": "Python",
+    "topic": "Relational Operations",
+    "difficulty": "Medium",
+    "question": "What happens if you compare an integer and a string, like `5 < '10'`?",
+    "options": [
+      "True",
+      "False",
+      "Raises a TypeError",
+      "None"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Python 3 does not allow ordering comparisons (<, >) between different types like int and str."
+  },
+  {
+    "id": "py-medium-84696180",
+    "language": "Python",
+    "topic": "Relational Operations",
+    "difficulty": "Medium",
+    "question": "What does `math.isclose(a, b)` do?",
+    "options": [
+      "Checks if a and b have close memory addresses",
+      "Checks if a and b are equal within a small tolerance",
+      "Checks if a is less than b",
+      "Rounds a to b"
+    ],
+    "correctAnswer": 1,
+    "explanation": "math.isclose() is used for safe floating-point comparisons to account for precision issues."
+  },
+  {
+    "id": "py-medium-8d1d8719",
+    "language": "Python",
+    "topic": "Relational Operations",
+    "difficulty": "Medium",
+    "question": "What is the output of `'abc' >= 'abc'`?",
+    "options": [
+      "True",
+      "False",
+      "Error",
+      "None"
+    ],
+    "correctAnswer": 0,
+    "explanation": "They are identical, so 'greater than or equal to' evaluates to True."
+  },
+  {
+    "id": "py-medium-4100049d",
+    "language": "Python",
+    "topic": "Relational Operations",
+    "difficulty": "Medium",
+    "question": "What is the result of `(1, 2, 3) < (1, 2, 4)`?",
+    "options": [
+      "True",
+      "False",
+      "TypeError",
+      "SyntaxError"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Tuples are compared element by element. 3 < 4 is True, so the whole expression is True."
+  },
+  {
+    "id": "py-medium-55faeead",
+    "language": "Python",
+    "topic": "Logical Operators",
+    "difficulty": "Medium",
+    "question": "What is the result of `'hello' and 'world'`?",
+    "options": [
+      "'hello'",
+      "'world'",
+      "True",
+      "False"
+    ],
+    "correctAnswer": 1,
+    "explanation": "'and' returns the last evaluated truthy value, which is 'world' after evaluating both."
+  },
+  {
+    "id": "py-medium-7dad0ce7",
+    "language": "Python",
+    "topic": "Logical Operators",
+    "difficulty": "Medium",
+    "question": "What is the result of `'' or 'fallback'`?",
+    "options": [
+      "''",
+      "'fallback'",
+      "True",
+      "False"
+    ],
+    "correctAnswer": 1,
+    "explanation": "'' is falsy, so 'or' returns the second operand 'fallback'."
+  },
+  {
+    "id": "py-medium-6369598f",
+    "language": "Python",
+    "topic": "Logical Operators",
+    "difficulty": "Medium",
+    "question": "How is `not 1 == 2` evaluated?",
+    "options": [
+      "(not 1) == 2",
+      "not (1 == 2)",
+      "not 1 (=) 2",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Comparison operators have higher precedence than 'not', so it evaluates as not (1 == 2)."
+  },
+  {
+    "id": "py-medium-5a32f430",
+    "language": "Python",
+    "topic": "Logical Operators",
+    "difficulty": "Medium",
+    "question": "What is the output of `any([False, 0, ''])`?",
+    "options": [
+      "True",
+      "False",
+      "0",
+      "''"
+    ],
+    "correctAnswer": 1,
+    "explanation": "any() returns True if at least one element is truthy. Since all are falsy, it returns False."
+  },
+  {
+    "id": "py-medium-f8ec5799",
+    "language": "Python",
+    "topic": "Logical Operators",
+    "difficulty": "Medium",
+    "question": "What is the output of `all([True, 1, 'abc'])`?",
+    "options": [
+      "True",
+      "False",
+      "1",
+      "'abc'"
+    ],
+    "correctAnswer": 0,
+    "explanation": "all() returns True if ALL elements are truthy."
+  },
+  {
+    "id": "py-medium-d90dacfe",
+    "language": "Python",
+    "topic": "Logical Operators",
+    "difficulty": "Medium",
+    "question": "What happens in `x = 5 > 3 or 10 / 0`?",
+    "options": [
+      "ZeroDivisionError",
+      "x is True",
+      "x is False",
+      "x is 10"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Due to short-circuiting, 5 > 3 is True, so 'or' stops and never evaluates 10 / 0."
+  },
+  {
+    "id": "py-medium-9a63d0cd",
+    "language": "Python",
+    "topic": "Logical Operators",
+    "difficulty": "Medium",
+    "question": "Which operator does bitwise AND instead of logical AND?",
+    "options": [
+      "and",
+      "&&",
+      "&",
+      "%"
+    ],
+    "correctAnswer": 2,
+    "explanation": "The single ampersand & is the bitwise AND operator."
+  },
+  {
+    "id": "py-medium-180eed9a",
+    "language": "Python",
+    "topic": "Logical Operators",
+    "difficulty": "Medium",
+    "question": "What is the result of `not not True`?",
+    "options": [
+      "True",
+      "False",
+      "SyntaxError",
+      "None"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Double negation returns the original boolean value."
+  },
+  {
+    "id": "py-medium-366eed5a",
+    "language": "Python",
+    "topic": "Logical Operators",
+    "difficulty": "Medium",
+    "question": "Can you use logical operators on custom objects?",
+    "options": [
+      "Yes",
+      "No",
+      "Only if they inherit from bool",
+      "Only 'not'"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Yes, by default objects are truthy, and you can define __bool__() to customize behavior."
+  },
+  {
+    "id": "py-medium-345f664b",
+    "language": "Python",
+    "topic": "Logical Operators",
+    "difficulty": "Medium",
+    "question": "What does `bool(None or [])` evaluate to?",
+    "options": [
+      "True",
+      "False",
+      "None",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Both None and [] are falsy. 'or' returns [], and bool([]) is False."
+  },
+  {
+    "id": "py-medium-f310505e",
+    "language": "Python",
+    "topic": "Conditional Statements",
+    "difficulty": "Medium",
+    "question": "What does the expression `x = 'Yes' if condition else 'No'` represent?",
+    "options": [
+      "A syntax error",
+      "A ternary conditional expression",
+      "A while loop",
+      "A nested if"
+    ],
+    "correctAnswer": 1,
+    "explanation": "This is Python's concise ternary operator syntax."
+  },
+  {
+    "id": "py-medium-c28be8ce",
+    "language": "Python",
+    "topic": "Conditional Statements",
+    "difficulty": "Medium",
+    "question": "What happens if you have an `if` statement but no indented code block?",
+    "options": [
+      "It is ignored",
+      "It raises an IndentationError",
+      "It acts like a pass statement",
+      "It executes the next unindented line"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Python requires an indented block after a colon. If missing, it raises an IndentationError."
+  },
+  {
+    "id": "py-medium-5a115518",
+    "language": "Python",
+    "topic": "Conditional Statements",
+    "difficulty": "Medium",
+    "question": "How can you execute multiple statements on a single line under an `if`?",
+    "options": [
+      "Using commas",
+      "Using semicolons",
+      "Using ampersands",
+      "It's impossible"
+    ],
+    "correctAnswer": 1,
+    "explanation": "You can separate statements with semicolons: `if True: x = 1; y = 2`, though it's discouraged."
+  },
+  {
+    "id": "py-medium-52ce82e4",
+    "language": "Python",
+    "topic": "Conditional Statements",
+    "difficulty": "Medium",
+    "question": "What is the output of:\nif 0:\n  print('A')\nelif {}:\n  print('B')\nelse:\n  print('C')",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "Error"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Both 0 and an empty dict {} are falsy, so it falls through to 'C'."
+  },
+  {
+    "id": "py-medium-106e4ebf",
+    "language": "Python",
+    "topic": "Conditional Statements",
+    "difficulty": "Medium",
+    "question": "What structural feature replaced long if-elif-else chains in Python 3.10?",
+    "options": [
+      "switch statements",
+      "match-case (structural pattern matching)",
+      "select-case",
+      "goto statements"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Python 3.10 introduced the `match` statement for pattern matching."
+  },
+  {
+    "id": "py-medium-aada6449",
+    "language": "Python",
+    "topic": "Conditional Statements",
+    "difficulty": "Medium",
+    "question": "Can the condition in an `if` statement be a function call?",
+    "options": [
+      "Yes, if the function returns a value",
+      "No",
+      "Yes, but only if it returns a boolean",
+      "Only if the function has no arguments"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Yes, the returned value will be evaluated for truthiness."
+  },
+  {
+    "id": "py-medium-27e0b15d",
+    "language": "Python",
+    "topic": "Conditional Statements",
+    "difficulty": "Medium",
+    "question": "In an if-elif chain, when does the first `elif` condition get evaluated?",
+    "options": [
+      "At the same time as `if`",
+      "Only if the preceding `if` condition was False",
+      "Always",
+      "Only if the `else` block is missing"
+    ],
+    "correctAnswer": 1,
+    "explanation": "elif is only evaluated if all preceding conditions were False."
+  },
+  {
+    "id": "py-medium-93e95cb1",
+    "language": "Python",
+    "topic": "Conditional Statements",
+    "difficulty": "Medium",
+    "question": "What is wrong with `if x = 10:`?",
+    "options": [
+      "Missing parentheses",
+      "Uses assignment '=' instead of equality '=='",
+      "Nothing is wrong",
+      "x must be defined inside the if"
+    ],
+    "correctAnswer": 1,
+    "explanation": "The single '=' is for assignment and causes a SyntaxError in an if condition."
+  },
+  {
+    "id": "py-medium-3489d4f2",
+    "language": "Python",
+    "topic": "Conditional Statements",
+    "difficulty": "Medium",
+    "question": "What is the purpose of checking `if my_list:`?",
+    "options": [
+      "Checks if the list exists in memory",
+      "Checks if the list is not empty",
+      "Checks if the list is a list type",
+      "SyntaxError"
+    ],
+    "correctAnswer": 1,
+    "explanation": "An empty list is falsy, so `if my_list:` efficiently checks if it contains elements."
+  },
+  {
+    "id": "py-medium-a0ead548",
+    "language": "Python",
+    "topic": "Conditional Statements",
+    "difficulty": "Medium",
+    "question": "Is it possible to have an `else` block without an `if`?",
+    "options": [
+      "Yes, in try/except and loops",
+      "No, never",
+      "Yes, as a standalone block",
+      "Only in functions"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Yes, `else` can also be used in `for`/`while` loops and `try`/`except` blocks."
+  },
+  {
+    "id": "py-medium-9ef46cfc",
+    "language": "Python",
+    "topic": "Nested Conditional Statements",
+    "difficulty": "Medium",
+    "question": "What problem does excessive nesting of conditionals cause?",
+    "options": [
+      "Memory leaks",
+      "Slow execution speed",
+      "Poor code readability and maintainability",
+      "SyntaxErrors"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Deep nesting makes code difficult to follow and maintain."
+  },
+  {
+    "id": "py-medium-30f74ed2",
+    "language": "Python",
+    "topic": "Nested Conditional Statements",
+    "difficulty": "Medium",
+    "question": "How can you often avoid a nested `if`?",
+    "options": [
+      "By using a `while` loop",
+      "By using the `and` operator to combine conditions",
+      "By using the `pass` statement",
+      "By using global variables"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Combining `if A:` and `if B:` into `if A and B:` reduces nesting."
+  },
+  {
+    "id": "py-medium-359cfbaf",
+    "language": "Python",
+    "topic": "Nested Conditional Statements",
+    "difficulty": "Medium",
+    "question": "What happens if an `else` clause is misaligned (wrong indentation) in nested conditionals?",
+    "options": [
+      "It runs normally",
+      "It raises an IndentationError or attaches to the wrong `if`",
+      "It attaches to both `if`s",
+      "The code crashes at runtime"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Indentation dictates structure; a misaligned else either causes an error or attaches to a different if, changing logic."
+  },
+  {
+    "id": "py-medium-46521bec",
+    "language": "Python",
+    "topic": "Nested Conditional Statements",
+    "difficulty": "Medium",
+    "question": "What is the output of:\nx = 5\nif x > 0:\n  if x % 2 == 0:\n    print('A')\nelse:\n  print('B')",
+    "options": [
+      "A",
+      "B",
+      "Nothing",
+      "Error"
+    ],
+    "correctAnswer": 2,
+    "explanation": "x > 0 is True, but x % 2 == 0 is False. There is no inner else, so nothing prints."
+  },
+  {
+    "id": "py-medium-fde1a7c0",
+    "language": "Python",
+    "topic": "Nested Conditional Statements",
+    "difficulty": "Medium",
+    "question": "In a nested `if`, can the inner block modify variables used in the outer block?",
+    "options": [
+      "Yes",
+      "No",
+      "Only if declared global",
+      "Only if they are lists"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Yes, variable scope in Python is at the function level, not block level."
+  },
+  {
+    "id": "py-medium-85c7af98",
+    "language": "Python",
+    "topic": "Nested Conditional Statements",
+    "difficulty": "Medium",
+    "question": "Is it possible to nest an `if` inside a one-line ternary expression?",
+    "options": [
+      "Yes, e.g., `A if cond1 else (B if cond2 else C)`",
+      "No, ternary expressions cannot be nested",
+      "Yes, but only twice",
+      "No, it causes a SyntaxError"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Ternary operators can be nested, though it is often discouraged for readability."
+  },
+  {
+    "id": "py-medium-942cdd31",
+    "language": "Python",
+    "topic": "Nested Conditional Statements",
+    "difficulty": "Medium",
+    "question": "When writing a nested conditional, which condition should ideally be placed on the outside?",
+    "options": [
+      "The most complex one",
+      "The one most likely to be False (fail fast)",
+      "The one most likely to be True",
+      "It doesn't matter"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Putting the condition most likely to fail on the outside prevents unnecessary evaluation of inner blocks."
+  },
+  {
+    "id": "py-medium-05621ec1",
+    "language": "Python",
+    "topic": "Nested Conditional Statements",
+    "difficulty": "Medium",
+    "question": "What is the output of:\nif True:\n  if False:\n    print(1)\n  print(2)",
+    "options": [
+      "1\n2",
+      "2",
+      "Nothing",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "explanation": "The inner if is False so 1 is skipped, but 2 is outside the inner if (aligned with it), so it prints."
+  },
+  {
+    "id": "py-medium-f99404fc",
+    "language": "Python",
+    "topic": "Nested Conditional Statements",
+    "difficulty": "Medium",
+    "question": "Can you use `elif` to replace a nested `else: if:`?",
+    "options": [
+      "Yes",
+      "No",
+      "Only for integers",
+      "Only if there are 3 conditions"
+    ],
+    "correctAnswer": 0,
+    "explanation": "`elif` is specifically designed to prevent the deep nesting caused by `else: if:` structures."
+  },
+  {
+    "id": "py-medium-c34f6555",
+    "language": "Python",
+    "topic": "Nested Conditional Statements",
+    "difficulty": "Medium",
+    "question": "What is 'Guard Clause' (or Early Return) refactoring?",
+    "options": [
+      "Adding more nested ifs to protect variables",
+      "Inverting conditions and returning early to remove nested ifs",
+      "Using try/except instead of if",
+      "Deleting else blocks"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Guard clauses check for failure conditions and return early, keeping the 'happy path' un-nested."
+  },
+  {
+    "id": "py-medium-e768b453",
+    "language": "Python",
+    "topic": "Loops",
+    "difficulty": "Medium",
+    "question": "What does `enumerate(my_list)` do in a `for` loop?",
+    "options": [
+      "Sorts the list",
+      "Provides both the index and the value during iteration",
+      "Counts the number of elements",
+      "Removes duplicates"
+    ],
+    "correctAnswer": 1,
+    "explanation": "enumerate() yields pairs containing a count (from start, which defaults to 0) and a value yielded by the iterable argument."
+  },
+  {
+    "id": "py-medium-5c1295b6",
+    "language": "Python",
+    "topic": "Loops",
+    "difficulty": "Medium",
+    "question": "What is the output of:\nfor x in [1, 2, 3]:\n  pass\nprint(x)",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "NameError"
+    ],
+    "correctAnswer": 2,
+    "explanation": "The loop variable `x` retains its last value (3) even after the loop terminates."
+  },
+  {
+    "id": "py-medium-ff37edb1",
+    "language": "Python",
+    "topic": "Loops",
+    "difficulty": "Medium",
+    "question": "How do you loop over a dictionary to get both keys and values?",
+    "options": [
+      "for k, v in dict:",
+      "for k, v in dict.keys():",
+      "for k, v in dict.items():",
+      "for k, v in dict.values():"
+    ],
+    "correctAnswer": 2,
+    "explanation": "The items() method returns a view object of the dictionary's key-value tuple pairs."
+  },
+  {
+    "id": "py-medium-8a22e072",
+    "language": "Python",
+    "topic": "Loops",
+    "difficulty": "Medium",
+    "question": "What happens if you modify a list while iterating over it with a `for` loop?",
+    "options": [
+      "It works perfectly",
+      "It causes a SyntaxError",
+      "It can lead to unexpected behavior or skipped elements",
+      "The loop stops immediately"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Modifying the length or order of a list while iterating over it directly messes up the internal index tracker."
+  },
+  {
+    "id": "py-medium-4215f63a",
+    "language": "Python",
+    "topic": "Loops",
+    "difficulty": "Medium",
+    "question": "How can you safely remove elements from a list while looping over it?",
+    "options": [
+      "Iterate over a copy of the list (e.g., `for item in lst[:]:`)",
+      "Use a while loop",
+      "Use list comprehensions",
+      "All of the above"
+    ],
+    "correctAnswer": 3,
+    "explanation": "Iterating over a copy, using a while loop with careful index management, or building a new list via comprehension are all safe."
+  },
+  {
+    "id": "py-medium-721e2adc",
+    "language": "Python",
+    "topic": "Loops",
+    "difficulty": "Medium",
+    "question": "What is list comprehension?",
+    "options": [
+      "A way to comment loops",
+      "A concise way to create lists using a single line of loop syntax",
+      "A function that summarizes a list",
+      "An error message"
+    ],
+    "correctAnswer": 1,
+    "explanation": "List comprehensions provide a concise way to create lists: `[x for x in iterable if condition]`."
+  },
+  {
+    "id": "py-medium-4897299f",
+    "language": "Python",
+    "topic": "Loops",
+    "difficulty": "Medium",
+    "question": "What does `range(10, 0, -1)` generate?",
+    "options": [
+      "0 to 10",
+      "1 to 10",
+      "10 down to 1",
+      "Error"
+    ],
+    "correctAnswer": 2,
+    "explanation": "The third argument is the step. It counts backwards from 10 down to 1 (exclusive of 0)."
+  },
+  {
+    "id": "py-medium-0eaa5dcd",
+    "language": "Python",
+    "topic": "Loops",
+    "difficulty": "Medium",
+    "question": "What is the output of:\ni = 0\nwhile i < 3:\n  i += 1\nelse:\n  print(i)",
+    "options": [
+      "0",
+      "2",
+      "3",
+      "Nothing"
+    ],
+    "correctAnswer": 2,
+    "explanation": "The while loop finishes normally (no break), so the else block executes, printing the final value of i, which is 3."
+  },
+  {
+    "id": "py-medium-328d30a7",
+    "language": "Python",
+    "topic": "Loops",
+    "difficulty": "Medium",
+    "question": "Which built-in function pairs elements from two lists simultaneously in a `for` loop?",
+    "options": [
+      "pair()",
+      "zip()",
+      "combine()",
+      "join()"
+    ],
+    "correctAnswer": 1,
+    "explanation": "zip() takes iterables and aggregates them in a tuple, stopping when the shortest is exhausted."
+  },
+  {
+    "id": "py-medium-58c0b4d6",
+    "language": "Python",
+    "topic": "Loops",
+    "difficulty": "Medium",
+    "question": "Is it possible to use a `for` loop without assigning the loop variable?",
+    "options": [
+      "No, it's required",
+      "Yes, conventionally by using `_` (underscore)",
+      "Yes, by omitting the variable completely",
+      "Only in while loops"
+    ],
+    "correctAnswer": 1,
+    "explanation": "If you don't need the value, convention dictates using `_` as the throwaway variable name: `for _ in range(5):`."
+  },
+  {
+    "id": "py-medium-3a060099",
+    "language": "Python",
+    "topic": "String Methods",
+    "difficulty": "Medium",
+    "question": "What does `'ab'.zfill(4)` return?",
+    "options": [
+      "'abab'",
+      "'  ab'",
+      "'00ab'",
+      "'ab00'"
+    ],
+    "correctAnswer": 2,
+    "explanation": "zfill() pads the string on the left with zeros to reach the specified width."
+  },
+  {
+    "id": "py-medium-5ccf7882",
+    "language": "Python",
+    "topic": "String Methods",
+    "difficulty": "Medium",
+    "question": "Which method checks if a string ends with a specific suffix?",
+    "options": [
+      "endswith()",
+      "ends_with()",
+      "last()",
+      "suffix()"
+    ],
+    "correctAnswer": 0,
+    "explanation": "The endswith() method returns True if the string ends with the specified value."
+  },
+  {
+    "id": "py-medium-0f9b3216",
+    "language": "Python",
+    "topic": "String Methods",
+    "difficulty": "Medium",
+    "question": "What does `'hello'.count('l')` return?",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "explanation": "The count() method returns the number of non-overlapping occurrences of substring 'l'."
+  },
+  {
+    "id": "py-medium-138d4b1c",
+    "language": "Python",
+    "topic": "String Methods",
+    "difficulty": "Medium",
+    "question": "How is `find()` different from `index()`?",
+    "options": [
+      "They are identical",
+      "`index()` raises a ValueError if not found; `find()` returns -1",
+      "`find()` raises a ValueError if not found; `index()` returns -1",
+      "`find()` is for lists, `index()` is for strings"
+    ],
+    "correctAnswer": 1,
+    "explanation": "`index()` is stricter and crashes if the substring is missing, while `find()` fails silently returning -1."
+  },
+  {
+    "id": "py-medium-de2261da",
+    "language": "Python",
+    "topic": "String Methods",
+    "difficulty": "Medium",
+    "question": "What is the output of `' a b '.strip()`?",
+    "options": [
+      "'ab'",
+      "'a b'",
+      "' a b '",
+      "'a b'"
+    ],
+    "correctAnswer": 1,
+    "explanation": "strip() only removes leading and trailing whitespace, leaving internal spaces intact."
+  },
+  {
+    "id": "py-medium-b43c4c26",
+    "language": "Python",
+    "topic": "String Methods",
+    "difficulty": "Medium",
+    "question": "What does `'Title Case'.istitle()` evaluate to?",
+    "options": [
+      "True",
+      "False",
+      "Error",
+      "None"
+    ],
+    "correctAnswer": 0,
+    "explanation": "istitle() returns True if the string follows title casing (each word capitalized)."
+  },
+  {
+    "id": "py-medium-aa902937",
+    "language": "Python",
+    "topic": "String Methods",
+    "difficulty": "Medium",
+    "question": "What does `'a,b,c'.partition(',')` return?",
+    "options": [
+      "['a', 'b', 'c']",
+      "('a', ',', 'b,c')",
+      "('a', 'b', 'c')",
+      "'a b c'"
+    ],
+    "correctAnswer": 1,
+    "explanation": "partition() returns a 3-tuple containing the part before the separator, the separator itself, and the part after."
+  },
+  {
+    "id": "py-medium-f7c66b9a",
+    "language": "Python",
+    "topic": "String Methods",
+    "difficulty": "Medium",
+    "question": "Which method is used to center a string within a specific width using a fill character?",
+    "options": [
+      "center()",
+      "middle()",
+      "align()",
+      "justify()"
+    ],
+    "correctAnswer": 0,
+    "explanation": "The center(width, fillchar) method centers the string."
+  },
+  {
+    "id": "py-medium-bb969429",
+    "language": "Python",
+    "topic": "String Methods",
+    "difficulty": "Medium",
+    "question": "What does `'abc'.isalpha()` do?",
+    "options": [
+      "Checks if all characters are letters",
+      "Checks if it is alphanumeric",
+      "Checks if it is lowercase",
+      "Converts to alphabet"
+    ],
+    "correctAnswer": 0,
+    "explanation": "isalpha() returns True if all characters in the string are alphabetic and there is at least one character."
+  },
+  {
+    "id": "py-medium-ea1b22e4",
+    "language": "Python",
+    "topic": "String Methods",
+    "difficulty": "Medium",
+    "question": "What is the output of `'Hello'.swapcase()`?",
+    "options": [
+      "'hELLO'",
+      "'hello'",
+      "'HELLO'",
+      "'olleH'"
+    ],
+    "correctAnswer": 0,
+    "explanation": "swapcase() converts uppercase to lowercase and vice versa."
+  },
+  {
+    "id": "py-medium-a9e1013e",
+    "language": "Python",
+    "topic": "Nested Loops",
+    "difficulty": "Medium",
+    "question": "What is the time complexity (Big O) of traversing an NxN grid using a double nested loop?",
+    "options": [
+      "O(N)",
+      "O(N log N)",
+      "O(N^2)",
+      "O(1)"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Running a loop N times, inside another loop running N times, results in O(N*N) = O(N^2) complexity."
+  },
+  {
+    "id": "py-medium-4412ac72",
+    "language": "Python",
+    "topic": "Nested Loops",
+    "difficulty": "Medium",
+    "question": "How do you completely exit out of two nested loops at once using standard control flow?",
+    "options": [
+      "`break 2`",
+      "`exit all`",
+      "Use a boolean flag or a function `return`",
+      "Just one `break` is enough"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Python has no labelled break. You must use a flag variable to trigger outer breaks, or return from a function, or raise an Exception."
+  },
+  {
+    "id": "py-medium-4d855cd1",
+    "language": "Python",
+    "topic": "Nested Loops",
+    "difficulty": "Medium",
+    "question": "What does the following print?\nfor i in range(2):\n  for j in range(2):\n    if i == j: break\n    print(i, j)",
+    "options": [
+      "1 0",
+      "0 0\n1 1",
+      "0 1",
+      "Nothing"
+    ],
+    "correctAnswer": 0,
+    "explanation": "i=0, j=0 (breaks). i=1, j=0 (prints '1 0'). i=1, j=1 (breaks)."
+  },
+  {
+    "id": "py-medium-0bad72e4",
+    "language": "Python",
+    "topic": "Nested Loops",
+    "difficulty": "Medium",
+    "question": "If you have a nested loop iterating over a 3D array (list of lists of lists), how many `for` loops are typical?",
+    "options": [
+      "1",
+      "2",
+      "3",
+      "4"
+    ],
+    "correctAnswer": 2,
+    "explanation": "A 3D structure generally requires 3 nested loops to traverse all individual elements."
+  },
+  {
+    "id": "py-medium-e8a2530f",
+    "language": "Python",
+    "topic": "Nested Loops",
+    "difficulty": "Medium",
+    "question": "Can you use list comprehension to create a nested loop?",
+    "options": [
+      "Yes, e.g., `[x*y for x in A for y in B]`",
+      "No, list comprehensions only support single loops",
+      "Yes, but only for numbers",
+      "Only using the `nest` keyword"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Multiple `for` clauses in a list comprehension act like nested loops."
+  },
+  {
+    "id": "py-medium-3e669393",
+    "language": "Python",
+    "topic": "Nested Loops",
+    "difficulty": "Medium",
+    "question": "In `[x*y for x in A for y in B]`, which loop is the outer loop?",
+    "options": [
+      "The first one (`for x in A`)",
+      "The second one (`for y in B`)",
+      "They execute in parallel",
+      "It randomly decides"
+    ],
+    "correctAnswer": 0,
+    "explanation": "List comprehensions process loops from left to right: the left-most is the outer loop."
+  },
+  {
+    "id": "py-medium-0b63ee8e",
+    "language": "Python",
+    "topic": "Nested Loops",
+    "difficulty": "Medium",
+    "question": "What is the danger of nesting a database query inside a loop?",
+    "options": [
+      "It causes syntax errors",
+      "It causes the N+1 query problem, leading to terrible performance",
+      "It deletes data",
+      "It creates an infinite loop"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Executing a query inside a loop hits the database repeatedly, drastically slowing down the app (N+1 problem)."
+  },
+  {
+    "id": "py-medium-d906b231",
+    "language": "Python",
+    "topic": "Nested Loops",
+    "difficulty": "Medium",
+    "question": "What is the output of:\nmatrix=[[1,2],[3,4]]\nfor row in matrix:\n  print(row[0])",
+    "options": [
+      "1\n2",
+      "1\n3",
+      "3\n4",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "explanation": "It prints the first element of each inner list: 1, then 3."
+  },
+  {
+    "id": "py-medium-00dad70e",
+    "language": "Python",
+    "topic": "Nested Loops",
+    "difficulty": "Medium",
+    "question": "How many times does 'Hi' print?\nfor i in [1,2]:\n  pass\n  for j in [1,2]:\n    print('Hi')",
+    "options": [
+      "2",
+      "4",
+      "0",
+      "8"
+    ],
+    "correctAnswer": 1,
+    "explanation": "The pass statement does nothing. Outer runs 2 times, inner runs 2 times. 2 * 2 = 4."
+  },
+  {
+    "id": "py-medium-2363d467",
+    "language": "Python",
+    "topic": "Nested Loops",
+    "difficulty": "Medium",
+    "question": "Can you nest a `while` loop inside a `for` loop and vice-versa?",
+    "options": [
+      "Yes, any loop can be nested within any other",
+      "No, they must be the same type",
+      "Yes, but `while` must be the outer loop",
+      "Yes, but `for` must be the outer loop"
+    ],
+    "correctAnswer": 0,
+    "explanation": "There are no restrictions on mixing loop types in nesting."
+  },
+  {
+    "id": "py-medium-bed4afe0",
+    "language": "Python",
+    "topic": "Loop Control Statements",
+    "difficulty": "Medium",
+    "question": "What happens if `continue` is the last statement in a loop body?",
+    "options": [
+      "It causes an error",
+      "It effectively does nothing, as the loop would reiterate anyway",
+      "It breaks the loop",
+      "It creates an infinite loop"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Since it's at the end of the block, jumping to the next iteration is what happens anyway, rendering it redundant."
+  },
+  {
+    "id": "py-medium-07717bef",
+    "language": "Python",
+    "topic": "Loop Control Statements",
+    "difficulty": "Medium",
+    "question": "In a `while True:` loop, what is the best way to prevent an infinite loop?",
+    "options": [
+      "Use the `stop` keyword",
+      "Use an `if` condition with a `break`",
+      "Use `continue`",
+      "Do nothing, Python stops it automatically"
+    ],
+    "correctAnswer": 1,
+    "explanation": "You must manually check a termination condition and execute `break`."
+  },
+  {
+    "id": "py-medium-dcf1e97c",
+    "language": "Python",
+    "topic": "Loop Control Statements",
+    "difficulty": "Medium",
+    "question": "What does the `else` block on a `for` loop do if the loop is empty (e.g., `for i in []:`)?",
+    "options": [
+      "It raises an error",
+      "It is skipped",
+      "It executes immediately",
+      "It enters an infinite loop"
+    ],
+    "correctAnswer": 2,
+    "explanation": "If the iterable is empty, the loop completes without hitting a `break`, so the `else` block executes immediately."
+  },
+  {
+    "id": "py-medium-bd96b70a",
+    "language": "Python",
+    "topic": "Loop Control Statements",
+    "difficulty": "Medium",
+    "question": "Can `break` jump out of multiple nested loops at once?",
+    "options": [
+      "Yes, using `break all`",
+      "Yes, using `break 2`",
+      "No, it only exits the innermost loop",
+      "No, it exits the function"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Python's `break` only terminates the loop it is directly inside."
+  },
+  {
+    "id": "py-medium-84525166",
+    "language": "Python",
+    "topic": "Loop Control Statements",
+    "difficulty": "Medium",
+    "question": "What is the output of:\nfor i in range(5):\n  if i == 3: pass\n  print(i, end='')",
+    "options": [
+      "012",
+      "0124",
+      "01234",
+      "Error"
+    ],
+    "correctAnswer": 2,
+    "explanation": "`pass` does nothing, so it doesn't skip the print. All numbers 0 to 4 are printed."
+  },
+  {
+    "id": "py-medium-1d5c8558",
+    "language": "Python",
+    "topic": "Loop Control Statements",
+    "difficulty": "Medium",
+    "question": "What is a common use for the `pass` statement?",
+    "options": [
+      "Exiting a loop early",
+      "Creating an empty class or function structure (stubbing) without causing a syntax error",
+      "Skipping to the next iteration",
+      "Throwing an exception"
+    ],
+    "correctAnswer": 1,
+    "explanation": "It is often used as a placeholder during development to make empty blocks syntactically valid."
+  },
+  {
+    "id": "py-medium-c637ae30",
+    "language": "Python",
+    "topic": "Loop Control Statements",
+    "difficulty": "Medium",
+    "question": "What is the output of:\nfor i in range(3):\n  break\nelse:\n  print('Done')",
+    "options": [
+      "Done",
+      "Nothing",
+      "0",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "explanation": "The loop hits `break` immediately. Because it was broken, the `else` block does NOT execute."
+  },
+  {
+    "id": "py-medium-0f5b6bee",
+    "language": "Python",
+    "topic": "Loop Control Statements",
+    "difficulty": "Medium",
+    "question": "If a `try` block inside a loop raises an exception, does `continue` inside the `except` block work?",
+    "options": [
+      "Yes, it jumps to the next loop iteration",
+      "No, it raises a SyntaxError",
+      "It jumps out of the loop",
+      "It restarts the try block"
+    ],
+    "correctAnswer": 0,
+    "explanation": "`continue` is perfectly valid inside an `except` block to ignore the error and proceed to the next iteration."
+  },
+  {
+    "id": "py-medium-f3948bc4",
+    "language": "Python",
+    "topic": "Loop Control Statements",
+    "difficulty": "Medium",
+    "question": "What happens to the loop index variable after a `break`?",
+    "options": [
+      "It is set to None",
+      "It is deleted",
+      "It retains its value from the moment the break occurred",
+      "It increments by 1"
+    ],
+    "correctAnswer": 2,
+    "explanation": "The loop variable retains its current value, which can be inspected after the loop."
+  },
+  {
+    "id": "py-medium-a284e239",
+    "language": "Python",
+    "topic": "Loop Control Statements",
+    "difficulty": "Medium",
+    "question": "Does Python have a `goto` statement for loop control?",
+    "options": [
+      "Yes, imported from the os module",
+      "Yes, natively",
+      "No, Python lacks a goto statement",
+      "Yes, but only in Python 2"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Python deliberately omits `goto` to enforce structured programming patterns."
+  },
+  {
+    "id": "py-medium-e544781b",
+    "language": "Python",
+    "topic": "Comparing Strings & Naming Variables",
+    "difficulty": "Medium",
+    "question": "Why is it dangerous to name a variable `list` or `str` in Python?",
+    "options": [
+      "It causes a SyntaxError",
+      "It overrides the built-in functions, causing errors when you try to use them",
+      "It crashes the OS",
+      "Python automatically renames them"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Shadowing built-ins means you lose access to the original functions/types within that scope."
+  },
+  {
+    "id": "py-medium-dc10480e",
+    "language": "Python",
+    "topic": "Comparing Strings & Naming Variables",
+    "difficulty": "Medium",
+    "question": "Which variable name follows PEP 8 conventions for a constant?",
+    "options": [
+      "MAX_CONNECTIONS",
+      "max_connections",
+      "MaxConnections",
+      "maxConnections"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Constants are typically written in ALL_CAPS with underscores."
+  },
+  {
+    "id": "py-medium-40dcca0f",
+    "language": "Python",
+    "topic": "Comparing Strings & Naming Variables",
+    "difficulty": "Medium",
+    "question": "What does a variable name starting with a single underscore (e.g., `_internal`) signify?",
+    "options": [
+      "It is a truly private variable",
+      "It is a weak internal use indicator (convention only)",
+      "It is a global variable",
+      "It is a syntax error"
+    ],
+    "correctAnswer": 1,
+    "explanation": "It's a convention indicating the name is meant for internal use, but Python doesn't enforce strict privacy."
+  },
+  {
+    "id": "py-medium-4e850f09",
+    "language": "Python",
+    "topic": "Comparing Strings & Naming Variables",
+    "difficulty": "Medium",
+    "question": "What happens when you compare `'10' > '2'`?",
+    "options": [
+      "True",
+      "False",
+      "Error",
+      "None"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Strings are compared lexicographically. The character '1' (49) is less than '2' (50), so it returns False."
+  },
+  {
+    "id": "py-medium-b44b72fd",
+    "language": "Python",
+    "topic": "Comparing Strings & Naming Variables",
+    "difficulty": "Medium",
+    "question": "What is the result of `len('a') == len('b')`?",
+    "options": [
+      "True",
+      "False",
+      "Error",
+      "None"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Both strings have a length of 1, so the lengths are equal."
+  },
+  {
+    "id": "py-medium-763b057c",
+    "language": "Python",
+    "topic": "Comparing Strings & Naming Variables",
+    "difficulty": "Medium",
+    "question": "Can a variable name start with a Unicode character (e.g., `\u00f1\u00famero = 5`) in Python 3?",
+    "options": [
+      "Yes, Python 3 supports full Unicode identifiers",
+      "No, only ASCII is allowed",
+      "Only if running on Linux",
+      "Only if imported"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Python 3 natively supports Unicode characters in variable names."
+  },
+  {
+    "id": "py-medium-ea7b5492",
+    "language": "Python",
+    "topic": "Comparing Strings & Naming Variables",
+    "difficulty": "Medium",
+    "question": "What does a variable name with double leading underscores (e.g., `__mangled`) do in a class?",
+    "options": [
+      "Makes it globally available",
+      "Triggers name mangling to prevent accidental overriding by subclasses",
+      "Creates a constant",
+      "Generates an error"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Double underscores invoke name mangling, renaming it internally to `_ClassName__name`."
+  },
+  {
+    "id": "py-medium-08a88ed9",
+    "language": "Python",
+    "topic": "Comparing Strings & Naming Variables",
+    "difficulty": "Medium",
+    "question": "Which of these compares the identities (memory addresses) of two strings?",
+    "options": [
+      "str1 == str2",
+      "str1 = str2",
+      "str1 is str2",
+      "str1 equals str2"
+    ],
+    "correctAnswer": 2,
+    "explanation": "The `is` operator compares object identities."
+  },
+  {
+    "id": "py-medium-7b7d2094",
+    "language": "Python",
+    "topic": "Comparing Strings & Naming Variables",
+    "difficulty": "Medium",
+    "question": "Due to string interning in CPython, what is the result of `a='hello'; b='hello'; print(a is b)`?",
+    "options": [
+      "True",
+      "False",
+      "Error",
+      "None"
+    ],
+    "correctAnswer": 0,
+    "explanation": "CPython automatically interns small, identifier-like strings, making them point to the same memory location."
+  },
+  {
+    "id": "py-medium-0518f896",
+    "language": "Python",
+    "topic": "Comparing Strings & Naming Variables",
+    "difficulty": "Medium",
+    "question": "What is the output of `'Apple' == 'apple'.capitalize()`?",
+    "options": [
+      "True",
+      "False",
+      "Error",
+      "None"
+    ],
+    "correctAnswer": 0,
+    "explanation": "capitalize() turns 'apple' into 'Apple', making them equal."
+  },
+  {
+    "id": "py-medium-a43f965b",
+    "language": "Python",
+    "topic": "Lists",
+    "difficulty": "Medium",
+    "question": "What is the time complexity of appending an item to the end of a list?",
+    "options": [
+      "O(1) amortized",
+      "O(N)",
+      "O(log N)",
+      "O(N^2)"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Appending to a list is typically O(1) because lists are over-allocated arrays under the hood."
+  },
+  {
+    "id": "py-medium-73dc6bd7",
+    "language": "Python",
+    "topic": "Lists",
+    "difficulty": "Medium",
+    "question": "How do you create a shallow copy of a list `L`?",
+    "options": [
+      "L.copy()",
+      "L[:]",
+      "list(L)",
+      "All of the above"
+    ],
+    "correctAnswer": 3,
+    "explanation": "All three methods successfully create a shallow copy of the list."
+  },
+  {
+    "id": "py-medium-c448019d",
+    "language": "Python",
+    "topic": "Lists",
+    "difficulty": "Medium",
+    "question": "What happens if you multiply a list by an integer, e.g., `[1, 2] * 3`?",
+    "options": [
+      "The elements are multiplied: [3, 6]",
+      "The list repeats: [1, 2, 1, 2, 1, 2]",
+      "Error",
+      "A nested list is created"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Multiplying a list by an integer N repeats the list contents N times."
+  },
+  {
+    "id": "py-medium-9dedca8a",
+    "language": "Python",
+    "topic": "Lists",
+    "difficulty": "Medium",
+    "question": "What does `lst[::2]` do?",
+    "options": [
+      "Returns every 2nd element starting from index 0",
+      "Reverses the list",
+      "Returns the last 2 elements",
+      "Returns elements up to index 2"
+    ],
+    "correctAnswer": 0,
+    "explanation": "The third slice parameter is the step; `::2` steps by 2."
+  },
+  {
+    "id": "py-medium-59a7fadf",
+    "language": "Python",
+    "topic": "Lists",
+    "difficulty": "Medium",
+    "question": "What is the output of `len([[1, 2], [3, 4, 5]])`?",
+    "options": [
+      "2",
+      "5",
+      "4",
+      "Error"
+    ],
+    "correctAnswer": 0,
+    "explanation": "The list contains 2 elements (both of which happen to be lists)."
+  },
+  {
+    "id": "py-medium-d2f8ad84",
+    "language": "Python",
+    "topic": "Lists",
+    "difficulty": "Medium",
+    "question": "Can you use a list as a dictionary key?",
+    "options": [
+      "Yes",
+      "No, because lists are mutable (unhashable)",
+      "Only if the list contains strings",
+      "Only if it is empty"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Dictionary keys must be hashable (immutable). Since lists are mutable, they cannot be keys."
+  },
+  {
+    "id": "py-medium-b9c8d1b0",
+    "language": "Python",
+    "topic": "Lists",
+    "difficulty": "Medium",
+    "question": "How do you unpack a list `[1, 2, 3]` into three variables?",
+    "options": [
+      "x, y, z = [1, 2, 3]",
+      "x; y; z = [1, 2, 3]",
+      "unpack([1, 2, 3])",
+      "x, y = [1, 2, 3]"
+    ],
+    "correctAnswer": 0,
+    "explanation": "Python allows direct assignment/unpacking as long as the number of variables matches the list length."
+  },
+  {
+    "id": "py-medium-59e3651f",
+    "language": "Python",
+    "topic": "Lists",
+    "difficulty": "Medium",
+    "question": "What is the output of `[1, 2, 3] == [1, 3, 2]`?",
+    "options": [
+      "True",
+      "False",
+      "Error",
+      "None"
+    ],
+    "correctAnswer": 1,
+    "explanation": "List equality requires both the elements and their order to match exactly."
+  },
+  {
+    "id": "py-medium-824aa9b0",
+    "language": "Python",
+    "topic": "Lists",
+    "difficulty": "Medium",
+    "question": "What does the `+` operator do when applied to two lists?",
+    "options": [
+      "Adds their corresponding elements together",
+      "Concatenates the second list to the end of the first, returning a new list",
+      "Modifies the first list in place",
+      "Throws a TypeError"
+    ],
+    "correctAnswer": 1,
+    "explanation": "It concatenates them, producing a new list."
+  },
+  {
+    "id": "py-medium-4e18b54f",
+    "language": "Python",
+    "topic": "Lists",
+    "difficulty": "Medium",
+    "question": "What happens when you do `L1 = [1, 2]; L2 = L1; L1[0] = 99`?",
+    "options": [
+      "L2 is [1, 2]",
+      "L2 is [99, 2]",
+      "L2 throws an error",
+      "L1 is a new list"
+    ],
+    "correctAnswer": 1,
+    "explanation": "L1 and L2 reference the exact same list in memory. Modifying L1 modifies L2."
+  },
+  {
+    "id": "py-medium-d86029e7",
+    "language": "Python",
+    "topic": "Working with Lists",
+    "difficulty": "Medium",
+    "question": "What is the time complexity of inserting an item at the beginning of a list `lst.insert(0, val)`?",
+    "options": [
+      "O(1)",
+      "O(N)",
+      "O(log N)",
+      "O(N^2)"
+    ],
+    "correctAnswer": 1,
+    "explanation": "Inserting at index 0 requires shifting every other element in the underlying array by one, taking O(N) time."
+  },
+  {
+    "id": "py-medium-96705941",
+    "language": "Python",
+    "topic": "Working with Lists",
+    "difficulty": "Medium",
+    "question": "What is the difference between `append()` and `extend()`?",
+    "options": [
+      "They do the same thing",
+      "`append()` adds its argument as a single element; `extend()` iterates over its argument and adds each element",
+      "`extend()` is for strings, `append()` for numbers",
+      "`extend()` creates a new list"
+    ],
+    "correctAnswer": 1,
+    "explanation": "`append([1,2])` adds the list as one element. `extend([1,2])` adds 1 and 2 individually."
+  },
+  {
+    "id": "py-medium-cb8a89da",
+    "language": "Python",
+    "topic": "Working with Lists",
+    "difficulty": "Medium",
+    "question": "What does `lst.pop(1)` do?",
+    "options": [
+      "Removes the value 1 from the list",
+      "Removes and returns the element at index 1",
+      "Raises an error",
+      "Removes the last element"
+    ],
+    "correctAnswer": 1,
+    "explanation": "pop(index) removes the item at the given index and returns it."
+  },
+  {
+    "id": "py-medium-b73294cd",
+    "language": "Python",
+    "topic": "Working with Lists",
+    "difficulty": "Medium",
+    "question": "What happens if you use `remove(val)` and `val` is not in the list?",
+    "options": [
+      "Nothing happens",
+      "Returns False",
+      "Raises a ValueError",
+      "Raises an IndexError"
+    ],
+    "correctAnswer": 2,
+    "explanation": "The remove() method throws a ValueError if the item is not found."
+  },
+  {
+    "id": "py-medium-1fd9480c",
+    "language": "Python",
+    "topic": "Working with Lists",
+    "difficulty": "Medium",
+    "question": "What does `sorted(lst, reverse=True)` do?",
+    "options": [
+      "Sorts the list in place in descending order",
+      "Returns a new list sorted in descending order",
+      "Reverses the original list",
+      "Throws an error"
+    ],
+    "correctAnswer": 1,
+    "explanation": "sorted() returns a new sorted list, and reverse=True makes it descending."
+  },
+  {
+    "id": "py-medium-948c416f",
+    "language": "Python",
+    "topic": "Working with Lists",
+    "difficulty": "Medium",
+    "question": "How do you find the maximum value in a list of numbers?",
+    "options": [
+      "lst.max()",
+      "max(lst)",
+      "maximum(lst)",
+      "lst.highest()"
+    ],
+    "correctAnswer": 1,
+    "explanation": "The built-in max() function takes an iterable and returns the largest item."
+  },
+  {
+    "id": "py-medium-97bbf388",
+    "language": "Python",
+    "topic": "Working with Lists",
+    "difficulty": "Medium",
+    "question": "What does `sum([1, 2, '3'])` do?",
+    "options": [
+      "Returns 6",
+      "Returns '123'",
+      "Raises a TypeError",
+      "Returns 3"
+    ],
+    "correctAnswer": 2,
+    "explanation": "sum() only works with numbers; adding an integer to a string raises a TypeError."
+  },
+  {
+    "id": "py-medium-dc5d8b6e",
+    "language": "Python",
+    "topic": "Working with Lists",
+    "difficulty": "Medium",
+    "question": "What is the output of `['a', 'b', 'c'].index('b')`?",
+    "options": [
+      "0",
+      "1",
+      "2",
+      "-1"
+    ],
+    "correctAnswer": 1,
+    "explanation": "index('b') returns the index of the first occurrence of 'b', which is 1."
+  },
+  {
+    "id": "py-medium-f2f5dda0",
+    "language": "Python",
+    "topic": "Working with Lists",
+    "difficulty": "Medium",
+    "question": "How do you create a list of numbers from 0 to 9?",
+    "options": [
+      "list(range(10))",
+      "list(10)",
+      "range(0, 9)",
+      "[0-9]"
+    ],
+    "correctAnswer": 0,
+    "explanation": "range(10) generates the sequence, and list() converts it to a list."
+  },
+  {
+    "id": "py-medium-2be2abe7",
+    "language": "Python",
+    "topic": "Working with Lists",
+    "difficulty": "Medium",
+    "question": "What is the output of `x = [1, 2].append(3); print(x)`?",
+    "options": [
+      "[1, 2, 3]",
+      "3",
+      "None",
+      "Error"
+    ],
+    "correctAnswer": 2,
+    "explanation": "List methods that modify the list in place (like append, sort, reverse) return None."
+  },
+  {
+    "id": "py-medium-e58a8dcc",
+    "language": "Python",
+    "topic": "Lists and Strings",
+    "difficulty": "Medium",
+    "question": "How can you check if the string 'apple' is an element of the list `fruits`?",
+    "options": [
+      "'apple' in fruits",
+      "fruits.contains('apple')",
+      "'apple' == fruits",
+      "fruits.has('apple')"
+    ],
+    "correctAnswer": 0,
+    "explanation": "The 'in' operator checks for membership in a sequence."
+  },
+  {
+    "id": "py-medium-4fb8e312",
+    "language": "Python",
+    "topic": "Lists and Strings",
+    "difficulty": "Medium",
+    "question": "What is the output of `'abc' + ['d', 'e']`?",
+    "options": [
+      "['a', 'b', 'c', 'd', 'e']",
+      "'abcde'",
+      "Raises a TypeError",
+      "['abc', 'd', 'e']"
+    ],
+    "correctAnswer": 2,
+    "explanation": "You cannot directly concatenate a string and a list using the + operator."
+  },
+  {
+    "id": "py-medium-7ce724a6",
+    "language": "Python",
+    "topic": "Lists and Strings",
+    "difficulty": "Medium",
+    "question": "What does `list('hello') == ['h', 'e', 'l', 'l', 'o']` evaluate to?",
+    "options": [
+      "True",
+      "False",
+      "TypeError",
+      "None"
+    ],
+    "correctAnswer": 0,
+    "explanation": "list('hello') breaks the string into individual characters, matching the right side."
+  },
+  {
+    "id": "py-medium-692bb98a",
+    "language": "Python",
+    "topic": "Lists and Strings",
+    "difficulty": "Medium",
+    "question": "If you split a string on a character that isn't present, e.g., `'hello'.split('z')`, what happens?",
+    "options": [
+      "Returns an empty list",
+      "Returns ['hello']",
+      "Raises an error",
+      "Returns None"
+    ],
+    "correctAnswer": 1,
+    "explanation": "If the separator is not found, it returns a list containing the original string as the only element."
+  },
+  {
+    "id": "py-medium-5e3a5ab2",
+    "language": "Python",
+    "topic": "Lists and Strings",
+    "difficulty": "Medium",
+    "question": "How do you replace spaces with hyphens in a string using list methods?",
+    "options": [
+      "'-'.join('a b c'.split())",
+      "'a b c'.replace(' ', '-')",
+      "Both A and B work",
+      "Neither work"
+    ],
+    "correctAnswer": 2,
+    "explanation": "Both approaches are valid, though replace() is more direct."
+  },
+  {
+    "id": "py-medium-21b258d8",
+    "language": "Python",
+    "topic": "Lists and Strings",
+    "difficulty": "Medium",
+    "question": "What is the result of `''.join(['1', 2, '3'])`?",
+    "options": [
+      "'123'",
+      "Raises a TypeError",
+      "'1 2 3'",
+      "None"
+    ],
+    "correctAnswer": 1,
+    "explanation": "join() expects an iterable of strings. Since 2 is an integer, it raises a TypeError."
+  },
+  {
+    "id": "py-medium-fcd2bf86",
+    "language": "Python",
+    "topic": "Lists and Strings",
+    "difficulty": "Medium",
+    "question": "Are strings faster to modify than lists?",
+    "options": [
+      "Yes, strings are optimized",
+      "No, strings are immutable so modifying requires creating a completely new string",
+      "They take the exact same time",
+      "Depends on the characters"
+    ],
+    "correctAnswer": 1,
+    "explanation": "String immutability means concatenating or modifying strings often creates new objects, which can be slower than appending to a list."
+  },
+  {
+    "id": "py-medium-6337427d",
+    "language": "Python",
+    "topic": "Lists and Strings",
+    "difficulty": "Medium",
+    "question": "What does `filter(str.isalpha, ['a', '1', 'b'])` effectively do?",
+    "options": [
+      "Returns ['a', 'b']",
+      "Returns ['1']",
+      "Throws an error",
+      "Returns nothing"
+    ],
+    "correctAnswer": 0,
+    "explanation": "It filters the list, keeping only elements where str.isalpha returns True."
+  },
+  {
+    "id": "py-medium-f1c85df7",
+    "language": "Python",
+    "topic": "Lists and Strings",
+    "difficulty": "Medium",
+    "question": "How can you remove all empty strings `''` from a list of strings?",
+    "options": [
+      "list.remove('')",
+      "list.clear('')",
+      "[s for s in list if s]",
+      "delete list['']"
+    ],
+    "correctAnswer": 2,
+    "explanation": "List comprehension `if s` filters out falsy values like empty strings."
+  },
+  {
+    "id": "py-medium-00b530c3",
+    "language": "Python",
+    "topic": "Lists and Strings",
+    "difficulty": "Medium",
+    "question": "What is the result of `len(''.join(['a', 'bc', 'def']))`?",
+    "options": [
+      "3",
+      "6",
+      "5",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "explanation": "The joined string is 'abcdef', which has a length of 6."
+  }
+]

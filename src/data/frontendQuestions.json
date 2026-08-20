@@ -1,0 +1,1172 @@
+[
+  {
+    "id": "fe-1",
+    "level": "low",
+    "question": "What does HTML stand for?",
+    "options": [
+      "Hyper Text Markup Language",
+      "High Text Machine Language",
+      "Hyperlinks Text Mark Language",
+      "Home Tool Markup Language"
+    ],
+    "correctAnswer": 0,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-2",
+    "level": "low",
+    "question": "Which tag is used for the largest heading?",
+    "options": [
+      "`<h6>`",
+      "`<head>`",
+      "`<h1>`",
+      "`<heading>`"
+    ],
+    "correctAnswer": 2,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-3",
+    "level": "low",
+    "question": "Which tag creates a paragraph?",
+    "options": [
+      "`<p>`",
+      "`<para>`",
+      "`<text>`",
+      "`<paragraph>`"
+    ],
+    "correctAnswer": 0,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-4",
+    "level": "low",
+    "question": "Which tag creates a hyperlink?",
+    "options": [
+      "`<link>`",
+      "`<a>`",
+      "`<href>`",
+      "`<url>`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-5",
+    "level": "low",
+    "question": "Which attribute specifies the destination of a link?",
+    "options": [
+      "`src`",
+      "`link`",
+      "`href`",
+      "`url`"
+    ],
+    "correctAnswer": 2,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-6",
+    "level": "low",
+    "question": "Which tag displays an image?",
+    "options": [
+      "`<image>`",
+      "`<img>`",
+      "`<picture>`",
+      "`<src>`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-7",
+    "level": "low",
+    "question": "Which attribute provides alternative text for an image?",
+    "options": [
+      "`title`",
+      "`alt`",
+      "`text`",
+      "`description`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-8",
+    "level": "low",
+    "question": "Which tag creates an unordered list?",
+    "options": [
+      "`<ol>`",
+      "`<list>`",
+      "`<ul>`",
+      "`<li>`"
+    ],
+    "correctAnswer": 2,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-9",
+    "level": "low",
+    "question": "Which tag creates a list item?",
+    "options": [
+      "`<item>`",
+      "`<li>`",
+      "`<list>`",
+      "`<ul>`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-10",
+    "level": "low",
+    "question": "Which tag is used to create a form?",
+    "options": [
+      "`<input>`",
+      "`<form>`",
+      "`<fieldset>`",
+      "`<formdata>`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-11",
+    "level": "low",
+    "question": "What does CSS stand for?",
+    "options": [
+      "Computer Style Sheets",
+      "Cascading Style Sheets",
+      "Creative Style System",
+      "Colorful Style Sheets"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-12",
+    "level": "low",
+    "question": "Which property changes text color?",
+    "options": [
+      "`font-color`",
+      "`text-color`",
+      "`color`",
+      "`foreground`"
+    ],
+    "correctAnswer": 2,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-13",
+    "level": "low",
+    "question": "Which property changes the background color?",
+    "options": [
+      "`background-color`",
+      "`bg-color`",
+      "`color-background`",
+      "`background`"
+    ],
+    "correctAnswer": 0,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-14",
+    "level": "low",
+    "question": "Which property changes the font size?",
+    "options": [
+      "`text-size`",
+      "`font-size`",
+      "`size`",
+      "`font-height`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-15",
+    "level": "low",
+    "question": "Which symbol selects an element by ID?",
+    "options": [
+      "`.`",
+      "`#`",
+      "`*`",
+      "`$`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-16",
+    "level": "low",
+    "question": "Which symbol selects elements by class?",
+    "options": [
+      "`#`",
+      "`.`",
+      "`@`",
+      "`*`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-17",
+    "level": "low",
+    "question": "Which property makes text bold?",
+    "options": [
+      "`font-weight`",
+      "`text-bold`",
+      "`font-style`",
+      "`bold`"
+    ],
+    "correctAnswer": 0,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-18",
+    "level": "low",
+    "question": "Which property controls the space inside an element?",
+    "options": [
+      "`margin`",
+      "`padding`",
+      "`spacing`",
+      "`inside-space`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-19",
+    "level": "low",
+    "question": "Which property controls the space outside an element?",
+    "options": [
+      "`padding`",
+      "`margin`",
+      "`border-space`",
+      "`outside`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-20",
+    "level": "low",
+    "question": "Which property changes the border?",
+    "options": [
+      "`outline`",
+      "`border`",
+      "`edge`",
+      "`box-border`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-21",
+    "level": "low",
+    "question": "Which keyword declares a block-scoped variable that can be reassigned?",
+    "options": [
+      "`var`",
+      "`let`",
+      "`const`",
+      "`variable`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-22",
+    "level": "low",
+    "question": "Which keyword declares a variable that cannot be reassigned?",
+    "options": [
+      "`let`",
+      "`var`",
+      "`const`",
+      "`static`"
+    ],
+    "correctAnswer": 2,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-23",
+    "level": "low",
+    "question": "Which function prints output to the browser console?",
+    "options": [
+      "`print()`",
+      "`console.log()`",
+      "`display()`",
+      "`output()`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-24",
+    "level": "low",
+    "question": "Which symbol is used for a single-line comment?",
+    "options": [
+      "`#`",
+      "`//`",
+      "`<!-- -->`",
+      "`/* */`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-25",
+    "level": "low",
+    "question": "Which operator checks strict equality?",
+    "options": [
+      "`=`",
+      "`==`",
+      "`===`",
+      "`!=`"
+    ],
+    "correctAnswer": 2,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-26",
+    "level": "low",
+    "question": "Which operator is used for assignment?",
+    "options": [
+      "`==`",
+      "`=`",
+      "`===`",
+      "`=>`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-27",
+    "level": "low",
+    "question": "Which data type represents true or false?",
+    "options": [
+      "`Boolean`",
+      "`String`",
+      "`Number`",
+      "`Object`"
+    ],
+    "correctAnswer": 0,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-28",
+    "level": "low",
+    "question": "Which keyword is used to define a function?",
+    "options": [
+      "`function`",
+      "`def`",
+      "`func`",
+      "`method`"
+    ],
+    "correctAnswer": 0,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-29",
+    "level": "low",
+    "question": "Which method adds an element to the end of an array?",
+    "options": [
+      "`add()`",
+      "`push()`",
+      "`append()`",
+      "`insert()`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-30",
+    "level": "low",
+    "question": "Which method removes the last element from an array?",
+    "options": [
+      "`remove()`",
+      "`delete()`",
+      "`pop()`",
+      "`shift()`"
+    ],
+    "correctAnswer": 2,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-31",
+    "level": "medium",
+    "question": "Which HTML element is semantic?",
+    "options": [
+      "`<div>`",
+      "`<span>`",
+      "`<article>`",
+      "`<b>`"
+    ],
+    "correctAnswer": 2,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-32",
+    "level": "medium",
+    "question": "Which tag represents navigation links?",
+    "options": [
+      "`<navigate>`",
+      "`<navigation>`",
+      "`<nav>`",
+      "`<links>`"
+    ],
+    "correctAnswer": 2,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-33",
+    "level": "medium",
+    "question": "Which tag represents the main content of a page?",
+    "options": [
+      "`<content>`",
+      "`<main>`",
+      "`<body-content>`",
+      "`<section>`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-34",
+    "level": "medium",
+    "question": "Which attribute makes an input field mandatory?",
+    "options": [
+      "`required`",
+      "`mandatory`",
+      "`validate`",
+      "`needed`"
+    ],
+    "correctAnswer": 0,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-35",
+    "level": "medium",
+    "question": "Which input type is used for an email address?",
+    "options": [
+      "`mail`",
+      "`email`",
+      "`text-email`",
+      "`address`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-36",
+    "level": "medium",
+    "question": "Which attribute specifies a default value for an input?",
+    "options": [
+      "`default`",
+      "`value`",
+      "`placeholder`",
+      "`text`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-37",
+    "level": "medium",
+    "question": "What is the purpose of the `placeholder` attribute?",
+    "options": [
+      "Sets the submitted value",
+      "Displays hint text inside an input",
+      "Makes input required",
+      "Sets input type"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-38",
+    "level": "medium",
+    "question": "Which element creates a dropdown list?",
+    "options": [
+      "`<dropdown>`",
+      "`<list>`",
+      "`<select>`",
+      "`<option-list>`"
+    ],
+    "correctAnswer": 2,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-39",
+    "level": "medium",
+    "question": "Which element defines an option inside a `<select>`?",
+    "options": [
+      "`<choice>`",
+      "`<item>`",
+      "`<option>`",
+      "`<select-item>`"
+    ],
+    "correctAnswer": 2,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-40",
+    "level": "medium",
+    "question": "Which attribute connects a `<label>` with an input?",
+    "options": [
+      "`name`",
+      "`for`",
+      "`target`",
+      "`connect`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-41",
+    "level": "medium",
+    "question": "Which CSS property changes the width of an element?",
+    "options": [
+      "`size`",
+      "`width`",
+      "`element-width`",
+      "`box-width`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-42",
+    "level": "medium",
+    "question": "Which property changes the height?",
+    "options": [
+      "`height`",
+      "`size-height`",
+      "`element-height`",
+      "`box-height`"
+    ],
+    "correctAnswer": 0,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-43",
+    "level": "medium",
+    "question": "Which `display` value enables Flexbox?",
+    "options": [
+      "`display: flex`",
+      "`display: flexible`",
+      "`display: box`",
+      "`display: flexbox`"
+    ],
+    "correctAnswer": 0,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-44",
+    "level": "medium",
+    "question": "Which property controls the main-axis alignment in Flexbox?",
+    "options": [
+      "`align-items`",
+      "`justify-content`",
+      "`flex-align`",
+      "`main-align`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-45",
+    "level": "medium",
+    "question": "Which property controls cross-axis alignment in Flexbox?",
+    "options": [
+      "`align-items`",
+      "`justify-content`",
+      "`cross-align`",
+      "`flex-position`"
+    ],
+    "correctAnswer": 0,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-46",
+    "level": "medium",
+    "question": "Which CSS feature is used to create two-dimensional layouts?",
+    "options": [
+      "Flexbox",
+      "Grid",
+      "Float",
+      "Position"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-47",
+    "level": "medium",
+    "question": "Which property defines grid columns?",
+    "options": [
+      "`grid-columns`",
+      "`grid-template-columns`",
+      "`columns-grid`",
+      "`grid-layout`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-48",
+    "level": "medium",
+    "question": "Which pseudo-class applies styles when the mouse is over an element?",
+    "options": [
+      "`:mouse`",
+      "`:hover`",
+      "`:over`",
+      "`:focus`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-49",
+    "level": "medium",
+    "question": "Which property controls transparency?",
+    "options": [
+      "`opacity`",
+      "`transparent`",
+      "`alpha`",
+      "`visibility`"
+    ],
+    "correctAnswer": 0,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-50",
+    "level": "medium",
+    "question": "Which property is commonly used to create rounded corners?",
+    "options": [
+      "`corner-radius`",
+      "`border-radius`",
+      "`radius`",
+      "`round-border`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-51",
+    "level": "medium",
+    "question": "What is the output?\n\n```javascript\nlet x = 10;\nconsole.log(x + \"5\");\n```",
+    "options": [
+      "`15`",
+      "`105`",
+      "`10 5`",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-52",
+    "level": "medium",
+    "question": "What is the output?\n\n```javascript\nconsole.log(10 + 5);\n```",
+    "options": [
+      "`105`",
+      "`15`",
+      "`\"15\"`",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-53",
+    "level": "medium",
+    "question": "Which method converts JSON text into a JavaScript object?",
+    "options": [
+      "`JSON.parse()`",
+      "`JSON.convert()`",
+      "`JSON.object()`",
+      "`JSON.decode()`"
+    ],
+    "correctAnswer": 0,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-54",
+    "level": "medium",
+    "question": "Which method converts a JavaScript object into JSON text?",
+    "options": [
+      "`JSON.convert()`",
+      "`JSON.stringify()`",
+      "`JSON.parse()`",
+      "`JSON.encode()`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-55",
+    "level": "medium",
+    "question": "What does `Array.map()` return?",
+    "options": [
+      "The original array only",
+      "A new array",
+      "A string",
+      "A boolean"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-56",
+    "level": "medium",
+    "question": "What does `Array.filter()` return?",
+    "options": [
+      "A new array containing matching elements",
+      "A single number",
+      "A string",
+      "Nothing"
+    ],
+    "correctAnswer": 0,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-57",
+    "level": "medium",
+    "question": "What does `Array.reduce()` commonly do?",
+    "options": [
+      "Removes an array",
+      "Reduces an array to a single accumulated value",
+      "Sorts an array",
+      "Copies an array"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-58",
+    "level": "medium",
+    "question": "Which method selects an element by its ID?",
+    "options": [
+      "`document.query()`",
+      "`document.getElementById()`",
+      "`document.getId()`",
+      "`document.selectId()`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-59",
+    "level": "medium",
+    "question": "Which method can select an element using a CSS selector?",
+    "options": [
+      "`querySelector()`",
+      "`getSelector()`",
+      "`selectCSS()`",
+      "`findElement()`"
+    ],
+    "correctAnswer": 0,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-60",
+    "level": "medium",
+    "question": "Which event occurs when a user clicks an element?",
+    "options": [
+      "`hover`",
+      "`press`",
+      "`click`",
+      "`select`"
+    ],
+    "correctAnswer": 2,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-61",
+    "level": "high",
+    "question": "What is the purpose of semantic HTML?",
+    "options": [
+      "To make HTML execute faster",
+      "To give meaning and structure to content",
+      "To replace CSS",
+      "To replace JavaScript"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-62",
+    "level": "high",
+    "question": "Which element is best for an independent piece of content?",
+    "options": [
+      "`<div>`",
+      "`<article>`",
+      "`<span>`",
+      "`<aside>`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-63",
+    "level": "high",
+    "question": "Which attribute improves accessibility by providing a label for an element when appropriate?",
+    "options": [
+      "`aria-label`",
+      "`access-label`",
+      "`label-text`",
+      "`alt-label`"
+    ],
+    "correctAnswer": 0,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-64",
+    "level": "high",
+    "question": "What is the purpose of `data-*` attributes?",
+    "options": [
+      "Store custom data on HTML elements",
+      "Create database tables",
+      "Add CSS styles",
+      "Execute JavaScript automatically"
+    ],
+    "correctAnswer": 0,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-65",
+    "level": "high",
+    "question": "Which API allows JavaScript to access custom `data-*` attributes conveniently?",
+    "options": [
+      "`element.attributesData`",
+      "`element.dataset`",
+      "`element.customData`",
+      "`element.data`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-66",
+    "level": "high",
+    "question": "Which HTML element is used to embed another webpage?",
+    "options": [
+      "`<framepage>`",
+      "`<iframe>`",
+      "`<embedpage>`",
+      "`<webframe>`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-67",
+    "level": "high",
+    "question": "What is the purpose of the `defer` attribute on a classic external script?",
+    "options": [
+      "Prevents the script from loading",
+      "Defers execution until after HTML parsing",
+      "Executes the script before parsing",
+      "Converts JavaScript to CSS"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-68",
+    "level": "high",
+    "question": "What does `async` generally do for a classic external script?",
+    "options": [
+      "Downloads it asynchronously and executes it as soon as it is ready",
+      "Prevents execution",
+      "Executes it only after all images load",
+      "Converts it to a module"
+    ],
+    "correctAnswer": 0,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-69",
+    "level": "high",
+    "question": "Which element is used for responsive images with multiple sources?",
+    "options": [
+      "`<responsive-image>`",
+      "`<picture>`",
+      "`<image-set>`",
+      "`<responsive>`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-70",
+    "level": "high",
+    "question": "Which HTML feature provides native client-side form validation?",
+    "options": [
+      "CSS selectors",
+      "Form validation attributes such as `required`, `pattern`, and `min`",
+      "`<validate>`",
+      "JavaScript only"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-71",
+    "level": "high",
+    "question": "What does CSS specificity determine?",
+    "options": [
+      "Loading speed",
+      "Which CSS rule wins when multiple rules apply",
+      "HTML structure",
+      "JavaScript execution order"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-72",
+    "level": "high",
+    "question": "Which selector generally has the highest specificity?",
+    "options": [
+      "Element selector",
+      "Class selector",
+      "ID selector",
+      "Universal selector"
+    ],
+    "correctAnswer": 2,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-73",
+    "level": "high",
+    "question": "What does `box-sizing: border-box` do?",
+    "options": [
+      "Removes the border",
+      "Includes padding and border within the declared width/height",
+      "Adds extra padding",
+      "Makes the element circular"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-74",
+    "level": "high",
+    "question": "What does `position: absolute` position an element relative to?",
+    "options": [
+      "Always the viewport",
+      "Its nearest positioned ancestor, otherwise the initial containing block",
+      "Only the `<body>`",
+      "The previous sibling"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-75",
+    "level": "high",
+    "question": "What does `position: fixed` generally position an element relative to?",
+    "options": [
+      "The nearest parent",
+      "The viewport",
+      "The previous element",
+      "The grid container"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-76",
+    "level": "high",
+    "question": "Which unit is relative to the root element's font size?",
+    "options": [
+      "`em`",
+      "`rem`",
+      "`%`",
+      "`vh`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-77",
+    "level": "high",
+    "question": "Which unit is relative to the viewport width?",
+    "options": [
+      "`vw`",
+      "`vh`",
+      "`em`",
+      "`rem`"
+    ],
+    "correctAnswer": 0,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-78",
+    "level": "high",
+    "question": "Which CSS rule is used for responsive design based on screen conditions?",
+    "options": [
+      "`@screen`",
+      "`@responsive`",
+      "`@media`",
+      "`@device`"
+    ],
+    "correctAnswer": 2,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-79",
+    "level": "high",
+    "question": "What does `z-index` control?",
+    "options": [
+      "Font size",
+      "Stacking order of positioned elements",
+      "Width",
+      "Animation speed"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-80",
+    "level": "high",
+    "question": "What does `overflow: hidden` generally do?",
+    "options": [
+      "Adds scrolling",
+      "Hides overflowing content",
+      "Removes the element",
+      "Expands the container"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-81",
+    "level": "high",
+    "question": "What is the difference between `==` and `===`?",
+    "options": [
+      "No difference",
+      "`==` performs type coercion; `===` checks value and type without coercion",
+      "`===` performs type coercion; `==` does not",
+      "Both compare only references"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-82",
+    "level": "high",
+    "question": "What is a closure in JavaScript?",
+    "options": [
+      "A loop",
+      "A function that retains access to variables from its lexical scope",
+      "A class constructor",
+      "A DOM element"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-83",
+    "level": "high",
+    "question": "What does the following output?\n\n```javascript\nfunction outer() {\n    let x = 10;\n\n    return function() {\n        return x;\n    };\n}\n\nconst fn = outer();\nconsole.log(fn());\n```",
+    "options": [
+      "`undefined`",
+      "`0`",
+      "`10`",
+      "Error"
+    ],
+    "correctAnswer": 2,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-84",
+    "level": "high",
+    "question": "Which keyword creates a promise?",
+    "options": [
+      "`async`",
+      "`Promise`",
+      "`await`",
+      "`future`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-85",
+    "level": "high",
+    "question": "What does `async` cause a function to return?",
+    "options": [
+      "A String",
+      "A Promise",
+      "An Array",
+      "A Boolean"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-86",
+    "level": "high",
+    "question": "What does `await` do inside an async function?",
+    "options": [
+      "Stops JavaScript permanently",
+      "Waits for a Promise to settle and gives its fulfillment value",
+      "Creates a new Promise",
+      "Converts Promise to JSON"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-87",
+    "level": "high",
+    "question": "What is the event loop responsible for?",
+    "options": [
+      "Styling HTML",
+      "Coordinating JavaScript execution with queued asynchronous callbacks/tasks",
+      "Compiling CSS",
+      "Creating HTML elements only"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-88",
+    "level": "high",
+    "question": "What is the output?\n\n```javascript\nconsole.log(typeof null);\n```",
+    "options": [
+      "`\"null\"`",
+      "`\"object\"`",
+      "`\"undefined\"`",
+      "`\"None\"`"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-89",
+    "level": "high",
+    "question": "What is event delegation?",
+    "options": [
+      "Assigning an event handler to every child individually",
+      "Handling events on a parent by using event bubbling",
+      "Disabling events",
+      "Creating custom HTML events only"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  },
+  {
+    "id": "fe-90",
+    "level": "high",
+    "question": "What is the purpose of `preventDefault()`?",
+    "options": [
+      "Stops JavaScript execution",
+      "Prevents an event's default browser action",
+      "Removes an event listener",
+      "Stops event bubbling"
+    ],
+    "correctAnswer": 1,
+    "topic": "HTML/CSS/JS"
+  }
+]

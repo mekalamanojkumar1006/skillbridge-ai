@@ -55,7 +55,8 @@ import {
   Check,
   Copy,
   Trash,
-  Upload
+  Upload,
+  Loader2
 } from "lucide-react";
 import ProfileSettingsPage from "./ProfileSettingsPage";
 const ApplicationTracker = lazy(() => import("../components/ApplicationTracker"));
@@ -68,6 +69,7 @@ const SalaryPredictor = lazy(() => import("../components/SalaryPredictor"));
 const AdminDashboard = lazy(() => import("../components/AdminDashboard"));
 const JobDescriptionAnalyzer = lazy(() => import("../components/JobDescriptionAnalyzer"));
 const ResumeBuilder = lazy(() => import("../components/ResumeBuilder"));
+const CodingPracticeView = lazy(() => import("../components/coding-practice/CodingPracticeView"));
 import { db } from "../lib/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { CAREER_ROADMAPS, CareerPath, Milestone } from "../data/careersData";
@@ -837,8 +839,11 @@ export default function DashboardPage({
   const [recordingIntervalId, setRecordingIntervalId] = useState<any>(null);
 
   // New Interview States
-  const [interviewStatus, setInterviewStatus] = useState<"setup" | "technical-setup" | "active" | "generating_report" | "completed">("setup");
+  const [interviewStatus, setInterviewStatus] = useState<"setup" | "technical-setup" | "active" | "generating_report" | "completed" | "coding-practice">("setup");
   const [technicalLevel, setTechnicalLevel] = useState<"low" | "medium" | "high">("low");
+  const [technicalSkill, setTechnicalSkill] = useState<"python" | "java" | "frontend" | "dsa">("python");
+  const [technicalTopic, setTechnicalTopic] = useState("All Topics");
+  const [dsaLanguage, setDsaLanguage] = useState<string>("python");
   const [technicalAnswers, setTechnicalAnswers] = useState<Record<string, number>>({});
   const [technicalScoreReport, setTechnicalScoreReport] = useState<any>(null);
   const [timeLeft, setTimeLeft] = useState<number>(0);
@@ -1266,6 +1271,7 @@ export default function DashboardPage({
     setInterviewType("technical");
     setInterviewStatus("technical-setup");
     setTechnicalLevel("low");
+    setTechnicalSkill("python");
   };
 
   const handleBeginTechnicalExam = async (level: "low" | "medium" | "high") => {
@@ -1277,9 +1283,16 @@ export default function DashboardPage({
     setTechnicalScoreReport(null);
     setInterviewStatus("active");
     setTechnicalLevel(level);
+    if (technicalSkill === "python") setInterviewType("aptitude");
 
     try {
-      const res = await fetch(`/api/exams/python/${level}`);
+      let endpoint = `/api/exams/${technicalSkill}/${level}`;
+      if (technicalSkill === "dsa") {
+        endpoint = `/api/exams/dsa/${dsaLanguage}/${level}`;
+      } else if (technicalSkill === "python" && technicalTopic && technicalTopic !== "All Topics") {
+        endpoint += `?topic=${encodeURIComponent(technicalTopic)}`;
+      }
+      const res = await fetch(endpoint);
       if (!res.ok) throw new Error("Failed to load questions");
       const data = await res.json();
       setInterviewQuestions(data.questions || []);
@@ -1516,10 +1529,35 @@ export default function DashboardPage({
     setGeneratingReport(true);
     setError(null);
     try {
-      const report = await ApiService.generateInterviewReport(
-        interviewType === "aptitude" ? "Aptitude" : interviewType === "technical" ? "Technical" : "HR",
-        answersToCompile
-      );
+      let report: any;
+      if (interviewType === "aptitude" && technicalSkill === "python") {
+         const answers: Record<string, string> = {};
+         answersToCompile.forEach(ans => {
+            answers[ans.questionId] = ans.userAnswer;
+         });
+         const rawReport = await ApiService.submitPythonMockExam(technicalLevel, answers, new Date().toISOString());
+         setTechnicalScoreReport(rawReport);
+         report = {
+           overallScore: rawReport.percentage,
+           metrics: {
+             communication: rawReport.percentage,
+             confidence: rawReport.percentage,
+             technicalKnowledge: rawReport.percentage,
+             grammar: rawReport.percentage,
+             problemSolving: rawReport.percentage,
+             leadership: rawReport.percentage
+           },
+           strengths: [`Scored ${rawReport.correctAnswers} correct answers out of ${rawReport.correctAnswers + rawReport.wrongAnswers + rawReport.unanswered}`],
+           weaknesses: [`${rawReport.wrongAnswers} incorrect answers`, `${rawReport.unanswered} unanswered questions`],
+           improvementSuggestions: ["Review the explanations provided in the detailed answer breakdown below."],
+           recommendedResources: []
+         };
+      } else {
+         report = await ApiService.generateInterviewReport(
+           interviewType === "aptitude" ? "Aptitude" : interviewType === "technical" ? "Technical" : "HR",
+           answersToCompile
+         );
+      }
       setFinalReport(report);
       setInterviewStatus("completed");
 
@@ -2435,8 +2473,7 @@ export default function DashboardPage({
 
         {/* Workspace core canvas */}
         <main className="flex-1 py-6 sm:py-8 overflow-y-auto w-full relative overflow-x-hidden">
-          <ResponsiveContainer>
-          
+
           {error && (
             <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 rounded-2xl flex items-start space-x-2.5 text-xs font-semibold animate-fade-in z-20">
               <AlertCircle className="w-4.5 h-4.5 flex-shrink-0" />
@@ -4011,6 +4048,103 @@ export default function DashboardPage({
               {activeTab === "interview" && (
                 <div className="space-y-6">
                   {/* Setup/Selection View */}
+                  {interviewStatus === "coding-practice" && (
+                    renderWithSuspense(<CodingPracticeView onBack={() => setInterviewStatus("setup")} />)
+                  )}
+                  {interviewStatus === "technical-setup" && (
+                    <div className="space-y-6">
+                      <div className="flex items-center justify-between pb-4 border-b border-[var(--color-border)]">
+                        <button
+                          onClick={() => setInterviewStatus("setup")}
+                          className="flex items-center space-x-2 text-xs font-mono text-[var(--color-text-secondary)] hover:text-indigo-500 transition-colors"
+                        >
+                          <ChevronRight className="w-4 h-4 rotate-180" />
+                          <span>BACK TO MODULES</span>
+                        </button>
+                        <h2 className="text-sm font-mono font-black text-[var(--color-text-primary)]">Technical Exam Setup</h2>
+                      </div>
+                      
+                      <div className="glass-card p-6 space-y-6">
+                        <div className="space-y-4">
+                          <label className="text-xs font-mono font-bold text-[var(--color-text-secondary)]">SELECT SKILL</label>
+                          <select 
+                            value={technicalSkill}
+                            onChange={(e) => setTechnicalSkill(e.target.value as any)}
+                            className="w-full bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-xl px-4 py-3 text-sm text-[var(--color-text-primary)] font-medium focus:border-indigo-500 outline-none"
+                          >
+                            <option value="python">Python</option>
+                            <option value="java" disabled>Java (Coming Soon)</option>
+                            <option value="frontend" disabled>Frontend (Coming Soon)</option>
+                          </select>
+                        </div>
+
+                        {technicalSkill === "python" && (
+                          <div className="space-y-4">
+                            <label className="text-xs font-mono font-bold text-[var(--color-text-secondary)]">SELECT TOPIC</label>
+                            <select 
+                              value={technicalTopic}
+                              onChange={(e) => setTechnicalTopic(e.target.value)}
+                              className="w-full bg-[var(--color-bg-page)] border border-[var(--color-border)] rounded-xl px-4 py-3 text-sm text-[var(--color-text-primary)] font-medium focus:border-indigo-500 outline-none custom-scrollbar"
+                            >
+                              <option value="All Topics">All Topics</option>
+                              <option value="Intro to Python">Intro to Python</option>
+                              <option value="Variables & Data Types">Variables & Data Types</option>
+                              <option value="Sequence of Instructions">Sequence of Instructions</option>
+                              <option value="Input & Output Basics">Input & Output Basics</option>
+                              <option value="Type Conversions">Type Conversions</option>
+                              <option value="Relational Operations">Relational Operations</option>
+                              <option value="Logical Operators">Logical Operators</option>
+                              <option value="Conditional Statements">Conditional Statements</option>
+                              <option value="Nested Conditional Statements">Nested Conditional Statements</option>
+                              <option value="Loops">Loops (while, for)</option>
+                              <option value="String Methods">String Methods</option>
+                              <option value="Nested Loops">Nested Loops</option>
+                              <option value="Loop Control Statements">Loop Control Statements</option>
+                              <option value="Comparing Strings & Naming Variables">Comparing Strings & Naming Variables</option>
+                              <option value="Lists">Lists</option>
+                              <option value="Working with Lists">Working with Lists</option>
+                              <option value="Lists and Strings">Lists and Strings</option>
+                            </select>
+                          </div>
+                        )}
+
+                        <div className="space-y-4">
+                          <label className="text-xs font-mono font-bold text-[var(--color-text-secondary)]">SELECT DIFFICULTY</label>
+                          <div className="grid grid-cols-3 gap-4">
+                            {["low", "medium", "high"].map((level) => (
+                              <button
+                                key={level}
+                                onClick={() => setTechnicalLevel(level as any)}
+                                className={`py-3 rounded-xl border text-xs font-mono uppercase tracking-wider font-bold transition-all duration-200 ${
+                                  technicalLevel === level 
+                                    ? "bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-600/20" 
+                                    : "bg-[var(--color-bg-page)] border-[var(--color-border)] text-[var(--color-text-secondary)] hover:border-indigo-500/30"
+                                }`}
+                              >
+                                {level}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => handleBeginTechnicalExam(technicalLevel)}
+                          disabled={generatingQuestions}
+                          className="w-full mt-6 py-4 clay-btn clay-btn-primary text-sm font-mono uppercase tracking-wider font-black text-white shadow-md cursor-pointer flex items-center justify-center space-x-2"
+                        >
+                          {generatingQuestions ? (
+                            <>
+                              <Loader2 className="w-5 h-5 animate-spin" />
+                              <span>GENERATING EXAM...</span>
+                            </>
+                          ) : (
+                            <span>START EXAM (30 MIN)</span>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
                   {interviewStatus === "setup" && (
                     <div className="space-y-8">
                       <div className="border-b border-[var(--color-border)] pb-5">
@@ -4032,7 +4166,7 @@ export default function DashboardPage({
                           </span>
                         </div>
                       ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                           {/* Card 1: Aptitude */}
                           <div className="glass-card hover:border-[#6D5DF6]/30 transition p-6 flex flex-col justify-between space-y-6 relative overflow-hidden group">
                             <div className="absolute top-0 right-0 p-4 bg-indigo-500/10 text-indigo-600 rounded-bl-2xl font-mono text-[10px] font-bold">OFFLINE</div>
@@ -4114,6 +4248,30 @@ export default function DashboardPage({
                               className="w-full py-3 clay-btn clay-btn-primary text-xs font-mono uppercase tracking-wider font-bold text-white shadow-md cursor-pointer"
                             >
                               Start Round
+                            </button>
+                          </div>
+
+                          {/* Card 4: Open Coding Practice */}
+                          <div className="glass-card hover:border-[#6D5DF6]/30 transition p-6 flex flex-col justify-between space-y-6 relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-4 bg-orange-500/10 text-orange-600 rounded-bl-2xl font-mono text-[10px] font-bold">PRACTICE</div>
+                            
+                            <div className="space-y-4 pt-4">
+                              <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center">
+                                <Code className="w-6 h-6 text-orange-500" />
+                              </div>
+                              <div>
+                                <h3 className="text-xl font-black text-[var(--color-text-primary)]">Open Coding</h3>
+                                <p className="text-xs text-[var(--color-text-secondary)] font-medium mt-2 leading-relaxed">
+                                  Secure Docker sandbox for Python, Java, C++, JS.
+                                </p>
+                              </div>
+                            </div>
+
+                            <button
+                              onClick={() => setInterviewStatus("coding-practice")}
+                              className="w-full py-3 clay-btn bg-orange-500 text-xs font-mono uppercase tracking-wider font-bold text-white shadow-md cursor-pointer rounded-xl hover:bg-orange-600 transition"
+                            >
+                              Start Practice
                             </button>
                           </div>
                         </div>
@@ -4563,6 +4721,61 @@ export default function DashboardPage({
                           </div>
                         </div>
                       </div>
+
+                      {/* Python Mock Exam Detailed Review */}
+                      {technicalScoreReport && technicalScoreReport.detailedAnswers && (
+                        <div className="mt-8 glass-card p-6 sm:p-8 space-y-6">
+                          <h2 className="text-xl font-black text-[var(--color-text-primary)] border-b border-[var(--color-border)] pb-4">Detailed Question Review</h2>
+                          <div className="grid grid-cols-3 gap-4 mb-6">
+                            <div className="bg-emerald-500/10 border border-emerald-500/20 p-4 rounded-xl text-center">
+                              <span className="block text-2xl font-black text-emerald-600">{technicalScoreReport.correctAnswers}</span>
+                              <span className="text-[10px] font-mono text-emerald-600/80 uppercase font-bold">Correct</span>
+                            </div>
+                            <div className="bg-red-500/10 border border-red-500/20 p-4 rounded-xl text-center">
+                              <span className="block text-2xl font-black text-red-600">{technicalScoreReport.wrongAnswers}</span>
+                              <span className="text-[10px] font-mono text-red-600/80 uppercase font-bold">Wrong</span>
+                            </div>
+                            <div className="bg-gray-500/10 border border-gray-500/20 p-4 rounded-xl text-center">
+                              <span className="block text-2xl font-black text-gray-600">{technicalScoreReport.unanswered}</span>
+                              <span className="text-[10px] font-mono text-gray-600/80 uppercase font-bold">Unanswered</span>
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-6">
+                            {technicalScoreReport.detailedAnswers.map((ans: any, idx: number) => (
+                              <div key={idx} className={`p-5 rounded-2xl border ${ans.isCorrect ? 'bg-emerald-500/5 border-emerald-500/30' : (ans.userAnswer === 'Skipped' || ans.userAnswer === 'Unanswered' || ans.userAnswer === 'Unanswered (Time Out)') ? 'bg-gray-500/5 border-gray-500/30' : 'bg-red-500/5 border-red-500/30'}`}>
+                                <div className="flex justify-between items-start mb-3">
+                                  <span className="text-xs font-mono font-bold text-[var(--color-text-secondary)]">Question {idx + 1}</span>
+                                  {ans.isCorrect ? (
+                                    <span className="text-[10px] font-mono bg-emerald-500 text-white px-2 py-1 rounded font-bold">CORRECT</span>
+                                  ) : (ans.userAnswer === 'Skipped' || ans.userAnswer === 'Unanswered' || ans.userAnswer === 'Unanswered (Time Out)') ? (
+                                    <span className="text-[10px] font-mono bg-gray-500 text-white px-2 py-1 rounded font-bold">UNANSWERED</span>
+                                  ) : (
+                                    <span className="text-[10px] font-mono bg-red-500 text-white px-2 py-1 rounded font-bold">WRONG</span>
+                                  )}
+                                </div>
+                                <h4 className="text-sm font-bold text-[var(--color-text-primary)] mb-4">{ans.questionId} (View Source for Text)</h4>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                  <div className="p-3 bg-[var(--color-bg-page)] rounded-xl border border-[var(--color-border)]">
+                                    <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase block mb-1">Your Answer</span>
+                                    <span className={`text-xs font-semibold ${ans.isCorrect ? 'text-emerald-600' : 'text-red-600'}`}>{ans.userAnswer || 'None'}</span>
+                                  </div>
+                                  <div className="p-3 bg-[var(--color-bg-page)] rounded-xl border border-[var(--color-border)]">
+                                    <span className="text-[9px] font-mono text-[var(--color-text-tertiary)] uppercase block mb-1">Correct Answer</span>
+                                    <span className="text-xs font-semibold text-emerald-600">{ans.correctAnswer}</span>
+                                  </div>
+                                </div>
+                                {ans.explanation && (
+                                  <div className="p-4 bg-indigo-500/5 border border-indigo-500/20 rounded-xl">
+                                    <span className="text-[10px] font-mono text-indigo-600 uppercase font-bold block mb-2">Explanation</span>
+                                    <p className="text-xs text-[var(--color-text-secondary)] leading-relaxed">{ans.explanation}</p>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -4737,7 +4950,6 @@ export default function DashboardPage({
 
             </div>
           )}
-          </ResponsiveContainer>
         </main>
       </div>
 

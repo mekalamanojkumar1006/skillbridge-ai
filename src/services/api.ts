@@ -324,10 +324,17 @@ export class ApiService {
       headers: this.getHeaders(),
       body: JSON.stringify({ questionText, expectedPoints, userAnswer })
     });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || "Failed to evaluate interview answer");
-    }
+    if (!res.ok) throw new Error("Failed to evaluate answer");
+    return res.json();
+  }
+
+  static async submitPythonMockExam(level: string, answers: Record<string, string>, startedAt: string) {
+    const res = await fetch(`${this.getBaseUrl()}/api/exams/python/submit`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify({ level, answers, startedAt })
+    });
+    if (!res.ok) throw new Error("Failed to submit exam");
     return res.json();
   }
 

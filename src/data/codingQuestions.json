@@ -1,0 +1,5168 @@
+[
+  {
+    "id": "PY-DSA-L01",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Low",
+    "topic": "Arrays",
+    "title": "Find Maximum Element",
+    "problem": "Given an array of integers, find the largest element.",
+    "inputFormat": "First line: n. Second line: n integers.",
+    "outputFormat": "Print the maximum integer.",
+    "constraints": [
+      "1 <= n <= 10^5",
+      "-10^9 <= arr[i] <= 10^9"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    print(max(arr))\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "5\n10 4 25 7 18",
+        "expectedOutput": "25"
+      },
+      {
+        "input": "1\n-10",
+        "expectedOutput": "-10"
+      },
+      {
+        "input": "4\n-5 -2 -10 -1",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "3\n0 0 0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "2\n100 -100",
+        "expectedOutput": "100"
+      }
+    ],
+    "sampleInput": "5\n10 4 25 7 18",
+    "sampleOutput": "25",
+    "explanation": "25 is the largest element in the array.",
+    "timeComplexity": "O(n)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "PY-DSA-L02",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Low",
+    "topic": "Arrays",
+    "title": "Reverse an Array",
+    "problem": "Reverse the given array without using a built-in reverse function.",
+    "inputFormat": "First line: n. Second line: n integers.",
+    "outputFormat": "Print the reversed array, space-separated.",
+    "constraints": [
+      "1 <= n <= 10^5"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    print(' '.join(map(str, arr[::-1])))\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "5\n1 2 3 4 5",
+        "expectedOutput": "5 4 3 2 1"
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "2\n-1 -2",
+        "expectedOutput": "-2 -1"
+      },
+      {
+        "input": "4\n0 0 1 1",
+        "expectedOutput": "1 1 0 0"
+      },
+      {
+        "input": "3\n10 20 30",
+        "expectedOutput": "30 20 10"
+      }
+    ],
+    "sampleInput": "5\n1 2 3 4 5",
+    "sampleOutput": "5 4 3 2 1",
+    "explanation": "The array is reversed.",
+    "timeComplexity": "O(n)",
+    "spaceComplexity": "O(1) auxiliary"
+  },
+  {
+    "id": "PY-DSA-L03",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Low",
+    "topic": "Arrays",
+    "title": "Count Even and Odd Numbers",
+    "problem": "Count how many numbers are even and how many are odd.",
+    "inputFormat": "First line: n. Second line: n integers.",
+    "outputFormat": "Print Even: <count>\nOdd: <count>",
+    "constraints": [
+      "1 <= n <= 10^5"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    e = sum(1 for x in arr if x % 2 == 0)\n    o = n - e\n    print(f'Even: {e}')\n    print(f'Odd: {o}')\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "6\n1 2 3 4 5 6",
+        "expectedOutput": "Even: 3\nOdd: 3"
+      },
+      {
+        "input": "3\n2 4 6",
+        "expectedOutput": "Even: 3\nOdd: 0"
+      },
+      {
+        "input": "3\n1 3 5",
+        "expectedOutput": "Even: 0\nOdd: 3"
+      },
+      {
+        "input": "1\n0",
+        "expectedOutput": "Even: 1\nOdd: 0"
+      },
+      {
+        "input": "2\n-1 -2",
+        "expectedOutput": "Even: 1\nOdd: 1"
+      }
+    ],
+    "sampleInput": "6\n1 2 3 4 5 6",
+    "sampleOutput": "Even: 3\nOdd: 3",
+    "explanation": "2,4,6 are even. 1,3,5 are odd.",
+    "timeComplexity": "O(n)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "PY-DSA-L04",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Low",
+    "topic": "Two Pointers",
+    "title": "Remove Duplicates from Sorted Array",
+    "problem": "Given a sorted array, remove duplicates and print unique elements.",
+    "inputFormat": "First line: n. Second line: n sorted integers.",
+    "outputFormat": "Print the unique elements space-separated.",
+    "constraints": [
+      "1 <= n <= 10^5"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    if not arr: return\n    res = [arr[0]]\n    for i in range(1, len(arr)):\n        if arr[i] != arr[i-1]:\n            res.append(arr[i])\n    print(' '.join(map(str, res)))\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "7\n1 1 2 2 3 4 4",
+        "expectedOutput": "1 2 3 4"
+      },
+      {
+        "input": "3\n1 1 1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expectedOutput": "1 2 3 4"
+      },
+      {
+        "input": "2\n-1 -1",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "5\n0 0 0 1 1",
+        "expectedOutput": "0 1"
+      }
+    ],
+    "sampleInput": "7\n1 1 2 2 3 4 4",
+    "sampleOutput": "1 2 3 4",
+    "explanation": "Duplicates removed.",
+    "timeComplexity": "O(n)",
+    "spaceComplexity": "O(n) for result array"
+  },
+  {
+    "id": "PY-DSA-L05",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Low",
+    "topic": "Searching",
+    "title": "Linear Search",
+    "problem": "Find the index of a target value. Print -1 if not found.",
+    "inputFormat": "First line: n. Second line: n integers. Third line: target.",
+    "outputFormat": "Print the 0-based index or -1.",
+    "constraints": [
+      "1 <= n <= 10^5"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    target = int(input())\n    try:\n        print(arr.index(target))\n    except ValueError:\n        print(-1)\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "5\n10 20 30 40 50\n30",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "5\n10 20 30 40 50\n100",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "1\n10\n10",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "3\n-1 -2 -3\n-2",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "4\n0 0 0 0\n0",
+        "expectedOutput": "0"
+      }
+    ],
+    "sampleInput": "5\n10 20 30 40 50\n30",
+    "sampleOutput": "2",
+    "explanation": "30 is at index 2.",
+    "timeComplexity": "O(n)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "PY-DSA-L06",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Low",
+    "topic": "Strings",
+    "title": "Check Palindrome String",
+    "problem": "Determine whether a string reads the same forwards and backwards.",
+    "inputFormat": "One string.",
+    "outputFormat": "Print 'Palindrome' or 'Not Palindrome'.",
+    "constraints": [
+      "1 <= len(s) <= 10^4",
+      "String contains only lowercase english letters."
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    s = input().strip()\n    if s == s[::-1]:\n        print('Palindrome')\n    else:\n        print('Not Palindrome')\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "madam",
+        "expectedOutput": "Palindrome"
+      },
+      {
+        "input": "hello",
+        "expectedOutput": "Not Palindrome"
+      },
+      {
+        "input": "a",
+        "expectedOutput": "Palindrome"
+      },
+      {
+        "input": "racecar",
+        "expectedOutput": "Palindrome"
+      },
+      {
+        "input": "ab",
+        "expectedOutput": "Not Palindrome"
+      }
+    ],
+    "sampleInput": "madam",
+    "sampleOutput": "Palindrome",
+    "explanation": "'madam' is the same backwards.",
+    "timeComplexity": "O(n)",
+    "spaceComplexity": "O(n) for string copy"
+  },
+  {
+    "id": "PY-DSA-L07",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Low",
+    "topic": "Arrays",
+    "title": "Find Second Largest Element",
+    "problem": "Find the second-largest distinct element in an array.",
+    "inputFormat": "First line: n. Second line: n integers.",
+    "outputFormat": "Print the second largest element.",
+    "constraints": [
+      "2 <= n <= 10^5",
+      "At least two distinct elements exist."
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    distinct = sorted(list(set(arr)))\n    print(distinct[-2])\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "6\n10 5 20 20 8 15",
+        "expectedOutput": "15"
+      },
+      {
+        "input": "2\n1 2",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3\n-1 -2 -3",
+        "expectedOutput": "-2"
+      },
+      {
+        "input": "4\n10 10 10 9",
+        "expectedOutput": "9"
+      },
+      {
+        "input": "5\n100 50 200 150 200",
+        "expectedOutput": "150"
+      }
+    ],
+    "sampleInput": "6\n10 5 20 20 8 15",
+    "sampleOutput": "15",
+    "explanation": "20 is largest, 15 is second largest distinct.",
+    "timeComplexity": "O(n log n)",
+    "spaceComplexity": "O(n)"
+  },
+  {
+    "id": "PY-DSA-L08",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Low",
+    "topic": "Arrays",
+    "title": "Merge Two Sorted Arrays",
+    "problem": "Merge two sorted arrays into one sorted array.",
+    "inputFormat": "First line: n. Second line: n ints. Third line: m. Fourth line: m ints.",
+    "outputFormat": "Print merged array.",
+    "constraints": [
+      "1 <= n, m <= 10^5"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    a = list(map(int, input().split()))\n    m = int(input())\n    b = list(map(int, input().split()))\n    res = []\n    i, j = 0, 0\n    while i < n and j < m:\n        if a[i] <= b[j]:\n            res.append(a[i])\n            i += 1\n        else:\n            res.append(b[j])\n            j += 1\n    res.extend(a[i:])\n    res.extend(b[j:])\n    print(' '.join(map(str, res)))\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "3\n1 3 5\n4\n2 4 6 8",
+        "expectedOutput": "1 2 3 4 5 6 8"
+      },
+      {
+        "input": "1\n1\n1\n2",
+        "expectedOutput": "1 2"
+      },
+      {
+        "input": "2\n2 4\n2\n1 3",
+        "expectedOutput": "1 2 3 4"
+      },
+      {
+        "input": "3\n0 0 0\n2\n0 0",
+        "expectedOutput": "0 0 0 0 0"
+      },
+      {
+        "input": "2\n-5 5\n2\n-10 10",
+        "expectedOutput": "-10 -5 5 10"
+      }
+    ],
+    "sampleInput": "3\n1 3 5\n4\n2 4 6 8",
+    "sampleOutput": "1 2 3 4 5 6 8",
+    "explanation": "Merged.",
+    "timeComplexity": "O(n+m)",
+    "spaceComplexity": "O(n+m)"
+  },
+  {
+    "id": "PY-DSA-L09",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Low",
+    "topic": "Two Pointers",
+    "title": "Move Zeros to End",
+    "problem": "Move all zeros to the end while maintaining relative order of non-zero elements.",
+    "inputFormat": "First line: n. Second line: n integers.",
+    "outputFormat": "Print modified array.",
+    "constraints": [
+      "1 <= n <= 10^5"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    ans = [x for x in arr if x != 0]\n    ans.extend([0] * (n - len(ans)))\n    print(' '.join(map(str, ans)))\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "6\n0 1 0 3 12 0",
+        "expectedOutput": "1 3 12 0 0 0"
+      },
+      {
+        "input": "1\n0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "3\n1 2 3",
+        "expectedOutput": "1 2 3"
+      },
+      {
+        "input": "4\n0 0 1 0",
+        "expectedOutput": "1 0 0 0"
+      },
+      {
+        "input": "5\n-1 0 -2 0 -3",
+        "expectedOutput": "-1 -2 -3 0 0"
+      }
+    ],
+    "sampleInput": "6\n0 1 0 3 12 0",
+    "sampleOutput": "1 3 12 0 0 0",
+    "explanation": "Zeros moved.",
+    "timeComplexity": "O(n)",
+    "spaceComplexity": "O(n)"
+  },
+  {
+    "id": "PY-DSA-L10",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Low",
+    "topic": "Arrays",
+    "title": "Find Missing Number",
+    "problem": "Numbers from 0 to n are given with one number missing. Find it.",
+    "inputFormat": "First line: n. Second line: n-1 distinct integers.",
+    "outputFormat": "Print the missing number.",
+    "constraints": [
+      "1 <= n <= 10^5"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    expected = n * (n + 1) // 2\n    actual = sum(arr)\n    print(expected - actual)\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "5\n3 0 1 4 5",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "1\n0",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "2\n0 1",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "3\n1 2 3",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "4\n0 1 3 4",
+        "expectedOutput": "2"
+      }
+    ],
+    "sampleInput": "5\n3 0 1 4 5",
+    "sampleOutput": "2",
+    "explanation": "2 is missing.",
+    "timeComplexity": "O(n)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "PY-DSA-M01",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Medium",
+    "topic": "Hashing",
+    "title": "Two Sum",
+    "problem": "Find two indices whose values add up to the target.",
+    "inputFormat": "First line: n. Second line: n integers. Third line: target.",
+    "outputFormat": "Print the two indices.",
+    "constraints": [
+      "2 <= n <= 10^5"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    nums = list(map(int, input().split()))\n    t = int(input())\n    seen = {}\n    for i, v in enumerate(nums):\n        if t - v in seen:\n            print(seen[t-v], i)\n            return\n        seen[v] = i\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "4\n2 7 11 15\n9",
+        "expectedOutput": "0 1"
+      },
+      {
+        "input": "3\n3 2 4\n6",
+        "expectedOutput": "1 2"
+      },
+      {
+        "input": "2\n3 3\n6",
+        "expectedOutput": "0 1"
+      },
+      {
+        "input": "5\n1 2 3 4 5\n9",
+        "expectedOutput": "3 4"
+      },
+      {
+        "input": "4\n-1 -2 -3 -4\n-7",
+        "expectedOutput": "2 3"
+      }
+    ],
+    "sampleInput": "4\n2 7 11 15\n9",
+    "sampleOutput": "0 1",
+    "explanation": "2+7=9.",
+    "timeComplexity": "O(n)",
+    "spaceComplexity": "O(n)"
+  },
+  {
+    "id": "PY-DSA-M02",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Medium",
+    "topic": "Sliding Window",
+    "title": "Longest Substring Without Repeating Characters",
+    "problem": "Find the length of the longest substring without repeating characters.",
+    "inputFormat": "One string.",
+    "outputFormat": "Print length.",
+    "constraints": [
+      "1 <= len(s) <= 10^5"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    s = input().strip()\n    seen = {}\n    max_len = start = 0\n    for i, c in enumerate(s):\n        if c in seen and seen[c] >= start:\n            start = seen[c] + 1\n        seen[c] = i\n        max_len = max(max_len, i - start + 1)\n    print(max_len)\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "abcabcbb",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "bbbbb",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "pwwkew",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "a",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "abcdef",
+        "expectedOutput": "6"
+      }
+    ],
+    "sampleInput": "abcabcbb",
+    "sampleOutput": "3",
+    "explanation": "'abc' is length 3.",
+    "timeComplexity": "O(n)",
+    "spaceComplexity": "O(min(n, m))"
+  },
+  {
+    "id": "PY-DSA-M03",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Medium",
+    "topic": "Stack",
+    "title": "Valid Parentheses",
+    "problem": "Determine if the brackets are valid.",
+    "inputFormat": "One string of brackets.",
+    "outputFormat": "Print 'Valid' or 'Invalid'.",
+    "constraints": [
+      "1 <= len(s) <= 10^4"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    s = input().strip()\n    stack = []\n    pairs = {')': '(', '}': '{', ']': '['}\n    for c in s:\n        if c in pairs.values():\n            stack.append(c)\n        elif c in pairs:\n            if not stack or stack[-1] != pairs[c]:\n                print('Invalid')\n                return\n            stack.pop()\n    print('Valid' if not stack else 'Invalid')\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "{[()]}",
+        "expectedOutput": "Valid"
+      },
+      {
+        "input": "{[(])}",
+        "expectedOutput": "Invalid"
+      },
+      {
+        "input": "()[]{}",
+        "expectedOutput": "Valid"
+      },
+      {
+        "input": "(]",
+        "expectedOutput": "Invalid"
+      },
+      {
+        "input": "((()))",
+        "expectedOutput": "Valid"
+      }
+    ],
+    "sampleInput": "{[()]}",
+    "sampleOutput": "Valid",
+    "explanation": "All close correctly.",
+    "timeComplexity": "O(n)",
+    "spaceComplexity": "O(n)"
+  },
+  {
+    "id": "PY-DSA-M04",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Medium",
+    "topic": "Binary Search",
+    "title": "Binary Search",
+    "problem": "Given a sorted array, find the target index.",
+    "inputFormat": "First line: n. Second line: n integers. Third line: target.",
+    "outputFormat": "Print index or -1.",
+    "constraints": [
+      "1 <= n <= 10^5"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    t = int(input())\n    l, r = 0, n-1\n    while l <= r:\n        m = (l+r)//2\n        if arr[m] == t:\n            print(m)\n            return\n        elif arr[m] < t:\n            l = m+1\n        else:\n            r = m-1\n    print(-1)\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "6\n1 3 5 7 9 11\n7",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "6\n1 3 5 7 9 11\n2",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "1\n5\n5",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "2\n1 2\n1",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "3\n-5 -2 0\n-2",
+        "expectedOutput": "1"
+      }
+    ],
+    "sampleInput": "6\n1 3 5 7 9 11\n7",
+    "sampleOutput": "3",
+    "explanation": "O(log n) search.",
+    "timeComplexity": "O(log n)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "PY-DSA-M05",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Medium",
+    "topic": "Dynamic Programming",
+    "title": "Maximum Subarray Sum",
+    "problem": "Find the maximum sum of a contiguous subarray.",
+    "inputFormat": "First line: n. Second line: n integers.",
+    "outputFormat": "Print sum.",
+    "constraints": [
+      "1 <= n <= 10^5"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    best = cur = arr[0]\n    for x in arr[1:]:\n        cur = max(x, cur + x)\n        best = max(best, cur)\n    print(best)\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "9\n-2 1 -3 4 -1 2 1 -5 4",
+        "expectedOutput": "6"
+      },
+      {
+        "input": "1\n-1",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expectedOutput": "15"
+      },
+      {
+        "input": "4\n-1 -2 -3 -4",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "3\n1 -3 4",
+        "expectedOutput": "4"
+      }
+    ],
+    "sampleInput": "9\n-2 1 -3 4 -1 2 1 -5 4",
+    "sampleOutput": "6",
+    "explanation": "[4,-1,2,1] = 6",
+    "timeComplexity": "O(n)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "PY-DSA-M06",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Medium",
+    "topic": "Arrays",
+    "title": "Rotate Array",
+    "problem": "Rotate an array to the right by k positions.",
+    "inputFormat": "First line: n. Second line: n integers. Third line: k.",
+    "outputFormat": "Print rotated array.",
+    "constraints": [
+      "1 <= n <= 10^5",
+      "0 <= k <= 10^5"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    k = int(input()) % n\n    if k == 0:\n        print(' '.join(map(str, arr)))\n    else:\n        ans = arr[-k:] + arr[:-k]\n        print(' '.join(map(str, ans)))\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "5\n1 2 3 4 5\n2",
+        "expectedOutput": "4 5 1 2 3"
+      },
+      {
+        "input": "1\n1\n0",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3\n1 2 3\n4",
+        "expectedOutput": "3 1 2"
+      },
+      {
+        "input": "2\n1 2\n1",
+        "expectedOutput": "2 1"
+      },
+      {
+        "input": "4\n1 2 3 4\n4",
+        "expectedOutput": "1 2 3 4"
+      }
+    ],
+    "sampleInput": "5\n1 2 3 4 5\n2",
+    "sampleOutput": "4 5 1 2 3",
+    "explanation": "Rotated.",
+    "timeComplexity": "O(n)",
+    "spaceComplexity": "O(n)"
+  },
+  {
+    "id": "PY-DSA-M07",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Medium",
+    "topic": "Sorting",
+    "title": "Merge Overlapping Intervals",
+    "problem": "Merge overlapping intervals.",
+    "inputFormat": "First line: n. Next n lines: start end.",
+    "outputFormat": "Print each merged interval on a new line.",
+    "constraints": [
+      "1 <= n <= 10^4"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    ints = [list(map(int, input().split())) for _ in range(n)]\n    ints.sort()\n    res = [ints[0]]\n    for i in range(1, n):\n        if res[-1][1] >= ints[i][0]:\n            res[-1][1] = max(res[-1][1], ints[i][1])\n        else:\n            res.append(ints[i])\n    for r in res:\n        print(f'{r[0]} {r[1]}')\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "4\n1 3\n2 6\n8 10\n9 12",
+        "expectedOutput": "1 6\n8 12"
+      },
+      {
+        "input": "2\n1 4\n4 5",
+        "expectedOutput": "1 5"
+      },
+      {
+        "input": "1\n1 2",
+        "expectedOutput": "1 2"
+      },
+      {
+        "input": "3\n1 2\n3 4\n5 6",
+        "expectedOutput": "1 2\n3 4\n5 6"
+      },
+      {
+        "input": "2\n1 10\n2 3",
+        "expectedOutput": "1 10"
+      }
+    ],
+    "sampleInput": "4\n1 3\n2 6\n8 10\n9 12",
+    "sampleOutput": "1 6\n8 12",
+    "explanation": "Overlapping intervals merged.",
+    "timeComplexity": "O(n log n)",
+    "spaceComplexity": "O(n)"
+  },
+  {
+    "id": "PY-DSA-M08",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Medium",
+    "topic": "Linked List",
+    "title": "Reverse Linked List",
+    "problem": "Given a singly linked list as an array, reverse it (simulate logic).",
+    "inputFormat": "First line: n. Second line: n integers.",
+    "outputFormat": "Print reversed.",
+    "constraints": [
+      "1 <= n <= 10^5"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    arr = input().split()\n    print(' '.join(arr[::-1]))\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "5\n1 2 3 4 5",
+        "expectedOutput": "5 4 3 2 1"
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "2\n1 2",
+        "expectedOutput": "2 1"
+      },
+      {
+        "input": "3\n-1 0 1",
+        "expectedOutput": "1 0 -1"
+      },
+      {
+        "input": "4\n9 8 7 6",
+        "expectedOutput": "6 7 8 9"
+      }
+    ],
+    "sampleInput": "5\n1 2 3 4 5",
+    "sampleOutput": "5 4 3 2 1",
+    "explanation": "Simulate.",
+    "timeComplexity": "O(n)",
+    "spaceComplexity": "O(n)"
+  },
+  {
+    "id": "PY-DSA-M09",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Medium",
+    "topic": "Linked List",
+    "title": "Detect Linked List Cycle",
+    "problem": "Determine if cycle exists. Input provides n and index where tail connects.",
+    "inputFormat": "First line: n. Second line: cycle_index.",
+    "outputFormat": "Print 'Cycle' or 'No Cycle'.",
+    "constraints": [
+      "1 <= n <= 10^4"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    c = int(input())\n    if c >= 0 and c < n:\n        print('Cycle')\n    else:\n        print('No Cycle')\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "4\n1",
+        "expectedOutput": "Cycle"
+      },
+      {
+        "input": "4\n-1",
+        "expectedOutput": "No Cycle"
+      },
+      {
+        "input": "2\n0",
+        "expectedOutput": "Cycle"
+      },
+      {
+        "input": "1\n-1",
+        "expectedOutput": "No Cycle"
+      },
+      {
+        "input": "10\n9",
+        "expectedOutput": "Cycle"
+      }
+    ],
+    "sampleInput": "4\n1",
+    "sampleOutput": "Cycle",
+    "explanation": "Simulated input.",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "PY-DSA-M10",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "Medium",
+    "topic": "Trees",
+    "title": "Level Order Traversal",
+    "problem": "Print tree nodes level by level (array representation).",
+    "inputFormat": "First line: n. Second line: n integers (-1 for null).",
+    "outputFormat": "Print each level on a new line.",
+    "constraints": [
+      "1 <= n <= 1000"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    if not arr or arr[0] == -1: return\n    q = [0]\n    while q:\n        nq = []\n        lv = []\n        for i in q:\n            if arr[i] != -1:\n                lv.append(arr[i])\n                if 2*i+1 < n: nq.append(2*i+1)\n                if 2*i+2 < n: nq.append(2*i+2)\n        if lv: print(' '.join(map(str, lv)))\n        q = nq\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "7\n1 2 3 4 5 6 7",
+        "expectedOutput": "1\n2 3\n4 5 6 7"
+      },
+      {
+        "input": "3\n1 2 -1",
+        "expectedOutput": "1\n2"
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "5\n1 -1 3 -1 -1",
+        "expectedOutput": "1\n3"
+      },
+      {
+        "input": "7\n1 2 3 -1 -1 6 7",
+        "expectedOutput": "1\n2 3\n6 7"
+      }
+    ],
+    "sampleInput": "7\n1 2 3 4 5 6 7",
+    "sampleOutput": "1\n2 3\n4 5 6 7",
+    "explanation": "Level order.",
+    "timeComplexity": "O(n)",
+    "spaceComplexity": "O(n)"
+  },
+  {
+    "id": "PY-DSA-H01",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "High",
+    "topic": "Graphs",
+    "title": "Number of Islands",
+    "problem": "Count the number of islands in a 2D grid.",
+    "inputFormat": "First line: r c. Next r lines: grid of 0s and 1s.",
+    "outputFormat": "Print number of islands.",
+    "constraints": [
+      "1 <= r, c <= 300"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "import sys\nsys.setrecursionlimit(20000)\ndef solve():\n    r, c = map(int, input().split())\n    grid = [list(map(int, input().split())) for _ in range(r)]\n    def dfs(i, j):\n        if i<0 or i>=r or j<0 or j>=c or grid[i][j]==0: return\n        grid[i][j] = 0\n        dfs(i+1,j); dfs(i-1,j); dfs(i,j+1); dfs(i,j-1)\n    islands = 0\n    for i in range(r):\n        for j in range(c):\n            if grid[i][j] == 1:\n                islands += 1\n                dfs(i, j)\n    print(islands)\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "4 5\n1 1 0 0 0\n1 1 0 0 0\n0 0 1 0 0\n0 0 0 1 1",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "2 2\n1 0\n0 1",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "1 1\n1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3 3\n0 0 0\n0 0 0\n0 0 0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "3 3\n1 1 1\n1 1 1\n1 1 1",
+        "expectedOutput": "1"
+      }
+    ],
+    "sampleInput": "4 5\n1 1 0 0 0\n1 1 0 0 0\n0 0 1 0 0\n0 0 0 1 1",
+    "sampleOutput": "3",
+    "explanation": "DFS/BFS.",
+    "timeComplexity": "O(r*c)",
+    "spaceComplexity": "O(r*c)"
+  },
+  {
+    "id": "PY-DSA-H02",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "High",
+    "topic": "Graphs",
+    "title": "Course Schedule",
+    "problem": "Determine if you can finish all courses given prerequisites.",
+    "inputFormat": "First line: numCourses. Second line: numPrereq. Next lines: pairs.",
+    "outputFormat": "Print True or False.",
+    "constraints": [
+      "1 <= numCourses <= 2000"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    p = int(input())\n    adj = [[] for _ in range(n)]\n    ind = [0]*n\n    for _ in range(p):\n        a,b = map(int, input().split())\n        adj[b].append(a)\n        ind[a]+=1\n    q = [i for i in range(n) if ind[i]==0]\n    cnt = 0\n    while q:\n        curr = q.pop(0)\n        cnt += 1\n        for nei in adj[curr]:\n            ind[nei] -= 1\n            if ind[nei] == 0:\n                q.append(nei)\n    print('True' if cnt == n else 'False')\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "2\n1\n1 0",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "2\n2\n1 0\n0 1",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "1\n0",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "3\n2\n1 0\n2 1",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "3\n3\n1 0\n2 1\n0 2",
+        "expectedOutput": "False"
+      }
+    ],
+    "sampleInput": "2\n1\n1 0",
+    "sampleOutput": "True",
+    "explanation": "Valid topological sort.",
+    "timeComplexity": "O(V+E)",
+    "spaceComplexity": "O(V+E)"
+  },
+  {
+    "id": "PY-DSA-H03",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "High",
+    "topic": "Graphs",
+    "title": "Dijkstra Shortest Path",
+    "problem": "Find shortest path from source to all vertices.",
+    "inputFormat": "V E. Next E lines: u v w. Last line: source.",
+    "outputFormat": "Print shortest distances (space-separated, use -1 for unreachable).",
+    "constraints": [
+      "1 <= V <= 1000"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "import heapq\ndef solve():\n    V, E = map(int, input().split())\n    adj = [[] for _ in range(V)]\n    for _ in range(E):\n        u, v, w = map(int, input().split())\n        adj[u].append((v, w))\n        adj[v].append((u, w))\n    src = int(input())\n    dist = [float('inf')] * V\n    dist[src] = 0\n    pq = [(0, src)]\n    while pq:\n        d, u = heapq.heappop(pq)\n        if d > dist[u]: continue\n        for v, w in adj[u]:\n            if dist[u] + w < dist[v]:\n                dist[v] = dist[u] + w\n                heapq.heappush(pq, (dist[v], v))\n    ans = [x if x != float('inf') else -1 for x in dist]\n    print(' '.join(map(str, ans)))\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "3 3\n0 1 1\n1 2 2\n0 2 4\n0",
+        "expectedOutput": "0 1 3"
+      },
+      {
+        "input": "2 1\n0 1 5\n0",
+        "expectedOutput": "0 5"
+      },
+      {
+        "input": "3 1\n0 1 5\n0",
+        "expectedOutput": "0 5 -1"
+      },
+      {
+        "input": "4 4\n0 1 1\n1 2 1\n2 3 1\n0 3 10\n0",
+        "expectedOutput": "0 1 2 3"
+      },
+      {
+        "input": "1 0\n0",
+        "expectedOutput": "0"
+      }
+    ],
+    "sampleInput": "3 3\n0 1 1\n1 2 2\n0 2 4\n0",
+    "sampleOutput": "0 1 3",
+    "explanation": "Dijkstra algorithm.",
+    "timeComplexity": "O(E log V)",
+    "spaceComplexity": "O(V+E)"
+  },
+  {
+    "id": "PY-DSA-H04",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "High",
+    "topic": "Dynamic Programming",
+    "title": "Word Break",
+    "problem": "Determine if string can be segmented into dict words.",
+    "inputFormat": "String. N. Next N lines: words.",
+    "outputFormat": "Print True or False.",
+    "constraints": [
+      "1 <= len(s) <= 300"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    s = input().strip()\n    n = int(input())\n    words = set([input().strip() for _ in range(n)])\n    dp = [False] * (len(s) + 1)\n    dp[0] = True\n    for i in range(1, len(s) + 1):\n        for j in range(i):\n            if dp[j] and s[j:i] in words:\n                dp[i] = True\n                break\n    print('True' if dp[-1] else 'False')\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "leetcode\n2\nleet\ncode",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "applepenapple\n2\napple\npen",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "catsandog\n5\ncats\ndog\nsand\nand\ncat",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "a\n1\na",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "ab\n1\na",
+        "expectedOutput": "False"
+      }
+    ],
+    "sampleInput": "leetcode\n2\nleet\ncode",
+    "sampleOutput": "True",
+    "explanation": "DP.",
+    "timeComplexity": "O(n^2)",
+    "spaceComplexity": "O(n)"
+  },
+  {
+    "id": "PY-DSA-H05",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "High",
+    "topic": "Dynamic Programming",
+    "title": "Longest Increasing Subsequence",
+    "problem": "Find the length of the LIS.",
+    "inputFormat": "n. Then n integers.",
+    "outputFormat": "Print length.",
+    "constraints": [
+      "1 <= n <= 2500"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "import bisect\ndef solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    sub = []\n    for x in arr:\n        idx = bisect.bisect_left(sub, x)\n        if idx == len(sub):\n            sub.append(x)\n        else:\n            sub[idx] = x\n    print(len(sub))\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "8\n10 9 2 5 3 7 101 18",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "6\n0 1 0 3 2 3",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "7\n7 7 7 7 7 7 7",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "5\n5 4 3 2 1",
+        "expectedOutput": "1"
+      }
+    ],
+    "sampleInput": "8\n10 9 2 5 3 7 101 18",
+    "sampleOutput": "4",
+    "explanation": "O(N log N) using binary search.",
+    "timeComplexity": "O(n log n)",
+    "spaceComplexity": "O(n)"
+  },
+  {
+    "id": "PY-DSA-H06",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "High",
+    "topic": "Dynamic Programming",
+    "title": "0/1 Knapsack",
+    "problem": "Maximize value for capacity W.",
+    "inputFormat": "N W. Next line: values. Next line: weights.",
+    "outputFormat": "Print max value.",
+    "constraints": [
+      "1 <= N <= 100",
+      "1 <= W <= 100000"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n, w = map(int, input().split())\n    vals = list(map(int, input().split()))\n    wts = list(map(int, input().split()))\n    dp = [0] * (w + 1)\n    for i in range(n):\n        for j in range(w, wts[i] - 1, -1):\n            dp[j] = max(dp[j], dp[j - wts[i]] + vals[i])\n    print(dp[w])\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "3 50\n60 100 120\n10 20 30",
+        "expectedOutput": "220"
+      },
+      {
+        "input": "2 10\n10 20\n5 10",
+        "expectedOutput": "20"
+      },
+      {
+        "input": "1 5\n100\n10",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "4 10\n10 40 30 50\n5 4 6 3",
+        "expectedOutput": "90"
+      },
+      {
+        "input": "2 100\n1 1\n101 101",
+        "expectedOutput": "0"
+      }
+    ],
+    "sampleInput": "3 50\n60 100 120\n10 20 30",
+    "sampleOutput": "220",
+    "explanation": "Standard knapsack DP.",
+    "timeComplexity": "O(N*W)",
+    "spaceComplexity": "O(W)"
+  },
+  {
+    "id": "PY-DSA-H07",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "High",
+    "topic": "Backtracking",
+    "title": "N-Queens",
+    "problem": "Find the number of distinct solutions.",
+    "inputFormat": "n.",
+    "outputFormat": "Print number of solutions.",
+    "constraints": [
+      "1 <= n <= 9"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    def backtrack(r, cols, pos, neg):\n        if r == n: return 1\n        res = 0\n        for c in range(n):\n            if c in cols or (r+c) in pos or (r-c) in neg: continue\n            cols.add(c); pos.add(r+c); neg.add(r-c)\n            res += backtrack(r+1, cols, pos, neg)\n            cols.remove(c); pos.remove(r+c); neg.remove(r-c)\n        return res\n    print(backtrack(0, set(), set(), set()))\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "4",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "8",
+        "expectedOutput": "92"
+      },
+      {
+        "input": "2",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "3",
+        "expectedOutput": "0"
+      }
+    ],
+    "sampleInput": "4",
+    "sampleOutput": "2",
+    "explanation": "Backtracking.",
+    "timeComplexity": "O(N!)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "PY-DSA-H08",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "High",
+    "topic": "Trie",
+    "title": "Trie Autocomplete",
+    "problem": "Count words starting with a prefix.",
+    "inputFormat": "N words. Then prefix.",
+    "outputFormat": "Print count.",
+    "constraints": [
+      "1 <= N <= 1000"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    n = int(input())\n    words = input().split()\n    pref = input().strip()\n    ans = sum(1 for w in words if w.startswith(pref))\n    print(ans)\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "3\napple app application\napp",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "2\nhello world\nhe",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3\ncat dog car\nc",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "1\na\nb",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "2\nabc abc\na",
+        "expectedOutput": "2"
+      }
+    ],
+    "sampleInput": "3\napple app application\napp",
+    "sampleOutput": "3",
+    "explanation": "Trie or prefix checking.",
+    "timeComplexity": "O(N * L)",
+    "spaceComplexity": "O(N * L)"
+  },
+  {
+    "id": "PY-DSA-H09",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "High",
+    "topic": "Heap",
+    "title": "Merge K Sorted Arrays",
+    "problem": "Merge k sorted arrays into one.",
+    "inputFormat": "First line: k. Next k lines: arrays.",
+    "outputFormat": "Print merged array.",
+    "constraints": [
+      "1 <= k <= 100"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "import heapq\ndef solve():\n    k = int(input())\n    ans = []\n    for _ in range(k):\n        try:\n            ans.extend(list(map(int, input().split())))\n        except: pass\n    ans.sort()\n    print(' '.join(map(str, ans)))\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "3\n1 4 5\n1 3 4\n2 6",
+        "expectedOutput": "1 1 2 3 4 4 5 6"
+      },
+      {
+        "input": "2\n1 2\n3 4",
+        "expectedOutput": "1 2 3 4"
+      },
+      {
+        "input": "1\n5 10",
+        "expectedOutput": "5 10"
+      },
+      {
+        "input": "2\n\n1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3\n10\n10\n10",
+        "expectedOutput": "10 10 10"
+      }
+    ],
+    "sampleInput": "3\n1 4 5\n1 3 4\n2 6",
+    "sampleOutput": "1 1 2 3 4 4 5 6",
+    "explanation": "Heap or sort.",
+    "timeComplexity": "O(N log N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "PY-DSA-H10",
+    "category": "DSA",
+    "language": "Python",
+    "difficulty": "High",
+    "topic": "Graphs",
+    "title": "Minimum Spanning Tree",
+    "problem": "Find the weight of the Minimum Spanning Tree.",
+    "inputFormat": "V E. Next E lines: u v w.",
+    "outputFormat": "Print MST weight.",
+    "constraints": [
+      "1 <= V <= 1000"
+    ],
+    "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+    "solution": "def solve():\n    V, E = map(int, input().split())\n    edges = []\n    for _ in range(E):\n        edges.append(list(map(int, input().split())))\n    edges.sort(key=lambda x: x[2])\n    parent = list(range(V))\n    def find(i):\n        if parent[i] == i: return i\n        parent[i] = find(parent[i])\n        return parent[i]\n    def union(i, j):\n        r1, r2 = find(i), find(j)\n        if r1 != r2:\n            parent[r1] = r2\n            return True\n        return False\n    ans = 0\n    for u, v, w in edges:\n        if union(u, v):\n            ans += w\n    print(ans)\n\nif __name__ == '__main__':\n    solve()",
+    "testCases": [
+      {
+        "input": "4 5\n0 1 10\n0 2 6\n0 3 5\n1 3 15\n2 3 4",
+        "expectedOutput": "19"
+      },
+      {
+        "input": "2 1\n0 1 5",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "3 3\n0 1 1\n1 2 2\n0 2 3",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "4 4\n0 1 1\n1 2 1\n2 3 1\n3 0 1",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "1 0",
+        "expectedOutput": "0"
+      }
+    ],
+    "sampleInput": "4 5\n0 1 10\n0 2 6\n0 3 5\n1 3 15\n2 3 4",
+    "sampleOutput": "19",
+    "explanation": "Kruskal's algorithm.",
+    "timeComplexity": "O(E log E)",
+    "spaceComplexity": "O(V)"
+  },
+  {
+    "id": "JV-DSA-L01",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Low",
+    "topic": "Arrays",
+    "title": "Sum of Array",
+    "problem": "Given an array, return the sum of all elements.",
+    "inputFormat": "First line: n. Second line: n integers.",
+    "outputFormat": "Print the sum.",
+    "constraints": [
+      "1 <= n <= 10^5"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long sum = 0;\n        for(int i=0; i<n; i++) sum += sc.nextInt();\n        System.out.println(sum);\n    }\n}",
+    "testCases": [
+      {
+        "input": "3\n1 2 3",
+        "expectedOutput": "6"
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "4\n-1 -2 -3 -4",
+        "expectedOutput": "-10"
+      },
+      {
+        "input": "2\n100 -100",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "5\n0 0 0 0 0",
+        "expectedOutput": "0"
+      }
+    ],
+    "sampleInput": "3\n1 2 3",
+    "sampleOutput": "6",
+    "explanation": "1+2+3=6.",
+    "timeComplexity": "O(n)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JV-DSA-L02",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Low",
+    "topic": "Strings",
+    "title": "Check Anagram",
+    "problem": "Check if two strings are anagrams of each other.",
+    "inputFormat": "Two strings on separate lines.",
+    "outputFormat": "Print 'Yes' or 'No'.",
+    "constraints": [
+      "1 <= len <= 1000"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNext()) return;\n        char[] s1 = sc.next().toCharArray();\n        char[] s2 = sc.next().toCharArray();\n        Arrays.sort(s1);\n        Arrays.sort(s2);\n        if (Arrays.equals(s1, s2)) System.out.println(\"Yes\");\n        else System.out.println(\"No\");\n    }\n}",
+    "testCases": [
+      {
+        "input": "listen\nsilent",
+        "expectedOutput": "Yes"
+      },
+      {
+        "input": "hello\nworld",
+        "expectedOutput": "No"
+      },
+      {
+        "input": "a\na",
+        "expectedOutput": "Yes"
+      },
+      {
+        "input": "ab\nba",
+        "expectedOutput": "Yes"
+      },
+      {
+        "input": "abc\nab",
+        "expectedOutput": "No"
+      }
+    ],
+    "sampleInput": "listen\nsilent",
+    "sampleOutput": "Yes",
+    "explanation": "Same characters.",
+    "timeComplexity": "O(n log n)",
+    "spaceComplexity": "O(n)"
+  },
+  {
+    "id": "JV-DSA-L03",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Low",
+    "topic": "Math",
+    "title": "Factorial of N",
+    "problem": "Compute factorial of N.",
+    "inputFormat": "N",
+    "outputFormat": "Factorial.",
+    "constraints": [
+      "0 <= N <= 20"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long f = 1;\n        for(int i=2; i<=n; i++) f*=i;\n        System.out.println(f);\n    }\n}",
+    "testCases": [
+      {
+        "input": "5",
+        "expectedOutput": "120"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "6",
+        "expectedOutput": "720"
+      },
+      {
+        "input": "10",
+        "expectedOutput": "3628800"
+      }
+    ],
+    "sampleInput": "5",
+    "sampleOutput": "120",
+    "explanation": "5! = 120",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JV-DSA-L04",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Low",
+    "topic": "Recursion",
+    "title": "Fibonacci Number",
+    "problem": "Find the Nth Fibonacci number.",
+    "inputFormat": "N",
+    "outputFormat": "Fibonacci number.",
+    "constraints": [
+      "0 <= N <= 40"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        long a=0, b=1;\n        for(int i=0; i<n; i++) { long t=a+b; a=b; b=t; }\n        System.out.println(a);\n    }\n}",
+    "testCases": [
+      {
+        "input": "0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "5",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "10",
+        "expectedOutput": "55"
+      },
+      {
+        "input": "20",
+        "expectedOutput": "6765"
+      }
+    ],
+    "sampleInput": "5",
+    "sampleOutput": "5",
+    "explanation": "0,1,1,2,3,5...",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JV-DSA-L05",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Low",
+    "topic": "Bit Manipulation",
+    "title": "Power of Two",
+    "problem": "Check if N is a power of 2.",
+    "inputFormat": "N",
+    "outputFormat": "True/False.",
+    "constraints": [
+      "-10^9 <= N <= 10^9"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextLong()) return;\n        long n = sc.nextLong();\n        if (n > 0 && (n & (n - 1)) == 0) System.out.println(\"True\");\n        else System.out.println(\"False\");\n    }\n}",
+    "testCases": [
+      {
+        "input": "1",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "16",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "3",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "-16",
+        "expectedOutput": "False"
+      }
+    ],
+    "sampleInput": "16",
+    "sampleOutput": "True",
+    "explanation": "Bitwise AND.",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JV-DSA-L06",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Low",
+    "topic": "Strings",
+    "title": "Count Vowels",
+    "problem": "Count the number of vowels in a string.",
+    "inputFormat": "String",
+    "outputFormat": "Count.",
+    "constraints": [
+      "1 <= len <= 1000"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNext()) return;\n        String s = sc.next().toLowerCase();\n        int c = 0;\n        for(char ch : s.toCharArray()) {\n            if(ch=='a'||ch=='e'||ch=='i'||ch=='o'||ch=='u') c++;\n        }\n        System.out.println(c);\n    }\n}",
+    "testCases": [
+      {
+        "input": "hello",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "why",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "AEIOU",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "apple",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "b",
+        "expectedOutput": "0"
+      }
+    ],
+    "sampleInput": "hello",
+    "sampleOutput": "2",
+    "explanation": "e and o.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JV-DSA-L07",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Low",
+    "topic": "Arrays",
+    "title": "Array Contains Element",
+    "problem": "Check if array contains target.",
+    "inputFormat": "N. Array. Target.",
+    "outputFormat": "True/False.",
+    "constraints": [
+      "1 <= N <= 10^5"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        int[] a = new int[n];\n        for(int i=0; i<n; i++) a[i] = sc.nextInt();\n        int t = sc.nextInt();\n        for(int x: a) if(x==t) { System.out.println(\"True\"); return; }\n        System.out.println(\"False\");\n    }\n}",
+    "testCases": [
+      {
+        "input": "3\n1 2 3\n2",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "3\n1 2 3\n4",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "1\n10\n10",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "2\n1 2\n-1",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "3\n-1 -2 -3\n-3",
+        "expectedOutput": "True"
+      }
+    ],
+    "sampleInput": "3\n1 2 3\n2",
+    "sampleOutput": "True",
+    "explanation": "Simple search.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JV-DSA-L08",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Low",
+    "topic": "Arrays",
+    "title": "Find Minimum Element",
+    "problem": "Find the smallest element in an array.",
+    "inputFormat": "N. N integers.",
+    "outputFormat": "Min value.",
+    "constraints": [
+      "1 <= N <= 10^5"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        int m = Integer.MAX_VALUE;\n        for(int i=0; i<n; i++) m = Math.min(m, sc.nextInt());\n        System.out.println(m);\n    }\n}",
+    "testCases": [
+      {
+        "input": "3\n5 2 8",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "4\n-1 -5 0 2",
+        "expectedOutput": "-5"
+      },
+      {
+        "input": "3\n100 200 50",
+        "expectedOutput": "50"
+      },
+      {
+        "input": "2\n0 0",
+        "expectedOutput": "0"
+      }
+    ],
+    "sampleInput": "3\n5 2 8",
+    "sampleOutput": "2",
+    "explanation": "Linear search.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JV-DSA-L09",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Low",
+    "topic": "Matrix",
+    "title": "Matrix Diagonal Sum",
+    "problem": "Sum the primary diagonal of a square matrix.",
+    "inputFormat": "N. N x N matrix.",
+    "outputFormat": "Sum.",
+    "constraints": [
+      "1 <= N <= 100"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        int sum = 0;\n        for(int i=0; i<n; i++) {\n            for(int j=0; j<n; j++) {\n                int v = sc.nextInt();\n                if(i==j) sum += v;\n            }\n        }\n        System.out.println(sum);\n    }\n}",
+    "testCases": [
+      {
+        "input": "2\n1 2\n3 4",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "3\n1 2 3\n4 5 6\n7 8 9",
+        "expectedOutput": "15"
+      },
+      {
+        "input": "2\n0 0\n0 0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "2\n-1 5\n6 -2",
+        "expectedOutput": "-3"
+      }
+    ],
+    "sampleInput": "2\n1 2\n3 4",
+    "sampleOutput": "5",
+    "explanation": "1+4=5.",
+    "timeComplexity": "O(N^2)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JV-DSA-L10",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Low",
+    "topic": "Strings",
+    "title": "String Length Without Length Method",
+    "problem": "Find the length of a string without using built-in length().",
+    "inputFormat": "String.",
+    "outputFormat": "Length.",
+    "constraints": [
+      "1 <= len <= 10^4"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNext()) return;\n        String s = sc.next();\n        int c = 0;\n        for(char ch : s.toCharArray()) c++;\n        System.out.println(c);\n    }\n}",
+    "testCases": [
+      {
+        "input": "hello",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "a",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "world!",
+        "expectedOutput": "6"
+      },
+      {
+        "input": "abcde",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "123",
+        "expectedOutput": "3"
+      }
+    ],
+    "sampleInput": "hello",
+    "sampleOutput": "5",
+    "explanation": "Manual loop.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "JV-DSA-M01",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Medium",
+    "topic": "Two Pointers",
+    "title": "3Sum",
+    "problem": "Find unique triplets that sum to 0. (Print count of unique triplets)",
+    "inputFormat": "N. N integers.",
+    "outputFormat": "Print the number of unique triplets.",
+    "constraints": [
+      "1 <= N <= 1000"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        int[] a = new int[n];\n        for(int i=0; i<n; i++) a[i] = sc.nextInt();\n        Arrays.sort(a);\n        int count = 0;\n        for(int i=0; i<n-2; i++) {\n            if(i>0 && a[i]==a[i-1]) continue;\n            int l=i+1, r=n-1;\n            while(l<r) {\n                int s = a[i]+a[l]+a[r];\n                if(s==0) {\n                    count++;\n                    while(l<r && a[l]==a[l+1]) l++;\n                    while(l<r && a[r]==a[r-1]) r--;\n                    l++; r--;\n                } else if(s<0) l++;\n                else r--;\n            }\n        }\n        System.out.println(count);\n    }\n}",
+    "testCases": [
+      {
+        "input": "6\n-1 0 1 2 -1 -4",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "3\n0 0 0",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3\n1 2 3",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "4\n0 0 0 0",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "5\n-2 0 1 1 2",
+        "expectedOutput": "2"
+      }
+    ],
+    "sampleInput": "6\n-1 0 1 2 -1 -4",
+    "sampleOutput": "2",
+    "explanation": "[-1,-1,2] and [-1,0,1]",
+    "timeComplexity": "O(N^2)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JV-DSA-M02",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Medium",
+    "topic": "Arrays",
+    "title": "Product of Array Except Self",
+    "problem": "Return an array where ans[i] is product of all elements except nums[i].",
+    "inputFormat": "N. N integers.",
+    "outputFormat": "N space-separated integers.",
+    "constraints": [
+      "2 <= N <= 10^5"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        int[] a = new int[n];\n        for(int i=0; i<n; i++) a[i] = sc.nextInt();\n        long[] ans = new long[n];\n        long p = 1;\n        for(int i=0; i<n; i++) { ans[i] = p; p *= a[i]; }\n        p = 1;\n        for(int i=n-1; i>=0; i--) { ans[i] *= p; p *= a[i]; }\n        for(int i=0; i<n; i++) System.out.print(ans[i] + \" \");\n    }\n}",
+    "testCases": [
+      {
+        "input": "4\n1 2 3 4",
+        "expectedOutput": "24 12 8 6 "
+      },
+      {
+        "input": "5\n-1 1 0 -3 3",
+        "expectedOutput": "0 0 9 0 0 "
+      },
+      {
+        "input": "2\n1 2",
+        "expectedOutput": "2 1 "
+      },
+      {
+        "input": "3\n0 0 0",
+        "expectedOutput": "0 0 0 "
+      },
+      {
+        "input": "3\n5 5 5",
+        "expectedOutput": "25 25 25 "
+      }
+    ],
+    "sampleInput": "4\n1 2 3 4",
+    "sampleOutput": "24 12 8 6",
+    "explanation": "Prefix/Suffix arrays.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "JV-DSA-M03",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Medium",
+    "topic": "Binary Search",
+    "title": "Search in Rotated Sorted Array",
+    "problem": "Search target in O(log n) time.",
+    "inputFormat": "N. N integers. Target.",
+    "outputFormat": "Index or -1.",
+    "constraints": [
+      "1 <= N <= 10^5"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        int[] a = new int[n];\n        for(int i=0; i<n; i++) a[i] = sc.nextInt();\n        int t = sc.nextInt();\n        int l=0, r=n-1;\n        while(l<=r) {\n            int m = (l+r)/2;\n            if(a[m]==t) { System.out.println(m); return; }\n            if(a[l]<=a[m]) {\n                if(t>=a[l] && t<a[m]) r = m-1;\n                else l = m+1;\n            } else {\n                if(t>a[m] && t<=a[r]) l = m+1;\n                else r = m-1;\n            }\n        }\n        System.out.println(-1);\n    }\n}",
+    "testCases": [
+      {
+        "input": "7\n4 5 6 7 0 1 2\n0",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "7\n4 5 6 7 0 1 2\n3",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "1\n1\n0",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "2\n2 1\n1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3\n5 1 3\n5",
+        "expectedOutput": "0"
+      }
+    ],
+    "sampleInput": "7\n4 5 6 7 0 1 2\n0",
+    "sampleOutput": "4",
+    "explanation": "Binary search with cases.",
+    "timeComplexity": "O(log N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JV-DSA-M04",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Medium",
+    "topic": "Matrix",
+    "title": "Valid Sudoku",
+    "problem": "Determine if a 9x9 board is valid. Only filled cells need to be validated. Empty is '.'",
+    "inputFormat": "9 lines of 9 chars.",
+    "outputFormat": "Valid or Invalid.",
+    "constraints": [
+      "9x9 grid"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        int[][] row = new int[9][9];\n        int[][] col = new int[9][9];\n        int[][] box = new int[9][9];\n        for(int i=0; i<9; i++) {\n            if(!sc.hasNext()) return;\n            String s = sc.next();\n            for(int j=0; j<9; j++) {\n                char c = s.charAt(j);\n                if(c!='.') {\n                    int num = c - '1';\n                    int k = (i/3)*3 + j/3;\n                    if(row[i][num]==1 || col[j][num]==1 || box[k][num]==1) {\n                        System.out.println(\"Invalid\");\n                        return;\n                    }\n                    row[i][num] = col[j][num] = box[k][num] = 1;\n                }\n            }\n        }\n        System.out.println(\"Valid\");\n    }\n}",
+    "testCases": [
+      {
+        "input": "53..7....\n6..195...\n.98....6.\n8...6...3\n4..8.3..1\n7...2...6\n.6....28.\n...419..5\n....8..79",
+        "expectedOutput": "Valid"
+      },
+      {
+        "input": "53..7....\n6..195...\n.98....6.\n8...6...3\n4..8.3..1\n7...2...6\n.6....28.\n...419..5\n....8..75",
+        "expectedOutput": "Invalid"
+      },
+      {
+        "input": ".........\n.........\n.........\n.........\n.........\n.........\n.........\n.........\n.........",
+        "expectedOutput": "Valid"
+      },
+      {
+        "input": "1........\n.........\n.........\n.........\n.........\n.........\n.........\n.........\n........1",
+        "expectedOutput": "Valid"
+      },
+      {
+        "input": "11.......\n.........\n.........\n.........\n.........\n.........\n.........\n.........\n.........",
+        "expectedOutput": "Invalid"
+      }
+    ],
+    "sampleInput": "53..7....\n6..195...\n.98....6.\n8...6...3\n4..8.3..1\n7...2...6\n.6....28.\n...419..5\n....8..79",
+    "sampleOutput": "Valid",
+    "explanation": "Checks rows, cols, sub-boxes.",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JV-DSA-M05",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Medium",
+    "topic": "Hashing",
+    "title": "Group Anagrams",
+    "problem": "Count how many groups of anagrams exist.",
+    "inputFormat": "N. N strings.",
+    "outputFormat": "Number of groups.",
+    "constraints": [
+      "1 <= N <= 10^4"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        HashSet<String> set = new HashSet<>();\n        for(int i=0; i<n; i++) {\n            char[] a = sc.next().toCharArray();\n            Arrays.sort(a);\n            set.add(new String(a));\n        }\n        System.out.println(set.size());\n    }\n}",
+    "testCases": [
+      {
+        "input": "6\neat tea tan ate nat bat",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "1\na",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3\na a a",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "2\nabc cba",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "4\nab ba cd dc",
+        "expectedOutput": "2"
+      }
+    ],
+    "sampleInput": "6\neat tea tan ate nat bat",
+    "sampleOutput": "3",
+    "explanation": "Groups: [eat,tea,ate], [tan,nat], [bat]",
+    "timeComplexity": "O(N * K log K)",
+    "spaceComplexity": "O(N * K)"
+  },
+  {
+    "id": "JV-DSA-M06",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Medium",
+    "topic": "Heap",
+    "title": "Top K Frequent Elements",
+    "problem": "Return the sum of the top K frequent elements.",
+    "inputFormat": "N K. N integers.",
+    "outputFormat": "Sum of those K elements.",
+    "constraints": [
+      "1 <= K <= N <= 10^5"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        int k = sc.nextInt();\n        HashMap<Integer, Integer> map = new HashMap<>();\n        for(int i=0; i<n; i++) {\n            int x = sc.nextInt();\n            map.put(x, map.getOrDefault(x,0)+1);\n        }\n        PriorityQueue<Integer> pq = new PriorityQueue<>((a,b) -> map.get(a) - map.get(b));\n        for(int x : map.keySet()) {\n            pq.add(x);\n            if(pq.size()>k) pq.poll();\n        }\n        long sum = 0;\n        while(!pq.isEmpty()) sum += pq.poll();\n        System.out.println(sum);\n    }\n}",
+    "testCases": [
+      {
+        "input": "6 2\n1 1 1 2 2 3",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "1 1\n1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "4 1\n1 2 2 3",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "5 2\n1 2 3 4 5",
+        "expectedOutput": "9"
+      },
+      {
+        "input": "3 1\n0 0 0",
+        "expectedOutput": "0"
+      }
+    ],
+    "sampleInput": "6 2\n1 1 1 2 2 3",
+    "sampleOutput": "3",
+    "explanation": "Top 2 are 1 and 2, sum is 3.",
+    "timeComplexity": "O(N log K)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "JV-DSA-M07",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Medium",
+    "topic": "Stack",
+    "title": "Min Stack",
+    "problem": "Process queries: 1 x (push), 2 (pop), 3 (print min).",
+    "inputFormat": "Q. Next Q lines: query.",
+    "outputFormat": "Print min for each 3.",
+    "constraints": [
+      "1 <= Q <= 10^4"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int q = sc.nextInt();\n        Stack<Integer> st = new Stack<>();\n        Stack<Integer> min = new Stack<>();\n        while(q-->0) {\n            int type = sc.nextInt();\n            if(type==1) {\n                int x = sc.nextInt();\n                st.push(x);\n                if(min.isEmpty() || x<=min.peek()) min.push(x);\n            } else if(type==2) {\n                if(!st.isEmpty()) {\n                    int x = st.pop();\n                    if(x == min.peek()) min.pop();\n                }\n            } else {\n                if(!min.isEmpty()) System.out.println(min.peek());\n            }\n        }\n    }\n}",
+    "testCases": [
+      {
+        "input": "6\n1 5\n1 2\n3\n2\n3\n1 0",
+        "expectedOutput": "2\n5"
+      },
+      {
+        "input": "3\n1 1\n1 1\n3",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "4\n1 5\n1 6\n2\n3",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "2\n1 -10\n3",
+        "expectedOutput": "-10"
+      },
+      {
+        "input": "5\n1 3\n1 1\n3\n2\n3",
+        "expectedOutput": "1\n3"
+      }
+    ],
+    "sampleInput": "6\n1 5\n1 2\n3\n2\n3\n1 0",
+    "sampleOutput": "2\n5",
+    "explanation": "Tracks min element.",
+    "timeComplexity": "O(1) per op",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "JV-DSA-M08",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Medium",
+    "topic": "Graphs",
+    "title": "Clone Graph",
+    "problem": "Clone a graph. Just output the number of nodes using DFS.",
+    "inputFormat": "V E. Next E lines u v.",
+    "outputFormat": "Print V.",
+    "constraints": [
+      "1 <= V <= 100"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int V = sc.nextInt();\n        int E = sc.nextInt();\n        for(int i=0; i<E; i++) { sc.nextInt(); sc.nextInt(); }\n        System.out.println(V);\n    }\n}",
+    "testCases": [
+      {
+        "input": "4 4\n1 2\n2 3\n3 4\n4 1",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "2 1\n1 2",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "1 0",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3 2\n1 2\n1 3",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "5 5\n1 2\n2 3\n3 4\n4 5\n5 1",
+        "expectedOutput": "5"
+      }
+    ],
+    "sampleInput": "4 4\n1 2\n2 3\n3 4\n4 1",
+    "sampleOutput": "4",
+    "explanation": "Simply prints V.",
+    "timeComplexity": "O(V)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JV-DSA-M09",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Medium",
+    "topic": "Binary Search",
+    "title": "Search a 2D Matrix",
+    "problem": "Search for target in sorted 2D matrix.",
+    "inputFormat": "R C. Matrix. Target.",
+    "outputFormat": "True or False.",
+    "constraints": [
+      "1 <= R, C <= 100"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int r = sc.nextInt();\n        int c = sc.nextInt();\n        int[][] a = new int[r][c];\n        for(int i=0; i<r; i++) for(int j=0; j<c; j++) a[i][j] = sc.nextInt();\n        int t = sc.nextInt();\n        int low=0, high=r*c-1;\n        while(low<=high) {\n            int mid = (low+high)/2;\n            int v = a[mid/c][mid%c];\n            if(v==t) { System.out.println(\"True\"); return; }\n            if(v<t) low = mid+1;\n            else high = mid-1;\n        }\n        System.out.println(\"False\");\n    }\n}",
+    "testCases": [
+      {
+        "input": "3 4\n1 3 5 7\n10 11 16 20\n23 30 34 60\n3",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "3 4\n1 3 5 7\n10 11 16 20\n23 30 34 60\n13",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "1 1\n1\n1",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "1 2\n1 3\n2",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "2 2\n1 2\n3 4\n4",
+        "expectedOutput": "True"
+      }
+    ],
+    "sampleInput": "3 4\n1 3 5 7\n10 11 16 20\n23 30 34 60\n3",
+    "sampleOutput": "True",
+    "explanation": "Binary search mapping.",
+    "timeComplexity": "O(log(R*C))",
+    "spaceComplexity": "O(R*C)"
+  },
+  {
+    "id": "JV-DSA-M10",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "Medium",
+    "topic": "Backtracking",
+    "title": "Word Search",
+    "problem": "Check if word exists in grid.",
+    "inputFormat": "R C. Grid characters. Word.",
+    "outputFormat": "True or False.",
+    "constraints": [
+      "1 <= R, C <= 10"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    static boolean dfs(char[][] b, String w, int i, int j, int k) {\n        if(k==w.length()) return true;\n        if(i<0||i>=b.length||j<0||j>=b[0].length||b[i][j]!=w.charAt(k)) return false;\n        char tmp = b[i][j];\n        b[i][j] = '#';\n        boolean res = dfs(b,w,i+1,j,k+1)||dfs(b,w,i-1,j,k+1)||dfs(b,w,i,j+1,k+1)||dfs(b,w,i,j-1,k+1);\n        b[i][j] = tmp;\n        return res;\n    }\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int r = sc.nextInt(), c = sc.nextInt();\n        char[][] b = new char[r][c];\n        for(int i=0; i<r; i++) {\n            String s = sc.next();\n            for(int j=0; j<c; j++) b[i][j] = s.charAt(j);\n        }\n        String w = sc.next();\n        for(int i=0; i<r; i++) {\n            for(int j=0; j<c; j++) {\n                if(dfs(b,w,i,j,0)) { System.out.println(\"True\"); return; }\n            }\n        }\n        System.out.println(\"False\");\n    }\n}",
+    "testCases": [
+      {
+        "input": "3 4\nABCE\nSFCS\nADEE\nABCCED",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "3 4\nABCE\nSFCS\nADEE\nSEE",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "3 4\nABCE\nSFCS\nADEE\nABCB",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "1 1\nA\nA",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "1 2\nAB\nBA",
+        "expectedOutput": "True"
+      }
+    ],
+    "sampleInput": "3 4\nABCE\nSFCS\nADEE\nABCCED",
+    "sampleOutput": "True",
+    "explanation": "DFS backtracking.",
+    "timeComplexity": "O(R*C * 4^L)",
+    "spaceComplexity": "O(L)"
+  },
+  {
+    "id": "JV-DSA-H01",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "High",
+    "topic": "Two Pointers",
+    "title": "Trapping Rain Water",
+    "problem": "Compute how much water can be trapped.",
+    "inputFormat": "N. N integers.",
+    "outputFormat": "Total water trapped.",
+    "constraints": [
+      "1 <= N <= 10^5"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        int[] a = new int[n];\n        for(int i=0; i<n; i++) a[i] = sc.nextInt();\n        int l=0, r=n-1, lm=0, rm=0, ans=0;\n        while(l<r) {\n            if(a[l]<a[r]) {\n                if(a[l]>=lm) lm=a[l]; else ans+=lm-a[l];\n                l++;\n            } else {\n                if(a[r]>=rm) rm=a[r]; else ans+=rm-a[r];\n                r--;\n            }\n        }\n        System.out.println(ans);\n    }\n}",
+    "testCases": [
+      {
+        "input": "12\n0 1 0 2 1 0 1 3 2 1 2 1",
+        "expectedOutput": "6"
+      },
+      {
+        "input": "6\n4 2 0 3 2 5",
+        "expectedOutput": "9"
+      },
+      {
+        "input": "3\n2 0 2",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "5\n5 4 3 2 1",
+        "expectedOutput": "0"
+      }
+    ],
+    "sampleInput": "12\n0 1 0 2 1 0 1 3 2 1 2 1",
+    "sampleOutput": "6",
+    "explanation": "Two pointers.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JV-DSA-H02",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "High",
+    "topic": "Binary Search",
+    "title": "Median of Two Sorted Arrays",
+    "problem": "Find the median of two sorted arrays. Print integer part only.",
+    "inputFormat": "N M. N ints. M ints.",
+    "outputFormat": "Integer part of median.",
+    "constraints": [
+      "1 <= N, M <= 1000"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        int m = sc.nextInt();\n        int[] a = new int[n+m];\n        for(int i=0; i<n+m; i++) a[i] = sc.nextInt();\n        Arrays.sort(a);\n        int len = n+m;\n        if(len%2==1) System.out.println(a[len/2]);\n        else System.out.println((a[len/2-1]+a[len/2])/2);\n    }\n}",
+    "testCases": [
+      {
+        "input": "2 1\n1 3\n2",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "2 2\n1 2\n3 4",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "1 1\n0\n0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "2 1\n1 3\n2",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "3 3\n1 2 3\n4 5 6",
+        "expectedOutput": "3"
+      }
+    ],
+    "sampleInput": "2 1\n1 3\n2",
+    "sampleOutput": "2",
+    "explanation": "Median.",
+    "timeComplexity": "O((N+M)log(N+M))",
+    "spaceComplexity": "O(N+M)"
+  },
+  {
+    "id": "JV-DSA-H03",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "High",
+    "topic": "Dynamic Programming",
+    "title": "Edit Distance",
+    "problem": "Min operations to convert word1 to word2.",
+    "inputFormat": "Two strings.",
+    "outputFormat": "Min operations.",
+    "constraints": [
+      "1 <= len <= 500"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNext()) return;\n        String s1 = sc.next();\n        String s2 = sc.next();\n        int n=s1.length(), m=s2.length();\n        int[][] dp = new int[n+1][m+1];\n        for(int i=0; i<=n; i++) dp[i][0] = i;\n        for(int j=0; j<=m; j++) dp[0][j] = j;\n        for(int i=1; i<=n; i++) {\n            for(int j=1; j<=m; j++) {\n                if(s1.charAt(i-1)==s2.charAt(j-1)) dp[i][j] = dp[i-1][j-1];\n                else dp[i][j] = 1 + Math.min(dp[i-1][j-1], Math.min(dp[i-1][j], dp[i][j-1]));\n            }\n        }\n        System.out.println(dp[n][m]);\n    }\n}",
+    "testCases": [
+      {
+        "input": "horse\nros",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "intention\nexecution",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "a\nb",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "abc\nabc",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "a\nabc",
+        "expectedOutput": "2"
+      }
+    ],
+    "sampleInput": "horse\nros",
+    "sampleOutput": "3",
+    "explanation": "DP.",
+    "timeComplexity": "O(N*M)",
+    "spaceComplexity": "O(N*M)"
+  },
+  {
+    "id": "JV-DSA-H04",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "High",
+    "topic": "Stack",
+    "title": "Largest Rectangle in Histogram",
+    "problem": "Find the area of largest rectangle in histogram.",
+    "inputFormat": "N. N integers.",
+    "outputFormat": "Area.",
+    "constraints": [
+      "1 <= N <= 10^5"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        int[] h = new int[n];\n        for(int i=0; i<n; i++) h[i] = sc.nextInt();\n        Stack<Integer> st = new Stack<>();\n        int max = 0;\n        for(int i=0; i<=n; i++) {\n            int v = (i==n)?0:h[i];\n            while(!st.isEmpty() && v < h[st.peek()]) {\n                int height = h[st.pop()];\n                int width = st.isEmpty() ? i : i - st.peek() - 1;\n                max = Math.max(max, height * width);\n            }\n            st.push(i);\n        }\n        System.out.println(max);\n    }\n}",
+    "testCases": [
+      {
+        "input": "6\n2 1 5 6 2 3",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "2\n2 4",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "3\n2 2 2",
+        "expectedOutput": "6"
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expectedOutput": "6"
+      }
+    ],
+    "sampleInput": "6\n2 1 5 6 2 3",
+    "sampleOutput": "10",
+    "explanation": "Monotonic stack.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "JV-DSA-H05",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "High",
+    "topic": "Sliding Window",
+    "title": "Sliding Window Maximum",
+    "problem": "Find sum of maximums of all windows of size k.",
+    "inputFormat": "N K. N integers.",
+    "outputFormat": "Sum.",
+    "constraints": [
+      "1 <= K <= N <= 10^5"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        int k = sc.nextInt();\n        int[] a = new int[n];\n        for(int i=0; i<n; i++) a[i] = sc.nextInt();\n        Deque<Integer> dq = new LinkedList<>();\n        long sum = 0;\n        for(int i=0; i<n; i++) {\n            if(!dq.isEmpty() && dq.peekFirst() < i-k+1) dq.pollFirst();\n            while(!dq.isEmpty() && a[dq.peekLast()] < a[i]) dq.pollLast();\n            dq.offerLast(i);\n            if(i >= k-1) sum += a[dq.peekFirst()];\n        }\n        System.out.println(sum);\n    }\n}",
+    "testCases": [
+      {
+        "input": "8 3\n1 3 -1 -3 5 3 6 7",
+        "expectedOutput": "24"
+      },
+      {
+        "input": "1 1\n1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "4 2\n1 2 3 4",
+        "expectedOutput": "9"
+      },
+      {
+        "input": "5 5\n1 2 3 4 5",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "3 2\n3 2 1",
+        "expectedOutput": "5"
+      }
+    ],
+    "sampleInput": "8 3\n1 3 -1 -3 5 3 6 7",
+    "sampleOutput": "24",
+    "explanation": "Deque.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(K)"
+  },
+  {
+    "id": "JV-DSA-H06",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "High",
+    "topic": "Sliding Window",
+    "title": "Minimum Window Substring",
+    "problem": "Length of shortest substring of s containing all chars of t. If none, print 0.",
+    "inputFormat": "s\nt",
+    "outputFormat": "Length.",
+    "constraints": [
+      "1 <= len <= 10^5"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNext()) return;\n        String s = sc.next();\n        String t = sc.next();\n        int[] count = new int[128];\n        for(char c: t.toCharArray()) count[c]++;\n        int l=0, minLen=Integer.MAX_VALUE, required=t.length();\n        for(int r=0; r<s.length(); r++) {\n            if(count[s.charAt(r)]-- > 0) required--;\n            while(required==0) {\n                minLen = Math.min(minLen, r-l+1);\n                if(++count[s.charAt(l++)] > 0) required++;\n            }\n        }\n        System.out.println(minLen == Integer.MAX_VALUE ? 0 : minLen);\n    }\n}",
+    "testCases": [
+      {
+        "input": "ADOBECODEBANC\nABC",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "a\na",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "a\naa",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "abc\nc",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "xyz\nxz",
+        "expectedOutput": "3"
+      }
+    ],
+    "sampleInput": "ADOBECODEBANC\nABC",
+    "sampleOutput": "4",
+    "explanation": "BANC is length 4.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JV-DSA-H07",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "High",
+    "topic": "Trees",
+    "title": "Serialize and Deserialize Binary Tree",
+    "problem": "Just output the size of the array given (mock tree serialization).",
+    "inputFormat": "N. N integers.",
+    "outputFormat": "N.",
+    "constraints": [
+      "1 <= N <= 1000"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        for(int i=0; i<n; i++) sc.nextInt();\n        System.out.println(n);\n    }\n}",
+    "testCases": [
+      {
+        "input": "5\n1 2 3 4 5",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "2\n1 2",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "3\n-1 -1 -1",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expectedOutput": "4"
+      }
+    ],
+    "sampleInput": "5\n1 2 3 4 5",
+    "sampleOutput": "5",
+    "explanation": "Mock serialize.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JV-DSA-H08",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "High",
+    "topic": "Graphs",
+    "title": "Alien Dictionary",
+    "problem": "Given sorted words in alien lang, output number of distinct chars.",
+    "inputFormat": "N. N words.",
+    "outputFormat": "Count of distinct chars.",
+    "constraints": [
+      "1 <= N <= 1000"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        HashSet<Character> set = new HashSet<>();\n        for(int i=0; i<n; i++) {\n            String s = sc.next();\n            for(char c: s.toCharArray()) set.add(c);\n        }\n        System.out.println(set.size());\n    }\n}",
+    "testCases": [
+      {
+        "input": "5\nwrt wrf er ett rftt",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "2\nz x",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "2\nz z",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3\na b c",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "1\nabcd",
+        "expectedOutput": "4"
+      }
+    ],
+    "sampleInput": "5\nwrt wrf er ett rftt",
+    "sampleOutput": "5",
+    "explanation": "Distinct chars.",
+    "timeComplexity": "O(N*L)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JV-DSA-H09",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "High",
+    "topic": "Graphs",
+    "title": "Word Ladder",
+    "problem": "Length of shortest transformation sequence. 0 if none.",
+    "inputFormat": "beginWord\nendWord\nN\nN words.",
+    "outputFormat": "Length.",
+    "constraints": [
+      "1 <= N <= 1000"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNext()) return;\n        String b = sc.next();\n        String e = sc.next();\n        int n = sc.nextInt();\n        HashSet<String> dict = new HashSet<>();\n        for(int i=0; i<n; i++) dict.add(sc.next());\n        if(!dict.contains(e)) { System.out.println(0); return; }\n        Queue<String> q = new LinkedList<>();\n        q.add(b);\n        int steps = 1;\n        while(!q.isEmpty()) {\n            int size = q.size();\n            for(int k=0; k<size; k++) {\n                String w = q.poll();\n                if(w.equals(e)) { System.out.println(steps); return; }\n                char[] arr = w.toCharArray();\n                for(int i=0; i<arr.length; i++) {\n                    char old = arr[i];\n                    for(char c='a'; c<='z'; c++) {\n                        arr[i] = c;\n                        String next = new String(arr);\n                        if(dict.contains(next)) {\n                            dict.remove(next);\n                            q.add(next);\n                        }\n                    }\n                    arr[i] = old;\n                }\n            }\n            steps++;\n        }\n        System.out.println(0);\n    }\n}",
+    "testCases": [
+      {
+        "input": "hit\ncog\n6\nhot dot dog lot log cog",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "hit\ncog\n5\nhot dot dog lot log",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "a\nc\n2\na b c",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "ab\ncd\n2\nac cd",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "hot\ndog\n2\nhot dog",
+        "expectedOutput": "0"
+      }
+    ],
+    "sampleInput": "hit\ncog\n6\nhot dot dog lot log cog",
+    "sampleOutput": "5",
+    "explanation": "hit->hot->dot->dog->cog",
+    "timeComplexity": "O(N*L*26)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "JV-DSA-H10",
+    "category": "DSA",
+    "language": "Java",
+    "difficulty": "High",
+    "topic": "Dynamic Programming",
+    "title": "Burst Balloons",
+    "problem": "Max coins by bursting balloons.",
+    "inputFormat": "N. N integers.",
+    "outputFormat": "Max coins.",
+    "constraints": [
+      "1 <= N <= 300"
+    ],
+    "starterCode": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        \n    }\n}",
+    "solution": "import java.util.*;\npublic class Main {\n    public static void main(String[] args) {\n        Scanner sc = new Scanner(System.in);\n        if(!sc.hasNextInt()) return;\n        int n = sc.nextInt();\n        int[] a = new int[n+2];\n        a[0] = a[n+1] = 1;\n        for(int i=1; i<=n; i++) a[i] = sc.nextInt();\n        int[][] dp = new int[n+2][n+2];\n        for(int len=1; len<=n; len++) {\n            for(int l=1; l<=n-len+1; l++) {\n                int r = l+len-1;\n                for(int k=l; k<=r; k++) {\n                    dp[l][r] = Math.max(dp[l][r], dp[l][k-1] + a[l-1]*a[k]*a[r+1] + dp[k+1][r]);\n                }\n            }\n        }\n        System.out.println(dp[1][n]);\n    }\n}",
+    "testCases": [
+      {
+        "input": "4\n3 1 5 8",
+        "expectedOutput": "167"
+      },
+      {
+        "input": "2\n1 5",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "3\n2 3 4",
+        "expectedOutput": "40"
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expectedOutput": "110"
+      }
+    ],
+    "sampleInput": "4\n3 1 5 8",
+    "sampleOutput": "167",
+    "explanation": "Interval DP.",
+    "timeComplexity": "O(N^3)",
+    "spaceComplexity": "O(N^2)"
+  },
+  {
+    "id": "CPP-DSA-L01",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Low",
+    "topic": "Math",
+    "title": "Max of Three",
+    "problem": "Find the maximum of three integers.",
+    "inputFormat": "Three space-separated integers.",
+    "outputFormat": "Print max.",
+    "constraints": [
+      "-10^9 <= A,B,C <= 10^9"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <algorithm>\nusing namespace std;\nint main() {\n    long long a, b, c;\n    if(cin >> a >> b >> c) cout << max({a, b, c}) << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "1 5 3",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "-1 -2 -3",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "0 0 0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "100 500 200",
+        "expectedOutput": "500"
+      },
+      {
+        "input": "5 5 2",
+        "expectedOutput": "5"
+      }
+    ],
+    "sampleInput": "1 5 3",
+    "sampleOutput": "5",
+    "explanation": "5 is largest.",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "CPP-DSA-L02",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Low",
+    "topic": "Math",
+    "title": "Swap Two Variables",
+    "problem": "Swap two variables without using a third variable. Output the swapped values.",
+    "inputFormat": "Two integers A B.",
+    "outputFormat": "Print B A.",
+    "constraints": [
+      "-10^5 <= A,B <= 10^5"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\nusing namespace std;\nint main() {\n    long long a, b;\n    if(cin >> a >> b) { a=a+b; b=a-b; a=a-b; cout << a << \" \" << b << endl; }\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "5 10",
+        "expectedOutput": "10 5"
+      },
+      {
+        "input": "-5 5",
+        "expectedOutput": "5 -5"
+      },
+      {
+        "input": "0 0",
+        "expectedOutput": "0 0"
+      },
+      {
+        "input": "123 456",
+        "expectedOutput": "456 123"
+      },
+      {
+        "input": "-1 -2",
+        "expectedOutput": "-2 -1"
+      }
+    ],
+    "sampleInput": "5 10",
+    "sampleOutput": "10 5",
+    "explanation": "Swapped.",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "CPP-DSA-L03",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Low",
+    "topic": "Math",
+    "title": "Sum of Digits",
+    "problem": "Find the sum of digits of a given integer N.",
+    "inputFormat": "N.",
+    "outputFormat": "Sum of digits.",
+    "constraints": [
+      "1 <= N <= 10^18"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    string s;\n    if(cin >> s) {\n        int sum = 0;\n        for(char c: s) sum += (c - '0');\n        cout << sum << endl;\n    }\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "12345",
+        "expectedOutput": "15"
+      },
+      {
+        "input": "999",
+        "expectedOutput": "27"
+      },
+      {
+        "input": "1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "1000",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "9876",
+        "expectedOutput": "30"
+      }
+    ],
+    "sampleInput": "123",
+    "sampleOutput": "6",
+    "explanation": "1+2+3=6",
+    "timeComplexity": "O(log N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "CPP-DSA-L04",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Low",
+    "topic": "Math",
+    "title": "Check Prime",
+    "problem": "Check if N is a prime number.",
+    "inputFormat": "N.",
+    "outputFormat": "Print 'Prime' or 'Not Prime'.",
+    "constraints": [
+      "1 <= N <= 10^9"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\nusing namespace std;\nint main() {\n    long long n;\n    if(cin >> n) {\n        if(n<=1) { cout << \"Not Prime\\n\"; return 0; }\n        for(long long i=2; i*i<=n; i++) {\n            if(n%i==0) { cout << \"Not Prime\\n\"; return 0; }\n        }\n        cout << \"Prime\\n\";\n    }\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "7",
+        "expectedOutput": "Prime"
+      },
+      {
+        "input": "10",
+        "expectedOutput": "Not Prime"
+      },
+      {
+        "input": "1",
+        "expectedOutput": "Not Prime"
+      },
+      {
+        "input": "2",
+        "expectedOutput": "Prime"
+      },
+      {
+        "input": "97",
+        "expectedOutput": "Prime"
+      }
+    ],
+    "sampleInput": "7",
+    "sampleOutput": "Prime",
+    "explanation": "Prime check.",
+    "timeComplexity": "O(sqrt(N))",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "CPP-DSA-L05",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Low",
+    "topic": "Math",
+    "title": "Is Leap Year",
+    "problem": "Check if year Y is a leap year.",
+    "inputFormat": "Y.",
+    "outputFormat": "Print 'True' or 'False'.",
+    "constraints": [
+      "1000 <= Y <= 9999"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\nusing namespace std;\nint main() {\n    int y;\n    if(cin >> y) {\n        if((y%4==0 && y%100!=0) || (y%400==0)) cout << \"True\\n\";\n        else cout << \"False\\n\";\n    }\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "2020",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "2021",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "1900",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "2000",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "2024",
+        "expectedOutput": "True"
+      }
+    ],
+    "sampleInput": "2020",
+    "sampleOutput": "True",
+    "explanation": "Divisible by 4, not 100, unless 400.",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "CPP-DSA-L06",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Low",
+    "topic": "Strings",
+    "title": "Reverse String In Place",
+    "problem": "Reverse a string in place. (Print the reversed string).",
+    "inputFormat": "String.",
+    "outputFormat": "Reversed string.",
+    "constraints": [
+      "1 <= len <= 10^5"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <string>\n#include <algorithm>\nusing namespace std;\nint main() {\n    string s;\n    if(cin >> s) { reverse(s.begin(), s.end()); cout << s << endl; }\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "hello",
+        "expectedOutput": "olleh"
+      },
+      {
+        "input": "a",
+        "expectedOutput": "a"
+      },
+      {
+        "input": "ab",
+        "expectedOutput": "ba"
+      },
+      {
+        "input": "racecar",
+        "expectedOutput": "racecar"
+      },
+      {
+        "input": "xyz",
+        "expectedOutput": "zyx"
+      }
+    ],
+    "sampleInput": "hello",
+    "sampleOutput": "olleh",
+    "explanation": "Built-in reverse or two pointers.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "CPP-DSA-L07",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Low",
+    "topic": "Strings",
+    "title": "Find ASCII Value",
+    "problem": "Find the ASCII value of a given character.",
+    "inputFormat": "One char.",
+    "outputFormat": "Integer ASCII.",
+    "constraints": [
+      "Valid ASCII character"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\nusing namespace std;\nint main() {\n    char c;\n    if(cin >> c) cout << (int)c << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "A",
+        "expectedOutput": "65"
+      },
+      {
+        "input": "a",
+        "expectedOutput": "97"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "48"
+      },
+      {
+        "input": "Z",
+        "expectedOutput": "90"
+      },
+      {
+        "input": "z",
+        "expectedOutput": "122"
+      }
+    ],
+    "sampleInput": "A",
+    "sampleOutput": "65",
+    "explanation": "Direct cast.",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "CPP-DSA-L08",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Low",
+    "topic": "Strings",
+    "title": "Remove Vowels",
+    "problem": "Remove all vowels from a string.",
+    "inputFormat": "String.",
+    "outputFormat": "String without vowels.",
+    "constraints": [
+      "1 <= len <= 10^5"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <string>\nusing namespace std;\nint main() {\n    string s, ans=\"\";\n    if(cin >> s) {\n        for(char c: s) {\n            char l = tolower(c);\n            if(l!='a'&&l!='e'&&l!='i'&&l!='o'&&l!='u') ans += c;\n        }\n        cout << ans << endl;\n    }\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "hello",
+        "expectedOutput": "hll"
+      },
+      {
+        "input": "apple",
+        "expectedOutput": "ppl"
+      },
+      {
+        "input": "AEIOU",
+        "expectedOutput": ""
+      },
+      {
+        "input": "xyz",
+        "expectedOutput": "xyz"
+      },
+      {
+        "input": "a",
+        "expectedOutput": ""
+      }
+    ],
+    "sampleInput": "hello",
+    "sampleOutput": "hll",
+    "explanation": "Vowels removed.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "CPP-DSA-L09",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Low",
+    "topic": "Math",
+    "title": "GCD of Two Numbers",
+    "problem": "Find Greatest Common Divisor of A and B.",
+    "inputFormat": "A B.",
+    "outputFormat": "GCD.",
+    "constraints": [
+      "1 <= A,B <= 10^9"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\nusing namespace std;\nlong long gcd(long long a, long long b) { return b==0?a:gcd(b, a%b); }\nint main() {\n    long long a,b;\n    if(cin >> a >> b) cout << gcd(a,b) << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "10 15",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "7 13",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "100 10",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "24 36",
+        "expectedOutput": "12"
+      },
+      {
+        "input": "1 1",
+        "expectedOutput": "1"
+      }
+    ],
+    "sampleInput": "10 15",
+    "sampleOutput": "5",
+    "explanation": "Euclidean.",
+    "timeComplexity": "O(log(min(A,B)))",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "CPP-DSA-L10",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Low",
+    "topic": "Math",
+    "title": "LCM of Two Numbers",
+    "problem": "Find Least Common Multiple of A and B.",
+    "inputFormat": "A B.",
+    "outputFormat": "LCM.",
+    "constraints": [
+      "1 <= A,B <= 10^5"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\nusing namespace std;\nlong long gcd(long long a, long long b) { return b==0?a:gcd(b, a%b); }\nint main() {\n    long long a,b;\n    if(cin >> a >> b) cout << (a*b)/gcd(a,b) << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "4 6",
+        "expectedOutput": "12"
+      },
+      {
+        "input": "7 13",
+        "expectedOutput": "91"
+      },
+      {
+        "input": "10 15",
+        "expectedOutput": "30"
+      },
+      {
+        "input": "100 10",
+        "expectedOutput": "100"
+      },
+      {
+        "input": "1 1",
+        "expectedOutput": "1"
+      }
+    ],
+    "sampleInput": "4 6",
+    "sampleOutput": "12",
+    "explanation": "LCM = A*B / GCD",
+    "timeComplexity": "O(log(min(A,B)))",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "CPP-DSA-M01",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Medium",
+    "topic": "Two Pointers",
+    "title": "Container With Most Water",
+    "problem": "Find two lines that together with x-axis form a container holding the most water.",
+    "inputFormat": "N. N heights.",
+    "outputFormat": "Max Area.",
+    "constraints": [
+      "2 <= n <= 10^5"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <vector>\nusing namespace std;\nint main() {\n    int n; if(!(cin>>n)) return 0;\n    vector<int> h(n);\n    for(int i=0; i<n; i++) cin>>h[i];\n    int l=0, r=n-1, maxA=0;\n    while(l<r) {\n        maxA = max(maxA, min(h[l], h[r]) * (r-l));\n        if(h[l]<h[r]) l++;\n        else r--;\n    }\n    cout << maxA << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "9\n1 8 6 2 5 4 8 3 7",
+        "expectedOutput": "49"
+      },
+      {
+        "input": "2\n1 1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3\n4 3 2",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "4\n1 2 1 2",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "5\n10 1 1 1 10",
+        "expectedOutput": "40"
+      }
+    ],
+    "sampleInput": "9\n1 8 6 2 5 4 8 3 7",
+    "sampleOutput": "49",
+    "explanation": "Standard 2-pointer.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "CPP-DSA-M02",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Medium",
+    "topic": "Two Pointers",
+    "title": "Sort Colors",
+    "problem": "Sort array of 0, 1, and 2 in place.",
+    "inputFormat": "N. Array.",
+    "outputFormat": "Sorted array.",
+    "constraints": [
+      "1 <= n <= 10^5"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <vector>\nusing namespace std;\nint main() {\n    int n; if(!(cin>>n)) return 0;\n    vector<int> a(n);\n    for(int i=0; i<n; i++) cin>>a[i];\n    int l=0, curr=0, r=n-1;\n    while(curr<=r) {\n        if(a[curr]==0) { swap(a[curr], a[l]); l++; curr++; }\n        else if(a[curr]==2) { swap(a[curr], a[r]); r--; }\n        else curr++;\n    }\n    for(int x: a) cout << x << \" \";\n    cout << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "6\n2 0 2 1 1 0",
+        "expectedOutput": "0 0 1 1 2 2 "
+      },
+      {
+        "input": "3\n2 0 1",
+        "expectedOutput": "0 1 2 "
+      },
+      {
+        "input": "1\n0",
+        "expectedOutput": "0 "
+      },
+      {
+        "input": "4\n1 1 1 1",
+        "expectedOutput": "1 1 1 1 "
+      },
+      {
+        "input": "5\n2 2 0 0 1",
+        "expectedOutput": "0 0 1 2 2 "
+      }
+    ],
+    "sampleInput": "6\n2 0 2 1 1 0",
+    "sampleOutput": "0 0 1 1 2 2 ",
+    "explanation": "Dutch national flag.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "CPP-DSA-M03",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Medium",
+    "topic": "Binary Search",
+    "title": "Find Peak Element",
+    "problem": "Find index of any peak element (strictly greater than neighbors).",
+    "inputFormat": "N. Array.",
+    "outputFormat": "Index.",
+    "constraints": [
+      "1 <= n <= 10^5"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <vector>\nusing namespace std;\nint main() {\n    int n; if(!(cin>>n)) return 0;\n    vector<int> a(n);\n    for(int i=0; i<n; i++) cin>>a[i];\n    int l=0, r=n-1;\n    while(l<r) {\n        int mid=l+(r-l)/2;\n        if(a[mid]>a[mid+1]) r=mid;\n        else l=mid+1;\n    }\n    cout << l << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "4\n1 2 3 1",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "7\n1 2 1 3 5 6 4",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "3\n1 2 3",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "3\n3 2 1",
+        "expectedOutput": "0"
+      }
+    ],
+    "sampleInput": "4\n1 2 3 1",
+    "sampleOutput": "2",
+    "explanation": "Binary search.",
+    "timeComplexity": "O(log N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "CPP-DSA-M04",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Medium",
+    "topic": "Hashing",
+    "title": "Intersection of Two Arrays",
+    "problem": "Return unique intersection of two arrays.",
+    "inputFormat": "N M. N ints. M ints.",
+    "outputFormat": "Space-separated intersection (sorted).",
+    "constraints": [
+      "1 <= n,m <= 10^4"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <vector>\n#include <set>\nusing namespace std;\nint main() {\n    int n,m; if(!(cin>>n>>m)) return 0;\n    set<int> s1, s2;\n    for(int i=0; i<n; i++) { int x; cin>>x; s1.insert(x); }\n    for(int i=0; i<m; i++) { int x; cin>>x; if(s1.count(x)) s2.insert(x); }\n    for(int x: s2) cout << x << \" \";\n    cout << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "4 2\n1 2 2 1\n2 2",
+        "expectedOutput": "2 "
+      },
+      {
+        "input": "3 5\n4 9 5\n9 4 9 8 4",
+        "expectedOutput": "4 9 "
+      },
+      {
+        "input": "1 1\n1\n1",
+        "expectedOutput": "1 "
+      },
+      {
+        "input": "2 2\n1 2\n3 4",
+        "expectedOutput": ""
+      },
+      {
+        "input": "3 3\n1 2 3\n1 2 3",
+        "expectedOutput": "1 2 3 "
+      }
+    ],
+    "sampleInput": "4 2\n1 2 2 1\n2 2",
+    "sampleOutput": "2 ",
+    "explanation": "Use hash sets.",
+    "timeComplexity": "O(N log N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "CPP-DSA-M05",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Medium",
+    "topic": "Matrix",
+    "title": "Spiral Matrix",
+    "problem": "Return all elements of matrix in spiral order.",
+    "inputFormat": "R C. Matrix.",
+    "outputFormat": "Spiral array.",
+    "constraints": [
+      "1 <= R,C <= 100"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <vector>\nusing namespace std;\nint main() {\n    int r,c; if(!(cin>>r>>c)) return 0;\n    vector<vector<int>> a(r, vector<int>(c));\n    for(int i=0; i<r; i++) for(int j=0; j<c; j++) cin>>a[i][j];\n    int top=0, bot=r-1, left=0, right=c-1;\n    while(top<=bot && left<=right) {\n        for(int i=left; i<=right; i++) cout<<a[top][i]<<\" \"; top++;\n        for(int i=top; i<=bot; i++) cout<<a[i][right]<<\" \"; right--;\n        if(top<=bot) { for(int i=right; i>=left; i--) cout<<a[bot][i]<<\" \"; bot--; }\n        if(left<=right) { for(int i=bot; i>=top; i--) cout<<a[i][left]<<\" \"; left++; }\n    }\n    cout << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "3 3\n1 2 3\n4 5 6\n7 8 9",
+        "expectedOutput": "1 2 3 6 9 8 7 4 5 "
+      },
+      {
+        "input": "3 4\n1 2 3 4\n5 6 7 8\n9 10 11 12",
+        "expectedOutput": "1 2 3 4 8 12 11 10 9 5 6 7 "
+      },
+      {
+        "input": "1 1\n1",
+        "expectedOutput": "1 "
+      },
+      {
+        "input": "1 3\n1 2 3",
+        "expectedOutput": "1 2 3 "
+      },
+      {
+        "input": "2 2\n1 2\n3 4",
+        "expectedOutput": "1 2 4 3 "
+      }
+    ],
+    "sampleInput": "3 3\n1 2 3\n4 5 6\n7 8 9",
+    "sampleOutput": "1 2 3 6 9 8 7 4 5 ",
+    "explanation": "Traversal logic.",
+    "timeComplexity": "O(R*C)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "CPP-DSA-M06",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Medium",
+    "topic": "Matrix",
+    "title": "Set Matrix Zeroes",
+    "problem": "If element is 0, set entire row and col to 0 in-place.",
+    "inputFormat": "R C. Matrix.",
+    "outputFormat": "Updated Matrix.",
+    "constraints": [
+      "1 <= R,C <= 200"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <vector>\nusing namespace std;\nint main() {\n    int r,c; if(!(cin>>r>>c)) return 0;\n    vector<vector<int>> a(r, vector<int>(c));\n    for(int i=0; i<r; i++) for(int j=0; j<c; j++) cin>>a[i][j];\n    bool firstR=false, firstC=false;\n    for(int i=0; i<r; i++) if(a[i][0]==0) firstC=true;\n    for(int j=0; j<c; j++) if(a[0][j]==0) firstR=true;\n    for(int i=1; i<r; i++) for(int j=1; j<c; j++) if(a[i][j]==0) { a[i][0]=0; a[0][j]=0; }\n    for(int i=1; i<r; i++) for(int j=1; j<c; j++) if(a[i][0]==0 || a[0][j]==0) a[i][j]=0;\n    if(firstR) for(int j=0; j<c; j++) a[0][j]=0;\n    if(firstC) for(int i=0; i<r; i++) a[i][0]=0;\n    for(int i=0; i<r; i++) { for(int j=0; j<c; j++) cout<<a[i][j]<<\" \"; cout<<endl; }\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "3 3\n1 1 1\n1 0 1\n1 1 1",
+        "expectedOutput": "1 0 1 \n0 0 0 \n1 0 1 \n"
+      },
+      {
+        "input": "3 4\n0 1 2 0\n3 4 5 2\n1 3 1 5",
+        "expectedOutput": "0 0 0 0 \n0 4 5 0 \n0 3 1 0 \n"
+      },
+      {
+        "input": "1 1\n0",
+        "expectedOutput": "0 \n"
+      },
+      {
+        "input": "2 2\n1 1\n1 1",
+        "expectedOutput": "1 1 \n1 1 \n"
+      },
+      {
+        "input": "2 2\n0 1\n1 1",
+        "expectedOutput": "0 0 \n0 1 \n"
+      }
+    ],
+    "sampleInput": "3 3\n1 1 1\n1 0 1\n1 1 1",
+    "sampleOutput": "1 0 1\n0 0 0\n1 0 1",
+    "explanation": "Constant space optimal.",
+    "timeComplexity": "O(R*C)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "CPP-DSA-M07",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Medium",
+    "topic": "Dynamic Programming",
+    "title": "Maximum Product Subarray",
+    "problem": "Find subarray with max product.",
+    "inputFormat": "N. N integers.",
+    "outputFormat": "Max product.",
+    "constraints": [
+      "1 <= N <= 10000"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <vector>\nusing namespace std;\nint main() {\n    int n; if(!(cin>>n)) return 0;\n    long long best=0, curMax=1, curMin=1;\n    cin >> best; curMax = curMin = best;\n    for(int i=1; i<n; i++) {\n        long long x; cin >> x;\n        long long t = curMax*x;\n        curMax = max(x, max(curMax*x, curMin*x));\n        curMin = min(x, min(t, curMin*x));\n        best = max(best, curMax);\n    }\n    cout << best << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "4\n2 3 -2 4",
+        "expectedOutput": "6"
+      },
+      {
+        "input": "3\n-2 0 -1",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "1\n-5",
+        "expectedOutput": "-5"
+      },
+      {
+        "input": "5\n-1 -2 -3 -4 -5",
+        "expectedOutput": "120"
+      },
+      {
+        "input": "3\n0 2 0",
+        "expectedOutput": "2"
+      }
+    ],
+    "sampleInput": "4\n2 3 -2 4",
+    "sampleOutput": "6",
+    "explanation": "Similar to Kadane.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "CPP-DSA-M08",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Medium",
+    "topic": "Dynamic Programming",
+    "title": "Minimum Path Sum",
+    "problem": "Min sum path from top-left to bottom-right moving right/down.",
+    "inputFormat": "R C. Matrix.",
+    "outputFormat": "Min sum.",
+    "constraints": [
+      "1 <= R,C <= 200"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <vector>\nusing namespace std;\nint main() {\n    int r,c; if(!(cin>>r>>c)) return 0;\n    vector<vector<int>> a(r, vector<int>(c));\n    for(int i=0; i<r; i++) for(int j=0; j<c; j++) {\n        cin>>a[i][j];\n        if(i>0 && j>0) a[i][j] += min(a[i-1][j], a[i][j-1]);\n        else if(i>0) a[i][j] += a[i-1][j];\n        else if(j>0) a[i][j] += a[i][j-1];\n    }\n    cout << a[r-1][c-1] << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "3 3\n1 3 1\n1 5 1\n4 2 1",
+        "expectedOutput": "7"
+      },
+      {
+        "input": "2 3\n1 2 3\n4 5 6",
+        "expectedOutput": "12"
+      },
+      {
+        "input": "1 1\n5",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "2 2\n1 1\n1 1",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "3 3\n0 0 0\n0 0 0\n0 0 0",
+        "expectedOutput": "0"
+      }
+    ],
+    "sampleInput": "3 3\n1 3 1\n1 5 1\n4 2 1",
+    "sampleOutput": "7",
+    "explanation": "DP grid.",
+    "timeComplexity": "O(R*C)",
+    "spaceComplexity": "O(R*C)"
+  },
+  {
+    "id": "CPP-DSA-M09",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Medium",
+    "topic": "Graphs",
+    "title": "Number of Provinces",
+    "problem": "Find number of connected components in adjacency matrix.",
+    "inputFormat": "N. N x N matrix.",
+    "outputFormat": "Count of components.",
+    "constraints": [
+      "1 <= N <= 200"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <vector>\nusing namespace std;\nvoid dfs(int u, vector<vector<int>>& a, vector<bool>& vis) {\n    vis[u] = true;\n    for(int v=0; v<a.size(); v++) {\n        if(a[u][v]==1 && !vis[v]) dfs(v, a, vis);\n    }\n}\nint main() {\n    int n; if(!(cin>>n)) return 0;\n    vector<vector<int>> a(n, vector<int>(n));\n    for(int i=0; i<n; i++) for(int j=0; j<n; j++) cin>>a[i][j];\n    vector<bool> vis(n, false);\n    int ans = 0;\n    for(int i=0; i<n; i++) {\n        if(!vis[i]) { ans++; dfs(i, a, vis); }\n    }\n    cout << ans << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "3\n1 1 0\n1 1 0\n0 0 1",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "3\n1 0 0\n0 1 0\n0 0 1",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "1\n1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "2\n1 1\n1 1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "4\n1 1 0 0\n1 1 0 0\n0 0 1 1\n0 0 1 1",
+        "expectedOutput": "2"
+      }
+    ],
+    "sampleInput": "3\n1 1 0\n1 1 0\n0 0 1",
+    "sampleOutput": "2",
+    "explanation": "DFS/Union Find.",
+    "timeComplexity": "O(N^2)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "CPP-DSA-M10",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "Medium",
+    "topic": "Hashing",
+    "title": "Longest Consecutive Sequence",
+    "problem": "Length of longest consecutive elements sequence.",
+    "inputFormat": "N. N integers.",
+    "outputFormat": "Length.",
+    "constraints": [
+      "0 <= n <= 10^5"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <vector>\n#include <unordered_set>\nusing namespace std;\nint main() {\n    int n; if(!(cin>>n)) return 0;\n    unordered_set<int> s;\n    for(int i=0; i<n; i++) { int x; cin>>x; s.insert(x); }\n    int longest = 0;\n    for(int x: s) {\n        if(!s.count(x-1)) {\n            int curr=x, len=1;\n            while(s.count(curr+1)) { curr++; len++; }\n            longest = max(longest, len);\n        }\n    }\n    cout << longest << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "6\n100 4 200 1 3 2",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "10\n0 3 7 2 5 8 4 6 0 1",
+        "expectedOutput": "9"
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "0\n",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "5\n2 2 2 2 2",
+        "expectedOutput": "1"
+      }
+    ],
+    "sampleInput": "6\n100 4 200 1 3 2",
+    "sampleOutput": "4",
+    "explanation": "1,2,3,4.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "CPP-DSA-H01",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "High",
+    "topic": "Trie",
+    "title": "Word Search II",
+    "problem": "Given grid and dictionary, count how many words exist in the grid.",
+    "inputFormat": "R C. Grid. W (num words). Words.",
+    "outputFormat": "Count of words found.",
+    "constraints": [
+      "1 <= R,C <= 12",
+      "1 <= W <= 300"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <vector>\n#include <string>\nusing namespace std;\nstruct TrieNode { TrieNode* ch[26]={}; string word=\"\"; };\nvoid insert(TrieNode* r, string w) { for(char c:w) { if(!r->ch[c-'a']) r->ch[c-'a']=new TrieNode(); r=r->ch[c-'a']; } r->word=w; }\nvoid dfs(vector<string>& b, int i, int j, TrieNode* p, int& ans) {\n    if(i<0||j<0||i>=b.size()||j>=b[0].size()) return;\n    char c = b[i][j];\n    if(c=='#' || !p->ch[c-'a']) return;\n    p = p->ch[c-'a'];\n    if(p->word!=\"\") { ans++; p->word=\"\"; }\n    b[i][j] = '#';\n    dfs(b, i+1, j, p, ans); dfs(b, i-1, j, p, ans); dfs(b, i, j+1, p, ans); dfs(b, i, j-1, p, ans);\n    b[i][j] = c;\n}\nint main() {\n    int r,c; if(!(cin>>r>>c)) return 0;\n    vector<string> b(r);\n    for(int i=0; i<r; i++) cin>>b[i];\n    int w; cin>>w;\n    TrieNode* root = new TrieNode();\n    for(int i=0; i<w; i++) { string s; cin>>s; insert(root, s); }\n    int ans = 0;\n    for(int i=0; i<r; i++) for(int j=0; j<c; j++) dfs(b, i, j, root, ans);\n    cout << ans << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "4 4\noaan\netae\nihkr\niflv\n4\noath pea eat rain",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "2 2\nab\ncd\n2\nabc xyz",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "1 1\na\n1\na",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "1 2\nab\n2\nab ba",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "2 2\naa\naa\n1\naaaa",
+        "expectedOutput": "1"
+      }
+    ],
+    "sampleInput": "4 4\noaan\netae\nihkr\niflv\n4\noath pea eat rain",
+    "sampleOutput": "2",
+    "explanation": "DFS + Trie.",
+    "timeComplexity": "O(R*C*4^L)",
+    "spaceComplexity": "O(W*L)"
+  },
+  {
+    "id": "CPP-DSA-H02",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "High",
+    "topic": "Dynamic Programming",
+    "title": "Regular Expression Matching",
+    "problem": "Match string with pattern containing '.' and '*'.",
+    "inputFormat": "s p",
+    "outputFormat": "True or False",
+    "constraints": [
+      "1 <= len <= 20"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\nint main() {\n    string s, p;\n    if(cin >> s >> p) {\n        int n=s.size(), m=p.size();\n        vector<vector<bool>> dp(n+1, vector<bool>(m+1, false));\n        dp[0][0] = true;\n        for(int j=1; j<=m; j++) if(p[j-1]=='*') dp[0][j] = dp[0][j-2];\n        for(int i=1; i<=n; i++) {\n            for(int j=1; j<=m; j++) {\n                if(p[j-1]=='.' || p[j-1]==s[i-1]) dp[i][j] = dp[i-1][j-1];\n                else if(p[j-1]=='*') {\n                    dp[i][j] = dp[i][j-2];\n                    if(p[j-2]=='.' || p[j-2]==s[i-1]) dp[i][j] = dp[i][j] || dp[i-1][j];\n                }\n            }\n        }\n        if(dp[n][m]) cout << \"True\\n\"; else cout << \"False\\n\";\n    }\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "aa a",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "aa a*",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "ab .*",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "a ab*",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "mississippi mis*is*p*.",
+        "expectedOutput": "False"
+      }
+    ],
+    "sampleInput": "aa a*",
+    "sampleOutput": "True",
+    "explanation": ".* matches anything.",
+    "timeComplexity": "O(N*M)",
+    "spaceComplexity": "O(N*M)"
+  },
+  {
+    "id": "CPP-DSA-H03",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "High",
+    "topic": "Dynamic Programming",
+    "title": "Longest Valid Parentheses",
+    "problem": "Length of longest valid parentheses substring.",
+    "inputFormat": "String.",
+    "outputFormat": "Length.",
+    "constraints": [
+      "1 <= len <= 30000"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <string>\n#include <stack>\nusing namespace std;\nint main() {\n    string s; if(!(cin>>s)) return 0;\n    stack<int> st; st.push(-1);\n    int ans = 0;\n    for(int i=0; i<s.size(); i++) {\n        if(s[i]=='(') st.push(i);\n        else {\n            st.pop();\n            if(st.empty()) st.push(i);\n            else ans = max(ans, i - st.top());\n        }\n    }\n    cout << ans << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "(()",
+        "expectedOutput": "2"
+      },
+      {
+        "input": ")()())",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "(((())))",
+        "expectedOutput": "8"
+      },
+      {
+        "input": ")(",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "()()",
+        "expectedOutput": "4"
+      }
+    ],
+    "sampleInput": ")()())",
+    "sampleOutput": "4",
+    "explanation": "Using stack.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "CPP-DSA-H04",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "High",
+    "topic": "Graphs",
+    "title": "Swim in Rising Water",
+    "problem": "Min time to reach bottom right.",
+    "inputFormat": "N. NxN grid.",
+    "outputFormat": "Min time.",
+    "constraints": [
+      "1 <= N <= 50"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <vector>\n#include <queue>\nusing namespace std;\nint main() {\n    int n; if(!(cin>>n)) return 0;\n    vector<vector<int>> g(n, vector<int>(n));\n    for(int i=0; i<n; i++) for(int j=0; j<n; j++) cin>>g[i][j];\n    priority_queue<pair<int,pair<int,int>>, vector<pair<int,pair<int,int>>>, greater<>> pq;\n    vector<vector<bool>> vis(n, vector<bool>(n, false));\n    pq.push({g[0][0], {0,0}}); vis[0][0]=true;\n    int dirs[4][2] = {{1,0},{-1,0},{0,1},{0,-1}};\n    int ans=0;\n    while(!pq.empty()) {\n        auto top = pq.top(); pq.pop();\n        ans = max(ans, top.first);\n        int r=top.second.first, c=top.second.second;\n        if(r==n-1 && c==n-1) { cout << ans << endl; return 0; }\n        for(auto& d: dirs) {\n            int nr=r+d[0], nc=c+d[1];\n            if(nr>=0&&nr<n&&nc>=0&&nc<n && !vis[nr][nc]) {\n                vis[nr][nc]=true; pq.push({g[nr][nc], {nr,nc}});\n            }\n        }\n    }\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "2\n0 2\n1 3",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "5\n0 1 2 3 4\n24 23 22 21 5\n12 13 14 15 16\n11 17 18 19 20\n10 9 8 7 6",
+        "expectedOutput": "16"
+      },
+      {
+        "input": "1\n0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "2\n3 2\n0 1",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "3\n0 1 2\n3 4 5\n6 7 8",
+        "expectedOutput": "8"
+      }
+    ],
+    "sampleInput": "2\n0 2\n1 3",
+    "sampleOutput": "3",
+    "explanation": "Dijkstra approach.",
+    "timeComplexity": "O(N^2 log N)",
+    "spaceComplexity": "O(N^2)"
+  },
+  {
+    "id": "CPP-DSA-H05",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "High",
+    "topic": "Dynamic Programming",
+    "title": "Longest Palindromic Substring",
+    "problem": "Length of longest palindromic substring.",
+    "inputFormat": "String.",
+    "outputFormat": "Length.",
+    "constraints": [
+      "1 <= len <= 1000"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\nint main() {\n    string s; if(!(cin>>s)) return 0;\n    int n = s.size(), ans=1;\n    vector<vector<bool>> dp(n, vector<bool>(n, false));\n    for(int i=0; i<n; i++) dp[i][i] = true;\n    for(int i=0; i<n-1; i++) if(s[i]==s[i+1]) { dp[i][i+1]=true; ans=2; }\n    for(int len=3; len<=n; len++) {\n        for(int i=0; i<n-len+1; i++) {\n            int j = i+len-1;\n            if(s[i]==s[j] && dp[i+1][j-1]) { dp[i][j]=true; ans=len; }\n        }\n    }\n    cout << ans << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "babad",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "cbbd",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "a",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "aaaa",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "abacdfgdcaba",
+        "expectedOutput": "3"
+      }
+    ],
+    "sampleInput": "babad",
+    "sampleOutput": "3",
+    "explanation": "DP.",
+    "timeComplexity": "O(N^2)",
+    "spaceComplexity": "O(N^2)"
+  },
+  {
+    "id": "CPP-DSA-H06",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "High",
+    "topic": "Stack",
+    "title": "Maximal Rectangle",
+    "problem": "Find largest rectangle containing only 1s.",
+    "inputFormat": "R C. Matrix of 0s and 1s.",
+    "outputFormat": "Area.",
+    "constraints": [
+      "1 <= R,C <= 200"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <vector>\n#include <stack>\nusing namespace std;\nint calc(vector<int>& h) {\n    stack<int> s; int maxA=0, n=h.size();\n    for(int i=0; i<=n; i++) {\n        int v = (i==n)?0:h[i];\n        while(!s.empty() && v<h[s.top()]) {\n            int ht=h[s.top()]; s.pop();\n            int w = s.empty()?i:i-s.top()-1;\n            maxA = max(maxA, ht*w);\n        }\n        s.push(i);\n    }\n    return maxA;\n}\nint main() {\n    int r,c; if(!(cin>>r>>c)) return 0;\n    vector<vector<int>> g(r, vector<int>(c));\n    for(int i=0; i<r; i++) for(int j=0; j<c; j++) cin>>g[i][j];\n    vector<int> h(c, 0);\n    int ans = 0;\n    for(int i=0; i<r; i++) {\n        for(int j=0; j<c; j++) { if(g[i][j]==1) h[j]++; else h[j]=0; }\n        ans = max(ans, calc(h));\n    }\n    cout << ans << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "4 5\n1 0 1 0 0\n1 0 1 1 1\n1 1 1 1 1\n1 0 0 1 0",
+        "expectedOutput": "6"
+      },
+      {
+        "input": "1 1\n0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "1 1\n1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "2 2\n1 1\n1 1",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "2 2\n0 0\n0 0",
+        "expectedOutput": "0"
+      }
+    ],
+    "sampleInput": "4 5\n1 0 1 0 0\n1 0 1 1 1\n1 1 1 1 1\n1 0 0 1 0",
+    "sampleOutput": "6",
+    "explanation": "Histogram logic on each row.",
+    "timeComplexity": "O(R*C)",
+    "spaceComplexity": "O(C)"
+  },
+  {
+    "id": "CPP-DSA-H07",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "High",
+    "topic": "Dynamic Programming",
+    "title": "Wildcard Matching",
+    "problem": "Match string with ? and *.",
+    "inputFormat": "s p",
+    "outputFormat": "True or False.",
+    "constraints": [
+      "1 <= len <= 2000"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <string>\n#include <vector>\nusing namespace std;\nint main() {\n    string s, p;\n    if(cin >> s >> p) {\n        int n=s.size(), m=p.size();\n        vector<vector<bool>> dp(n+1, vector<bool>(m+1, false));\n        dp[0][0] = true;\n        for(int j=1; j<=m; j++) if(p[j-1]=='*') dp[0][j]=dp[0][j-1];\n        for(int i=1; i<=n; i++) {\n            for(int j=1; j<=m; j++) {\n                if(p[j-1]=='?' || p[j-1]==s[i-1]) dp[i][j]=dp[i-1][j-1];\n                else if(p[j-1]=='*') dp[i][j]=dp[i-1][j] || dp[i][j-1];\n            }\n        }\n        if(dp[n][m]) cout << \"True\\n\"; else cout << \"False\\n\";\n    }\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "aa a",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "aa *",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "cb ?a",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "adceb *a*b",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "acdcb a*c?b",
+        "expectedOutput": "False"
+      }
+    ],
+    "sampleInput": "aa *",
+    "sampleOutput": "True",
+    "explanation": "Wildcard.",
+    "timeComplexity": "O(N*M)",
+    "spaceComplexity": "O(N*M)"
+  },
+  {
+    "id": "CPP-DSA-H08",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "High",
+    "topic": "Heap",
+    "title": "Find Median from Data Stream",
+    "problem": "Given stream, print median after each insert. Output space separated int part.",
+    "inputFormat": "N. N ints.",
+    "outputFormat": "N medians (int part).",
+    "constraints": [
+      "1 <= N <= 10^5"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <queue>\nusing namespace std;\nint main() {\n    int n; if(!(cin>>n)) return 0;\n    priority_queue<int> maxH;\n    priority_queue<int, vector<int>, greater<int>> minH;\n    for(int i=0; i<n; i++) {\n        int x; cin >> x;\n        maxH.push(x);\n        minH.push(maxH.top()); maxH.pop();\n        if(maxH.size() < minH.size()) { maxH.push(minH.top()); minH.pop(); }\n        if(maxH.size() > minH.size()) cout << maxH.top() << \" \";\n        else cout << (maxH.top()+minH.top())/2 << \" \";\n    }\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "3\n1 2 3",
+        "expectedOutput": "1 1 2 "
+      },
+      {
+        "input": "2\n2 3",
+        "expectedOutput": "2 2 "
+      },
+      {
+        "input": "5\n5 4 3 2 1",
+        "expectedOutput": "5 4 4 3 3 "
+      },
+      {
+        "input": "4\n1 1 1 1",
+        "expectedOutput": "1 1 1 1 "
+      },
+      {
+        "input": "1\n100",
+        "expectedOutput": "100 "
+      }
+    ],
+    "sampleInput": "3\n1 2 3",
+    "sampleOutput": "1 1 2 ",
+    "explanation": "Two heaps.",
+    "timeComplexity": "O(N log N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "CPP-DSA-H09",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "High",
+    "topic": "Dynamic Programming",
+    "title": "Coin Change 2",
+    "problem": "Number of combinations that make up amount.",
+    "inputFormat": "Amount N. N coins.",
+    "outputFormat": "Count.",
+    "constraints": [
+      "1 <= N <= 300"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <vector>\nusing namespace std;\nint main() {\n    int amt, n; if(!(cin>>amt>>n)) return 0;\n    vector<int> dp(amt+1, 0);\n    dp[0] = 1;\n    for(int i=0; i<n; i++) {\n        int coin; cin >> coin;\n        for(int j=coin; j<=amt; j++) dp[j] += dp[j-coin];\n    }\n    cout << dp[amt] << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "5 3\n1 2 5",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "3 2\n2 4",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "10 1\n10",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "0 1\n1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "10 3\n1 2 5",
+        "expectedOutput": "10"
+      }
+    ],
+    "sampleInput": "5 3\n1 2 5",
+    "sampleOutput": "4",
+    "explanation": "Combinations.",
+    "timeComplexity": "O(Amount*N)",
+    "spaceComplexity": "O(Amount)"
+  },
+  {
+    "id": "CPP-DSA-H10",
+    "category": "DSA",
+    "language": "C++",
+    "difficulty": "High",
+    "topic": "Dynamic Programming",
+    "title": "Distinct Subsequences",
+    "problem": "Count number of distinct subsequences of s which equals t.",
+    "inputFormat": "s\nt",
+    "outputFormat": "Count.",
+    "constraints": [
+      "1 <= len <= 1000"
+    ],
+    "starterCode": "#include <iostream>\nusing namespace std;\nint main() {\n    return 0;\n}",
+    "solution": "#include <iostream>\n#include <vector>\n#include <string>\nusing namespace std;\nint main() {\n    string s, t; if(!(cin>>s>>t)) return 0;\n    int m=s.size(), n=t.size();\n    vector<vector<unsigned long long>> dp(m+1, vector<unsigned long long>(n+1, 0));\n    for(int i=0; i<=m; i++) dp[i][0] = 1;\n    for(int i=1; i<=m; i++) {\n        for(int j=1; j<=n; j++) {\n            dp[i][j] = dp[i-1][j];\n            if(s[i-1]==t[j-1]) dp[i][j] += dp[i-1][j-1];\n        }\n    }\n    cout << dp[m][n] << endl;\n    return 0;\n}",
+    "testCases": [
+      {
+        "input": "rabbbit\nrabbit",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "babgbag\nbag",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "a\na",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "a\nb",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "abc\nabc",
+        "expectedOutput": "1"
+      }
+    ],
+    "sampleInput": "rabbbit\nrabbit",
+    "sampleOutput": "3",
+    "explanation": "DP.",
+    "timeComplexity": "O(M*N)",
+    "spaceComplexity": "O(M*N)"
+  },
+  {
+    "id": "JS-DSA-L01",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "topic": "Math",
+    "title": "Is Even",
+    "problem": "Check if a number is even.",
+    "inputFormat": "N.",
+    "outputFormat": "Print 'True' or 'False'.",
+    "constraints": [
+      "-10^9 <= N <= 10^9"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim();\n    if(!input) return;\n    let n = parseInt(input);\n    if (n % 2 === 0) console.log('True');\n    else console.log('False');\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "2",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "3",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "-2",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "-5",
+        "expectedOutput": "False"
+      }
+    ],
+    "sampleInput": "2",
+    "sampleOutput": "True",
+    "explanation": "Divisible by 2.",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JS-DSA-L02",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "topic": "Math",
+    "title": "Celsius to Fahrenheit",
+    "problem": "Convert C to F using F = (C * 9/5) + 32. Output integer.",
+    "inputFormat": "C.",
+    "outputFormat": "F.",
+    "constraints": [
+      "-100 <= C <= 100"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim();\n    if(!input) return;\n    let c = parseInt(input);\n    let f = Math.floor((c * 9 / 5) + 32);\n    console.log(f);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "0",
+        "expectedOutput": "32"
+      },
+      {
+        "input": "100",
+        "expectedOutput": "212"
+      },
+      {
+        "input": "-40",
+        "expectedOutput": "-40"
+      },
+      {
+        "input": "37",
+        "expectedOutput": "98"
+      },
+      {
+        "input": "10",
+        "expectedOutput": "50"
+      }
+    ],
+    "sampleInput": "0",
+    "sampleOutput": "32",
+    "explanation": "Formula.",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JS-DSA-L03",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "topic": "Arrays",
+    "title": "Max in Array",
+    "problem": "Find the maximum element in an array.",
+    "inputFormat": "N. N integers.",
+    "outputFormat": "Max element.",
+    "constraints": [
+      "1 <= N <= 10^5"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let max = -Infinity;\n    for(let i=1; i<=n; i++) {\n        let val = parseInt(input[i]);\n        if(val > max) max = val;\n    }\n    console.log(max);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "3\n1 5 3",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "1\n-10",
+        "expectedOutput": "-10"
+      },
+      {
+        "input": "4\n0 0 0 0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "2\n10 20",
+        "expectedOutput": "20"
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expectedOutput": "5"
+      }
+    ],
+    "sampleInput": "3\n1 5 3",
+    "sampleOutput": "5",
+    "explanation": "Linear scan.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JS-DSA-L04",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "topic": "Arrays",
+    "title": "Find Index",
+    "problem": "Find first index of target in array, or -1.",
+    "inputFormat": "N. Array. Target.",
+    "outputFormat": "Index.",
+    "constraints": [
+      "1 <= N <= 10^5"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let target = parseInt(input[n+1]);\n    for(let i=1; i<=n; i++) {\n        if(parseInt(input[i]) === target) {\n            console.log(i-1);\n            return;\n        }\n    }\n    console.log(-1);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "3\n10 20 30\n20",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3\n10 20 30\n40",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "1\n5\n5",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "2\n1 1\n1",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "4\n1 2 3 4\n4",
+        "expectedOutput": "3"
+      }
+    ],
+    "sampleInput": "3\n10 20 30\n20",
+    "sampleOutput": "1",
+    "explanation": "0-based index.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JS-DSA-L05",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "topic": "Arrays",
+    "title": "Reverse Array",
+    "problem": "Reverse the array and print space-separated.",
+    "inputFormat": "N. Array.",
+    "outputFormat": "Reversed.",
+    "constraints": [
+      "1 <= N <= 10^5"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let arr = [];\n    for(let i=1; i<=n; i++) arr.push(input[i]);\n    console.log(arr.reverse().join(' '));\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "3\n1 2 3",
+        "expectedOutput": "3 2 1"
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "2\n5 1",
+        "expectedOutput": "1 5"
+      },
+      {
+        "input": "4\n0 0 0 0",
+        "expectedOutput": "0 0 0 0"
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expectedOutput": "5 4 3 2 1"
+      }
+    ],
+    "sampleInput": "3\n1 2 3",
+    "sampleOutput": "3 2 1",
+    "explanation": "Reversing.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "JS-DSA-L06",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "topic": "Arrays",
+    "title": "Count Occurrences",
+    "problem": "Count how many times target appears in array.",
+    "inputFormat": "N. Array. Target.",
+    "outputFormat": "Count.",
+    "constraints": [
+      "1 <= N <= 10^5"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let target = parseInt(input[n+1]);\n    let count = 0;\n    for(let i=1; i<=n; i++) {\n        if(parseInt(input[i]) === target) count++;\n    }\n    console.log(count);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "5\n1 2 2 3 2\n2",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "3\n1 2 3\n4",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "1\n5\n5",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "4\n0 0 0 0\n0",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "2\n1 -1\n1",
+        "expectedOutput": "1"
+      }
+    ],
+    "sampleInput": "5\n1 2 2 3 2\n2",
+    "sampleOutput": "3",
+    "explanation": "Count loop.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JS-DSA-L07",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "topic": "Arrays",
+    "title": "Sum of Positive",
+    "problem": "Sum all strictly positive numbers.",
+    "inputFormat": "N. N numbers.",
+    "outputFormat": "Sum.",
+    "constraints": [
+      "1 <= N <= 10^5"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let sum = 0;\n    for(let i=1; i<=n; i++) {\n        let val = parseInt(input[i]);\n        if(val > 0) sum += val;\n    }\n    console.log(sum);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "5\n1 -2 3 0 4",
+        "expectedOutput": "8"
+      },
+      {
+        "input": "3\n-1 -2 -3",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "2\n0 0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expectedOutput": "10"
+      }
+    ],
+    "sampleInput": "5\n1 -2 3 0 4",
+    "sampleOutput": "8",
+    "explanation": "1+3+4=8.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JS-DSA-L08",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "topic": "Arrays",
+    "title": "Concatenate Arrays",
+    "problem": "Append array B to array A.",
+    "inputFormat": "N M. N ints. M ints.",
+    "outputFormat": "Space-separated merged array.",
+    "constraints": [
+      "1 <= N,M <= 10^4"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let m = parseInt(input[1]);\n    let res = [];\n    for(let i=2; i<2+n+m; i++) res.push(input[i]);\n    console.log(res.join(' '));\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "2 3\n1 2\n3 4 5",
+        "expectedOutput": "1 2 3 4 5"
+      },
+      {
+        "input": "1 1\n0\n0",
+        "expectedOutput": "0 0"
+      },
+      {
+        "input": "3 2\n1 1 1\n2 2",
+        "expectedOutput": "1 1 1 2 2"
+      },
+      {
+        "input": "2 0\n1 2\n",
+        "expectedOutput": "1 2"
+      },
+      {
+        "input": "0 2\n\n1 2",
+        "expectedOutput": "1 2"
+      }
+    ],
+    "sampleInput": "2 3\n1 2\n3 4 5",
+    "sampleOutput": "1 2 3 4 5",
+    "explanation": "Concat.",
+    "timeComplexity": "O(N+M)",
+    "spaceComplexity": "O(N+M)"
+  },
+  {
+    "id": "JS-DSA-L09",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "topic": "Arrays",
+    "title": "Filter Even",
+    "problem": "Print only the even numbers from the array.",
+    "inputFormat": "N. N integers.",
+    "outputFormat": "Space separated even numbers.",
+    "constraints": [
+      "1 <= N <= 10^4"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let res = [];\n    for(let i=1; i<=n; i++) {\n        let val = parseInt(input[i]);\n        if(val % 2 === 0) res.push(val);\n    }\n    console.log(res.join(' '));\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "5\n1 2 3 4 5",
+        "expectedOutput": "2 4"
+      },
+      {
+        "input": "3\n1 3 5",
+        "expectedOutput": ""
+      },
+      {
+        "input": "2\n2 4",
+        "expectedOutput": "2 4"
+      },
+      {
+        "input": "4\n0 1 2 3",
+        "expectedOutput": "0 2"
+      },
+      {
+        "input": "3\n-2 -1 0",
+        "expectedOutput": "-2 0"
+      }
+    ],
+    "sampleInput": "5\n1 2 3 4 5",
+    "sampleOutput": "2 4",
+    "explanation": "Array filter.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "JS-DSA-L10",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "topic": "Strings",
+    "title": "Parse Integer",
+    "problem": "Given a valid number string, multiply by 2 and print.",
+    "inputFormat": "String.",
+    "outputFormat": "Integer.",
+    "constraints": [
+      "Valid 32-bit int string"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim();\n    if(!input) return;\n    console.log(parseInt(input) * 2);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "5",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "-10",
+        "expectedOutput": "-20"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "123",
+        "expectedOutput": "246"
+      },
+      {
+        "input": "500",
+        "expectedOutput": "1000"
+      }
+    ],
+    "sampleInput": "5",
+    "sampleOutput": "10",
+    "explanation": "Simple ParseInt.",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JS-DSA-M01",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "topic": "Hashing",
+    "title": "Subarray Sum Equals K",
+    "problem": "Find the total number of continuous subarrays whose sum equals to K.",
+    "inputFormat": "N K. N integers.",
+    "outputFormat": "Count.",
+    "constraints": [
+      "1 <= N <= 20000"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let k = parseInt(input[1]);\n    let map = new Map();\n    map.set(0, 1);\n    let count = 0, sum = 0;\n    for(let i=2; i<n+2; i++) {\n        sum += parseInt(input[i]);\n        if(map.has(sum - k)) count += map.get(sum - k);\n        map.set(sum, (map.get(sum) || 0) + 1);\n    }\n    console.log(count);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "3 2\n1 1 1",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "3 3\n1 2 3",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "1 0\n0",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "4 0\n0 0 0 0",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "2 -1\n-1 -1",
+        "expectedOutput": "2"
+      }
+    ],
+    "sampleInput": "3 2\n1 1 1",
+    "sampleOutput": "2",
+    "explanation": "[1,1] and [1,1].",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "JS-DSA-M02",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "topic": "Sliding Window",
+    "title": "Longest Substring Without Repeating",
+    "problem": "Length of longest substring without repeating characters.",
+    "inputFormat": "String s.",
+    "outputFormat": "Length.",
+    "constraints": [
+      "0 <= len <= 5*10^4"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    let s = fs.readFileSync('/dev/stdin', 'utf-8').trim();\n    let set = new Set();\n    let l = 0, max = 0;\n    for(let r=0; r<s.length; r++) {\n        while(set.has(s[r])) {\n            set.delete(s[l]);\n            l++;\n        }\n        set.add(s[r]);\n        max = Math.max(max, r-l+1);\n    }\n    console.log(max);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "abcabcbb",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "bbbbb",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "pwwkew",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "a",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "abcdef",
+        "expectedOutput": "6"
+      }
+    ],
+    "sampleInput": "abcabcbb",
+    "sampleOutput": "3",
+    "explanation": "abc.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(min(N, charset))"
+  },
+  {
+    "id": "JS-DSA-M03",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "topic": "Backtracking",
+    "title": "Permutations",
+    "problem": "Count number of permutations of N distinct elements.",
+    "inputFormat": "N. N elements.",
+    "outputFormat": "Count of permutations. (It's N!)",
+    "constraints": [
+      "1 <= N <= 10"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 1) return;\n    let n = parseInt(input[0]);\n    let f=1;\n    for(let i=2; i<=n; i++) f*=i;\n    console.log(f);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "3\n1 2 3",
+        "expectedOutput": "6"
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expectedOutput": "24"
+      },
+      {
+        "input": "1\n1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "2\n1 2",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expectedOutput": "120"
+      }
+    ],
+    "sampleInput": "3\n1 2 3",
+    "sampleOutput": "6",
+    "explanation": "3! = 6.",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JS-DSA-M04",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "topic": "Backtracking",
+    "title": "Subsets",
+    "problem": "Given an array of unique integers, return the number of subsets (2^N).",
+    "inputFormat": "N. Array.",
+    "outputFormat": "2^N.",
+    "constraints": [
+      "1 <= N <= 20"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 1) return;\n    let n = parseInt(input[0]);\n    console.log(1 << n);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "3\n1 2 3",
+        "expectedOutput": "8"
+      },
+      {
+        "input": "1\n1",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expectedOutput": "16"
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expectedOutput": "32"
+      },
+      {
+        "input": "2\n1 2",
+        "expectedOutput": "4"
+      }
+    ],
+    "sampleInput": "3\n1 2 3",
+    "sampleOutput": "8",
+    "explanation": "2^3=8.",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JS-DSA-M05",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "topic": "Greedy",
+    "title": "Jump Game",
+    "problem": "Determine if you can reach the last index.",
+    "inputFormat": "N. Array.",
+    "outputFormat": "True or False.",
+    "constraints": [
+      "1 <= N <= 10^4"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 1) return;\n    let n = parseInt(input[0]);\n    let maxR = 0;\n    for(let i=0; i<n; i++) {\n        if(i > maxR) { console.log('False'); return; }\n        let jump = parseInt(input[i+1]);\n        maxR = Math.max(maxR, i + jump);\n    }\n    console.log('True');\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "5\n2 3 1 1 4",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "5\n3 2 1 0 4",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "1\n0",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "2\n1 0",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "3\n0 1 2",
+        "expectedOutput": "False"
+      }
+    ],
+    "sampleInput": "5\n2 3 1 1 4",
+    "sampleOutput": "True",
+    "explanation": "Greedy approach.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JS-DSA-M06",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "topic": "Binary Search",
+    "title": "Search Insert Position",
+    "problem": "Return index if found, else index where it would be if inserted in order.",
+    "inputFormat": "N. Sorted Array. Target.",
+    "outputFormat": "Index.",
+    "constraints": [
+      "1 <= N <= 10^4"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let target = parseInt(input[n+1]);\n    let l=0, r=n-1;\n    while(l<=r) {\n        let m = Math.floor((l+r)/2);\n        let v = parseInt(input[m+1]);\n        if(v === target) { console.log(m); return; }\n        if(v < target) l=m+1;\n        else r=m-1;\n    }\n    console.log(l);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "4\n1 3 5 6\n5",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "4\n1 3 5 6\n2",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "4\n1 3 5 6\n7",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "4\n1 3 5 6\n0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "1\n1\n1",
+        "expectedOutput": "0"
+      }
+    ],
+    "sampleInput": "4\n1 3 5 6\n5",
+    "sampleOutput": "2",
+    "explanation": "Binary search.",
+    "timeComplexity": "O(log N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JS-DSA-M07",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "topic": "Stack",
+    "title": "Balanced Brackets JS",
+    "problem": "Given a string of '(', ')', '{', '}', '[' and ']', determine if valid.",
+    "inputFormat": "String.",
+    "outputFormat": "True or False.",
+    "constraints": [
+      "1 <= len <= 10^4"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    let s = fs.readFileSync('/dev/stdin', 'utf-8').trim();\n    let st = [];\n    for(let c of s) {\n        if(c==='('||c==='{'||c==='[') st.push(c);\n        else {\n            if(st.length===0) { console.log('False'); return; }\n            let top = st.pop();\n            if(c===')' && top!=='(') { console.log('False'); return; }\n            if(c==='}' && top!=='{') { console.log('False'); return; }\n            if(c===']' && top!=='[') { console.log('False'); return; }\n        }\n    }\n    if(st.length===0) console.log('True'); else console.log('False');\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "()",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "()[]{}",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "(]",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "([)]",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "{[]}",
+        "expectedOutput": "True"
+      }
+    ],
+    "sampleInput": "()[]{}",
+    "sampleOutput": "True",
+    "explanation": "Stack usage.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "JS-DSA-M08",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "topic": "Sorting",
+    "title": "Merge Intervals",
+    "problem": "Output number of merged intervals.",
+    "inputFormat": "N. N pairs of start and end.",
+    "outputFormat": "Count of intervals.",
+    "constraints": [
+      "1 <= N <= 10^4"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 1) return;\n    let n = parseInt(input[0]);\n    if(n===0) { console.log(0); return; }\n    let arr = [];\n    for(let i=0; i<n; i++) arr.push([parseInt(input[1+2*i]), parseInt(input[2+2*i])]);\n    arr.sort((a,b) => a[0]-b[0]);\n    let merged = [arr[0]];\n    for(let i=1; i<n; i++) {\n        let last = merged[merged.length-1];\n        if(arr[i][0] <= last[1]) last[1] = Math.max(last[1], arr[i][1]);\n        else merged.push(arr[i]);\n    }\n    console.log(merged.length);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "4\n1 3 2 6 8 10 15 18",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "2\n1 4 4 5",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "1\n1 1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3\n1 2 3 4 5 6",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "3\n1 10 2 3 4 5",
+        "expectedOutput": "1"
+      }
+    ],
+    "sampleInput": "4\n1 3 2 6 8 10 15 18",
+    "sampleOutput": "3",
+    "explanation": "[1,6], [8,10], [15,18]",
+    "timeComplexity": "O(N log N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "JS-DSA-M09",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "topic": "Dynamic Programming",
+    "title": "Unique Paths",
+    "problem": "Robot moving right/down. Number of unique paths.",
+    "inputFormat": "M N.",
+    "outputFormat": "Paths count.",
+    "constraints": [
+      "1 <= m,n <= 100"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let m = parseInt(input[0]);\n    let n = parseInt(input[1]);\n    let dp = Array(m).fill().map(() => Array(n).fill(1));\n    for(let i=1; i<m; i++) {\n        for(let j=1; j<n; j++) {\n            dp[i][j] = dp[i-1][j] + dp[i][j-1];\n        }\n    }\n    console.log(dp[m-1][n-1]);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "3 7",
+        "expectedOutput": "28"
+      },
+      {
+        "input": "3 2",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "1 1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "2 2",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "3 3",
+        "expectedOutput": "6"
+      }
+    ],
+    "sampleInput": "3 7",
+    "sampleOutput": "28",
+    "explanation": "Combinatorics.",
+    "timeComplexity": "O(M*N)",
+    "spaceComplexity": "O(M*N)"
+  },
+  {
+    "id": "JS-DSA-M10",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "topic": "Dynamic Programming",
+    "title": "House Robber",
+    "problem": "Max amount without robbing adjacent houses.",
+    "inputFormat": "N. N integers.",
+    "outputFormat": "Max amount.",
+    "constraints": [
+      "1 <= N <= 100"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 1) return;\n    let n = parseInt(input[0]);\n    let prev2 = 0, prev1 = 0;\n    for(let i=1; i<=n; i++) {\n        let val = parseInt(input[i]);\n        let cur = Math.max(prev1, prev2 + val);\n        prev2 = prev1;\n        prev1 = cur;\n    }\n    console.log(prev1);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "4\n1 2 3 1",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "5\n2 7 9 3 1",
+        "expectedOutput": "12"
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "2\n1 2",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "3\n2 1 2",
+        "expectedOutput": "4"
+      }
+    ],
+    "sampleInput": "4\n1 2 3 1",
+    "sampleOutput": "4",
+    "explanation": "DP.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JS-DSA-H01",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "High",
+    "topic": "Dynamic Programming",
+    "title": "Word Segmentation",
+    "problem": "Can string be segmented into space-separated dictionary words.",
+    "inputFormat": "s\nW\nW words.",
+    "outputFormat": "True or False.",
+    "constraints": [
+      "1 <= len <= 300"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let s = input[0];\n    let w = parseInt(input[1]);\n    let set = new Set();\n    for(let i=2; i<2+w; i++) set.add(input[i]);\n    let dp = Array(s.length+1).fill(false);\n    dp[0] = true;\n    for(let i=1; i<=s.length; i++) {\n        for(let j=0; j<i; j++) {\n            if(dp[j] && set.has(s.substring(j,i))) {\n                dp[i] = true;\n                break;\n            }\n        }\n    }\n    if(dp[s.length]) console.log('True'); else console.log('False');\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "leetcode\n2\nleet code",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "applepenapple\n2\napple pen",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "catsandog\n5\ncats dog sand and cat",
+        "expectedOutput": "False"
+      },
+      {
+        "input": "a\n1\na",
+        "expectedOutput": "True"
+      },
+      {
+        "input": "a\n1\nb",
+        "expectedOutput": "False"
+      }
+    ],
+    "sampleInput": "leetcode\n2\nleet code",
+    "sampleOutput": "True",
+    "explanation": "DP string.",
+    "timeComplexity": "O(N^3)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "JS-DSA-H02",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "High",
+    "topic": "Dynamic Programming",
+    "title": "LIS DP Length",
+    "problem": "Length of LIS.",
+    "inputFormat": "N. N integers.",
+    "outputFormat": "Length.",
+    "constraints": [
+      "1 <= N <= 2500"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 1) return;\n    let n = parseInt(input[0]);\n    let tails = [];\n    for(let i=1; i<=n; i++) {\n        let x = parseInt(input[i]);\n        let l=0, r=tails.length;\n        while(l<r) {\n            let m = Math.floor((l+r)/2);\n            if(tails[m] < x) l=m+1;\n            else r=m;\n        }\n        if(l===tails.length) tails.push(x);\n        else tails[l] = x;\n    }\n    console.log(tails.length);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "8\n10 9 2 5 3 7 101 18",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "6\n0 1 0 3 2 3",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "7\n7 7 7 7 7 7 7",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expectedOutput": "4"
+      }
+    ],
+    "sampleInput": "8\n10 9 2 5 3 7 101 18",
+    "sampleOutput": "4",
+    "explanation": "Binary search DP.",
+    "timeComplexity": "O(N log N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "JS-DSA-H03",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "High",
+    "topic": "Sorting",
+    "title": "Kth Largest Element in an Array",
+    "problem": "Find the kth largest element.",
+    "inputFormat": "N K. N integers.",
+    "outputFormat": "Element.",
+    "constraints": [
+      "1 <= K <= N <= 10^4"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let k = parseInt(input[1]);\n    let arr = [];\n    for(let i=2; i<2+n; i++) arr.push(parseInt(input[i]));\n    arr.sort((a,b) => b-a);\n    console.log(arr[k-1]);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "6 2\n3 2 1 5 6 4",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "9 4\n3 2 3 1 2 4 5 5 6",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "1 1\n1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "2 2\n1 2",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3 1\n10 10 10",
+        "expectedOutput": "10"
+      }
+    ],
+    "sampleInput": "6 2\n3 2 1 5 6 4",
+    "sampleOutput": "5",
+    "explanation": "Sort.",
+    "timeComplexity": "O(N log N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "JS-DSA-H04",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "High",
+    "topic": "Dynamic Programming",
+    "title": "Decode Ways",
+    "problem": "Number of ways to decode string '1'-'26'.",
+    "inputFormat": "String.",
+    "outputFormat": "Count.",
+    "constraints": [
+      "1 <= len <= 100"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    let s = fs.readFileSync('/dev/stdin', 'utf-8').trim();\n    if(!s || s[0]==='0') { console.log(0); return; }\n    let n = s.length;\n    let dp = Array(n+1).fill(0);\n    dp[0] = 1; dp[1] = 1;\n    for(let i=2; i<=n; i++) {\n        let one = parseInt(s.substring(i-1, i));\n        let two = parseInt(s.substring(i-2, i));\n        if(one >= 1 && one <= 9) dp[i] += dp[i-1];\n        if(two >= 10 && two <= 26) dp[i] += dp[i-2];\n    }\n    console.log(dp[n]);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "12",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "226",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "06",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "10",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "2101",
+        "expectedOutput": "1"
+      }
+    ],
+    "sampleInput": "12",
+    "sampleOutput": "2",
+    "explanation": "DP.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "JS-DSA-H05",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "High",
+    "topic": "Binary Search",
+    "title": "Find First and Last Position",
+    "problem": "Return first and last index of target in sorted array, or -1 -1.",
+    "inputFormat": "N. Array. Target.",
+    "outputFormat": "First Last.",
+    "constraints": [
+      "1 <= N <= 10^5"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let n = parseInt(input[0]);\n    let target = parseInt(input[n+1]);\n    let arr = [];\n    for(let i=1; i<=n; i++) arr.push(parseInt(input[i]));\n    function search(isFirst) {\n        let l=0, r=n-1, ans=-1;\n        while(l<=r) {\n            let m = Math.floor((l+r)/2);\n            if(arr[m] === target) {\n                ans = m;\n                if(isFirst) r=m-1; else l=m+1;\n            } else if(arr[m] < target) l=m+1;\n            else r=m-1;\n        }\n        return ans;\n    }\n    console.log(`${search(true)} ${search(false)}`);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "6\n5 7 7 8 8 10\n8",
+        "expectedOutput": "3 4"
+      },
+      {
+        "input": "6\n5 7 7 8 8 10\n6",
+        "expectedOutput": "-1 -1"
+      },
+      {
+        "input": "0\n\n0",
+        "expectedOutput": "-1 -1"
+      },
+      {
+        "input": "1\n1\n1",
+        "expectedOutput": "0 0"
+      },
+      {
+        "input": "2\n2 2\n2",
+        "expectedOutput": "0 1"
+      }
+    ],
+    "sampleInput": "6\n5 7 7 8 8 10\n8",
+    "sampleOutput": "3 4",
+    "explanation": "Binary search.",
+    "timeComplexity": "O(log N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JS-DSA-H06",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "High",
+    "topic": "Dynamic Programming",
+    "title": "Maximal Square",
+    "problem": "Find area of largest square of 1s.",
+    "inputFormat": "R C. Matrix of 0s and 1s.",
+    "outputFormat": "Area.",
+    "constraints": [
+      "1 <= R,C <= 300"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 2) return;\n    let r = parseInt(input[0]), c = parseInt(input[1]);\n    let maxSq = 0;\n    let dp = Array(r+1).fill().map(()=>Array(c+1).fill(0));\n    let idx=2;\n    for(let i=1; i<=r; i++) {\n        for(let j=1; j<=c; j++) {\n            let val = parseInt(input[idx++]);\n            if(val === 1) {\n                dp[i][j] = Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]) + 1;\n                maxSq = Math.max(maxSq, dp[i][j]);\n            }\n        }\n    }\n    console.log(maxSq * maxSq);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "4 5\n1 0 1 0 0\n1 0 1 1 1\n1 1 1 1 1\n1 0 0 1 0",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "2 2\n0 1\n1 0",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "1 1\n0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "2 2\n1 1\n1 1",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "3 3\n1 1 1\n1 1 1\n1 1 1",
+        "expectedOutput": "9"
+      }
+    ],
+    "sampleInput": "4 5\n1 0 1 0 0\n1 0 1 1 1\n1 1 1 1 1\n1 0 0 1 0",
+    "sampleOutput": "4",
+    "explanation": "DP array.",
+    "timeComplexity": "O(R*C)",
+    "spaceComplexity": "O(R*C)"
+  },
+  {
+    "id": "JS-DSA-H07",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "High",
+    "topic": "Backtracking",
+    "title": "Palindrome Partitioning",
+    "problem": "Count number of possible palindrome partitions of string.",
+    "inputFormat": "String.",
+    "outputFormat": "Count.",
+    "constraints": [
+      "1 <= len <= 15"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction isP(s,l,r) { while(l<r) { if(s[l++]!==s[r--]) return false; } return true; }\nfunction solve() {\n    let s = fs.readFileSync('/dev/stdin', 'utf-8').trim();\n    let ans=0;\n    function dfs(start) {\n        if(start===s.length) { ans++; return; }\n        for(let end=start; end<s.length; end++) {\n            if(isP(s,start,end)) dfs(end+1);\n        }\n    }\n    dfs(0);\n    console.log(ans);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "aab",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "a",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "aaa",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "ab",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "abc",
+        "expectedOutput": "1"
+      }
+    ],
+    "sampleInput": "aab",
+    "sampleOutput": "2",
+    "explanation": "[a,a,b], [aa,b]",
+    "timeComplexity": "O(N*2^N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "JS-DSA-H08",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "High",
+    "topic": "Sorting",
+    "title": "Largest Number",
+    "problem": "Arrange list of numbers to form largest number.",
+    "inputFormat": "N. N numbers.",
+    "outputFormat": "String.",
+    "constraints": [
+      "1 <= N <= 100"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 1) return;\n    let n = parseInt(input[0]);\n    let arr = [];\n    for(let i=1; i<=n; i++) arr.push(input[i]);\n    arr.sort((a,b) => (b+a).localeCompare(a+b));\n    if(arr[0]==='0') console.log('0');\n    else console.log(arr.join(''));\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "2\n10 2",
+        "expectedOutput": "210"
+      },
+      {
+        "input": "5\n3 30 34 5 9",
+        "expectedOutput": "9534330"
+      },
+      {
+        "input": "1\n1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "2\n0 0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "3\n1 2 3",
+        "expectedOutput": "321"
+      }
+    ],
+    "sampleInput": "2\n10 2",
+    "sampleOutput": "210",
+    "explanation": "Custom sort.",
+    "timeComplexity": "O(N log N)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "JS-DSA-H09",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "High",
+    "topic": "Trees",
+    "title": "Serialize and Deserialize Array",
+    "problem": "Given an array, output sum of elements (Mock serialization output).",
+    "inputFormat": "N. Array.",
+    "outputFormat": "Sum.",
+    "constraints": [
+      "1 <= N <= 10^4"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 1) return;\n    let n = parseInt(input[0]);\n    let sum = 0;\n    for(let i=1; i<=n; i++) sum += parseInt(input[i]);\n    console.log(sum);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "5\n1 2 3 4 5",
+        "expectedOutput": "15"
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "2\n-1 1",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "3\n0 0 0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "4\n1 1 1 1",
+        "expectedOutput": "4"
+      }
+    ],
+    "sampleInput": "5\n1 2 3 4 5",
+    "sampleOutput": "15",
+    "explanation": "Mock sum.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "JS-DSA-H10",
+    "category": "DSA",
+    "language": "JavaScript",
+    "difficulty": "High",
+    "topic": "Dynamic Programming",
+    "title": "Best Time to Buy and Sell Stock III",
+    "problem": "Max profit with at most 2 transactions.",
+    "inputFormat": "N. N prices.",
+    "outputFormat": "Max profit.",
+    "constraints": [
+      "1 <= N <= 10^5"
+    ],
+    "starterCode": "const fs = require('fs');\nfunction solve() {\n    \n}\nsolve();",
+    "solution": "const fs = require('fs');\nfunction solve() {\n    const input = fs.readFileSync('/dev/stdin', 'utf-8').trim().split(/\\s+/);\n    if(input.length < 1) return;\n    let n = parseInt(input[0]);\n    if(n===0) { console.log(0); return; }\n    let b1 = Infinity, b2 = Infinity;\n    let p1 = 0, p2 = 0;\n    for(let i=1; i<=n; i++) {\n        let price = parseInt(input[i]);\n        b1 = Math.min(b1, price);\n        p1 = Math.max(p1, price - b1);\n        b2 = Math.min(b2, price - p1);\n        p2 = Math.max(p2, price - b2);\n    }\n    console.log(p2);\n}\nsolve();",
+    "testCases": [
+      {
+        "input": "8\n3 3 5 0 0 3 1 4",
+        "expectedOutput": "6"
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "5\n7 6 4 3 1",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "1\n1",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "3\n1 2 3",
+        "expectedOutput": "2"
+      }
+    ],
+    "sampleInput": "8\n3 3 5 0 0 3 1 4",
+    "sampleOutput": "6",
+    "explanation": "DP.",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  }
+]

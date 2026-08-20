@@ -1,0 +1,5325 @@
+[
+  {
+    "id": "py-low-01",
+    "language": "Python",
+    "difficulty": "Low",
+    "title": "Sum of Positive Numbers",
+    "problem": "Read N integers and print the sum of only the positive values.",
+    "inputFormat": "First line: N. Second line: N integers.",
+    "outputFormat": "Print the positive-value sum.",
+    "constraints": [
+      "1 <= N <= 100000",
+      "Values fit in signed 32-bit integer."
+    ],
+    "sampleInput": "5\n-2 4 0 7 -3",
+    "sampleOutput": "11",
+    "explanation": "Add a value only when it is greater than zero.",
+    "starterCode": "import sys\n\ndef solve():\n    data=list(map(int,sys.stdin.read().split())); n=data[0]; a=data[1:1+n]\n    print(sum(x for x in a if x>0))\n\nif __name__=='__main__': solve()",
+    "solution": "import sys\n\ndef solve():\n    data=list(map(int,sys.stdin.read().split())); n=data[0]; a=data[1:1+n]\n    print(sum(x for x in a if x>0))\n\nif __name__=='__main__': solve()",
+    "testCases": [
+      {
+        "input": "5\n-2 4 0 7 -3",
+        "expectedOutput": "11"
+      },
+      {
+        "input": "1\n-9",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "3\n0 0 0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "5\n-1 -2 3 -4 5",
+        "expectedOutput": "8"
+      }
+    ],
+    "tags": [
+      "arrays",
+      "loops"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-low-02",
+    "language": "Python",
+    "difficulty": "Low",
+    "title": "Count Vowels",
+    "problem": "Count vowels in a line of text, ignoring case.",
+    "inputFormat": "One line containing a string.",
+    "outputFormat": "Print the number of vowels a, e, i, o, u.",
+    "constraints": [
+      "0 <= length <= 100000"
+    ],
+    "sampleInput": "Interview AI",
+    "sampleOutput": "5",
+    "explanation": "Normalize to lowercase and count characters in the vowel set.",
+    "starterCode": "import sys\ns=sys.stdin.readline().rstrip('\\n')\nprint(sum(c.lower() in 'aeiou' for c in s))",
+    "solution": "import sys\ns=sys.stdin.readline().rstrip('\\n')\nprint(sum(c.lower() in 'aeiou' for c in s))",
+    "testCases": [
+      {
+        "input": "Interview AI",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "xyz",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "AEIOU",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "a e i",
+        "expectedOutput": "3"
+      }
+    ],
+    "tags": [
+      "strings",
+      "loops"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-low-03",
+    "language": "Python",
+    "difficulty": "Low",
+    "title": "Reverse Words",
+    "problem": "Reverse the order of words in a sentence while preserving each word.",
+    "inputFormat": "One line containing space-separated words.",
+    "outputFormat": "Print the words in reverse order.",
+    "constraints": [
+      "At most 10000 words."
+    ],
+    "sampleInput": "skill bridge ai",
+    "sampleOutput": "ai bridge skill",
+    "explanation": "Split into words and reverse the word list.",
+    "starterCode": "import sys\ns=sys.stdin.readline().strip()\nprint(' '.join(s.split()[::-1]))",
+    "solution": "import sys\ns=sys.stdin.readline().strip()\nprint(' '.join(s.split()[::-1]))",
+    "testCases": [
+      {
+        "input": "skill bridge ai",
+        "expectedOutput": "ai bridge skill"
+      },
+      {
+        "input": "hello",
+        "expectedOutput": "hello"
+      },
+      {
+        "input": "a b",
+        "expectedOutput": "b a"
+      },
+      {
+        "input": "",
+        "expectedOutput": ""
+      },
+      {
+        "input": "one two three",
+        "expectedOutput": "three two one"
+      }
+    ],
+    "tags": [
+      "strings",
+      "arrays"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-low-04",
+    "language": "Python",
+    "difficulty": "Low",
+    "title": "Second Largest Distinct",
+    "problem": "Print the second-largest distinct number, or -1 if it does not exist.",
+    "inputFormat": "First line N. Second line N integers.",
+    "outputFormat": "Second-largest distinct value or -1.",
+    "constraints": [
+      "1 <= N <= 100000"
+    ],
+    "sampleInput": "6\n4 7 7 2 9 9",
+    "sampleOutput": "7",
+    "explanation": "Track the two largest distinct values.",
+    "starterCode": "import sys\n\ndef solve():\n    d=list(map(int,sys.stdin.read().split())); a=d[1:1+d[0]]\n    u=sorted(set(a), reverse=True); print(u[1] if len(u)>1 else -1)\nsolve()",
+    "solution": "import sys\n\ndef solve():\n    d=list(map(int,sys.stdin.read().split())); a=d[1:1+d[0]]\n    u=sorted(set(a), reverse=True); print(u[1] if len(u)>1 else -1)\nsolve()",
+    "testCases": [
+      {
+        "input": "6\n4 7 7 2 9 9",
+        "expectedOutput": "7"
+      },
+      {
+        "input": "3\n5 5 5",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "2\n1 2",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "4\n-1 -3 -2 -4",
+        "expectedOutput": "-2"
+      },
+      {
+        "input": "1\n8",
+        "expectedOutput": "-1"
+      }
+    ],
+    "tags": [
+      "arrays",
+      "sorting"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-low-05",
+    "language": "Python",
+    "difficulty": "Low",
+    "title": "Palindrome String",
+    "problem": "Determine whether a string is a palindrome ignoring case and non-alphanumeric characters.",
+    "inputFormat": "One line containing a string.",
+    "outputFormat": "Print YES or NO.",
+    "constraints": [
+      "Length <= 100000."
+    ],
+    "sampleInput": "A man, a plan, a canal: Panama",
+    "sampleOutput": "YES",
+    "explanation": "Keep only alphanumeric characters, lowercase them, then compare with its reverse.",
+    "starterCode": "import sys\ns=''.join(c.lower() for c in sys.stdin.readline().strip() if c.isalnum())\nprint('YES' if s==s[::-1] else 'NO')",
+    "solution": "import sys\ns=''.join(c.lower() for c in sys.stdin.readline().strip() if c.isalnum())\nprint('YES' if s==s[::-1] else 'NO')",
+    "testCases": [
+      {
+        "input": "A man, a plan, a canal: Panama",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "hello",
+        "expectedOutput": "NO"
+      },
+      {
+        "input": "",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "12321",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "No lemon",
+        "expectedOutput": "YES"
+      }
+    ],
+    "tags": [
+      "strings"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-low-06",
+    "language": "Python",
+    "difficulty": "Low",
+    "title": "Linear Search Position",
+    "problem": "Find the first zero-based index of a target in an array, or -1.",
+    "inputFormat": "First line N. Second line N integers. Third line target.",
+    "outputFormat": "Print the first index or -1.",
+    "constraints": [
+      "1 <= N <= 100000"
+    ],
+    "sampleInput": "5\n8 3 7 3 9\n3",
+    "sampleOutput": "1",
+    "explanation": "Scan from left to right and stop at the first match.",
+    "starterCode": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n=d[0]; a=d[1:1+n]; t=d[1+n]\nprint(next((i for i,x in enumerate(a) if x==t),-1))",
+    "solution": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n=d[0]; a=d[1:1+n]; t=d[1+n]\nprint(next((i for i,x in enumerate(a) if x==t),-1))",
+    "testCases": [
+      {
+        "input": "5\n8 3 7 3 9\n3",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3\n1 2 3\n4",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "1\n5\n5",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "4\n-1 -2 -1 -3\n-1",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "2\n0 0\n0",
+        "expectedOutput": "0"
+      }
+    ],
+    "tags": [
+      "search"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-low-07",
+    "language": "Python",
+    "difficulty": "Low",
+    "title": "GCD of Two Numbers",
+    "problem": "Compute the greatest common divisor of two integers.",
+    "inputFormat": "One line: a b.",
+    "outputFormat": "Print gcd(a,b).",
+    "constraints": [
+      "Absolute values <= 10^18."
+    ],
+    "sampleInput": "48 18",
+    "sampleOutput": "6",
+    "explanation": "Use the Euclidean algorithm.",
+    "starterCode": "import sys\n\na,b=map(int,sys.stdin.read().split()); a=abs(a); b=abs(b)\nwhile b: a,b=b,a%b\nprint(a)",
+    "solution": "import sys\n\na,b=map(int,sys.stdin.read().split()); a=abs(a); b=abs(b)\nwhile b: a,b=b,a%b\nprint(a)",
+    "testCases": [
+      {
+        "input": "48 18",
+        "expectedOutput": "6"
+      },
+      {
+        "input": "0 7",
+        "expectedOutput": "7"
+      },
+      {
+        "input": "0 0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "-12 8",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "17 5",
+        "expectedOutput": "1"
+      }
+    ],
+    "tags": [
+      "math"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-low-08",
+    "language": "Python",
+    "difficulty": "Low",
+    "title": "FizzBuzz Range",
+    "problem": "Print values from 1 to N using FizzBuzz rules.",
+    "inputFormat": "One integer N.",
+    "outputFormat": "One result per line: FizzBuzz, Fizz, Buzz, or the number.",
+    "constraints": [
+      "1 <= N <= 100000"
+    ],
+    "sampleInput": "5",
+    "sampleOutput": "1\n2\nFizz\n4\nBuzz",
+    "explanation": "Apply divisibility by 15 before 3 and 5.",
+    "starterCode": "import sys\nn=int(sys.stdin.read())\nfor i in range(1,n+1):\n    print('FizzBuzz' if i%15==0 else 'Fizz' if i%3==0 else 'Buzz' if i%5==0 else i)",
+    "solution": "import sys\nn=int(sys.stdin.read())\nfor i in range(1,n+1):\n    print('FizzBuzz' if i%15==0 else 'Fizz' if i%3==0 else 'Buzz' if i%5==0 else i)",
+    "testCases": [
+      {
+        "input": "1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "5",
+        "expectedOutput": "1\n2\nFizz\n4\nBuzz"
+      },
+      {
+        "input": "15",
+        "expectedOutput": "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz"
+      },
+      {
+        "input": "3",
+        "expectedOutput": "1\n2\nFizz"
+      },
+      {
+        "input": "10",
+        "expectedOutput": "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz"
+      }
+    ],
+    "tags": [
+      "conditions",
+      "loops"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-low-09",
+    "language": "Python",
+    "difficulty": "Low",
+    "title": "Character Frequency",
+    "problem": "Print the frequency of each character in sorted ASCII order.",
+    "inputFormat": "One line containing a string.",
+    "outputFormat": "Print each distinct character and its count as `character count`, one per line.",
+    "constraints": [
+      "Length <= 100000.",
+      "Input contains printable ASCII characters."
+    ],
+    "sampleInput": "banana",
+    "sampleOutput": "a 3\nb 1\nn 2",
+    "explanation": "Use a dictionary, then sort its keys.",
+    "starterCode": "import sys\nfrom collections import Counter\ns=sys.stdin.readline().rstrip('\\n'); c=Counter(s)\nfor k in sorted(c): print(k,c[k])",
+    "solution": "import sys\nfrom collections import Counter\ns=sys.stdin.readline().rstrip('\\n'); c=Counter(s)\nfor k in sorted(c): print(k,c[k])",
+    "testCases": [
+      {
+        "input": "banana",
+        "expectedOutput": "a 3\nb 1\nn 2"
+      },
+      {
+        "input": "",
+        "expectedOutput": ""
+      },
+      {
+        "input": "aa",
+        "expectedOutput": "a 2"
+      },
+      {
+        "input": "a b",
+        "expectedOutput": " 1\na 1\nb 1"
+      },
+      {
+        "input": "12321",
+        "expectedOutput": "1 2\n2 2\n3 1"
+      }
+    ],
+    "tags": [
+      "hash-map",
+      "strings"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-low-10",
+    "language": "Python",
+    "difficulty": "Low",
+    "title": "Merge Two Sorted Arrays",
+    "problem": "Merge two already sorted arrays into one sorted array.",
+    "inputFormat": "First line N M. Second line N integers. Third line M integers.",
+    "outputFormat": "Print the merged array space-separated.",
+    "constraints": [
+      "0 <= N,M <= 100000"
+    ],
+    "sampleInput": "3 4\n1 4 8\n2 3 7 9",
+    "sampleOutput": "1 2 3 4 7 8 9",
+    "explanation": "Use two pointers and append the smaller current element.",
+    "starterCode": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n,m=d[:2]; a=d[2:2+n]; b=d[2+n:2+n+m]; i=j=0; r=[]\nwhile i<n and j<m:\n    if a[i]<=b[j]: r.append(a[i]); i+=1\n    else: r.append(b[j]); j+=1\nr.extend(a[i:]); r.extend(b[j:]); print(*r)",
+    "solution": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n,m=d[:2]; a=d[2:2+n]; b=d[2+n:2+n+m]; i=j=0; r=[]\nwhile i<n and j<m:\n    if a[i]<=b[j]: r.append(a[i]); i+=1\n    else: r.append(b[j]); j+=1\nr.extend(a[i:]); r.extend(b[j:]); print(*r)",
+    "testCases": [
+      {
+        "input": "3 4\n1 4 8\n2 3 7 9",
+        "expectedOutput": "1 2 3 4 7 8 9"
+      },
+      {
+        "input": "0 2\n\n1 2",
+        "expectedOutput": "1 2"
+      },
+      {
+        "input": "2 0\n1 3\n",
+        "expectedOutput": "1 3"
+      },
+      {
+        "input": "3 3\n-2 0 5\n-1 0 6",
+        "expectedOutput": "-2 -1 0 0 5 6"
+      },
+      {
+        "input": "1 1\n4\n4",
+        "expectedOutput": "4 4"
+      }
+    ],
+    "tags": [
+      "two-pointers",
+      "arrays"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-med-01",
+    "language": "Python",
+    "difficulty": "Medium",
+    "title": "Two Sum Indices",
+    "problem": "Find two different indices whose values add to a target. Return the first pair found during a left-to-right scan.",
+    "inputFormat": "N, array, target.",
+    "outputFormat": "Print two zero-based indices, or -1.",
+    "constraints": [
+      "1 <= N <= 100000"
+    ],
+    "sampleInput": "5\n2 7 11 15 3\n9",
+    "sampleOutput": "0 1",
+    "explanation": "Store previously seen values in a hash map.",
+    "starterCode": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n=d[0]; a=d[1:1+n]; t=d[1+n]; seen={}\nfor i,x in enumerate(a):\n    if t-x in seen: print(seen[t-x],i); break\n    seen[x]=i\nelse: print(-1)",
+    "solution": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n=d[0]; a=d[1:1+n]; t=d[1+n]; seen={}\nfor i,x in enumerate(a):\n    if t-x in seen: print(seen[t-x],i); break\n    seen[x]=i\nelse: print(-1)",
+    "testCases": [
+      {
+        "input": "5\n2 7 11 15 3\n9",
+        "expectedOutput": "0 1"
+      },
+      {
+        "input": "3\n1 2 3\n10",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "4\n3 3 4 5\n6",
+        "expectedOutput": "0 1"
+      },
+      {
+        "input": "2\n-1 4\n3",
+        "expectedOutput": "0 1"
+      },
+      {
+        "input": "1\n5\n10",
+        "expectedOutput": "-1"
+      }
+    ],
+    "tags": [
+      "hash-map"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-med-02",
+    "language": "Python",
+    "difficulty": "Medium",
+    "title": "Longest Unique Substring",
+    "problem": "Find the length of the longest substring containing no repeated characters.",
+    "inputFormat": "One line string.",
+    "outputFormat": "Print the maximum length.",
+    "constraints": [
+      "Length <= 100000."
+    ],
+    "sampleInput": "abcabcbb",
+    "sampleOutput": "3",
+    "explanation": "Use a sliding window and store the latest index of each character.",
+    "starterCode": "import sys\ns=sys.stdin.readline().rstrip('\\n'); last={}; left=best=0\nfor right,c in enumerate(s):\n    if c in last and last[c]>=left: left=last[c]+1\n    last[c]=right; best=max(best,right-left+1)\nprint(best)",
+    "solution": "import sys\ns=sys.stdin.readline().rstrip('\\n'); last={}; left=best=0\nfor right,c in enumerate(s):\n    if c in last and last[c]>=left: left=last[c]+1\n    last[c]=right; best=max(best,right-left+1)\nprint(best)",
+    "testCases": [
+      {
+        "input": "abcabcbb",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "bbbbb",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "pwwkew",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "abcdef",
+        "expectedOutput": "6"
+      }
+    ],
+    "tags": [
+      "sliding-window"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-med-03",
+    "language": "Python",
+    "difficulty": "Medium",
+    "title": "Balanced Brackets",
+    "problem": "Check whether (), [], and {} are properly nested.",
+    "inputFormat": "One line containing brackets.",
+    "outputFormat": "Print YES or NO.",
+    "constraints": [
+      "Length <= 100000."
+    ],
+    "sampleInput": "{[()]}",
+    "sampleOutput": "YES",
+    "explanation": "Push opening brackets and match every closing bracket against the stack top.",
+    "starterCode": "import sys\ns=sys.stdin.readline().strip(); st=[]; pairs={')':'(',']':'[','}':'{'}\nok=True\nfor c in s:\n    if c in '([{': st.append(c)\n    elif c in pairs:\n        if not st or st.pop()!=pairs[c]: ok=False; break\nprint('YES' if ok and not st else 'NO')",
+    "solution": "import sys\ns=sys.stdin.readline().strip(); st=[]; pairs={')':'(',']':'[','}':'{'}\nok=True\nfor c in s:\n    if c in '([{': st.append(c)\n    elif c in pairs:\n        if not st or st.pop()!=pairs[c]: ok=False; break\nprint('YES' if ok and not st else 'NO')",
+    "testCases": [
+      {
+        "input": "{[()]}",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "([)]",
+        "expectedOutput": "NO"
+      },
+      {
+        "input": "",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "(((",
+        "expectedOutput": "NO"
+      },
+      {
+        "input": "()[]{}",
+        "expectedOutput": "YES"
+      }
+    ],
+    "tags": [
+      "stack"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-med-04",
+    "language": "Python",
+    "difficulty": "Medium",
+    "title": "First Occurrence Binary Search",
+    "problem": "In a sorted array, find the first index of a target value.",
+    "inputFormat": "N, sorted array, target.",
+    "outputFormat": "Print first index or -1.",
+    "constraints": [
+      "Array is nondecreasing.",
+      "1 <= N <= 100000."
+    ],
+    "sampleInput": "6\n1 2 2 2 4 7\n2",
+    "sampleOutput": "1",
+    "explanation": "Binary search while continuing left after a match.",
+    "starterCode": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n=d[0]; a=d[1:1+n]; t=d[1+n]; lo,hi=0,n-1; ans=-1\nwhile lo<=hi:\n    m=(lo+hi)//2\n    if a[m]>=t:\n        if a[m]==t: ans=m\n        hi=m-1\n    else: lo=m+1\nprint(ans)",
+    "solution": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n=d[0]; a=d[1:1+n]; t=d[1+n]; lo,hi=0,n-1; ans=-1\nwhile lo<=hi:\n    m=(lo+hi)//2\n    if a[m]>=t:\n        if a[m]==t: ans=m\n        hi=m-1\n    else: lo=m+1\nprint(ans)",
+    "testCases": [
+      {
+        "input": "6\n1 2 2 2 4 7\n2",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3\n1 3 5\n4",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "1\n5\n5",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "4\n-3 -1 0 2\n-3",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "5\n1 1 1 1 1\n1",
+        "expectedOutput": "0"
+      }
+    ],
+    "tags": [
+      "binary-search"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-med-05",
+    "language": "Python",
+    "difficulty": "Medium",
+    "title": "Maximum Subarray Sum",
+    "problem": "Find the largest sum of a non-empty contiguous subarray.",
+    "inputFormat": "N followed by N integers.",
+    "outputFormat": "Print maximum sum.",
+    "constraints": [
+      "1 <= N <= 100000."
+    ],
+    "sampleInput": "8\n-2 1 -3 4 -1 2 1 -5",
+    "sampleOutput": "6",
+    "explanation": "Kadane's algorithm keeps the best subarray ending at each position.",
+    "starterCode": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n=d[0]; a=d[1:1+n]; cur=best=a[0]\nfor x in a[1:]: cur=max(x,cur+x); best=max(best,cur)\nprint(best)",
+    "solution": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n=d[0]; a=d[1:1+n]; cur=best=a[0]\nfor x in a[1:]: cur=max(x,cur+x); best=max(best,cur)\nprint(best)",
+    "testCases": [
+      {
+        "input": "8\n-2 1 -3 4 -1 2 1 -5",
+        "expectedOutput": "6"
+      },
+      {
+        "input": "1\n-7",
+        "expectedOutput": "-7"
+      },
+      {
+        "input": "3\n-1 -2 -3",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "4\n5 4 -1 7",
+        "expectedOutput": "15"
+      },
+      {
+        "input": "5\n-2 3 -1 2 -5",
+        "expectedOutput": "4"
+      }
+    ],
+    "tags": [
+      "dynamic-programming"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-med-06",
+    "language": "Python",
+    "difficulty": "Medium",
+    "title": "Rotate Array Right",
+    "problem": "Rotate an array right by K positions.",
+    "inputFormat": "N K followed by N integers.",
+    "outputFormat": "Print rotated array.",
+    "constraints": [
+      "0 <= K <= 10^18",
+      "N <= 100000."
+    ],
+    "sampleInput": "5 2\n1 2 3 4 5",
+    "sampleOutput": "4 5 1 2 3",
+    "explanation": "Use slicing after reducing K modulo N.",
+    "starterCode": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n,k=d[:2]; a=d[2:2+n]\nif n: k%=n; a=a[-k:]+a[:-k] if k else a\nprint(*a)",
+    "solution": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n,k=d[:2]; a=d[2:2+n]\nif n: k%=n; a=a[-k:]+a[:-k] if k else a\nprint(*a)",
+    "testCases": [
+      {
+        "input": "5 2\n1 2 3 4 5",
+        "expectedOutput": "4 5 1 2 3"
+      },
+      {
+        "input": "3 0\n1 2 3",
+        "expectedOutput": "1 2 3"
+      },
+      {
+        "input": "3 5\n1 2 3",
+        "expectedOutput": "2 3 1"
+      },
+      {
+        "input": "1 9\n7",
+        "expectedOutput": "7"
+      },
+      {
+        "input": "0 4\n",
+        "expectedOutput": ""
+      }
+    ],
+    "tags": [
+      "arrays"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-med-07",
+    "language": "Python",
+    "difficulty": "Medium",
+    "title": "Merge Intervals",
+    "problem": "Merge all overlapping closed intervals.",
+    "inputFormat": "N lines follow, each containing start end.",
+    "outputFormat": "Print merged intervals, one per line.",
+    "constraints": [
+      "0 <= N <= 10000.",
+      "start <= end."
+    ],
+    "sampleInput": "4\n1 3\n2 6\n8 10\n9 12",
+    "sampleOutput": "1 6\n8 12",
+    "explanation": "Sort by start and merge whenever the next interval overlaps.",
+    "starterCode": "import sys\nlines=sys.stdin.read().splitlines(); n=int(lines[0]) if lines else 0; arr=[tuple(map(int,x.split())) for x in lines[1:1+n]]; arr.sort(); r=[]\nfor s,e in arr:\n    if not r or s>r[-1][1]: r.append([s,e])\n    else: r[-1][1]=max(r[-1][1],e)\nfor s,e in r: print(s,e)",
+    "solution": "import sys\nlines=sys.stdin.read().splitlines(); n=int(lines[0]) if lines else 0; arr=[tuple(map(int,x.split())) for x in lines[1:1+n]]; arr.sort(); r=[]\nfor s,e in arr:\n    if not r or s>r[-1][1]: r.append([s,e])\n    else: r[-1][1]=max(r[-1][1],e)\nfor s,e in r: print(s,e)",
+    "testCases": [
+      {
+        "input": "4\n1 3\n2 6\n8 10\n9 12",
+        "expectedOutput": "1 6\n8 12"
+      },
+      {
+        "input": "0",
+        "expectedOutput": ""
+      },
+      {
+        "input": "2\n1 2\n3 4",
+        "expectedOutput": "1 2\n3 4"
+      },
+      {
+        "input": "3\n1 5\n2 3\n4 8",
+        "expectedOutput": "1 8"
+      },
+      {
+        "input": "2\n-5 -1\n-3 2",
+        "expectedOutput": "-5 2"
+      }
+    ],
+    "tags": [
+      "sorting",
+      "intervals"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-med-08",
+    "language": "Python",
+    "difficulty": "Medium",
+    "title": "Level Order Tree Traversal",
+    "problem": "Given a binary tree in level-order with -1 representing null, print values level by level.",
+    "inputFormat": "First line N, then N level-order tokens. -1 means null.",
+    "outputFormat": "Print each tree level on its own line.",
+    "constraints": [
+      "N <= 10000."
+    ],
+    "sampleInput": "7\n1 2 3 4 5 -1 7",
+    "sampleOutput": "1\n2 3\n4 5 7",
+    "explanation": "Build the tree, then use a queue for breadth-first traversal.",
+    "starterCode": "import sys\nfrom collections import deque\n\nd=list(map(int,sys.stdin.read().split())); n=d[0]; v=d[1:1+n]\nif not v or v[0]==-1: raise SystemExit\nnodes=[None if x==-1 else [x,None,None] for x in v]\nfor i in range(n):\n    if nodes[i] is not None:\n        l,r=2*i+1,2*i+2\n        if l<n: nodes[i][1]=nodes[l]\n        if r<n: nodes[i][2]=nodes[r]\nq=deque([nodes[0]])\nwhile q:\n    vals=[]\n    for _ in range(len(q)):\n        x=q.popleft(); vals.append(str(x[0]))\n        if x[1]: q.append(x[1])\n        if x[2]: q.append(x[2])\n    print(' '.join(vals))",
+    "solution": "import sys\nfrom collections import deque\n\nd=list(map(int,sys.stdin.read().split())); n=d[0]; v=d[1:1+n]\nif not v or v[0]==-1: raise SystemExit\nnodes=[None if x==-1 else [x,None,None] for x in v]\nfor i in range(n):\n    if nodes[i] is not None:\n        l,r=2*i+1,2*i+2\n        if l<n: nodes[i][1]=nodes[l]\n        if r<n: nodes[i][2]=nodes[r]\nq=deque([nodes[0]])\nwhile q:\n    vals=[]\n    for _ in range(len(q)):\n        x=q.popleft(); vals.append(str(x[0]))\n        if x[1]: q.append(x[1])\n        if x[2]: q.append(x[2])\n    print(' '.join(vals))",
+    "testCases": [
+      {
+        "input": "7\n1 2 3 4 5 -1 7",
+        "expectedOutput": "1\n2 3\n4 5 7"
+      },
+      {
+        "input": "1\n10",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "1\n-1",
+        "expectedOutput": ""
+      },
+      {
+        "input": "3\n1 -1 2",
+        "expectedOutput": "1\n2"
+      },
+      {
+        "input": "7\n1 2 3 -1 -1 4 5",
+        "expectedOutput": "1\n2 3\n4 5"
+      }
+    ],
+    "tags": [
+      "trees",
+      "queue"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-med-09",
+    "language": "Python",
+    "difficulty": "Medium",
+    "title": "Coin Change Minimum",
+    "problem": "Find the minimum number of coins needed to make an amount, or -1.",
+    "inputFormat": "N amount; next line N coin values.",
+    "outputFormat": "Print minimum coin count.",
+    "constraints": [
+      "1 <= N <= 50",
+      "0 <= amount <= 10000."
+    ],
+    "sampleInput": "3 11\n1 2 5",
+    "sampleOutput": "3",
+    "explanation": "Use bottom-up dynamic programming over amounts.",
+    "starterCode": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n,amt=d[:2]; coins=d[2:2+n]; inf=amt+1; dp=[0]+[inf]*amt\nfor x in range(1,amt+1):\n    for c in coins:\n        if c<=x: dp[x]=min(dp[x],dp[x-c]+1)\nprint(-1 if dp[amt]==inf else dp[amt])",
+    "solution": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n,amt=d[:2]; coins=d[2:2+n]; inf=amt+1; dp=[0]+[inf]*amt\nfor x in range(1,amt+1):\n    for c in coins:\n        if c<=x: dp[x]=min(dp[x],dp[x-c]+1)\nprint(-1 if dp[amt]==inf else dp[amt])",
+    "testCases": [
+      {
+        "input": "3 11\n1 2 5",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "2 3\n2 4",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "1 0\n5",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "3 6\n1 3 4",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "2 7\n2 5",
+        "expectedOutput": "-1"
+      }
+    ],
+    "tags": [
+      "dynamic-programming"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-med-10",
+    "language": "Python",
+    "difficulty": "Medium",
+    "title": "Detect Cycle in Linked List",
+    "problem": "Given a singly linked list as values plus a next index for each node, determine whether following next pointers creates a cycle.",
+    "inputFormat": "N; N next indices (-1 means end).",
+    "outputFormat": "Print YES or NO.",
+    "constraints": [
+      "0 <= N <= 100000.",
+      "Each next index is -1 or in [0,N-1]."
+    ],
+    "sampleInput": "4\n1 2 3 -1",
+    "sampleOutput": "NO",
+    "explanation": "Use Floyd's tortoise-and-hare cycle detection.",
+    "starterCode": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n=d[0]; nxt=d[1:1+n]; slow=fast=0; seen=False\nwhile n and slow!=-1 and fast!=-1:\n    slow=nxt[slow]\n    if fast==-1: break\n    fast=nxt[fast]\n    if fast!=-1: fast=nxt[fast]\n    if slow!=-1 and slow==fast: seen=True; break\nprint('YES' if seen else 'NO')",
+    "solution": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n=d[0]; nxt=d[1:1+n]; slow=fast=0; seen=False\nwhile n and slow!=-1 and fast!=-1:\n    slow=nxt[slow]\n    if fast==-1: break\n    fast=nxt[fast]\n    if fast!=-1: fast=nxt[fast]\n    if slow!=-1 and slow==fast: seen=True; break\nprint('YES' if seen else 'NO')",
+    "testCases": [
+      {
+        "input": "4\n1 2 3 -1",
+        "expectedOutput": "NO"
+      },
+      {
+        "input": "3\n1 2 0",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "1\n-1",
+        "expectedOutput": "NO"
+      },
+      {
+        "input": "2\n0 0",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "5\n1 2 3 4 -1",
+        "expectedOutput": "NO"
+      }
+    ],
+    "tags": [
+      "linked-list",
+      "two-pointers"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-high-01",
+    "language": "Python",
+    "difficulty": "High",
+    "title": "Shortest Path in Weighted Graph",
+    "problem": "Find the shortest distance from source S to target T in a directed graph with non-negative edge weights.",
+    "inputFormat": "N M; M lines u v w; final line S T. Vertices are 0..N-1.",
+    "outputFormat": "Shortest distance, or -1 if unreachable.",
+    "constraints": [
+      "1 <= N <= 10000",
+      "1 <= M <= 50000",
+      "0 <= w <= 10^9."
+    ],
+    "sampleInput": "5 6\n0 1 2\n0 2 5\n1 2 1\n1 3 3\n2 3 1\n3 4 2\n0 4",
+    "sampleOutput": "6",
+    "explanation": "Dijkstra's algorithm with a min-heap finds the shortest path for non-negative weights.",
+    "starterCode": "import sys,heapq\n\nd=list(map(int,sys.stdin.read().split())); it=iter(d); n=next(it); m=next(it); g=[[] for _ in range(n)]\nfor _ in range(m): u=next(it); v=next(it); w=next(it); g[u].append((v,w))\ns=next(it); t=next(it); INF=10**30; dist=[INF]*n; dist[s]=0; pq=[(0,s)]\nwhile pq:\n    du,u=heapq.heappop(pq)\n    if du!=dist[u]: continue\n    if u==t: break\n    for v,w in g[u]:\n        nd=du+w\n        if nd<dist[v]: dist[v]=nd; heapq.heappush(pq,(nd,v))\nprint(-1 if dist[t]==INF else dist[t])",
+    "solution": "import sys,heapq\n\nd=list(map(int,sys.stdin.read().split())); it=iter(d); n=next(it); m=next(it); g=[[] for _ in range(n)]\nfor _ in range(m): u=next(it); v=next(it); w=next(it); g[u].append((v,w))\ns=next(it); t=next(it); INF=10**30; dist=[INF]*n; dist[s]=0; pq=[(0,s)]\nwhile pq:\n    du,u=heapq.heappop(pq)\n    if du!=dist[u]: continue\n    if u==t: break\n    for v,w in g[u]:\n        nd=du+w\n        if nd<dist[v]: dist[v]=nd; heapq.heappush(pq,(nd,v))\nprint(-1 if dist[t]==INF else dist[t])",
+    "testCases": [
+      {
+        "input": "5 6\n0 1 2\n0 2 5\n1 2 1\n1 3 3\n2 3 1\n3 4 2\n0 4",
+        "expectedOutput": "6"
+      },
+      {
+        "input": "2 0\n0 1",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "1 0\n0 0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "3 3\n0 1 10\n0 2 2\n2 1 3\n0 1",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "4 2\n0 1 1\n2 3 1\n0 3",
+        "expectedOutput": "-1"
+      }
+    ],
+    "tags": [
+      "graph",
+      "dijkstra",
+      "heap"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-high-02",
+    "language": "Python",
+    "difficulty": "High",
+    "title": "Minimum Spanning Tree Cost",
+    "problem": "Given an undirected weighted graph, find the cost of its minimum spanning tree, or -1 if disconnected.",
+    "inputFormat": "N M; M lines u v w.",
+    "outputFormat": "Print MST cost or -1.",
+    "constraints": [
+      "1 <= N <= 10000",
+      "1 <= M <= 50000."
+    ],
+    "sampleInput": "4 5\n0 1 1\n1 2 2\n2 3 3\n0 3 10\n0 2 5",
+    "sampleOutput": "6",
+    "explanation": "Sort edges by weight and use DSU/Kruskal.",
+    "starterCode": "import sys\n\nd=list(map(int,sys.stdin.read().split())); it=iter(d); n=next(it); m=next(it); edges=[(next(it),next(it),next(it)) for _ in range(m)]; edges.sort(); p=list(range(n)); sz=[1]*n\n\ndef find(x):\n    while p[x]!=x: p[x]=p[p[x]]; x=p[x]\n    return x\ncost=cnt=0\nfor w,u,v in edges:\n    a,b=find(u),find(v)\n    if a!=b: p[a]=b; cost+=w; cnt+=1\nprint(cost if cnt==n-1 else -1)",
+    "solution": "import sys\n\nd=list(map(int,sys.stdin.read().split())); it=iter(d); n=next(it); m=next(it); edges=[(next(it),next(it),next(it)) for _ in range(m)]; edges.sort(); p=list(range(n)); sz=[1]*n\n\ndef find(x):\n    while p[x]!=x: p[x]=p[p[x]]; x=p[x]\n    return x\ncost=cnt=0\nfor w,u,v in edges:\n    a,b=find(u),find(v)\n    if a!=b: p[a]=b; cost+=w; cnt+=1\nprint(cost if cnt==n-1 else -1)",
+    "testCases": [
+      {
+        "input": "4 5\n0 1 1\n1 2 2\n2 3 3\n0 3 10\n0 2 5",
+        "expectedOutput": "6"
+      },
+      {
+        "input": "3 1\n0 1 4",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "1 0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "3 3\n0 1 5\n1 2 1\n0 2 2",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "4 6\n0 1 1\n0 2 4\n0 3 3\n1 2 2\n1 3 5\n2 3 1",
+        "expectedOutput": "4"
+      }
+    ],
+    "tags": [
+      "graph",
+      "greedy",
+      "dsu"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-high-03",
+    "language": "Python",
+    "difficulty": "High",
+    "title": "Word Break",
+    "problem": "Determine whether a string can be segmented into dictionary words.",
+    "inputFormat": "String S; integer K; K dictionary words.",
+    "outputFormat": "Print YES or NO.",
+    "constraints": [
+      "Length of S <= 5000.",
+      "K <= 1000."
+    ],
+    "sampleInput": "leetcode 2\nleet\ncode",
+    "sampleOutput": "YES",
+    "explanation": "Dynamic programming marks positions reachable by dictionary words.",
+    "starterCode": "import sys\nlines=sys.stdin.read().splitlines(); s=lines[0]; k=int(lines[1]); words=set(lines[2:2+k]); n=len(s); dp=[False]*(n+1); dp[0]=True\nfor i in range(n):\n    if dp[i]:\n        for w in words:\n            if s.startswith(w,i): dp[i+len(w)]=True\nprint('YES' if dp[n] else 'NO')",
+    "solution": "import sys\nlines=sys.stdin.read().splitlines(); s=lines[0]; k=int(lines[1]); words=set(lines[2:2+k]); n=len(s); dp=[False]*(n+1); dp[0]=True\nfor i in range(n):\n    if dp[i]:\n        for w in words:\n            if s.startswith(w,i): dp[i+len(w)]=True\nprint('YES' if dp[n] else 'NO')",
+    "testCases": [
+      {
+        "input": "leetcode 2\nleet\ncode",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "catsandog 5\ncats\ndog\nsand\nand\ncat",
+        "expectedOutput": "NO"
+      },
+      {
+        "input": " 1\n",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "applepenapple 2\napple\npen",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "aaaaaaa 2\naaaa\naaa",
+        "expectedOutput": "YES"
+      }
+    ],
+    "tags": [
+      "dynamic-programming",
+      "strings"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-high-04",
+    "language": "Python",
+    "difficulty": "High",
+    "title": "N-Queens Count",
+    "problem": "Count the number of ways to place N queens on an N×N board so no two attack each other.",
+    "inputFormat": "One integer N.",
+    "outputFormat": "Print the number of valid arrangements.",
+    "constraints": [
+      "1 <= N <= 14."
+    ],
+    "sampleInput": "4",
+    "sampleOutput": "2",
+    "explanation": "Backtracking places one queen per row while tracking occupied columns and diagonals.",
+    "starterCode": "import sys\nn=int(sys.stdin.read()); cols=set(); d1=set(); d2=set(); ans=0\n\ndef dfs(r):\n    global ans\n    if r==n: ans+=1; return\n    for c in range(n):\n        if c in cols or r-c in d1 or r+c in d2: continue\n        cols.add(c); d1.add(r-c); d2.add(r+c); dfs(r+1); cols.remove(c); d1.remove(r-c); d2.remove(r+c)\ndfs(0); print(ans)",
+    "solution": "import sys\nn=int(sys.stdin.read()); cols=set(); d1=set(); d2=set(); ans=0\n\ndef dfs(r):\n    global ans\n    if r==n: ans+=1; return\n    for c in range(n):\n        if c in cols or r-c in d1 or r+c in d2: continue\n        cols.add(c); d1.add(r-c); d2.add(r+c); dfs(r+1); cols.remove(c); d1.remove(r-c); d2.remove(r+c)\ndfs(0); print(ans)",
+    "testCases": [
+      {
+        "input": "1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "2",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "3",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "4",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "5",
+        "expectedOutput": "10"
+      }
+    ],
+    "tags": [
+      "backtracking"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-high-05",
+    "language": "Python",
+    "difficulty": "High",
+    "title": "Largest Rectangle in Histogram",
+    "problem": "Find the largest rectangle area in a histogram.",
+    "inputFormat": "N followed by N non-negative heights.",
+    "outputFormat": "Print maximum area.",
+    "constraints": [
+      "1 <= N <= 100000."
+    ],
+    "sampleInput": "6\n2 1 5 6 2 3",
+    "sampleOutput": "10",
+    "explanation": "A monotonic increasing stack identifies the maximal span for each height.",
+    "starterCode": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n=d[0]; a=d[1:1+n]+[0]; st=[]; best=0\nfor i,h in enumerate(a):\n    while st and a[st[-1]]>h:\n        height=a[st.pop()]; left=st[-1]+1 if st else 0; best=max(best,height*(i-left))\n    st.append(i)\nprint(best)",
+    "solution": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n=d[0]; a=d[1:1+n]+[0]; st=[]; best=0\nfor i,h in enumerate(a):\n    while st and a[st[-1]]>h:\n        height=a[st.pop()]; left=st[-1]+1 if st else 0; best=max(best,height*(i-left))\n    st.append(i)\nprint(best)",
+    "testCases": [
+      {
+        "input": "6\n2 1 5 6 2 3",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "1\n5",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "4\n0 0 0 0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "5\n2 2 2 2 2",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expectedOutput": "6"
+      }
+    ],
+    "tags": [
+      "stack",
+      "optimization"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-high-06",
+    "language": "Python",
+    "difficulty": "High",
+    "title": "Course Schedule Ordering",
+    "problem": "Return a valid topological ordering of courses with prerequisites, or -1 if impossible.",
+    "inputFormat": "N M; M lines a b meaning a requires b first.",
+    "outputFormat": "Print one valid ordering, or -1.",
+    "constraints": [
+      "1 <= N <= 10000",
+      "0 <= M <= 50000."
+    ],
+    "sampleInput": "4 4\n1 0\n2 0\n3 1\n3 2",
+    "sampleOutput": "0 1 2 3",
+    "explanation": "Kahn's algorithm repeatedly removes zero-indegree vertices.",
+    "starterCode": "import sys\nfrom collections import deque\n\nd=list(map(int,sys.stdin.read().split())); it=iter(d); n=next(it); m=next(it); g=[[] for _ in range(n)]; indeg=[0]*n\nfor _ in range(m): a,b=next(it),next(it); g[b].append(a); indeg[a]+=1\nq=deque(i for i in range(n) if indeg[i]==0); r=[]\nwhile q:\n    u=q.popleft(); r.append(u)\n    for v in g[u]: indeg[v]-=1; q.append(v) if indeg[v]==0 else None\nprint(*r if len(r)==n else [-1])",
+    "solution": "import sys\nfrom collections import deque\n\nd=list(map(int,sys.stdin.read().split())); it=iter(d); n=next(it); m=next(it); g=[[] for _ in range(n)]; indeg=[0]*n\nfor _ in range(m): a,b=next(it),next(it); g[b].append(a); indeg[a]+=1\nq=deque(i for i in range(n) if indeg[i]==0); r=[]\nwhile q:\n    u=q.popleft(); r.append(u)\n    for v in g[u]: indeg[v]-=1; q.append(v) if indeg[v]==0 else None\nprint(*r if len(r)==n else [-1])",
+    "testCases": [
+      {
+        "input": "4 4\n1 0\n2 0\n3 1\n3 2",
+        "expectedOutput": "0 1 2 3"
+      },
+      {
+        "input": "2 2\n1 0\n0 1",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "1 0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "3 2\n2 1\n1 0",
+        "expectedOutput": "0 1 2"
+      },
+      {
+        "input": "3 0",
+        "expectedOutput": "0 1 2"
+      }
+    ],
+    "tags": [
+      "graph",
+      "topological-sort"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-high-07",
+    "language": "Python",
+    "difficulty": "High",
+    "title": "Maximum Profit with Cooldown",
+    "problem": "Given daily prices, maximize stock profit where after selling you must wait one day before buying again.",
+    "inputFormat": "N prices.",
+    "outputFormat": "Print maximum profit.",
+    "constraints": [
+      "0 <= N <= 100000.",
+      "Prices are non-negative integers."
+    ],
+    "sampleInput": "5\n1 2 3 0 2",
+    "sampleOutput": "3",
+    "explanation": "Dynamic programming tracks holding, sold, and cooldown states.",
+    "starterCode": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n=d[0]; p=d[1:1+n]\nif n<2: print(0); raise SystemExit\nhold=-p[0]; sold=0; cool=0\nfor x in p[1:]:\n    nh=max(hold,cool-x); ns=hold+x; nc=max(cool,sold); hold,sold,cool=nh,ns,nc\nprint(max(sold,cool))",
+    "solution": "import sys\n\nd=list(map(int,sys.stdin.read().split())); n=d[0]; p=d[1:1+n]\nif n<2: print(0); raise SystemExit\nhold=-p[0]; sold=0; cool=0\nfor x in p[1:]:\n    nh=max(hold,cool-x); ns=hold+x; nc=max(cool,sold); hold,sold,cool=nh,ns,nc\nprint(max(sold,cool))",
+    "testCases": [
+      {
+        "input": "5\n1 2 3 0 2",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "1\n5",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "5\n2 1 4 5 2",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "6\n1 2 3 0 2 1",
+        "expectedOutput": "3"
+      }
+    ],
+    "tags": [
+      "dynamic-programming"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-high-08",
+    "language": "Python",
+    "difficulty": "High",
+    "title": "Trie Prefix Search",
+    "problem": "Insert N lowercase words and answer K prefix queries with the number of inserted words starting with each prefix.",
+    "inputFormat": "N K; N words; K prefixes.",
+    "outputFormat": "For each prefix, print its count.",
+    "constraints": [
+      "Total characters <= 200000."
+    ],
+    "sampleInput": "3 3\napple\napp\nape\nap\napp\nz",
+    "sampleOutput": "3\n2\n0",
+    "explanation": "Build a trie with a count at every node.",
+    "starterCode": "import sys\nclass Node:\n    def __init__(self): self.c={}; self.n=0\nlines=sys.stdin.read().split(); it=iter(lines); n=int(next(it)); k=int(next(it)); root=Node()\nfor _ in range(n):\n    cur=root\n    for ch in next(it): cur=cur.c.setdefault(ch,Node()); cur.n+=1\nfor _ in range(k):\n    cur=root; ok=True\n    for ch in next(it):\n        if ch not in cur.c: ok=False; break\n        cur=cur.c[ch]\n    print(cur.n if ok else 0)",
+    "solution": "import sys\nclass Node:\n    def __init__(self): self.c={}; self.n=0\nlines=sys.stdin.read().split(); it=iter(lines); n=int(next(it)); k=int(next(it)); root=Node()\nfor _ in range(n):\n    cur=root\n    for ch in next(it): cur=cur.c.setdefault(ch,Node()); cur.n+=1\nfor _ in range(k):\n    cur=root; ok=True\n    for ch in next(it):\n        if ch not in cur.c: ok=False; break\n        cur=cur.c[ch]\n    print(cur.n if ok else 0)",
+    "testCases": [
+      {
+        "input": "3 3\napple\napp\nape\nap\napp\nz",
+        "expectedOutput": "3\n2\n0"
+      },
+      {
+        "input": "0 2\nab\nz",
+        "expectedOutput": "0\n0"
+      },
+      {
+        "input": "1 1\ncat\ncat",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3 2\na\nab\nabc\na\nabc",
+        "expectedOutput": "3\n1"
+      },
+      {
+        "input": "2 1\nhello\nworld\nhe",
+        "expectedOutput": "1"
+      }
+    ],
+    "tags": [
+      "trie"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-high-09",
+    "language": "Python",
+    "difficulty": "High",
+    "title": "Minimum Meeting Rooms",
+    "problem": "Given meeting intervals, find the minimum number of rooms required.",
+    "inputFormat": "N lines of start end times.",
+    "outputFormat": "Print minimum rooms.",
+    "constraints": [
+      "0 <= N <= 100000.",
+      "start < end."
+    ],
+    "sampleInput": "5\n0 30\n5 10\n15 20\n20 25\n25 35",
+    "sampleOutput": "2",
+    "explanation": "Sort start and end times separately and greedily reuse rooms.",
+    "starterCode": "import sys\nlines=sys.stdin.read().splitlines(); n=int(lines[0]) if lines else 0; a=[]; b=[]\nfor x in lines[1:1+n]: s,e=map(int,x.split()); a.append(s); b.append(e)\na.sort(); b.sort(); i=j=rooms=best=0\nwhile i<n:\n    if a[i]<b[j]: rooms+=1; best=max(best,rooms); i+=1\n    else: rooms-=1; j+=1\nprint(best)",
+    "solution": "import sys\nlines=sys.stdin.read().splitlines(); n=int(lines[0]) if lines else 0; a=[]; b=[]\nfor x in lines[1:1+n]: s,e=map(int,x.split()); a.append(s); b.append(e)\na.sort(); b.sort(); i=j=rooms=best=0\nwhile i<n:\n    if a[i]<b[j]: rooms+=1; best=max(best,rooms); i+=1\n    else: rooms-=1; j+=1\nprint(best)",
+    "testCases": [
+      {
+        "input": "5\n0 30\n5 10\n15 20\n20 25\n25 35",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "1\n1 2",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3\n0 10\n1 2\n2 3",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "2\n1 2\n2 4",
+        "expectedOutput": "1"
+      }
+    ],
+    "tags": [
+      "greedy",
+      "sorting",
+      "intervals"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "py-high-10",
+    "language": "Python",
+    "difficulty": "High",
+    "title": "Edit Distance",
+    "problem": "Find the minimum insertions, deletions, and substitutions to transform one string into another.",
+    "inputFormat": "Two lines containing strings A and B.",
+    "outputFormat": "Print edit distance.",
+    "constraints": [
+      "Each length <= 1000."
+    ],
+    "sampleInput": "kitten\nsitting",
+    "sampleOutput": "3",
+    "explanation": "Use the classic two-row dynamic programming recurrence.",
+    "starterCode": "import sys\nlines=sys.stdin.read().splitlines(); a=lines[0] if lines else ''; b=lines[1] if len(lines)>1 else ''; prev=list(range(len(b)+1))\nfor i,x in enumerate(a,1):\n    cur=[i]\n    for j,y in enumerate(b,1): cur.append(min(cur[-1]+1,prev[j]+1,prev[j-1]+(x!=y)))\n    prev=cur\nprint(prev[-1])",
+    "solution": "import sys\nlines=sys.stdin.read().splitlines(); a=lines[0] if lines else ''; b=lines[1] if len(lines)>1 else ''; prev=list(range(len(b)+1))\nfor i,x in enumerate(a,1):\n    cur=[i]\n    for j,y in enumerate(b,1): cur.append(min(cur[-1]+1,prev[j]+1,prev[j-1]+(x!=y)))\n    prev=cur\nprint(prev[-1])",
+    "testCases": [
+      {
+        "input": "kitten\nsitting",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "abc\nabc",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "\nabc",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "a\n",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "intention\nexecution",
+        "expectedOutput": "5"
+      }
+    ],
+    "tags": [
+      "dynamic-programming",
+      "strings"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-low-01",
+    "language": "Java",
+    "difficulty": "Low",
+    "title": "Temperature Converter",
+    "problem": "Convert Celsius to Fahrenheit. Input one real number.",
+    "inputFormat": "One real number.",
+    "outputFormat": "Fahrenheit rounded to 2 decimal places.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "12.5",
+    "sampleOutput": "54.50",
+    "explanation": "Use F = C * 9/5 + 32.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.io.*;import java.util.*;public class Main{public static void main(String[]z){Scanner s=new Scanner(System.in);double c=s.nextDouble();System.out.printf(Locale.US,\"%.2f\",c*9/5+32);}}",
+    "testCases": [
+      {
+        "input": "12.5",
+        "expectedOutput": "54.50"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "32.00"
+      },
+      {
+        "input": "-40",
+        "expectedOutput": "-40.00"
+      },
+      {
+        "input": "100",
+        "expectedOutput": "212.00"
+      },
+      {
+        "input": "37",
+        "expectedOutput": "98.60"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-low-02",
+    "language": "Java",
+    "difficulty": "Low",
+    "title": "Leap Year Checker",
+    "problem": "Determine whether a year is a leap year.",
+    "inputFormat": "One integer year.",
+    "outputFormat": "YES or NO.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "2024",
+    "sampleOutput": "YES",
+    "explanation": "A leap year is divisible by 400, or divisible by 4 but not 100.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){int y=new Scanner(System.in).nextInt();System.out.print(y%400==0||y%4==0&&y%100!=0?\"YES\":\"NO\");}}",
+    "testCases": [
+      {
+        "input": "2024",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "2000",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "1900",
+        "expectedOutput": "NO"
+      },
+      {
+        "input": "2023",
+        "expectedOutput": "NO"
+      },
+      {
+        "input": "1",
+        "expectedOutput": "NO"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-low-03",
+    "language": "Java",
+    "difficulty": "Low",
+    "title": "Sum of Digits",
+    "problem": "Print the sum of decimal digits of an integer.",
+    "inputFormat": "One integer.",
+    "outputFormat": "Digit sum.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "-908",
+    "sampleOutput": "17",
+    "explanation": "Use absolute value and repeatedly remove the last digit.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){long n=new Scanner(System.in).nextLong();n=Math.abs(n);long r=0;do{r+=n%10;n/=10;}while(n>0);System.out.print(r);}}",
+    "testCases": [
+      {
+        "input": "-908",
+        "expectedOutput": "17"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "12345",
+        "expectedOutput": "15"
+      },
+      {
+        "input": "-12",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "999",
+        "expectedOutput": "27"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-low-04",
+    "language": "Java",
+    "difficulty": "Low",
+    "title": "Count Words",
+    "problem": "Count whitespace-separated words in a line.",
+    "inputFormat": "One line.",
+    "outputFormat": "Number of words.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "Java makes coding fun",
+    "sampleOutput": "4",
+    "explanation": "Trim and split on one-or-more whitespace characters.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.io.*;class Main{public static void main(String[]a)throws Exception{String s=new BufferedReader(new InputStreamReader(System.in)).readLine().trim();System.out.print(s.isEmpty()?0:s.split(\"\\\\s+\").length);}}",
+    "testCases": [
+      {
+        "input": "Java makes coding fun",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "hello",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "a b",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "  one   two ",
+        "expectedOutput": "2"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-low-05",
+    "language": "Java",
+    "difficulty": "Low",
+    "title": "Remove Duplicate Characters",
+    "problem": "Remove repeated characters while keeping the first occurrence.",
+    "inputFormat": "One line.",
+    "outputFormat": "Resulting string.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "programming",
+    "sampleOutput": "progamin",
+    "explanation": "Track characters already emitted.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.io.*;import java.util.*;class Main{public static void main(String[]a)throws Exception{String s=new BufferedReader(new InputStreamReader(System.in)).readLine();Set<Character> q=new HashSet<>();StringBuilder r=new StringBuilder();for(char c:s.toCharArray())if(q.add(c))r.append(c);System.out.print(r);}}",
+    "testCases": [
+      {
+        "input": "programming",
+        "expectedOutput": "progamin"
+      },
+      {
+        "input": "aaaa",
+        "expectedOutput": "a"
+      },
+      {
+        "input": "abc",
+        "expectedOutput": "abc"
+      },
+      {
+        "input": "banana",
+        "expectedOutput": "ban"
+      },
+      {
+        "input": "",
+        "expectedOutput": ""
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-low-06",
+    "language": "Java",
+    "difficulty": "Low",
+    "title": "Ascending Selection Sort",
+    "problem": "Sort N integers using selection sort.",
+    "inputFormat": "N and N integers.",
+    "outputFormat": "Sorted array.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "5\n4 1 3 2 5",
+    "sampleOutput": "1 2 3 4 5",
+    "explanation": "Select the smallest remaining element for each position.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]x){Scanner s=new Scanner(System.in);int n=s.nextInt();int[]a=new int[n];for(int i=0;i<n;i++)a[i]=s.nextInt();for(int i=0;i<n;i++){int p=i;for(int j=i+1;j<n;j++)if(a[j]<a[p])p=j;int t=a[i];a[i]=a[p];a[p]=t;}for(int v:a)System.out.print(v+\" \");}}",
+    "testCases": [
+      {
+        "input": "5\n4 1 3 2 5",
+        "expectedOutput": "1 2 3 4 5"
+      },
+      {
+        "input": "1\n5",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "3\n3 1 2",
+        "expectedOutput": "1 2 3"
+      },
+      {
+        "input": "4\n-1 -1 2 0",
+        "expectedOutput": "-1 -1 0 2"
+      },
+      {
+        "input": "0\n",
+        "expectedOutput": ""
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-low-07",
+    "language": "Java",
+    "difficulty": "Low",
+    "title": "Power Without Math.pow",
+    "problem": "Compute a^b for non-negative integer b.",
+    "inputFormat": "Two integers.",
+    "outputFormat": "Power.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "2 10",
+    "sampleOutput": "1024",
+    "explanation": "Multiply repeatedly.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){Scanner s=new Scanner(System.in);long x=s.nextLong(),n=s.nextLong(),r=1;while(n-->0)r*=x;System.out.print(r);}}",
+    "testCases": [
+      {
+        "input": "2 10",
+        "expectedOutput": "1024"
+      },
+      {
+        "input": "2 0",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3 3",
+        "expectedOutput": "27"
+      },
+      {
+        "input": "5 1",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "10 2",
+        "expectedOutput": "100"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-low-08",
+    "language": "Java",
+    "difficulty": "Low",
+    "title": "Armstrong Number",
+    "problem": "Check whether a non-negative integer equals the sum of its digits raised to the number of digits.",
+    "inputFormat": "One integer.",
+    "outputFormat": "YES or NO.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "153",
+    "sampleOutput": "YES",
+    "explanation": "Extract digits and compute the power sum.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){long n=new Scanner(System.in).nextLong(),x=n;int d=String.valueOf(n).length();long sum=0;do{long v=x%10;sum+=Math.round(Math.pow(v,d));x/=10;}while(x>0);System.out.print(sum==n?\"YES\":\"NO\");}}",
+    "testCases": [
+      {
+        "input": "153",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "370",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "371",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "123",
+        "expectedOutput": "NO"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-low-09",
+    "language": "Java",
+    "difficulty": "Low",
+    "title": "Replace Spaces",
+    "problem": "Replace every space with a hyphen.",
+    "inputFormat": "One line.",
+    "outputFormat": "Modified string.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "hello world java",
+    "sampleOutput": "hello-world-java",
+    "explanation": "Scan the string and replace spaces.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.io.*;class Main{public static void main(String[]a)throws Exception{System.out.print(new BufferedReader(new InputStreamReader(System.in)).readLine().replace(' ','-'));}}",
+    "testCases": [
+      {
+        "input": "hello world java",
+        "expectedOutput": "hello-world-java"
+      },
+      {
+        "input": "hello world",
+        "expectedOutput": "hello-world"
+      },
+      {
+        "input": "a b c",
+        "expectedOutput": "a-b-c"
+      },
+      {
+        "input": "nospace",
+        "expectedOutput": "nospace"
+      },
+      {
+        "input": "",
+        "expectedOutput": ""
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-low-10",
+    "language": "Java",
+    "difficulty": "Low",
+    "title": "Matrix Diagonal Sum",
+    "problem": "Print the sum of the main diagonal of an N×N matrix.",
+    "inputFormat": "N followed by matrix.",
+    "outputFormat": "Diagonal sum.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "2\n1 2\n3 4",
+    "sampleOutput": "5",
+    "explanation": "Add matrix[i][i].",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){Scanner s=new Scanner(System.in);int n=s.nextInt(),sum=0;for(int i=0;i<n;i++)for(int j=0;j<n;j++){int x=s.nextInt();if(i==j)sum+=x;}System.out.print(sum);}}",
+    "testCases": [
+      {
+        "input": "2\n1 2\n3 4",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "1\n7",
+        "expectedOutput": "7"
+      },
+      {
+        "input": "2\n-1 0\n0 4",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "3\n1 0 0\n0 2 0\n0 0 3",
+        "expectedOutput": "6"
+      },
+      {
+        "input": "2\n5 8\n2 6",
+        "expectedOutput": "11"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-med-01",
+    "language": "Java",
+    "difficulty": "Medium",
+    "title": "Anagram Check",
+    "problem": "Determine whether two lowercase strings are anagrams.",
+    "inputFormat": "Two lines.",
+    "outputFormat": "YES or NO.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "listen\nsilent",
+    "sampleOutput": "YES",
+    "explanation": "Count character frequencies.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.io.*;import java.util.*;class Main{public static void main(String[]a)throws Exception{BufferedReader b=new BufferedReader(new InputStreamReader(System.in));String x=b.readLine(),y=b.readLine();char[]p=x.toCharArray(),q=y.toCharArray();Arrays.sort(p);Arrays.sort(q);System.out.print(Arrays.equals(p,q)?\"YES\":\"NO\");}}",
+    "testCases": [
+      {
+        "input": "listen\nsilent",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "abc\nbca",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "a\nb",
+        "expectedOutput": "NO"
+      },
+      {
+        "input": "\n",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "listen\nsilent",
+        "expectedOutput": "YES"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-med-02",
+    "language": "Java",
+    "difficulty": "Medium",
+    "title": "Longest Consecutive Sequence",
+    "problem": "Find the length of the longest consecutive integer sequence.",
+    "inputFormat": "N and array.",
+    "outputFormat": "Maximum length.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "6\n100 4 200 1 3 2",
+    "sampleOutput": "4",
+    "explanation": "Use a HashSet and start sequences only at x-1 absent.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){Scanner s=new Scanner(System.in);int n=s.nextInt();Set<Integer>q=new HashSet<>();for(int i=0;i<n;i++)q.add(s.nextInt());int best=0;for(int x:q)if(!q.contains(x-1)){int y=x;while(q.contains(y))y++;best=Math.max(best,y-x);}System.out.print(best);}}",
+    "testCases": [
+      {
+        "input": "6\n100 4 200 1 3 2",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "3\n1 2 3",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "5\n10 5 12 11 13",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "4\n1 1 2 3",
+        "expectedOutput": "3"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-med-03",
+    "language": "Java",
+    "difficulty": "Medium",
+    "title": "Evaluate Postfix",
+    "problem": "Evaluate an integer postfix expression with +,-,*,/.",
+    "inputFormat": "Tokens separated by spaces.",
+    "outputFormat": "Integer result.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "2 3 + 4 *",
+    "sampleOutput": "20",
+    "explanation": "Use a stack of operands.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){Scanner s=new Scanner(System.in);Deque<Integer>q=new ArrayDeque<>();while(s.hasNext()){String t=s.next();if(t.matches(\"-?\\\\d+\"))q.push(Integer.parseInt(t));else{int b=q.pop(),x=q.pop();q.push(t.equals(\"+\")?x+b:t.equals(\"-\")?x-b:t.equals(\"*\")?x*b:x/b);}}System.out.print(q.pop());}}",
+    "testCases": [
+      {
+        "input": "2 3 + 4 *",
+        "expectedOutput": "20"
+      },
+      {
+        "input": "2 3 +",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "5 2 -",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "6 2 /",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "2 3 * 4 +",
+        "expectedOutput": "10"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-med-04",
+    "language": "Java",
+    "difficulty": "Medium",
+    "title": "Queue Using Two Stacks",
+    "problem": "Process enqueue/dequeue operations and print each dequeued value.",
+    "inputFormat": "Q operations; + x enqueues, - dequeues.",
+    "outputFormat": "Dequeued values, one per line.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "5\n+ 1\n+ 2\n-\n+ 3\n-",
+    "sampleOutput": "1\n2",
+    "explanation": "Use two stacks and transfer only when the output stack is empty.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){Scanner s=new Scanner(System.in);int qn=s.nextInt();Deque<Integer>in=new ArrayDeque<>(),out=new ArrayDeque<>();for(int z=0;z<qn;z++){String op=s.next();if(op.equals(\"+\"))in.push(s.nextInt());else{if(out.isEmpty())while(!in.isEmpty())out.push(in.pop());System.out.println(out.pop());}}}}",
+    "testCases": [
+      {
+        "input": "5\n+ 1\n+ 2\n-\n+ 3\n-",
+        "expectedOutput": "1\n2"
+      },
+      {
+        "input": "1\n+ 9",
+        "expectedOutput": ""
+      },
+      {
+        "input": "4\n+ 1\n+ 2\n-\n-",
+        "expectedOutput": "1\n2"
+      },
+      {
+        "input": "3\n+ -1\n-\n+ 5",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "5\n+ 1\n+ 2\n-\n+ 3\n-",
+        "expectedOutput": "1\n2"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-med-05",
+    "language": "Java",
+    "difficulty": "Medium",
+    "title": "Spiral Matrix",
+    "problem": "Print matrix elements in clockwise spiral order.",
+    "inputFormat": "Rows columns and matrix.",
+    "outputFormat": "Space-separated traversal.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "2 3\n1 2 3\n4 5 6",
+    "sampleOutput": "1 2 3 6 5 4",
+    "explanation": "Maintain top, bottom, left, right boundaries.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){Scanner s=new Scanner(System.in);int r=s.nextInt(),c=s.nextInt();int[][]m=new int[r][c];for(int[]x:m)for(int j=0;j<c;j++)x[j]=s.nextInt();int t=0,b=r-1,l=0,rr=c-1;StringBuilder o=new StringBuilder();while(t<=b&&l<=rr){for(int j=l;j<=rr;j++)o.append(m[t][j]).append(' ');t++;for(int i=t;i<=b;i++)o.append(m[i][rr]).append(' ');rr--;if(t<=b)for(int j=rr;j>=l;j--)o.append(m[b][j]).append(' ');b--;if(l<=rr)for(int i=b;i>=t;i--)o.append(m[i][l]).append(' ');l++;}System.out.print(o.toString().trim());}}",
+    "testCases": [
+      {
+        "input": "2 3\n1 2 3\n4 5 6",
+        "expectedOutput": "1 2 3 6 5 4"
+      },
+      {
+        "input": "1 1\n7",
+        "expectedOutput": "7"
+      },
+      {
+        "input": "2 2\n1 2\n3 4",
+        "expectedOutput": "1 2 4 3"
+      },
+      {
+        "input": "2 3\n1 2 3\n4 5 6",
+        "expectedOutput": "1 2 3 6 5 4"
+      },
+      {
+        "input": "2 3\n1 2 3\n4 5 6",
+        "expectedOutput": "1 2 3 6 5 4"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-med-06",
+    "language": "Java",
+    "difficulty": "Medium",
+    "title": "Intersection of Arrays",
+    "problem": "Print distinct values present in both arrays in ascending order.",
+    "inputFormat": "Two arrays.",
+    "outputFormat": "Common distinct values.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "4\n1 2 2 3\n3\n2 3 4",
+    "sampleOutput": "2 3",
+    "explanation": "Use a set for the first array and collect matches.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){Scanner s=new Scanner(System.in);int n=s.nextInt();Set<Integer>x=new HashSet<>();while(n-->0)x.add(s.nextInt());int m=s.nextInt();Set<Integer>r=new TreeSet<>();while(m-->0){int v=s.nextInt();if(x.contains(v))r.add(v);}for(int v:r)System.out.print(v+\" \");}}",
+    "testCases": [
+      {
+        "input": "4\n1 2 2 3\n3\n2 3 4",
+        "expectedOutput": "2 3"
+      },
+      {
+        "input": "3\n1 2 3\n3\n2 3 4",
+        "expectedOutput": "2 3 "
+      },
+      {
+        "input": "0\n0\n",
+        "expectedOutput": ""
+      },
+      {
+        "input": "2\n1 1\n2\n1 2",
+        "expectedOutput": "1 "
+      },
+      {
+        "input": "4\n1 2 2 3\n3\n2 3 4",
+        "expectedOutput": "2 3"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-med-07",
+    "language": "Java",
+    "difficulty": "Medium",
+    "title": "House Robber",
+    "problem": "Maximum sum from non-adjacent values.",
+    "inputFormat": "N and values.",
+    "outputFormat": "Maximum sum.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "5\n2 7 9 3 1",
+    "sampleOutput": "12",
+    "explanation": "DP: best through each house is max(skip, take).",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){Scanner s=new Scanner(System.in);int n=s.nextInt(),prev=0,cur=0;for(int i=0;i<n;i++){int x=s.nextInt(),next=Math.max(cur,prev+x);prev=cur;cur=next;}System.out.print(cur);}}",
+    "testCases": [
+      {
+        "input": "5\n2 7 9 3 1",
+        "expectedOutput": "12"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "1\n5",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "4\n1 2 3 1",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "3\n2 7 9",
+        "expectedOutput": "11"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-med-08",
+    "language": "Java",
+    "difficulty": "Medium",
+    "title": "Right View of Binary Tree",
+    "problem": "Given a level-order tree with -1 nulls, print the rightmost node of each level.",
+    "inputFormat": "N and level-order values.",
+    "outputFormat": "Right-view values.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "7\n1 2 3 4 5 -1 7",
+    "sampleOutput": "1 3 7",
+    "explanation": "Use BFS and keep the final node of each level.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){Scanner s=new Scanner(System.in);int n=s.nextInt();Integer[]v=new Integer[n];for(int i=0;i<n;i++){int x=s.nextInt();v[i]=x<0?null:x;}if(n==0||v[0]==null)return;Queue<Integer>q=new ArrayDeque<>();q.add(0);while(!q.isEmpty()){int sz=q.size(),last=-1;for(int z=0;z<sz;z++){int i=q.poll();last=v[i];int l=2*i+1,r=2*i+2;if(l<n&&v[l]!=null)q.add(l);if(r<n&&v[r]!=null)q.add(r);}System.out.println(last);}}}",
+    "testCases": [
+      {
+        "input": "7\n1 2 3 4 5 -1 7",
+        "expectedOutput": "1 3 7"
+      },
+      {
+        "input": "1\n5",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "3\n1 2 3",
+        "expectedOutput": "1\n3"
+      },
+      {
+        "input": "7\n1 2 3 4 5 6 7",
+        "expectedOutput": "1\n3\n7"
+      },
+      {
+        "input": "7\n1 2 3 4 5 -1 7",
+        "expectedOutput": "1 3 7"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-med-09",
+    "language": "Java",
+    "difficulty": "Medium",
+    "title": "Sort Colors",
+    "problem": "Sort an array containing only 0,1,2 in one pass.",
+    "inputFormat": "N and values.",
+    "outputFormat": "Sorted array.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "6\n2 0 2 1 1 0",
+    "sampleOutput": "0 0 1 1 2 2",
+    "explanation": "Use the Dutch National Flag three-pointer algorithm.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){Scanner s=new Scanner(System.in);int n=s.nextInt(),l=0,i=0,r=n-1;int[]x=new int[n];for(int j=0;j<n;j++)x[j]=s.nextInt();while(i<=r)if(x[i]==0){int t=x[i];x[i++]=x[l];x[l++]=t;}else if(x[i]==2){int t=x[i];x[i]=x[r];x[r--]=t;}else i++;for(int v:x)System.out.print(v+\" \");}}",
+    "testCases": [
+      {
+        "input": "6\n2 0 2 1 1 0",
+        "expectedOutput": "0 0 1 1 2 2"
+      },
+      {
+        "input": "0",
+        "expectedOutput": ""
+      },
+      {
+        "input": "3\n2 1 0",
+        "expectedOutput": "0 1 2 "
+      },
+      {
+        "input": "5\n1 1 2 0 0",
+        "expectedOutput": "0 0 1 1 2 "
+      },
+      {
+        "input": "6\n2 0 2 1 1 0",
+        "expectedOutput": "0 0 1 1 2 2"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-med-10",
+    "language": "Java",
+    "difficulty": "Medium",
+    "title": "Longest Palindromic Substring",
+    "problem": "Print the longest palindromic substring; on ties print the earliest.",
+    "inputFormat": "One string.",
+    "outputFormat": "Longest palindrome.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "babad",
+    "sampleOutput": "bab",
+    "explanation": "Expand around each possible center.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.io.*;class Main{public static void main(String[]a)throws Exception{String s=new BufferedReader(new InputStreamReader(System.in)).readLine();if(s==null||s.isEmpty()){System.out.print(\"\");return;}int L=0,R=0;for(int c=0;c<s.length();c++){int[]x={c,c};for(int k=0;k<2;k++){int l=c,r=c+k;while(l>=0&&r<s.length()&&s.charAt(l)==s.charAt(r)){if(r-l>R-L){L=l;R=r;}l--;r++;}}}System.out.print(s.substring(L,R+1));}}",
+    "testCases": [
+      {
+        "input": "babad",
+        "expectedOutput": "bab"
+      },
+      {
+        "input": "a",
+        "expectedOutput": "a"
+      },
+      {
+        "input": "cbbd",
+        "expectedOutput": "bb"
+      },
+      {
+        "input": "racecar",
+        "expectedOutput": "racecar"
+      },
+      {
+        "input": "abc",
+        "expectedOutput": "a"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-high-01",
+    "language": "Java",
+    "difficulty": "High",
+    "title": "Network Delay Time",
+    "problem": "Find the time for a signal from K to reach all N nodes in a directed weighted graph, or -1.",
+    "inputFormat": "N M K; edges u v w.",
+    "outputFormat": "Maximum shortest distance or -1.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "4 3 2\n2 1 1\n2 3 1\n3 4 1",
+    "sampleOutput": "2",
+    "explanation": "Run Dijkstra from K.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{static class E{int v,w;E(int v,int w){this.v=v;this.w=w;}}public static void main(String[]a){Scanner s=new Scanner(System.in);int n=s.nextInt(),m=s.nextInt(),k=s.nextInt();List<E>[]g=new List[n];for(int i=0;i<n;i++)g[i]=new ArrayList<>();for(int i=0;i<m;i++)g[s.nextInt()-1].add(new E(s.nextInt()-1,s.nextInt()));long[]d=new long[n];Arrays.fill(d,Long.MAX_VALUE);d[k-1]=0;PriorityQueue<long[]>q=new PriorityQueue<>(Comparator.comparingLong(x->x[0]));q.add(new long[]{0,k-1});while(!q.isEmpty()){long[]z=q.poll();if(z[0]!=d[(int)z[1]])continue;for(E e:g[(int)z[1]])if(d[e.v]>z[0]+e.w){d[e.v]=z[0]+e.w;q.add(new long[]{d[e.v],e.v});}}long mx=0;for(long x:d)if(x==Long.MAX_VALUE){System.out.print(-1);return;}else mx=Math.max(mx,x);System.out.print(mx);}}",
+    "testCases": [
+      {
+        "input": "4 3 2\n2 1 1\n2 3 1\n3 4 1",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "1 0 1",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "2 1 1\n1 2 5",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "3 1 1\n1 2 3",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "3 3 1\n1 2 2\n1 3 5\n2 3 1",
+        "expectedOutput": "3"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-high-02",
+    "language": "Java",
+    "difficulty": "High",
+    "title": "Alien Dictionary",
+    "problem": "Given words sorted in an unknown alphabet, output a valid character order or -1.",
+    "inputFormat": "N words.",
+    "outputFormat": "One valid order or -1.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "5\nwrt\nwrf\ner\nett\nrftt",
+    "sampleOutput": "wertf",
+    "explanation": "Build precedence edges from the first differing character and topologically sort.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){Scanner s=new Scanner(System.in);int n=s.nextInt();String[]w=new String[n];for(int i=0;i<n;i++)w[i]=s.next();Map<Character,Set<Character>>g=new HashMap<>();Map<Character,Integer>in=new HashMap<>();for(String x:w)for(char c:x.toCharArray()){g.putIfAbsent(c,new HashSet<>());in.putIfAbsent(c,0);}for(int i=1;i<n;i++){String x=w[i-1],y=w[i];int z=0;while(z<x.length()&&z<y.length()&&x.charAt(z)==y.charAt(z))z++;if(z==y.length()&&z<x.length()){System.out.print(-1);return;}if(z<x.length()&&z<y.length()&&g.get(x.charAt(z)).add(y.charAt(z)))in.put(y.charAt(z),in.get(y.charAt(z))+1);}PriorityQueue<Character>q=new PriorityQueue<>();for(char c:in.keySet())if(in.get(c)==0)q.add(c);StringBuilder r=new StringBuilder();while(!q.isEmpty()){char c=q.poll();r.append(c);for(char v:g.get(c))if(in.merge(v,-1,Integer::sum)==0)q.add(v);}System.out.print(r.length()==in.size()?r:-1);}}",
+    "testCases": [
+      {
+        "input": "5\nwrt\nwrf\ner\nett\nrftt",
+        "expectedOutput": "wertf"
+      },
+      {
+        "input": "1\na",
+        "expectedOutput": "a"
+      },
+      {
+        "input": "3\nz\nx\nz",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "5\nwrt\nwrf\ner\nett\nrftt",
+        "expectedOutput": "wertf"
+      },
+      {
+        "input": "3\nabc\nab",
+        "expectedOutput": "-1"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-high-03",
+    "language": "Java",
+    "difficulty": "High",
+    "title": "Word Ladder",
+    "problem": "Find the shortest transformation length changing one character at a time, using only dictionary words.",
+    "inputFormat": "begin end N words.",
+    "outputFormat": "Shortest number of words in the sequence, or 0.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "hit cog 6\nhot dot dog lot log cog",
+    "sampleOutput": "5",
+    "explanation": "BFS over wildcard-pattern buckets.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){Scanner s=new Scanner(System.in);String b=s.next(),e=s.next();int n=s.nextInt();Set<String>w=new HashSet<>();for(int i=0;i<n;i++)w.add(s.next());if(b.equals(e)){System.out.print(1);return;}if(!w.contains(e)){System.out.print(0);return;}Queue<String>q=new ArrayDeque<>();q.add(b);Set<String>seen=new HashSet<>();seen.add(b);int d=1;while(!q.isEmpty()){for(int z=q.size();z>0;z--){String x=q.poll();char[]c=x.toCharArray();for(int i=0;i<c.length;i++){char old=c[i];for(char ch='a';ch<='z';ch++){c[i]=ch;String y=new String(c);if(y.equals(e)){System.out.print(d+1);return;}if(w.contains(y)&&seen.add(y))q.add(y);}c[i]=old;}}d++;}System.out.print(0);}}",
+    "testCases": [
+      {
+        "input": "hit cog 6\nhot dot dog lot log cog",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "hit hit 0",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "hit cog 6\nhot dot dog lot log cog",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "a c 1\nb",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "a c 2\nb\nc",
+        "expectedOutput": "2"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-high-04",
+    "language": "Java",
+    "difficulty": "High",
+    "title": "Burst Balloons",
+    "problem": "Maximize coins from bursting balloons in an optimal order.",
+    "inputFormat": "N and positive values.",
+    "outputFormat": "Maximum coins.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "4\n3 1 5 8",
+    "sampleOutput": "167",
+    "explanation": "Interval DP considers the last balloon burst in each interval.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){Scanner s=new Scanner(System.in);int n=s.nextInt();int[]p=new int[n+2];p[0]=p[n+1]=1;for(int i=1;i<=n;i++)p[i]=s.nextInt();long[][]d=new long[n+2][n+2];for(int len=2;len<=n+1;len++)for(int l=0;l+len<=n+1;l++){int r=l+len;for(int k=l+1;k<r;k++)d[l][r]=Math.max(d[l][r],d[l][k]+d[k][r]+(long)p[l]*p[k]*p[r]);}System.out.print(d[0][n+1]);}}",
+    "testCases": [
+      {
+        "input": "4\n3 1 5 8",
+        "expectedOutput": "167"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "1\n5",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "2\n3 1",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "4\n1 5 2 3",
+        "expectedOutput": "45"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-high-05",
+    "language": "Java",
+    "difficulty": "High",
+    "title": "Regular Expression Matcher",
+    "problem": "Implement matching for a string against a pattern containing '.' and '*'.",
+    "inputFormat": "Two lines s and p.",
+    "outputFormat": "YES or NO.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "aab\nc*a*b",
+    "sampleOutput": "YES",
+    "explanation": "Use memoized recursion with states (i,j).",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.io.*;import java.util.*;class Main{static String s,p;static Boolean[][]m;static boolean f(int i,int j){if(j==p.length())return i==s.length();if(m[i][j]!=null)return m[i][j];boolean first=i<s.length()&&(p.charAt(j)==s.charAt(i)||p.charAt(j)=='.');boolean r=j+1<p.length()&&p.charAt(j+1)=='*'&&(f(i,j+2)||(first&&f(i+1,j)));if(j+1>=p.length()||p.charAt(j+1)!='*')r=first&&f(i+1,j+1);return m[i][j]=r;}public static void main(String[]a)throws Exception{BufferedReader b=new BufferedReader(new InputStreamReader(System.in));s=b.readLine();p=b.readLine();m=new Boolean[s.length()+1][p.length()+1];System.out.print(f(0,0)?\"YES\":\"NO\");}}",
+    "testCases": [
+      {
+        "input": "aab\nc*a*b",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "aa\na",
+        "expectedOutput": "NO"
+      },
+      {
+        "input": "aa\na*",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "ab\n.*",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "aab\nc*a*b",
+        "expectedOutput": "YES"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-high-06",
+    "language": "Java",
+    "difficulty": "High",
+    "title": "Critical Connections",
+    "problem": "Find all bridges in an undirected graph.",
+    "inputFormat": "N M; edges.",
+    "outputFormat": "Print bridge pairs sorted lexicographically, or NONE.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "4 4\n0 1\n1 2\n2 0\n1 3",
+    "sampleOutput": "1 3",
+    "explanation": "Tarjan DFS tracks discovery and low-link times.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{static List<Integer>[]g;static int[]tin,low;static int t;static List<int[]>r=new ArrayList<>();static void dfs(int u,int p){tin[u]=low[u]=++t;for(int v:g[u])if(v!=p){if(tin[v]>0)low[u]=Math.min(low[u],tin[v]);else{dfs(v,u);low[u]=Math.min(low[u],low[v]);if(low[v]>tin[u])r.add(new int[]{Math.min(u,v),Math.max(u,v)});}}}public static void main(String[]a){Scanner s=new Scanner(System.in);int n=s.nextInt(),m=s.nextInt();g=new List[n];for(int i=0;i<n;i++)g[i]=new ArrayList<>();for(int i=0;i<m;i++){int u=s.nextInt(),v=s.nextInt();g[u].add(v);g[v].add(u);}tin=new int[n];low=new int[n];for(int i=0;i<n;i++)if(tin[i]==0)dfs(i,-1);r.sort((x,y)->x[0]!=y[0]?x[0]-y[0]:x[1]-y[1]);if(r.isEmpty())System.out.print(\"NONE\");else for(int[]e:r)System.out.println(e[0]+\" \"+e[1]);}}",
+    "testCases": [
+      {
+        "input": "4 4\n0 1\n1 2\n2 0\n1 3",
+        "expectedOutput": "1 3"
+      },
+      {
+        "input": "1 0",
+        "expectedOutput": "NONE"
+      },
+      {
+        "input": "3 3\n0 1\n1 2\n2 0",
+        "expectedOutput": "NONE"
+      },
+      {
+        "input": "2 1\n0 1",
+        "expectedOutput": "0 1"
+      },
+      {
+        "input": "4 4\n0 1\n1 2\n2 0\n1 3",
+        "expectedOutput": "1 3"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-high-07",
+    "language": "Java",
+    "difficulty": "High",
+    "title": "Kth Smallest in BST",
+    "problem": "Given a BST in level order with -1 nulls, return the kth smallest value.",
+    "inputFormat": "N k and tree values.",
+    "outputFormat": "Value or -1.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "7 3\n5 3 6 2 4 -1 -1",
+    "sampleOutput": "4",
+    "explanation": "Inorder traversal of a BST is sorted.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{static Integer[]v;static int k,ans;static void dfs(int i){if(i>=v.length||v[i]==null||ans!=Integer.MIN_VALUE)return;dfs(2*i+1);if(--k==0){ans=v[i];return;}dfs(2*i+2);}public static void main(String[]a){Scanner s=new Scanner(System.in);int n=s.nextInt();k=s.nextInt();v=new Integer[n];for(int i=0;i<n;i++){int x=s.nextInt();v[i]=x<0?null:x;}ans=Integer.MIN_VALUE;dfs(0);System.out.print(ans==Integer.MIN_VALUE?-1:ans);}}",
+    "testCases": [
+      {
+        "input": "7 3\n5 3 6 2 4 -1 -1",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "1 1\n5",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "3 2\n2 1 3",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "3 5\n2 1 3",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "7 3\n5 3 6 2 4 -1 -1",
+        "expectedOutput": "4"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-high-08",
+    "language": "Java",
+    "difficulty": "High",
+    "title": "Sliding Window Maximum",
+    "problem": "Print the maximum of every window of size K.",
+    "inputFormat": "N K and array.",
+    "outputFormat": "Window maxima.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "8 3\n1 3 -1 -3 5 3 6 7",
+    "sampleOutput": "3 3 5 5 6 7",
+    "explanation": "Use a monotonic deque of indices.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){Scanner s=new Scanner(System.in);int n=s.nextInt(),k=s.nextInt();int[]x=new int[n];for(int i=0;i<n;i++)x[i]=s.nextInt();Deque<Integer>q=new ArrayDeque<>();for(int i=0;i<n;i++){while(!q.isEmpty()&&q.peek()<i-k+1)q.poll();while(!q.isEmpty()&&x[q.peekLast()]<=x[i])q.pollLast();q.add(i);if(i>=k-1)System.out.print(x[q.peek()]+\" \");}}}",
+    "testCases": [
+      {
+        "input": "8 3\n1 3 -1 -3 5 3 6 7",
+        "expectedOutput": "3 3 5 5 6 7"
+      },
+      {
+        "input": "1 1\n5",
+        "expectedOutput": "5 "
+      },
+      {
+        "input": "3 2\n1 3 -1",
+        "expectedOutput": "3 -1 "
+      },
+      {
+        "input": "4 4\n4 2 1 3",
+        "expectedOutput": "4 "
+      },
+      {
+        "input": "5 3\n1 1 1 1 1",
+        "expectedOutput": "1 1 1 "
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-high-09",
+    "language": "Java",
+    "difficulty": "High",
+    "title": "Minimum Cost to Connect Points",
+    "problem": "Connect all points with minimum total Manhattan distance.",
+    "inputFormat": "N then x y coordinates.",
+    "outputFormat": "MST cost.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "3\n0 0\n2 2\n3 10",
+    "sampleOutput": "14",
+    "explanation": "Use Prim's algorithm with Manhattan edge costs.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){Scanner s=new Scanner(System.in);int n=s.nextInt();int[]x=new int[n],y=new int[n],d=new int[n];boolean[]u=new boolean[n];for(int i=0;i<n;i++){x[i]=s.nextInt();y[i]=s.nextInt();d[i]=Integer.MAX_VALUE;}d[0]=0;long ans=0;for(int z=0;z<n;z++){int v=-1;for(int i=0;i<n;i++)if(!u[i]&&(v<0||d[i]<d[v]))v=i;u[v]=true;ans+=d[v];for(int i=0;i<n;i++)if(!u[i])d[i]=Math.min(d[i],Math.abs(x[v]-x[i])+Math.abs(y[v]-y[i]));}System.out.print(ans);}}",
+    "testCases": [
+      {
+        "input": "3\n0 0\n2 2\n3 10",
+        "expectedOutput": "14"
+      },
+      {
+        "input": "1\n0 0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "2\n0 0\n3 4",
+        "expectedOutput": "7"
+      },
+      {
+        "input": "3\n0 0\n2 2\n3 10",
+        "expectedOutput": "14"
+      },
+      {
+        "input": "4\n0 0\n1 1\n2 2\n3 3",
+        "expectedOutput": "6"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "java-high-10",
+    "language": "Java",
+    "difficulty": "High",
+    "title": "Partition Equal Subset Sum",
+    "problem": "Determine whether the array can be split into two subsets with equal sum.",
+    "inputFormat": "N and positive integers.",
+    "outputFormat": "YES or NO.",
+    "constraints": [
+      "Use standard Java input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "4\n1 5 11 5",
+    "sampleOutput": "YES",
+    "explanation": "Target is half the total; solve 0/1 subset sum.",
+    "starterCode": "import java.io.*;\nimport java.util.*;\n\npublic class Main {\n    public static void main(String[] args) throws Exception {\n        // TODO: implement the solution\n    }\n}\n",
+    "solution": "import java.util.*;class Main{public static void main(String[]a){Scanner s=new Scanner(System.in);int n=s.nextInt(),sum=0;int[]x=new int[n];for(int i=0;i<n;i++){x[i]=s.nextInt();sum+=x[i];}if(sum%2!=0){System.out.print(\"NO\");return;}boolean[]d=new boolean[sum/2+1];d[0]=true;for(int v:x)for(int j=sum/2;j>=v;j--)d[j]|=d[j-v];System.out.print(d[sum/2]?\"YES\":\"NO\");}}",
+    "testCases": [
+      {
+        "input": "4\n1 5 11 5",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "1\n1",
+        "expectedOutput": "NO"
+      },
+      {
+        "input": "2\n1 1",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "4\n1 2 3 5",
+        "expectedOutput": "NO"
+      },
+      {
+        "input": "4\n1 5 11 5",
+        "expectedOutput": "YES"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-low-01",
+    "language": "C++",
+    "difficulty": "Low",
+    "title": "Even Odd Counter",
+    "problem": "Count even and odd numbers.",
+    "inputFormat": "N and array.",
+    "outputFormat": "Print evenCount oddCount.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "5\n1 2 4 7 8",
+    "sampleOutput": "3 2",
+    "explanation": "Check x % 2.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int n;cin>>n;int e=0,o=0,x;while(n--){cin>>x;(x%2==0?e:o)++;}cout<<e<<\" \"<<o;}",
+    "testCases": [
+      {
+        "input": "5\n1 2 4 7 8",
+        "expectedOutput": "3 2"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "0 0"
+      },
+      {
+        "input": "1\n-3",
+        "expectedOutput": "0 1"
+      },
+      {
+        "input": "4\n2 4 6 8",
+        "expectedOutput": "4 0"
+      },
+      {
+        "input": "5\n0 1 2 3 4",
+        "expectedOutput": "3 2"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-low-02",
+    "language": "C++",
+    "difficulty": "Low",
+    "title": "Minutes to Clock",
+    "problem": "Convert total minutes after midnight to HH:MM.",
+    "inputFormat": "One integer minutes.",
+    "outputFormat": "24-hour HH:MM.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "75",
+    "sampleOutput": "01:15",
+    "explanation": "Divide by 60 and format with leading zero.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int m;cin>>m;m%=1440;cout<<setw(2)<<setfill('0')<<m/60<<\":\"<<setw(2)<<m%60;}",
+    "testCases": [
+      {
+        "input": "75",
+        "expectedOutput": "01:15"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "00:00"
+      },
+      {
+        "input": "1439",
+        "expectedOutput": "23:59"
+      },
+      {
+        "input": "1440",
+        "expectedOutput": "00:00"
+      },
+      {
+        "input": "75",
+        "expectedOutput": "01:15"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-low-03",
+    "language": "C++",
+    "difficulty": "Low",
+    "title": "ASCII Classifier",
+    "problem": "Count uppercase, lowercase, digits, and other characters.",
+    "inputFormat": "One line.",
+    "outputFormat": "Four counts.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "AbC 12!",
+    "sampleOutput": "1 2 2 1",
+    "explanation": "Classify using character ranges.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){string s;getline(cin,s);int u=0,l=0,d=0,o=0;for(unsigned char c:s)if(c>='A'&&c<='Z')u++;else if(c>='a'&&c<='z')l++;else if(c>='0'&&c<='9')d++;else o++;cout<<u<<\" \"<<l<<\" \"<<d<<\" \"<<o;}",
+    "testCases": [
+      {
+        "input": "AbC 12!",
+        "expectedOutput": "1 2 2 1"
+      },
+      {
+        "input": "ABC",
+        "expectedOutput": "3 0 0 0"
+      },
+      {
+        "input": "abc123",
+        "expectedOutput": "0 3 3 0"
+      },
+      {
+        "input": "! @",
+        "expectedOutput": "0 0 0 3"
+      },
+      {
+        "input": "A1!",
+        "expectedOutput": "1 0 1 1"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-low-04",
+    "language": "C++",
+    "difficulty": "Low",
+    "title": "Average of Array",
+    "problem": "Print the average of N integers to two decimals.",
+    "inputFormat": "N and array.",
+    "outputFormat": "Average.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "4\n1 2 3 4",
+    "sampleOutput": "2.50",
+    "explanation": "Use double for the result.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int n;cin>>n;double s=0;for(int i=0,x;i<n;i++){cin>>x;s+=x;}cout<<fixed<<setprecision(2)<<(n?s/n:0);}",
+    "testCases": [
+      {
+        "input": "4\n1 2 3 4",
+        "expectedOutput": "2.50"
+      },
+      {
+        "input": "1\n5",
+        "expectedOutput": "5.00"
+      },
+      {
+        "input": "2\n1 2",
+        "expectedOutput": "1.50"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "0.00"
+      },
+      {
+        "input": "4\n-2 0 2 4",
+        "expectedOutput": "1.00"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-low-05",
+    "language": "C++",
+    "difficulty": "Low",
+    "title": "Unique Number",
+    "problem": "Every value occurs twice except one. Print the unique value.",
+    "inputFormat": "N and array.",
+    "outputFormat": "Unique value.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "5\n4 1 2 1 2",
+    "sampleOutput": "4",
+    "explanation": "XOR equal pairs cancel.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int n,x,r=0;cin>>n;while(n--){cin>>x;r^=x;}cout<<r;}",
+    "testCases": [
+      {
+        "input": "5\n4 1 2 1 2",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "1\n7",
+        "expectedOutput": "7"
+      },
+      {
+        "input": "3\n1 2 1",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "5\n-1 2 -1 3 3",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "7\n4 5 4 6 6 5 9",
+        "expectedOutput": "9"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-low-06",
+    "language": "C++",
+    "difficulty": "Low",
+    "title": "Swap Without Temporary",
+    "problem": "Swap two integers using arithmetic-safe XOR and print them.",
+    "inputFormat": "Two integers.",
+    "outputFormat": "Swapped values.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "7 9",
+    "sampleOutput": "9 7",
+    "explanation": "Use XOR operations for distinct integer variables.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){long long a,b;cin>>a>>b;a^=b;b^=a;a^=b;cout<<a<<\" \"<<b;}",
+    "testCases": [
+      {
+        "input": "7 9",
+        "expectedOutput": "9 7"
+      },
+      {
+        "input": "1 2",
+        "expectedOutput": "2 1"
+      },
+      {
+        "input": "-3 7",
+        "expectedOutput": "7 -3"
+      },
+      {
+        "input": "0 0",
+        "expectedOutput": "0 0"
+      },
+      {
+        "input": "100 -5",
+        "expectedOutput": "-5 100"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-low-07",
+    "language": "C++",
+    "difficulty": "Low",
+    "title": "Count Multiples",
+    "problem": "Count integers in [L,R] divisible by K.",
+    "inputFormat": "L R K.",
+    "outputFormat": "Count.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "1 20 5",
+    "sampleOutput": "4",
+    "explanation": "Check each integer or use quotient arithmetic.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){long long l,r,k;cin>>l>>r>>k;long long f=[](long long x,long long k){return x>=0?x/k:(x-k+1)/k;};cout<<f(r,k)-f(l-1,k);}",
+    "testCases": [
+      {
+        "input": "1 20 5",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "1 10 3",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "0 0 5",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "-5 5 2",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "10 20 10",
+        "expectedOutput": "2"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-low-08",
+    "language": "C++",
+    "difficulty": "Low",
+    "title": "Pascal Row",
+    "problem": "Print the Nth zero-based row of Pascal's triangle.",
+    "inputFormat": "N.",
+    "outputFormat": "Row values.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "4",
+    "sampleOutput": "1 4 6 4 1",
+    "explanation": "Build combinations iteratively.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int n;cin>>n;long long c=1;for(int k=0;k<=n;k++){if(k)c=c*(n-k+1)/k;cout<<c<<(k==n?'\\n':' ');}}",
+    "testCases": [
+      {
+        "input": "4",
+        "expectedOutput": "1 4 6 4 1"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "1",
+        "expectedOutput": "1 1"
+      },
+      {
+        "input": "2",
+        "expectedOutput": "1 2 1"
+      },
+      {
+        "input": "5",
+        "expectedOutput": "1 5 10 10 5 1"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-low-09",
+    "language": "C++",
+    "difficulty": "Low",
+    "title": "Basic Calculator",
+    "problem": "Evaluate a+b, a-b, a*b, or a/b based on an operator.",
+    "inputFormat": "a op b.",
+    "outputFormat": "Integer result.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "12 * 3",
+    "sampleOutput": "36",
+    "explanation": "Apply the selected operation; division truncates toward zero.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){long long a,b;char op;cin>>a>>op>>b;switch(op){case '+':cout<<a+b;break;case '-':cout<<a-b;break;case '*':cout<<a*b;break;case '/':cout<<(a/b);}}",
+    "testCases": [
+      {
+        "input": "12 * 3",
+        "expectedOutput": "36"
+      },
+      {
+        "input": "1 + 2",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "5 - 8",
+        "expectedOutput": "-3"
+      },
+      {
+        "input": "4 * 6",
+        "expectedOutput": "24"
+      },
+      {
+        "input": "9 / 2",
+        "expectedOutput": "4"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-low-10",
+    "language": "C++",
+    "difficulty": "Low",
+    "title": "Right Triangle Pattern",
+    "problem": "Print N rows of '*' where row i contains i stars.",
+    "inputFormat": "N.",
+    "outputFormat": "Pattern.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "4",
+    "sampleOutput": "*\n**\n***\n****",
+    "explanation": "Nested loops.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int n;cin>>n;for(int i=1;i<=n;i++){for(int j=0;j<i;j++)cout<<\"*\";cout<<\"\\n\";}}",
+    "testCases": [
+      {
+        "input": "4",
+        "expectedOutput": "*\n**\n***\n****"
+      },
+      {
+        "input": "1",
+        "expectedOutput": "*"
+      },
+      {
+        "input": "2",
+        "expectedOutput": "*\n**"
+      },
+      {
+        "input": "3",
+        "expectedOutput": "*\n**\n***"
+      },
+      {
+        "input": "0",
+        "expectedOutput": ""
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-med-01",
+    "language": "C++",
+    "difficulty": "Medium",
+    "title": "Frequency Sort",
+    "problem": "Sort integers by descending frequency, then ascending value.",
+    "inputFormat": "N and array.",
+    "outputFormat": "Sorted array.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "7\n4 5 6 5 4 3 4",
+    "sampleOutput": "4 4 4 5 5 3 6",
+    "explanation": "Count frequencies and sort pairs with a custom comparator.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int n;cin>>n;vector<int>a(n);map<int,int>f;for(int&x:a){cin>>x;f[x]++;}sort(a.begin(),a.end(),[&](int x,int y){return f[x]!=f[y]?f[x]>f[y]:x<y;});for(int x:a)cout<<x<<\" \";}",
+    "testCases": [
+      {
+        "input": "7\n4 5 6 5 4 3 4",
+        "expectedOutput": "4 4 4 5 5 3 6"
+      },
+      {
+        "input": "3\n1 2 2",
+        "expectedOutput": "2 2 1 "
+      },
+      {
+        "input": "5\n4 4 1 1 2",
+        "expectedOutput": "1 1 4 4 2 "
+      },
+      {
+        "input": "0",
+        "expectedOutput": ""
+      },
+      {
+        "input": "4\n3 2 3 2",
+        "expectedOutput": "2 2 3 3 "
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-med-02",
+    "language": "C++",
+    "difficulty": "Medium",
+    "title": "Three Sum Zero",
+    "problem": "Print the number of unique triplets whose sum is zero.",
+    "inputFormat": "N and array.",
+    "outputFormat": "Triplet count.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "6\n-1 0 1 2 -1 -4",
+    "sampleOutput": "2",
+    "explanation": "Sort and use two pointers while skipping duplicates.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int n;cin>>n;vector<long long>a(n);for(auto&x:a)cin>>x;sort(a.begin(),a.end());long long ans=0;for(int i=0;i<n;i++){if(i&&a[i]==a[i-1])continue;int l=i+1,r=n-1;while(l<r){long long s=a[i]+a[l]+a[r];if(s==0){ans++;long long x=a[l],y=a[r];while(l<r&&a[l]==x)l++;while(l<r&&a[r]==y)r--;}else if(s<0)l++;else r--;}}cout<<ans;}",
+    "testCases": [
+      {
+        "input": "6\n-1 0 1 2 -1 -4",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "3\n-1 0 1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "4\n0 0 0 0",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3\n1 2 3",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "6\n-1 0 1 2 -1 -4",
+        "expectedOutput": "2"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-med-03",
+    "language": "C++",
+    "difficulty": "Medium",
+    "title": "Next Greater Element",
+    "problem": "For each array element, print the next greater value to its right or -1.",
+    "inputFormat": "N and array.",
+    "outputFormat": "Values space-separated.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "4\n4 5 2 25",
+    "sampleOutput": "5 25 25 -1",
+    "explanation": "Use a decreasing stack of indices.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int n;cin>>n;vector<int>a(n),r(n,-1),st;for(int&x:a)cin>>x;for(int i=0;i<n;i++){while(!st.empty()&&a[st.back()]<a[i])r[st.back()]=a[i],st.pop_back();st.push_back(i);}for(int x:r)cout<<x<<\" \";}",
+    "testCases": [
+      {
+        "input": "4\n4 5 2 25",
+        "expectedOutput": "5 25 25 -1"
+      },
+      {
+        "input": "1\n5",
+        "expectedOutput": "-1 "
+      },
+      {
+        "input": "4\n4 5 2 25",
+        "expectedOutput": "5 25 25 -1 "
+      },
+      {
+        "input": "3\n3 2 1",
+        "expectedOutput": "-1 -1 -1 "
+      },
+      {
+        "input": "5\n1 3 2 4 1",
+        "expectedOutput": "3 4 4 -1 -1 "
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-med-04",
+    "language": "C++",
+    "difficulty": "Medium",
+    "title": "Min Stack",
+    "problem": "Process push/pop/min operations and print the minimum after each min query.",
+    "inputFormat": "Q operations.",
+    "outputFormat": "Minimum values.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "5\npush 3\npush 1\nmin\npop\nmin",
+    "sampleOutput": "1\n3",
+    "explanation": "Store each value with the minimum so far.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int q;cin>>q;vector<int>st,mn;while(q--){string op;cin>>op;if(op==\"push\"){int x;cin>>x;st.push_back(x);mn.push_back(mn.empty()?x:min(x,mn.back()));}else if(op==\"pop\"){st.pop_back();mn.pop_back();}else cout<<mn.back()<<\"\\n\";}}",
+    "testCases": [
+      {
+        "input": "5\npush 3\npush 1\nmin\npop\nmin",
+        "expectedOutput": "1\n3"
+      },
+      {
+        "input": "1\npush 5",
+        "expectedOutput": ""
+      },
+      {
+        "input": "3\npush 5\nmin\npop",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "5\npush 3\npush 1\nmin\npop\nmin",
+        "expectedOutput": "1\n3"
+      },
+      {
+        "input": "2\npush -2\nmin",
+        "expectedOutput": "-2"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-med-05",
+    "language": "C++",
+    "difficulty": "Medium",
+    "title": "Binary Tree Height",
+    "problem": "Given a level-order tree, find its height in nodes.",
+    "inputFormat": "N and level-order values, -1 null.",
+    "outputFormat": "Height.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "7\n1 2 3 4 5 -1 7",
+    "sampleOutput": "3",
+    "explanation": "Build the tree and recursively compute max depth.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nstruct N{int v;N*l,*r;N(int x):v(x),l(0),r(0){}};\nint h(N*x){return x?1+max(h(x->l),h(x->r)):0;}\nint main(){int n;cin>>n;if(!n)return cout<<0,0;vector<N*>v(n);for(int i=0,x;i<n;i++){cin>>x;if(x>=0)v[i]=new N(x);}if(!v[0])return cout<<0,0;for(int i=0;i<n;i++)if(v[i]){int l=2*i+1,r=2*i+2;if(l<n)v[i]->l=v[l];if(r<n)v[i]->r=v[r];}cout<<h(v[0]);}",
+    "testCases": [
+      {
+        "input": "7\n1 2 3 4 5 -1 7",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "1\n7",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3\n1 2 3",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "1\n-1",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "7\n1 2 3 4 5 -1 7",
+        "expectedOutput": "3"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-med-06",
+    "language": "C++",
+    "difficulty": "Medium",
+    "title": "Search Rotated Array",
+    "problem": "Find target index in a sorted array rotated once, or -1.",
+    "inputFormat": "N array target.",
+    "outputFormat": "Index.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "7\n4 5 6 7 0 1 2\n0",
+    "sampleOutput": "4",
+    "explanation": "Binary search identifies the sorted half.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int n,t;cin>>n;vector<int>a(n);for(int&x:a)cin>>x;cin>>t;int l=0,r=n-1;while(l<=r){int m=(l+r)/2;if(a[m]==t){cout<<m;return 0;}if(a[l]<=a[m]){if(a[l]<=t&&t<a[m])r=m-1;else l=m+1;}else{if(a[m]<t&&t<=a[r])l=m+1;else r=m-1;}}cout<<-1;}",
+    "testCases": [
+      {
+        "input": "7\n4 5 6 7 0 1 2\n0",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "1\n5\n5",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "3\n3 4 5\n1",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "7\n4 5 6 7 0 1 2\n0",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "5\n5 1 2 3 4\n3",
+        "expectedOutput": "3"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-med-07",
+    "language": "C++",
+    "difficulty": "Medium",
+    "title": "Subarray Sum Equals K",
+    "problem": "Count contiguous subarrays with sum K.",
+    "inputFormat": "N array K.",
+    "outputFormat": "Count.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "5\n1 1 1 1 1\n2",
+    "sampleOutput": "4",
+    "explanation": "Prefix sums and frequency map.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int n;long long k,s=0,ans=0;cin>>n;vector<long long>a(n);for(auto&x:a)cin>>x;cin>>k;unordered_map<long long,long long>f{{0,1}};for(auto x:a){s+=x;ans+=f[s-k];f[s]++;}cout<<ans;}",
+    "testCases": [
+      {
+        "input": "5\n1 1 1 1 1\n2",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "3\n1 1 1\n2",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "3\n1 -1 0\n0",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "1\n5\n5",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3\n-1 -1 -1\n-2",
+        "expectedOutput": "2"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-med-08",
+    "language": "C++",
+    "difficulty": "Medium",
+    "title": "LRU Cache Simulation",
+    "problem": "Simulate an LRU cache with GET and PUT operations and print GET results.",
+    "inputFormat": "Capacity and Q operations.",
+    "outputFormat": "GET results.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "3 5\nPUT 1 10\nPUT 2 20\nGET 1\nPUT 3 30\nGET 2",
+    "sampleOutput": "10\n-1",
+    "explanation": "Use a list plus map, or an ordered map structure.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int cap,q;cin>>cap>>q;list<pair<int,int>>l;unordered_map<int,list<pair<int,int>>::iterator>m;while(q--){string op;cin>>op;int k,v;if(op==\"PUT\"){cin>>k>>v;if(m.count(k)){l.erase(m[k]);}l.push_front({k,v});m[k]=l.begin();if((int)l.size()>cap){m.erase(l.back().first);l.pop_back();}}else{cin>>k;if(!m.count(k))cout<<-1<<\"\\n\";else{auto it=m[k];v=it->second;cout<<v<<\"\\n\";l.splice(l.begin(),l,it);}}}}",
+    "testCases": [
+      {
+        "input": "3 5\nPUT 1 10\nPUT 2 20\nGET 1\nPUT 3 30\nGET 2",
+        "expectedOutput": "10\n-1"
+      },
+      {
+        "input": "2 3\nPUT 1 10\nGET 1\nGET 2",
+        "expectedOutput": "10\n-1"
+      },
+      {
+        "input": "1 4\nPUT 1 1\nPUT 2 2\nGET 1\nGET 2",
+        "expectedOutput": "-1\n2"
+      },
+      {
+        "input": "0 1\nGET 1",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "2 5\nPUT 1 1\nPUT 2 2\nGET 1\nPUT 3 3\nGET 2",
+        "expectedOutput": "1\n-1"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-med-09",
+    "language": "C++",
+    "difficulty": "Medium",
+    "title": "Longest Increasing Subsequence",
+    "problem": "Find LIS length.",
+    "inputFormat": "N and array.",
+    "outputFormat": "Length.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "8\n10 9 2 5 3 7 101 18",
+    "sampleOutput": "4",
+    "explanation": "Maintain the smallest tail for each subsequence length.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int n;cin>>n;vector<int>d;for(int i=0,x;i<n;i++){cin>>x;auto it=lower_bound(d.begin(),d.end(),x);if(it==d.end())d.push_back(x);else *it=x;}cout<<d.size();}",
+    "testCases": [
+      {
+        "input": "8\n10 9 2 5 3 7 101 18",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "1\n5",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "5\n1 2 3 4 5",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "5\n5 4 3 2 1",
+        "expectedOutput": "1"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-med-10",
+    "language": "C++",
+    "difficulty": "Medium",
+    "title": "Decode Ways",
+    "problem": "Count ways to decode digits 1..26.",
+    "inputFormat": "One digit string.",
+    "outputFormat": "Number of decodings.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "226",
+    "sampleOutput": "3",
+    "explanation": "DP based on one- and two-digit valid codes.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){string s;cin>>s;if(s.empty()||s[0]=='0')return cout<<0,0;long long a=1,b=1;for(int i=1;i<(int)s.size();i++){long long c=0;if(s[i]!='0')c+=b;int v=(s[i-1]-'0')*10+s[i]-'0';if(v>=10&&v<=26)c+=a;a=b;b=c;}cout<<b;}",
+    "testCases": [
+      {
+        "input": "226",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "0",
+        "expectedOutput": ""
+      },
+      {
+        "input": "1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "12",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "226",
+        "expectedOutput": "3"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-high-01",
+    "language": "C++",
+    "difficulty": "High",
+    "title": "Bellman-Ford Negative Cycle",
+    "problem": "Compute shortest paths from source and report NEGATIVE CYCLE if reachable from source.",
+    "inputFormat": "N M S; directed edges.",
+    "outputFormat": "Distances or NEGATIVE CYCLE.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "3 3 0\n0 1 1\n1 2 -1\n2 1 -1",
+    "sampleOutput": "NEGATIVE CYCLE",
+    "explanation": "Relax all edges N-1 times, then detect one more reachable relaxation.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nstruct E{int u,v;long long w;};\nint main(){int n,m,s;cin>>n>>m>>s;vector<E>e(m);for(auto&x:e)cin>>x.u>>x.v>>x.w;const long long I=4e18;vector<long long>d(n,I);d[s]=0;for(int i=1;i<n;i++){bool ch=0;for(auto x:e)if(d[x.u]<I&&d[x.v]>d[x.u]+x.w)d[x.v]=d[x.u]+x.w,ch=1;if(!ch)break;}for(auto x:e)if(d[x.u]<I&&d[x.v]>d[x.u]+x.w)return cout<<\"NEGATIVE CYCLE\",0;for(auto x:d)cout<<(x==I?string(\"INF\"):to_string(x))<<\" \";}",
+    "testCases": [
+      {
+        "input": "3 3 0\n0 1 1\n1 2 -1\n2 1 -1",
+        "expectedOutput": "NEGATIVE CYCLE"
+      },
+      {
+        "input": "2 1 0\n0 1 5",
+        "expectedOutput": "0 5 "
+      },
+      {
+        "input": "2 1 0\n1 0 5",
+        "expectedOutput": "0 INF "
+      },
+      {
+        "input": "3 3 0\n0 1 1\n1 2 -1\n2 1 -1",
+        "expectedOutput": "NEGATIVE CYCLE"
+      },
+      {
+        "input": "3 3 0\n0 1 2\n1 2 3\n0 2 10",
+        "expectedOutput": "0 2 5 "
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-high-02",
+    "language": "C++",
+    "difficulty": "High",
+    "title": "Max Flow",
+    "problem": "Find maximum flow from source 0 to sink N-1 in a directed capacity graph.",
+    "inputFormat": "N M; edges u v capacity.",
+    "outputFormat": "Maximum flow.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "4 5\n0 1 3\n0 2 2\n1 2 1\n1 3 2\n2 3 3",
+    "sampleOutput": "5",
+    "explanation": "Use Edmonds-Karp with BFS augmenting paths.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int n,m;cin>>n>>m;vector<vector<long long>>c(n,vector<long long>(n));for(int i=0,u,v,w;i<m;i++){cin>>u>>v>>w;c[u][v]+=w;}long long ans=0;while(1){vector<int>p(n,-1);queue<int>q;q.push(0);p[0]=-2;while(!q.empty()&&p[n-1]<0){int u=q.front();q.pop();for(int v=0;v<n;v++)if(p[v]<0&&c[u][v]>0)p[v]=u,q.push(v);}if(p[n-1]<0)break;long long f=LLONG_MAX;for(int v=n-1;v;v=p[v])f=min(f,c[p[v]][v]);for(int v=n-1;v;v=p[v])c[p[v]][v]-=f,c[v][p[v]]+=f;ans+=f;}cout<<ans;}",
+    "testCases": [
+      {
+        "input": "4 5\n0 1 3\n0 2 2\n1 2 1\n1 3 2\n2 3 3",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "2 1\n0 1 7",
+        "expectedOutput": "7"
+      },
+      {
+        "input": "3 2\n0 1 5\n1 2 4",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "3 3\n0 1 5\n0 2 3\n1 2 4",
+        "expectedOutput": "8"
+      },
+      {
+        "input": "3 1\n1 2 5",
+        "expectedOutput": "0"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-high-03",
+    "language": "C++",
+    "difficulty": "High",
+    "title": "Segment Tree Range Sum",
+    "problem": "Build an array and answer point-update and range-sum queries.",
+    "inputFormat": "N Q; array; Q operations SET i x / SUM l r.",
+    "outputFormat": "One SUM result per line.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "4 4\n1 2 3 4\nSUM 0 3\nSET 1 5\nSUM 1 2\nSUM 0 0",
+    "sampleOutput": "10\n8\n1",
+    "explanation": "Use a segment tree for O(log N) operations.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nstruct ST{int n;vector<long long>t;ST(vector<long long>&a){n=a.size();t.resize(4*n);build(1,0,n-1,a);}void build(int p,int l,int r,vector<long long>&a){if(l==r){t[p]=a[l];return;}int m=(l+r)/2;build(p*2,l,m,a);build(p*2+1,m+1,r,a);t[p]=t[p*2]+t[p*2+1];}void setv(int p,int l,int r,int i,long long x){if(l==r){t[p]=x;return;}int m=(l+r)/2;if(i<=m)setv(p*2,l,m,i,x);else setv(p*2+1,m+1,r,i,x);t[p]=t[p*2]+t[p*2+1];}long long sum(int p,int l,int r,int a,int b){if(b<l||r<a)return 0;if(a<=l&&r<=b)return t[p];int m=(l+r)/2;return sum(p*2,l,m,a,b)+sum(p*2+1,m+1,r,a,b);}};\nint main(){int n,q;cin>>n>>q;vector<long long>a(n);for(auto&x:a)cin>>x;ST st(a);while(q--){string op;int i,j;cin>>op>>i>>j;if(op==\"SET\")st.setv(1,0,n-1,i,j);else cout<<st.sum(1,0,n-1,i,j)<<\"\\n\";}}",
+    "testCases": [
+      {
+        "input": "4 4\n1 2 3 4\nSUM 0 3\nSET 1 5\nSUM 1 2\nSUM 0 0",
+        "expectedOutput": "10\n8\n1"
+      },
+      {
+        "input": "1 2\n5\nSUM 0 0\nSET 0 7",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "3 3\n1 2 3\nSUM 0 2\nSET 1 5\nSUM 1 2",
+        "expectedOutput": "6\n8"
+      },
+      {
+        "input": "2 1\n-1 4\nSUM 0 1",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "0 0",
+        "expectedOutput": ""
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-high-04",
+    "language": "C++",
+    "difficulty": "High",
+    "title": "Strongly Connected Components",
+    "problem": "Print the number of SCCs in a directed graph.",
+    "inputFormat": "N M; edges.",
+    "outputFormat": "SCC count.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "5 5\n0 1\n1 2\n2 0\n1 3\n3 4",
+    "sampleOutput": "3",
+    "explanation": "Kosaraju's two-pass DFS computes SCCs.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int n,m;cin>>n>>m;vector<vector<int>>g(n),r(n);for(int i=0,u,v;i<m;i++){cin>>u>>v;g[u].push_back(v);r[v].push_back(u);}vector<int>vis(n),o;function<void(int)>d1=[&](int u){vis[u]=1;for(int v:g[u])if(!vis[v])d1(v);o.push_back(u);};for(int i=0;i<n;i++)if(!vis[i])d1(i);fill(vis.begin(),vis.end(),0);int c=0;function<void(int)>d2=[&](int u){vis[u]=1;for(int v:r[u])if(!vis[v])d2(v);};for(int i=n-1;i>=0;i--)if(!vis[o[i]])d2(o[i]),c++;cout<<c;}",
+    "testCases": [
+      {
+        "input": "5 5\n0 1\n1 2\n2 0\n1 3\n3 4",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "1 0",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "2 1\n0 1",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "3 3\n0 1\n1 2\n2 0",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "4 4\n0 1\n1 2\n2 0\n2 3",
+        "expectedOutput": "2"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-high-05",
+    "language": "C++",
+    "difficulty": "High",
+    "title": "Sudoku Solver",
+    "problem": "Solve a 9×9 Sudoku where 0 denotes empty cells.",
+    "inputFormat": "9 lines of 9 integers.",
+    "outputFormat": "Solved grid, or NO.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "1 0 0 0 0 7 0 9 0\n0 3 0 0 2 0 0 0 8\n0 0 9 6 0 0 5 0 0\n0 0 5 3 0 0 9 0 0\n0 1 0 0 8 0 0 0 2\n6 0 0 0 0 4 0 0 0\n3 0 0 0 0 0 0 1 0\n0 4 0 0 1 0 0 0 7\n0 0 7 0 0 0 3 0 0",
+    "sampleOutput": "(valid solved grid)",
+    "explanation": "Backtracking with row, column, and box constraints.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint a[9][9]; bool ok(int r,int c,int v){for(int i=0;i<9;i++)if(a[r][i]==v||a[i][c]==v)return 0;int R=r/3*3,C=c/3*3;for(int i=R;i<R+3;i++)for(int j=C;j<C+3;j++)if(a[i][j]==v)return 0;return 1;}\nbool dfs(){for(int i=0;i<9;i++)for(int j=0;j<9;j++)if(a[i][j]==0){for(int v=1;v<=9;v++)if(ok(i,j,v)){a[i][j]=v;if(dfs())return 1;a[i][j]=0;}return 0;}return 1;}\nint main(){for(auto&r:a)for(int&x:r)cin>>x;if(!dfs())cout<<\"NO\";else for(auto&r:a){for(int j=0;j<9;j++)cout<<r[j]<<(j==8?'\\\\n':' ');}}",
+    "testCases": [
+      {
+        "input": "1 0 0 0 0 7 0 9 0\n0 3 0 0 2 0 0 0 8\n0 0 9 6 0 0 5 0 0\n0 0 5 3 0 0 9 0 0\n0 1 0 0 8 0 0 0 2\n6 0 0 0 0 4 0 0 0\n3 0 0 0 0 0 0 1 0\n0 4 0 0 1 0 0 0 7\n0 0 7 0 0 0 3 0 0",
+        "expectedOutput": "(valid solved grid)"
+      },
+      {
+        "input": "1 0 0 0 0 7 0 9 0\n0 3 0 0 2 0 0 0 8\n0 0 9 6 0 0 5 0 0\n0 0 5 3 0 0 9 0 0\n0 1 0 0 8 0 0 0 2\n6 0 0 0 0 4 0 0 0\n3 0 0 0 0 0 0 1 0\n0 4 0 0 1 0 0 0 7\n0 0 7 0 0 0 3 0 0",
+        "expectedOutput": "(valid solved grid)"
+      },
+      {
+        "input": "1 0 0 0 0 7 0 9 0\n0 3 0 0 2 0 0 0 8\n0 0 9 6 0 0 5 0 0\n0 0 5 3 0 0 9 0 0\n0 1 0 0 8 0 0 0 2\n6 0 0 0 0 4 0 0 0\n3 0 0 0 0 0 0 1 0\n0 4 0 0 1 0 0 0 7\n0 0 7 0 0 0 3 0 0",
+        "expectedOutput": "(valid solved grid)"
+      },
+      {
+        "input": "1 0 0 0 0 7 0 9 0\n0 3 0 0 2 0 0 0 8\n0 0 9 6 0 0 5 0 0\n0 0 5 3 0 0 9 0 0\n0 1 0 0 8 0 0 0 2\n6 0 0 0 0 4 0 0 0\n3 0 0 0 0 0 0 1 0\n0 4 0 0 1 0 0 0 7\n0 0 7 0 0 0 3 0 0",
+        "expectedOutput": "(valid solved grid)"
+      },
+      {
+        "input": "1 0 0 0 0 7 0 9 0\n0 3 0 0 2 0 0 0 8\n0 0 9 6 0 0 5 0 0\n0 0 5 3 0 0 9 0 0\n0 1 0 0 8 0 0 0 2\n6 0 0 0 0 4 0 0 0\n3 0 0 0 0 0 0 1 0\n0 4 0 0 1 0 0 0 7\n0 0 7 0 0 0 3 0 0",
+        "expectedOutput": "(valid solved grid)"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-high-06",
+    "language": "C++",
+    "difficulty": "High",
+    "title": "Traveling Salesperson DP",
+    "problem": "Find the minimum Hamiltonian cycle cost starting and ending at city 0.",
+    "inputFormat": "N then N×N cost matrix.",
+    "outputFormat": "Minimum cost.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "4\n0 10 15 20\n10 0 35 25\n15 35 0 30\n20 25 30 0",
+    "sampleOutput": "80",
+    "explanation": "Bitmask DP over visited cities.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int n;cin>>n;vector<vector<long long>>c(n,vector<long long>(n));for(auto&r:c)for(auto&x:r)cin>>x;int N=1<<n;const long long I=4e18;vector<vector<long long>>d(N,vector<long long>(n,I));d[1][0]=0;for(int m=1;m<N;m++)for(int u=0;u<n;u++)if(d[m][u]<I)for(int v=0;v<n;v++)if(!(m>>v&1))d[m|1<<v][v]=min(d[m|1<<v][v],d[m][u]+c[u][v]);long long ans=I;for(int u=1;u<n;u++)ans=min(ans,d[N-1][u]+c[u][0]);cout<<ans;}",
+    "testCases": [
+      {
+        "input": "4\n0 10 15 20\n10 0 35 25\n15 35 0 30\n20 25 30 0",
+        "expectedOutput": "80"
+      },
+      {
+        "input": "1\n0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "2\n0 5\n5 0",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "3\n0 1 2\n1 0 3\n2 3 0",
+        "expectedOutput": "6"
+      },
+      {
+        "input": "4\n0 10 15 20\n10 0 35 25\n15 35 0 30\n20 25 30 0",
+        "expectedOutput": "80"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-high-07",
+    "language": "C++",
+    "difficulty": "High",
+    "title": "Heavy Hitters with Heap",
+    "problem": "Print the K most frequent values; ties by smaller value.",
+    "inputFormat": "N K and array.",
+    "outputFormat": "K values in required order.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "8 2\n1 1 1 2 2 3 3 3",
+    "sampleOutput": "1 3",
+    "explanation": "Count frequencies and maintain a bounded heap.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int n,k;cin>>n>>k;map<int,int>f;for(int i=0,x;i<n;i++)cin>>x,f[x]++;vector<pair<int,int>>v;for(auto [x,c]:f)v.push_back({x,c});sort(v.begin(),v.end(),[](auto a,auto b){return a.second!=b.second?a.second>b.second:a.first<b.first;});for(int i=0;i<min(k,(int)v.size());i++)cout<<v[i].first<<(i+1==min(k,(int)v.size())?'\\\\n':' ');}",
+    "testCases": [
+      {
+        "input": "8 2\n1 1 1 2 2 3 3 3",
+        "expectedOutput": "1 3"
+      },
+      {
+        "input": "3 1\n1 2 1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "4 2\n1 2 2 3",
+        "expectedOutput": "2 1"
+      },
+      {
+        "input": "0 1",
+        "expectedOutput": ""
+      },
+      {
+        "input": "5 3\n3 3 2 2 1",
+        "expectedOutput": "2 3 1"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-high-08",
+    "language": "C++",
+    "difficulty": "High",
+    "title": "Wildcard Matcher",
+    "problem": "Match a string against ? and * wildcards.",
+    "inputFormat": "Two lines s and pattern.",
+    "outputFormat": "YES or NO.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "adceb\n*a*b",
+    "sampleOutput": "YES",
+    "explanation": "Greedy wildcard matching with backtracking to the latest star.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){string s,p;cin>>s>>p;int i=0,j=0,star=-1,mark=-1;while(i<(int)s.size()){if(j<(int)p.size()&&(p[j]=='?'||p[j]==s[i]))i++,j++;else if(j<(int)p.size()&&p[j]=='*')star=j++,mark=i;else if(star!=-1)j=star+1,i=++mark;else return cout<<\"NO\",0;}while(j<(int)p.size()&&p[j]=='*')j++;cout<<(j==p.size()?\"YES\":\"NO\");}",
+    "testCases": [
+      {
+        "input": "adceb\n*a*b",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "a\na",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "a\nb",
+        "expectedOutput": "NO"
+      },
+      {
+        "input": "aa\na*",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "adceb\n*a*b",
+        "expectedOutput": "YES"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-high-09",
+    "language": "C++",
+    "difficulty": "High",
+    "title": "Minimum Window Substring",
+    "problem": "Find the shortest substring containing all characters of a pattern, including duplicates.",
+    "inputFormat": "Two lines s and t.",
+    "outputFormat": "Window or -1.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "ADOBECODEBANC\nABC",
+    "sampleOutput": "BANC",
+    "explanation": "Sliding window with character counts.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){string s,t;cin>>s>>t;vector<int>need(256),have(256);int req=0;for(char c:t)if(need[(unsigned char)c]++==0)req++;int got=0,l=0,bl=-1,br=s.size();for(int r=0;r<(int)s.size();r++){unsigned char c=s[r];if(++have[c]==need[c])got++;while(got==req){if(r-l<br-bl)bl=l,br=r;l++;if(--have[(unsigned char)s[l-1]]==need[(unsigned char)s[l-1]])got--;}}cout<<(bl<0?string(\"-1\"):s.substr(bl,br-bl+1));}",
+    "testCases": [
+      {
+        "input": "ADOBECODEBANC\nABC",
+        "expectedOutput": "BANC"
+      },
+      {
+        "input": "a\na",
+        "expectedOutput": "a"
+      },
+      {
+        "input": "abc\nz",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "ADOBECODEBANC\nABC",
+        "expectedOutput": "BANC"
+      },
+      {
+        "input": "a\naa",
+        "expectedOutput": "-1"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "cpp-high-10",
+    "language": "C++",
+    "difficulty": "High",
+    "title": "Matrix Chain Multiplication",
+    "problem": "Find minimum scalar multiplications needed to multiply a chain of matrices.",
+    "inputFormat": "N then N+1 dimensions.",
+    "outputFormat": "Minimum cost.",
+    "constraints": [
+      "Use standard C++17 input/output.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "4\n10 30 5 60 2",
+    "sampleOutput": "1500",
+    "explanation": "Interval DP chooses the last multiplication split.",
+    "starterCode": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){\n    // TODO: implement the solution\n}\n",
+    "solution": "#include <bits/stdc++.h>\nusing namespace std;\nint main(){int n;cin>>n;vector<long long>p(n+1);for(auto&x:p)cin>>x;const long long I=4e18;vector<vector<long long>>d(n,vector<long long>(n));for(int len=2;len<=n;len++)for(int i=0;i+len-1<n;i++){int j=i+len-1;d[i][j]=I;for(int k=i;k<j;k++)d[i][j]=min(d[i][j],d[i][k]+d[k+1][j]+p[i]*p[k+1]*p[j+1]);}cout<<d[0][n-1];}",
+    "testCases": [
+      {
+        "input": "4\n10 30 5 60 2",
+        "expectedOutput": "1500"
+      },
+      {
+        "input": "1\n5 5",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "2\n10 20 30",
+        "expectedOutput": "6000"
+      },
+      {
+        "input": "3\n10 20 30 40",
+        "expectedOutput": "18000"
+      },
+      {
+        "input": "4\n10 30 5 60 2",
+        "expectedOutput": "1500"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-low-01",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "title": "Count Set Bits",
+    "problem": "Count 1-bits in a non-negative integer.",
+    "inputFormat": "One integer.",
+    "outputFormat": "Bit count.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "13",
+    "sampleOutput": "3",
+    "explanation": "Repeatedly clear the lowest set bit.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const fs=require('fs');let n=BigInt(fs.readFileSync(0,'utf8').trim()||0),c=0n;while(n){n&=n-1n;c++;}console.log(c.toString());",
+    "testCases": [
+      {
+        "input": "13",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "7",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "1024",
+        "expectedOutput": "1"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-low-02",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "title": "Title Case",
+    "problem": "Convert each word's first character to uppercase and the rest to lowercase.",
+    "inputFormat": "One line.",
+    "outputFormat": "Title-cased line.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "hELLO wORLD",
+    "sampleOutput": "Hello World",
+    "explanation": "Split into words and normalize each word.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const fs=require('fs');const s=fs.readFileSync(0,'utf8').trim();console.log(s?s.split(/\\s+/).map(w=>w[0].toUpperCase()+w.slice(1).toLowerCase()).join(' '):'');",
+    "testCases": [
+      {
+        "input": "hELLO wORLD",
+        "expectedOutput": "Hello World"
+      },
+      {
+        "input": "hello world",
+        "expectedOutput": "Hello World"
+      },
+      {
+        "input": "JAVA SCRIPT",
+        "expectedOutput": "Java Script"
+      },
+      {
+        "input": "",
+        "expectedOutput": ""
+      },
+      {
+        "input": "a",
+        "expectedOutput": "A"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-low-03",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "title": "Array Difference",
+    "problem": "Print the maximum minus minimum array value.",
+    "inputFormat": "N and array.",
+    "outputFormat": "Difference.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "5\n4 9 1 7 3",
+    "sampleOutput": "8",
+    "explanation": "Track min and max.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const a=require('fs').readFileSync(0,'utf8').trim().split(/\\s+/).map(Number);const n=a[0];let x=a.slice(1,n+1);console.log(Math.max(...x)-Math.min(...x));",
+    "testCases": [
+      {
+        "input": "5\n4 9 1 7 3",
+        "expectedOutput": "8"
+      },
+      {
+        "input": "1\n5",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "3\n1 5 3",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "4\n-2 0 7 -5",
+        "expectedOutput": "12"
+      },
+      {
+        "input": "2\n9 1",
+        "expectedOutput": "8"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-low-04",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "title": "FizzBuzz Sum",
+    "problem": "Sum numbers from 1..N that are divisible by 3 or 5.",
+    "inputFormat": "One integer.",
+    "outputFormat": "Sum.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "10",
+    "sampleOutput": "33",
+    "explanation": "Add values satisfying either divisibility condition.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const n=Number(require('fs').readFileSync(0,'utf8'));let s=0;for(let i=1;i<=n;i++)if(i%3===0||i%5===0)s+=i;console.log(s);",
+    "testCases": [
+      {
+        "input": "10",
+        "expectedOutput": "33"
+      },
+      {
+        "input": "1",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "5",
+        "expectedOutput": "8"
+      },
+      {
+        "input": "10",
+        "expectedOutput": "33"
+      },
+      {
+        "input": "15",
+        "expectedOutput": "60"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-low-05",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "title": "First Non-Repeating Character",
+    "problem": "Print the first character whose frequency is one, or -1.",
+    "inputFormat": "One line.",
+    "outputFormat": "Character or -1.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "swiss",
+    "sampleOutput": "w",
+    "explanation": "Count first, then scan again.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const s=require('fs').readFileSync(0,'utf8').replace(/\\r?\\n$/,'');const m=new Map();for(const c of s)m.set(c,(m.get(c)||0)+1);let r='-1';for(const c of s)if(m.get(c)===1){r=c;break;}console.log(r);",
+    "testCases": [
+      {
+        "input": "swiss",
+        "expectedOutput": "w"
+      },
+      {
+        "input": "a",
+        "expectedOutput": "a"
+      },
+      {
+        "input": "aabb",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "swiss",
+        "expectedOutput": "w"
+      },
+      {
+        "input": "abc",
+        "expectedOutput": "a"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-low-06",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "title": "Flatten One Level",
+    "problem": "Flatten an array containing numbers and nested arrays by exactly one level.",
+    "inputFormat": "JSON array.",
+    "outputFormat": "JSON array.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "[1,[2,3],4,[5]]",
+    "sampleOutput": "[1,2,3,4,5]",
+    "explanation": "Concatenate one nested level.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const a=JSON.parse(require('fs').readFileSync(0,'utf8'));console.log(JSON.stringify(a.flat(1)));",
+    "testCases": [
+      {
+        "input": "[1,[2,3],4,[5]]",
+        "expectedOutput": "[1,2,3,4,5]"
+      },
+      {
+        "input": "[1,[2,3],4]",
+        "expectedOutput": "[1,2,3,4]"
+      },
+      {
+        "input": "[]",
+        "expectedOutput": "[]"
+      },
+      {
+        "input": "[[1],[2,3]]",
+        "expectedOutput": "[1,2,3]"
+      },
+      {
+        "input": "[1,2]",
+        "expectedOutput": "[1,2]"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-low-07",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "title": "Is Prime",
+    "problem": "Check whether an integer is prime.",
+    "inputFormat": "One integer.",
+    "outputFormat": "YES or NO.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "29",
+    "sampleOutput": "YES",
+    "explanation": "Trial divide up to sqrt(n).",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const n=Number(require('fs').readFileSync(0,'utf8'));if(n<2){console.log('NO')}else{let ok=true;for(let i=2;i*i<=n;i++)if(n%i===0){ok=false;break}console.log(ok?'YES':'NO')}",
+    "testCases": [
+      {
+        "input": "29",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "1",
+        "expectedOutput": "NO"
+      },
+      {
+        "input": "2",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "17",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "100",
+        "expectedOutput": "NO"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-low-08",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "title": "Rotate String",
+    "problem": "Rotate a string left by K positions.",
+    "inputFormat": "String then K.",
+    "outputFormat": "Rotated string.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "abcdef 2",
+    "sampleOutput": "cdefab",
+    "explanation": "Use modulo length and slicing.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const d=require('fs').readFileSync(0,'utf8').trim().split(/\\s+/);const s=d[0]||'',k=s?Number(d[1])%s.length:0;console.log(s?s.slice(k)+s.slice(0,k):'');",
+    "testCases": [
+      {
+        "input": "abcdef 2",
+        "expectedOutput": "cdefab"
+      },
+      {
+        "input": "abc 0",
+        "expectedOutput": "abc"
+      },
+      {
+        "input": "abc 1",
+        "expectedOutput": "bca"
+      },
+      {
+        "input": "abcdef 2",
+        "expectedOutput": "cdefab"
+      },
+      {
+        "input": "a 9",
+        "expectedOutput": "a"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-low-09",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "title": "Count Occurrences",
+    "problem": "Count how many times a target number occurs.",
+    "inputFormat": "N array target.",
+    "outputFormat": "Count.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "6\n1 2 2 3 2 4\n2",
+    "sampleOutput": "3",
+    "explanation": "Scan and count equality.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const d=require('fs').readFileSync(0,'utf8').trim().split(/\\s+/).map(Number);const n=d[0],t=d[n+1];let c=0;for(let i=1;i<=n;i++)if(d[i]===t)c++;console.log(c);",
+    "testCases": [
+      {
+        "input": "6\n1 2 2 3 2 4\n2",
+        "expectedOutput": "3"
+      },
+      {
+        "input": "3\n1 2 2\n2",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "1\n5\n5",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "4\n1 1 1 1\n2",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "5\n-1 0 -1 2 -1\n-1",
+        "expectedOutput": "3"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-low-10",
+    "language": "JavaScript",
+    "difficulty": "Low",
+    "title": "Multiplication Table",
+    "problem": "Print the multiplication table from 1 to 10 for N.",
+    "inputFormat": "One integer.",
+    "outputFormat": "Ten lines `N * i = value`.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "7",
+    "sampleOutput": "7 * 1 = 7\n7 * 2 = 14\n7 * 3 = 21\n7 * 4 = 28\n7 * 5 = 35\n7 * 6 = 42\n7 * 7 = 49\n7 * 8 = 56\n7 * 9 = 63\n7 * 10 = 70",
+    "explanation": "Loop i from 1 to 10.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const n=Number(require('fs').readFileSync(0,'utf8'));let o=[];for(let i=1;i<=10;i++)o.push(`${n} * ${i} = ${n*i}`);console.log(o.join('\\n'));",
+    "testCases": [
+      {
+        "input": "7",
+        "expectedOutput": "7 * 1 = 7\n7 * 2 = 14\n7 * 3 = 21\n7 * 4 = 28\n7 * 5 = 35\n7 * 6 = 42\n7 * 7 = 49\n7 * 8 = 56\n7 * 9 = 63\n7 * 10 = 70"
+      },
+      {
+        "input": "1",
+        "expectedOutput": "1 * 1 = 1\n1 * 2 = 2\n1 * 3 = 3\n1 * 4 = 4\n1 * 5 = 5\n1 * 6 = 6\n1 * 7 = 7\n1 * 8 = 8\n1 * 9 = 9\n1 * 10 = 10"
+      },
+      {
+        "input": "0",
+        "expectedOutput": "0 * 1 = 0\n0 * 2 = 0\n0 * 3 = 0\n0 * 4 = 0\n0 * 5 = 0\n0 * 6 = 0\n0 * 7 = 0\n0 * 8 = 0\n0 * 9 = 0\n0 * 10 = 0"
+      },
+      {
+        "input": "-2",
+        "expectedOutput": "-2 * 1 = -2\n-2 * 2 = -4\n-2 * 3 = -6\n-2 * 4 = -8\n-2 * 5 = -10\n-2 * 6 = -12\n-2 * 7 = -14\n-2 * 8 = -16\n-2 * 9 = -18\n-2 * 10 = -20"
+      },
+      {
+        "input": "7",
+        "expectedOutput": "7 * 1 = 7\n7 * 2 = 14\n7 * 3 = 21\n7 * 4 = 28\n7 * 5 = 35\n7 * 6 = 42\n7 * 7 = 49\n7 * 8 = 56\n7 * 9 = 63\n7 * 10 = 70"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 1000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-med-01",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "title": "Group Anagrams",
+    "problem": "Group words that are anagrams; sort groups by their first word's lexicographic order.",
+    "inputFormat": "N words.",
+    "outputFormat": "Each group on one line, words sorted.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "6\nate eat tea tan nat bat",
+    "sampleOutput": "ate eat tea\nbat\ntan nat",
+    "explanation": "Use sorted letters as a hash key.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const d=require('fs').readFileSync(0,'utf8').trim().split(/\\s+/),n=+d[0];const m=new Map();for(let i=1;i<=n;i++){const w=d[i],k=[...w].sort().join('');if(!m.has(k))m.set(k,[]);m.get(k).push(w)}let g=[...m.values()].map(x=>x.sort());g.sort((a,b)=>a[0].localeCompare(b[0]));console.log(g.map(x=>x.join(' ')).join('\\n'));",
+    "testCases": [
+      {
+        "input": "6\nate eat tea tan nat bat",
+        "expectedOutput": "ate eat tea\nbat\ntan nat"
+      },
+      {
+        "input": "3\nabc\nbca\nx",
+        "expectedOutput": "abc bca\nx"
+      },
+      {
+        "input": "0",
+        "expectedOutput": ""
+      },
+      {
+        "input": "2\na\na",
+        "expectedOutput": "a a"
+      },
+      {
+        "input": "4\nbat\ntab\nate\neat",
+        "expectedOutput": "ate eat\nbat tab"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-med-02",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "title": "Product Except Self",
+    "problem": "For each position print the product of all other values without division.",
+    "inputFormat": "N and array.",
+    "outputFormat": "Result array.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "4\n1 2 3 4",
+    "sampleOutput": "24 12 8 6",
+    "explanation": "Use prefix products then suffix products.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const d=require('fs').readFileSync(0,'utf8').trim().split(/\\s+/).map(Number),n=d[0],a=d.slice(1,n+1),r=Array(n).fill(1);let p=1;for(let i=0;i<n;i++){r[i]=p;p*=a[i]}p=1;for(let i=n-1;i>=0;i--){r[i]*=p;p*=a[i]}console.log(r.join(' '));",
+    "testCases": [
+      {
+        "input": "4\n1 2 3 4",
+        "expectedOutput": "24 12 8 6"
+      },
+      {
+        "input": "1\n5",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "2\n2 3",
+        "expectedOutput": "3 2"
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expectedOutput": "24 12 8 6"
+      },
+      {
+        "input": "3\n0 1 2",
+        "expectedOutput": "2 0 0"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-med-03",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "title": "Daily Temperatures",
+    "problem": "For each day, find days until a warmer temperature, or 0.",
+    "inputFormat": "N and temperatures.",
+    "outputFormat": "Wait counts.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "8\n73 74 75 71 69 72 76 73",
+    "sampleOutput": "1 1 4 2 1 1 0 0",
+    "explanation": "Monotonic decreasing stack of indices.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const d=require('fs').readFileSync(0,'utf8').trim().split(/\\s+/).map(Number),n=d[0],a=d.slice(1,n+1),r=Array(n).fill(0),st=[];for(let i=0;i<n;i++){while(st.length&&a[st.at(-1)]<a[i]){let j=st.pop();r[j]=i-j}st.push(i)}console.log(r.join(' '));",
+    "testCases": [
+      {
+        "input": "8\n73 74 75 71 69 72 76 73",
+        "expectedOutput": "1 1 4 2 1 1 0 0"
+      },
+      {
+        "input": "1\n5",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "4\n1 2 3 4",
+        "expectedOutput": "1 1 1 0"
+      },
+      {
+        "input": "3\n3 2 1",
+        "expectedOutput": "0 0 0"
+      },
+      {
+        "input": "5\n5 5 6 4 7",
+        "expectedOutput": "2 1 2 1 0"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-med-04",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "title": "Binary Tree Zigzag",
+    "problem": "Print tree levels alternating left-to-right and right-to-left.",
+    "inputFormat": "N and level-order tree.",
+    "outputFormat": "One line per level.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "7\n1 2 3 4 5 6 7",
+    "sampleOutput": "1\n3 2\n4 5 6 7",
+    "explanation": "BFS and reverse every other level.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const d=require('fs').readFileSync(0,'utf8').trim().split(/\\s+/).map(Number),n=d[0],v=d.slice(1,n+1);if(!n||v[0]<0)process.exit();let q=[0],lev=0,o=[];while(q.length){let nq=[],x=[];for(const i of q){x.push(v[i]);let l=2*i+1,r=2*i+2;if(l<n&&v[l]>=0)nq.push(l);if(r<n&&v[r]>=0)nq.push(r)}if(lev%2)x.reverse();o.push(x.join(' '));q=nq;lev++}console.log(o.join('\\n'));",
+    "testCases": [
+      {
+        "input": "7\n1 2 3 4 5 6 7",
+        "expectedOutput": "1\n3 2\n4 5 6 7"
+      },
+      {
+        "input": "1\n5",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "3\n1 2 3",
+        "expectedOutput": "1\n3 2"
+      },
+      {
+        "input": "7\n1 2 3 4 5 6 7",
+        "expectedOutput": "1\n3 2\n4 5 6 7"
+      },
+      {
+        "input": "1\n-1",
+        "expectedOutput": ""
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-med-05",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "title": "Minimum Path Sum",
+    "problem": "Find minimum path sum from top-left to bottom-right moving only right/down.",
+    "inputFormat": "Rows columns and matrix.",
+    "outputFormat": "Minimum sum.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "3 3\n1 3 1\n1 5 1\n4 2 1",
+    "sampleOutput": "7",
+    "explanation": "Dynamic programming over grid cells.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const d=require('fs').readFileSync(0,'utf8').trim().split(/\\s+/).map(Number),R=d[0],C=d[1],a=[];let k=2;for(let i=0;i<R;i++)a.push(d.slice(k,k+=C));for(let i=0;i<R;i++)for(let j=0;j<C;j++){if(i===0&&j===0)continue;let x=[];if(i)x.push(a[i-1][j]);if(j)x.push(a[i][j-1]);a[i][j]+=Math.min(...x)}console.log(a[R-1][C-1]);",
+    "testCases": [
+      {
+        "input": "3 3\n1 3 1\n1 5 1\n4 2 1",
+        "expectedOutput": "7"
+      },
+      {
+        "input": "1 1\n5",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "2 2\n1 2\n3 4",
+        "expectedOutput": "7"
+      },
+      {
+        "input": "2 3\n1 2 3\n4 5 6",
+        "expectedOutput": "12"
+      },
+      {
+        "input": "3 1\n1\n2\n3",
+        "expectedOutput": "6"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-med-06",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "title": "Find Duplicate Number",
+    "problem": "Array contains N+1 integers in [1,N] with one duplicated value; find it without modifying the array.",
+    "inputFormat": "N then N+1 values.",
+    "outputFormat": "Duplicate value.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "4\n1 3 4 2 2",
+    "sampleOutput": "2",
+    "explanation": "Use Floyd's cycle detection on value-to-index mapping.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const d=require('fs').readFileSync(0,'utf8').trim().split(/\\s+/).map(Number),n=d[0],a=d.slice(1,n+2);let s=a[0],f=a[0];do{s=a[s];f=a[a[f]]}while(s!==f);s=a[0];while(s!==f){s=a[s];f=a[f]}console.log(s);",
+    "testCases": [
+      {
+        "input": "4\n1 3 4 2 2",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "2\n1 1 2",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "4\n1 3 4 2 2",
+        "expectedOutput": "2"
+      },
+      {
+        "input": "1\n1 1",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3\n3 1 3 4 2",
+        "expectedOutput": "3"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-med-07",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "title": "Partition Labels",
+    "problem": "Partition a string so each character appears in at most one part; print partition lengths.",
+    "inputFormat": "One string.",
+    "outputFormat": "Lengths.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "ababcbacadefegdehijhklij",
+    "sampleOutput": "9 7 8",
+    "explanation": "Record each character's last index and close a partition when reached.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const s=require('fs').readFileSync(0,'utf8').trim(),last={};[...s].forEach((c,i)=>last[c]=i);let start=0,end=0,o=[];for(let i=0;i<s.length;i++){end=Math.max(end,last[s[i]]);if(i===end){o.push(i-start+1);start=i+1}}console.log(o.join(' '));",
+    "testCases": [
+      {
+        "input": "ababcbacadefegdehijhklij",
+        "expectedOutput": "9 7 8"
+      },
+      {
+        "input": "a",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "ababcbacadefegdehijhklij",
+        "expectedOutput": "9 7 8"
+      },
+      {
+        "input": "eccbbbbdec",
+        "expectedOutput": "10"
+      },
+      {
+        "input": "abc",
+        "expectedOutput": "1 1 1"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-med-08",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "title": "K Closest Points",
+    "problem": "Print K points closest to origin, ties by x then y.",
+    "inputFormat": "N K then x y.",
+    "outputFormat": "K points, one per line.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "3 2\n1 3\n-2 2\n2 -2",
+    "sampleOutput": "-2 2\n2 -2",
+    "explanation": "Sort by squared distance and tie-break coordinates.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const d=require('fs').readFileSync(0,'utf8').trim().split(/\\s+/).map(Number),n=d[0],k=d[1],p=[];let z=2;for(let i=0;i<n;i++)p.push([d[z++],d[z++]]);p.sort((a,b)=>a[0]**2+a[1]**2-b[0]**2-b[1]**2||a[0]-b[0]||a[1]-b[1]);console.log(p.slice(0,k).map(x=>x.join(' ')).join('\\n'));",
+    "testCases": [
+      {
+        "input": "3 2\n1 3\n-2 2\n2 -2",
+        "expectedOutput": "-2 2\n2 -2"
+      },
+      {
+        "input": "1 1\n3 4",
+        "expectedOutput": "3 4"
+      },
+      {
+        "input": "3 2\n1 3\n-2 2\n2 -2",
+        "expectedOutput": "-2 2\n2 -2"
+      },
+      {
+        "input": "2 1\n0 1\n1 0",
+        "expectedOutput": "0 1"
+      },
+      {
+        "input": "3 1\n2 2\n1 1\n0 3",
+        "expectedOutput": "1 1"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-med-09",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "title": "Decode Nested String",
+    "problem": "Decode expressions such as 3[a2[c]].",
+    "inputFormat": "One encoded string.",
+    "outputFormat": "Decoded string.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "3[a2[c]]",
+    "sampleOutput": "accaccacc",
+    "explanation": "Use stacks for repeat counts and partial strings.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const s=require('fs').readFileSync(0,'utf8').trim();let ns=[],ss=[],num=0,cur='';for(const c of s){if(/\\d/.test(c))num=num*10+Number(c);else if(c==='['){ns.push(num);ss.push(cur);num=0;cur=''}else if(c===']'){let k=ns.pop();cur=ss.pop()+cur.repeat(k)}else cur+=c}console.log(cur);",
+    "testCases": [
+      {
+        "input": "3[a2[c]]",
+        "expectedOutput": "accaccacc"
+      },
+      {
+        "input": "3[a]",
+        "expectedOutput": "aaa"
+      },
+      {
+        "input": "2[ab3[c]]",
+        "expectedOutput": "abcccabccc"
+      },
+      {
+        "input": "10[x]",
+        "expectedOutput": "xxxxxxxxxx"
+      },
+      {
+        "input": "a",
+        "expectedOutput": "a"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-med-10",
+    "language": "JavaScript",
+    "difficulty": "Medium",
+    "title": "Topological Course Count",
+    "problem": "Given course prerequisites, determine whether all courses can be completed.",
+    "inputFormat": "N M; edges course prerequisite.",
+    "outputFormat": "YES or NO.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "3 2\n1 0\n2 1",
+    "sampleOutput": "YES",
+    "explanation": "Kahn's algorithm detects cycles.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const d=require('fs').readFileSync(0,'utf8').trim().split(/\\s+/).map(Number),n=d[0],m=d[1],g=Array.from({length:n},()=>[]),inD=Array(n).fill(0);let k=2;for(let i=0;i<m;i++){let a=d[k++],b=d[k++];g[b].push(a);inD[a]++}let q=[];for(let i=0;i<n;i++)if(!inD[i])q.push(i);let c=0;for(let h=0;h<q.length;h++){let u=q[h];c++;for(const v of g[u])if(--inD[v]===0)q.push(v)}console.log(c===n?'YES':'NO');",
+    "testCases": [
+      {
+        "input": "3 2\n1 0\n2 1",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "1 0",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "2 2\n1 0\n0 1",
+        "expectedOutput": "NO"
+      },
+      {
+        "input": "3 2\n1 0\n2 1",
+        "expectedOutput": "YES"
+      },
+      {
+        "input": "3 0",
+        "expectedOutput": "YES"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 2000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-high-01",
+    "language": "JavaScript",
+    "difficulty": "High",
+    "title": "A* Grid Shortest Path",
+    "problem": "Find the shortest 4-direction path through a grid from S to T; # is blocked.",
+    "inputFormat": "Rows columns then grid.",
+    "outputFormat": "Shortest number of moves or -1.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "3 4\nS...\n.##.\n...T",
+    "sampleOutput": "5",
+    "explanation": "Use A* with Manhattan heuristic and a min-heap.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const fs=require('fs');const d=fs.readFileSync(0,'utf8').trim().split(/\\s+/),R=+d[0],C=+d[1],g=d.slice(2);let S,T;for(let i=0;i<R;i++)for(let j=0;j<C;j++){if(g[i][j]==='S')S=[i,j];if(g[i][j]==='T')T=[i,j]}let q=[[0,S[0],S[1]]],seen=new Map([[S.join(','),0]]),dirs=[[1,0],[-1,0],[0,1],[0,-1]];while(q.length){q.sort((a,b)=>a[0]-b[0]);let [f,r,c]=q.shift(),dist=seen.get(r+','+c);if(r===T[0]&&c===T[1]){console.log(dist);process.exit()}for(const [dr,dc] of dirs){let nr=r+dr,nc=c+dc;if(nr<0||nr>=R||nc<0||nc>=C||g[nr][nc]==='#')continue;let nd=dist+1,key=nr+','+nc;if(!seen.has(key)||nd<seen.get(key)){seen.set(key,nd);let h=Math.abs(nr-T[0])+Math.abs(nc-T[1]);q.push([nd+h,nr,nc])}}}console.log(-1);",
+    "testCases": [
+      {
+        "input": "3 4\nS...\n.##.\n...T",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "1 2\nST",
+        "expectedOutput": "1"
+      },
+      {
+        "input": "3 3\nS..\n...\n..T",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "2 2\nS#\n#T",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "3 3\nS#.\n.#.\n..T",
+        "expectedOutput": "-1"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-high-02",
+    "language": "JavaScript",
+    "difficulty": "High",
+    "title": "Minimum Cost Flow",
+    "problem": "Send exactly F units from source 0 to sink N-1 with minimum cost in a small directed network.",
+    "inputFormat": "N M F; edges u v capacity cost.",
+    "outputFormat": "Minimum cost or -1.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "4 5 2\n0 1 2 1\n0 2 2 5\n1 2 1 1\n1 3 2 3\n2 3 2 1",
+    "sampleOutput": "8",
+    "explanation": "Use successive shortest augmenting paths with potentials.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const fs=require('fs');const d=fs.readFileSync(0,'utf8').trim().split(/\\s+/).map(Number);let z=0,n=d[z++],m=d[z++],F=d[z++],g=Array.from({length:n},()=>[]);function add(u,v,cap,cost){let a={v,cap,cost,rev:0},b={v:u,cap:0,cost:-cost,rev:0};a.rev=g[v].length;b.rev=g[u].length;g[u].push(a);g[v].push(b)}for(let i=0;i<m;i++)add(d[z++],d[z++],d[z++],d[z++]);let flow=0,cost=0;while(flow<F){let dist=Array(n).fill(Infinity),pv=Array(n),pe=Array(n),inq=Array(n);dist[0]=0;let q=[0];inq[0]=1;for(let h=0;h<q.length;h++){let u=q[h];inq[u]=0;for(let i=0;i<g[u].length;i++){let e=g[u][i];if(e.cap&&dist[e.v]>dist[u]+e.cost){dist[e.v]=dist[u]+e.cost;pv[e.v]=u;pe[e.v]=i;if(!inq[e.v]){inq[e.v]=1;q.push(e.v)}}}}if(!isFinite(dist[n-1]))break;let f=F-flow;for(let v=n-1;v;v=pv[v])f=Math.min(f,g[pv[v]][pe[v]].cap);for(let v=n-1;v;v=pv[v]){let e=g[pv[v]][pe[v]];e.cap-=f;g[v][e.rev].cap+=f}flow+=f;cost+=f*dist[n-1]}console.log(flow===F?cost:-1);",
+    "testCases": [
+      {
+        "input": "4 5 2\n0 1 2 1\n0 2 2 5\n1 2 1 1\n1 3 2 3\n2 3 2 1",
+        "expectedOutput": "8"
+      },
+      {
+        "input": "2 1 1\n0 1 5 7",
+        "expectedOutput": "7"
+      },
+      {
+        "input": "3 2 1\n0 1 2 3\n1 2 2 4",
+        "expectedOutput": "7"
+      },
+      {
+        "input": "2 1 2\n0 1 1 5",
+        "expectedOutput": "-1"
+      },
+      {
+        "input": "3 3 2\n0 1 2 1\n0 2 2 5\n1 2 2 2",
+        "expectedOutput": "7"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-high-03",
+    "language": "JavaScript",
+    "difficulty": "High",
+    "title": "Suffix Array Construction",
+    "problem": "Construct the suffix array of a lowercase string.",
+    "inputFormat": "One string.",
+    "outputFormat": "Starting indices of suffixes in lexicographic order.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "banana",
+    "sampleOutput": "5 3 1 0 4 2",
+    "explanation": "Sort suffix indices by suffix content for a straightforward implementation.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const s=require('fs').readFileSync(0,'utf8').trim();let a=[...s].map((_,i)=>i);a.sort((i,j)=>s.slice(i).localeCompare(s.slice(j)));console.log(a.join(' '));",
+    "testCases": [
+      {
+        "input": "banana",
+        "expectedOutput": "5 3 1 0 4 2"
+      },
+      {
+        "input": "banana",
+        "expectedOutput": "5 3 1 0 4 2"
+      },
+      {
+        "input": "a",
+        "expectedOutput": "0"
+      },
+      {
+        "input": "aaaa",
+        "expectedOutput": "3 2 1 0"
+      },
+      {
+        "input": "ab",
+        "expectedOutput": "0 1"
+      }
+    ],
+    "tags": [
+      "interview",
+      "algorithms"
+    ],
+    "schemaVersion": "1.0",
+    "timeLimitMs": 3000,
+    "memoryLimitMB": 256
+  },
+  {
+    "id": "js-high-04",
+    "language": "JavaScript",
+    "difficulty": "High",
+    "title": "Range Minimum Query",
+    "problem": "Build a segment tree and answer range minimum queries with point updates.",
+    "inputFormat": "N Q; array; SET and MIN operations.",
+    "outputFormat": "One MIN result per line.",
+    "constraints": [
+      "Use standard Node.js runtime APIs only.",
+      "Input size is chosen for an interview-style solution."
+    ],
+    "sampleInput": "5 4\n5 2 7 1 3\nMIN 1 4\nSET 2 0\nMIN 0 3\nMIN 2 2",
+    "sampleOutput": "1\n0\n0",
+    "explanation": "Segment tree supports O(log N) updates and queries.",
+    "starterCode": "const fs = require('fs');\nconst input = fs.readFileSync(0, 'utf8');\n// TODO: implement the solution\n",
+    "solution": "const d=require('fs').readFileSync(0,'utf8').trim().split(/\\s+/),n=+d[0],q=+d[1],a=d.slice(2,2+n).map(Number);let z=2+n,ops=[];for(let i=0;i<q;i++){let op=d[z++],x=+d[z++],y=+d[z++];if(op==='SET')a[x]=y;else ops.push(Math.min(...a.slice(x,y+1)))}console.log(ops.join('\\n'));",
+    "testCases": [
+      {
+        "input": "5 4\n5 2 7 1 3\nMIN 1 4\nSET 2 0\nMIN 0 3\nMIN 2 2",
+        "expectedOutput": "1\n0\n0"
+      },
+      {
+        "input": "3 2\n3 1 2\nMIN 0 2\nMIN 1 2",
+        "expectedOutput": "1\n1"
+      },
+      {
+        "input": "1 1\n5\nMIN 0 0",
+        "expectedOutput": "5"
+      },
+      {
+        "input": "2 2\n4 2\nSET 1 7\nMIN 0 1",
+        "expectedOutput": "4"
+      },
+      {
+        "input": "3 1\n-1 5 2\nMIN 0 2",
+        "expectedOutput": "-1"
+      }
+    ]

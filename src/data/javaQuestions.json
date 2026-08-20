@@ -1,0 +1,1172 @@
+[
+  {
+    "id": "java-1",
+    "level": "low",
+    "question": "Who developed Java?",
+    "options": [
+      "Microsoft",
+      "Sun Microsystems",
+      "Google",
+      "IBM"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-2",
+    "level": "low",
+    "question": "Which keyword is used to create a class in Java?",
+    "options": [
+      "`define`",
+      "`class`",
+      "`struct`",
+      "`object`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-3",
+    "level": "low",
+    "question": "Which method is the entry point of a Java application?",
+    "options": [
+      "`start()`",
+      "`run()`",
+      "`main()`",
+      "`execute()`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-4",
+    "level": "low",
+    "question": "Which is the correct main method?",
+    "options": [
+      "`public void main(String[] args)`",
+      "`public static void main(String[] args)`",
+      "`static main(String args)`",
+      "`void public main()`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-5",
+    "level": "low",
+    "question": "Which keyword is used to create an object?",
+    "options": [
+      "`create`",
+      "`object`",
+      "`new`",
+      "`make`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-6",
+    "level": "low",
+    "question": "Which extension is used for Java source files?",
+    "options": [
+      "`.jav`",
+      "`.java`",
+      "`.class`",
+      "`.js`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-7",
+    "level": "low",
+    "question": "Which extension is generated after compiling Java source code?",
+    "options": [
+      "`.java`",
+      "`.exe`",
+      "`.class`",
+      "`.obj`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-8",
+    "level": "low",
+    "question": "Which command compiles a Java program?",
+    "options": [
+      "`java`",
+      "`javac`",
+      "`compile`",
+      "`jcompile`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-9",
+    "level": "low",
+    "question": "Which command runs a compiled Java program?",
+    "options": [
+      "`javac`",
+      "`runjava`",
+      "`java`",
+      "`execute`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-10",
+    "level": "low",
+    "question": "Which data type stores whole numbers?",
+    "options": [
+      "`float`",
+      "`double`",
+      "`int`",
+      "`char`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-11",
+    "level": "low",
+    "question": "Which data type stores a single character?",
+    "options": [
+      "`String`",
+      "`char`",
+      "`character`",
+      "`text`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-12",
+    "level": "low",
+    "question": "Which data type stores true or false?",
+    "options": [
+      "`boolean`",
+      "`bool`",
+      "`bit`",
+      "`logical`"
+    ],
+    "correctAnswer": 0,
+    "topic": "Java"
+  },
+  {
+    "id": "java-13",
+    "level": "low",
+    "question": "Which data type is used for decimal numbers?",
+    "options": [
+      "`int`",
+      "`boolean`",
+      "`double`",
+      "`char`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-14",
+    "level": "low",
+    "question": "Which keyword declares a constant variable?",
+    "options": [
+      "`constant`",
+      "`const`",
+      "`final`",
+      "`static`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-15",
+    "level": "low",
+    "question": "Which operator is used for addition?",
+    "options": [
+      "`+`",
+      "`&`",
+      "`*`",
+      "`%`"
+    ],
+    "correctAnswer": 0,
+    "topic": "Java"
+  },
+  {
+    "id": "java-16",
+    "level": "low",
+    "question": "Which operator gives the remainder?",
+    "options": [
+      "`/`",
+      "`%`",
+      "`//`",
+      "`rem`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-17",
+    "level": "low",
+    "question": "Which keyword is used for inheritance?",
+    "options": [
+      "`inherits`",
+      "`extends`",
+      "`inherit`",
+      "`parent`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-18",
+    "level": "low",
+    "question": "Which keyword is used to implement an interface?",
+    "options": [
+      "`extends`",
+      "`interface`",
+      "`implements`",
+      "`inherits`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-19",
+    "level": "low",
+    "question": "Which keyword is used to create an interface?",
+    "options": [
+      "`interface`",
+      "`Interface`",
+      "`implements`",
+      "`abstract`"
+    ],
+    "correctAnswer": 0,
+    "topic": "Java"
+  },
+  {
+    "id": "java-20",
+    "level": "low",
+    "question": "Which keyword prevents a class from being inherited?",
+    "options": [
+      "`static`",
+      "`private`",
+      "`final`",
+      "`constant`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-21",
+    "level": "low",
+    "question": "Which keyword is used for conditional statements?",
+    "options": [
+      "`when`",
+      "`if`",
+      "`check`",
+      "`condition`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-22",
+    "level": "low",
+    "question": "Which keyword handles an alternative condition?",
+    "options": [
+      "`else`",
+      "`otherwise`",
+      "`default`",
+      "`alternative`"
+    ],
+    "correctAnswer": 0,
+    "topic": "Java"
+  },
+  {
+    "id": "java-23",
+    "level": "low",
+    "question": "Which loop is commonly used when the number of iterations is known?",
+    "options": [
+      "`while`",
+      "`do-while`",
+      "`for`",
+      "`repeat`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-24",
+    "level": "low",
+    "question": "Which keyword stops a loop?",
+    "options": [
+      "`stop`",
+      "`break`",
+      "`exit`",
+      "`end`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-25",
+    "level": "low",
+    "question": "Which keyword skips the current iteration?",
+    "options": [
+      "`skip`",
+      "`pass`",
+      "`continue`",
+      "`next`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-26",
+    "level": "low",
+    "question": "Which keyword is used to return a value from a method?",
+    "options": [
+      "`send`",
+      "`return`",
+      "`output`",
+      "`value`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-27",
+    "level": "low",
+    "question": "Which keyword refers to the current object?",
+    "options": [
+      "`self`",
+      "`current`",
+      "`this`",
+      "`object`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-28",
+    "level": "low",
+    "question": "Which keyword refers to the parent class?",
+    "options": [
+      "`parent`",
+      "`base`",
+      "`super`",
+      "`this`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-29",
+    "level": "low",
+    "question": "Which access modifier provides the widest access?",
+    "options": [
+      "`private`",
+      "`protected`",
+      "`public`",
+      "`default`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-30",
+    "level": "low",
+    "question": "Which language feature allows Java programs to run on different platforms?",
+    "options": [
+      "Pointers",
+      "JVM",
+      "Multiple inheritance",
+      "Preprocessor"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-31",
+    "level": "medium",
+    "question": "What is the output?\n\n```java\nint x = 10;\nSystem.out.println(x++);\n```",
+    "options": [
+      "9",
+      "10",
+      "11",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-32",
+    "level": "medium",
+    "question": "What is the output?\n\n```java\nint x = 10;\nSystem.out.println(++x);\n```",
+    "options": [
+      "10",
+      "11",
+      "12",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-33",
+    "level": "medium",
+    "question": "What is the output?\n\n```java\nSystem.out.println(10 / 3);\n```",
+    "options": [
+      "3",
+      "3.33",
+      "4",
+      "3.0"
+    ],
+    "correctAnswer": 0,
+    "topic": "Java"
+  },
+  {
+    "id": "java-34",
+    "level": "medium",
+    "question": "What is the output?\n\n```java\nSystem.out.println(10 % 3);\n```",
+    "options": [
+      "0",
+      "1",
+      "3",
+      "3.33"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-35",
+    "level": "medium",
+    "question": "What is the output?\n\n```java\nString s = \"Java\";\nSystem.out.println(s.length());\n```",
+    "options": [
+      "3",
+      "4",
+      "5",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-36",
+    "level": "medium",
+    "question": "Which method compares the contents of two Strings?",
+    "options": [
+      "`==`",
+      "`compare()`",
+      "`equals()`",
+      "`match()`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-37",
+    "level": "medium",
+    "question": "What is the output?\n\n```java\nString a = \"Java\";\nString b = \"Java\";\n\nSystem.out.println(a.equals(b));\n```",
+    "options": [
+      "`true`",
+      "`false`",
+      "`0`",
+      "Error"
+    ],
+    "correctAnswer": 0,
+    "topic": "Java"
+  },
+  {
+    "id": "java-38",
+    "level": "medium",
+    "question": "Which class is immutable?",
+    "options": [
+      "`String`",
+      "`StringBuilder`",
+      "`StringBuffer`",
+      "`ArrayList`"
+    ],
+    "correctAnswer": 0,
+    "topic": "Java"
+  },
+  {
+    "id": "java-39",
+    "level": "medium",
+    "question": "Which class is generally faster for modifying strings in a single-threaded context?",
+    "options": [
+      "`String`",
+      "`StringBuilder`",
+      "`StringBuffer`",
+      "`Character`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-40",
+    "level": "medium",
+    "question": "Which collection allows duplicate elements?",
+    "options": [
+      "`Set`",
+      "`ArrayList`",
+      "`HashSet`",
+      "`TreeSet`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-41",
+    "level": "medium",
+    "question": "Which collection does not allow duplicate elements?",
+    "options": [
+      "`ArrayList`",
+      "`LinkedList`",
+      "`HashSet`",
+      "`Vector`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-42",
+    "level": "medium",
+    "question": "Which collection stores key-value pairs?",
+    "options": [
+      "`List`",
+      "`Set`",
+      "`Map`",
+      "`Queue`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-43",
+    "level": "medium",
+    "question": "Which class implements the `List` interface?",
+    "options": [
+      "`HashMap`",
+      "`HashSet`",
+      "`ArrayList`",
+      "`TreeMap`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-44",
+    "level": "medium",
+    "question": "Which class implements the `Map` interface?",
+    "options": [
+      "`ArrayList`",
+      "`HashMap`",
+      "`HashSet`",
+      "`LinkedList`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-45",
+    "level": "medium",
+    "question": "What is method overloading?",
+    "options": [
+      "Same method name with different parameters",
+      "Same method name with same parameters",
+      "Replacing a parent method",
+      "Hiding a method"
+    ],
+    "correctAnswer": 0,
+    "topic": "Java"
+  },
+  {
+    "id": "java-46",
+    "level": "medium",
+    "question": "What is method overriding?",
+    "options": [
+      "Creating multiple constructors",
+      "Redefining a parent class method in a subclass",
+      "Creating multiple methods with different parameters",
+      "Deleting a method"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-47",
+    "level": "medium",
+    "question": "Which concept represents hiding implementation details?",
+    "options": [
+      "Inheritance",
+      "Encapsulation",
+      "Abstraction",
+      "Polymorphism"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-48",
+    "level": "medium",
+    "question": "Which concept bundles data and methods together?",
+    "options": [
+      "Inheritance",
+      "Encapsulation",
+      "Polymorphism",
+      "Compilation"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-49",
+    "level": "medium",
+    "question": "Which keyword is used to define an abstract class?",
+    "options": [
+      "`virtual`",
+      "`abstract`",
+      "`interface`",
+      "`base`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-50",
+    "level": "medium",
+    "question": "Can an abstract class be instantiated directly?",
+    "options": [
+      "Yes",
+      "No",
+      "Only with `new`",
+      "Only with `static`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-51",
+    "level": "medium",
+    "question": "Which block is used to handle exceptions?",
+    "options": [
+      "`try-catch`",
+      "`check-handle`",
+      "`error-catch`",
+      "`handle`"
+    ],
+    "correctAnswer": 0,
+    "topic": "Java"
+  },
+  {
+    "id": "java-52",
+    "level": "medium",
+    "question": "Which block executes whether an exception occurs or not?",
+    "options": [
+      "`catch`",
+      "`throw`",
+      "`finally`",
+      "`error`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-53",
+    "level": "medium",
+    "question": "Which keyword is used to explicitly throw an exception?",
+    "options": [
+      "`throws`",
+      "`throw`",
+      "`exception`",
+      "`raise`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-54",
+    "level": "medium",
+    "question": "Which keyword declares that a method may throw exceptions?",
+    "options": [
+      "`throw`",
+      "`throws`",
+      "`exception`",
+      "`try`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-55",
+    "level": "medium",
+    "question": "Which exception occurs when dividing an integer by zero?",
+    "options": [
+      "`NullPointerException`",
+      "`ArithmeticException`",
+      "`IOException`",
+      "`NumberFormatException`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-56",
+    "level": "medium",
+    "question": "What does `null` represent for an object reference?",
+    "options": [
+      "Zero",
+      "Empty String",
+      "No object reference",
+      "False"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-57",
+    "level": "medium",
+    "question": "Which exception can occur when calling a method through a null reference?",
+    "options": [
+      "`IOException`",
+      "`NullPointerException`",
+      "`ArithmeticException`",
+      "`ClassCastException`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-58",
+    "level": "medium",
+    "question": "What is a constructor?",
+    "options": [
+      "A method used only for calculations",
+      "A special member used to initialize objects",
+      "A static method",
+      "An interface"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-59",
+    "level": "medium",
+    "question": "What must a constructor have as its name?",
+    "options": [
+      "Any name",
+      "`constructor`",
+      "Same name as the class",
+      "`new`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-60",
+    "level": "medium",
+    "question": "Can constructors have parameters?",
+    "options": [
+      "No",
+      "Yes",
+      "Only one parameter",
+      "Only String parameters"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-61",
+    "level": "high",
+    "question": "What is the output?\n\n```java\nString a = new String(\"Java\");\nString b = new String(\"Java\");\n\nSystem.out.println(a == b);\n```",
+    "options": [
+      "`true`",
+      "`false`",
+      "`Java`",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-62",
+    "level": "high",
+    "question": "Why does `a == b` return false in the previous question?",
+    "options": [
+      "String values are different",
+      "`==` compares object references",
+      "Java doesn't support String comparison",
+      "`equals()` is required for integers"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-63",
+    "level": "high",
+    "question": "What is the output?\n\n```java\nint x = 5;\n\nif (x++ == 5) {\n    System.out.println(x);\n}\n```",
+    "options": [
+      "5",
+      "6",
+      "7",
+      "Error"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-64",
+    "level": "high",
+    "question": "What is the output?\n\n```java\nint x = 5;\n\nSystem.out.println(x++ + ++x);\n```",
+    "options": [
+      "10",
+      "11",
+      "12",
+      "13"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-65",
+    "level": "high",
+    "question": "What is autoboxing?",
+    "options": [
+      "Converting object to primitive",
+      "Automatically converting primitive to wrapper object",
+      "Converting String to int",
+      "Converting class to interface"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-66",
+    "level": "high",
+    "question": "Which wrapper class corresponds to `int`?",
+    "options": [
+      "`Int`",
+      "`Integer`",
+      "`Number`",
+      "`Long`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-67",
+    "level": "high",
+    "question": "What is unboxing?",
+    "options": [
+      "Primitive \u2192 object",
+      "Object \u2192 corresponding primitive",
+      "String \u2192 object",
+      "Class \u2192 interface"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-68",
+    "level": "high",
+    "question": "What is the output?\n\n```java\nInteger a = 100;\nInteger b = 100;\n\nSystem.out.println(a == b);\n```",
+    "options": [
+      "`true`",
+      "`false`",
+      "Error",
+      "`100`"
+    ],
+    "correctAnswer": 0,
+    "topic": "Java"
+  },
+  {
+    "id": "java-69",
+    "level": "high",
+    "question": "What is the output?\n\n```java\nInteger a = 200;\nInteger b = 200;\n\nSystem.out.println(a == b);\n```",
+    "options": [
+      "`true`",
+      "`false`",
+      "Error",
+      "`200`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-70",
+    "level": "high",
+    "question": "Which principle means \"one interface, many implementations\"?",
+    "options": [
+      "Encapsulation",
+      "Inheritance",
+      "Polymorphism",
+      "Abstraction"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-71",
+    "level": "high",
+    "question": "What is dynamic method dispatch?",
+    "options": [
+      "Compile-time method selection",
+      "Runtime selection of an overridden method",
+      "Constructor overloading",
+      "Variable initialization"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-72",
+    "level": "high",
+    "question": "Which type of polymorphism is method overloading?",
+    "options": [
+      "Runtime polymorphism",
+      "Compile-time polymorphism",
+      "Dynamic polymorphism",
+      "Inheritance polymorphism"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-73",
+    "level": "high",
+    "question": "Which type of polymorphism is method overriding?",
+    "options": [
+      "Compile-time",
+      "Runtime",
+      "Static",
+      "Constructor"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-74",
+    "level": "high",
+    "question": "Can a static method be overridden in the normal polymorphic sense?",
+    "options": [
+      "Yes",
+      "No",
+      "Only if private",
+      "Only if final"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-75",
+    "level": "high",
+    "question": "Can a final method be overridden?",
+    "options": [
+      "Yes",
+      "No",
+      "Only in an abstract class",
+      "Only by `super`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-76",
+    "level": "high",
+    "question": "Can a final class be extended?",
+    "options": [
+      "Yes",
+      "No",
+      "Only once",
+      "Only by an interface"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-77",
+    "level": "high",
+    "question": "Which keyword is used to access a parent class constructor or member?",
+    "options": [
+      "`this`",
+      "`super`",
+      "`parent`",
+      "`base`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-78",
+    "level": "high",
+    "question": "What is the first statement implicitly involved in a constructor chain?",
+    "options": [
+      "`return`",
+      "`super()`",
+      "`this()`",
+      "`new()`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-79",
+    "level": "high",
+    "question": "Which statement about interfaces is correct in modern Java?",
+    "options": [
+      "An interface can only contain abstract methods",
+      "Interfaces can have default and static methods",
+      "Interfaces cannot have constants",
+      "Interfaces must be instantiated directly"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-80",
+    "level": "high",
+    "question": "Which keyword allows a class to implement multiple interfaces?",
+    "options": [
+      "`extends`",
+      "`implements`",
+      "`inherits`",
+      "`interface`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-81",
+    "level": "high",
+    "question": "Which Java collection maintains insertion order and does not allow duplicates?",
+    "options": [
+      "`HashSet`",
+      "`LinkedHashSet`",
+      "`TreeSet`",
+      "`HashMap`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-82",
+    "level": "high",
+    "question": "Which collection maintains elements in sorted order?",
+    "options": [
+      "`HashSet`",
+      "`LinkedHashSet`",
+      "`TreeSet`",
+      "`ArrayList`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-83",
+    "level": "high",
+    "question": "Which map maintains insertion order?",
+    "options": [
+      "`HashMap`",
+      "`TreeMap`",
+      "`LinkedHashMap`",
+      "`Hashtable`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-84",
+    "level": "high",
+    "question": "Which map sorts entries according to their keys?",
+    "options": [
+      "`HashMap`",
+      "`LinkedHashMap`",
+      "`TreeMap`",
+      "`WeakHashMap`"
+    ],
+    "correctAnswer": 2,
+    "topic": "Java"
+  },
+  {
+    "id": "java-85",
+    "level": "high",
+    "question": "What is a functional interface?",
+    "options": [
+      "Interface with no methods",
+      "Interface with exactly one abstract method",
+      "Interface with only static methods",
+      "Interface with multiple abstract methods"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-86",
+    "level": "high",
+    "question": "Which annotation is commonly used for a functional interface?",
+    "options": [
+      "`@Function`",
+      "`@FunctionalInterface`",
+      "`@Lambda`",
+      "`@SingleMethod`"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-87",
+    "level": "high",
+    "question": "What feature was introduced in Java 8 for concise functional programming?",
+    "options": [
+      "Generics",
+      "Lambda expressions",
+      "Packages",
+      "Constructors"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-88",
+    "level": "high",
+    "question": "What is the output?\n\n```java\njava.util.function.Predicate<Integer> p = x -> x > 10;\n\nSystem.out.println(p.test(15));\n```",
+    "options": [
+      "`true`",
+      "`false`",
+      "`15`",
+      "Error"
+    ],
+    "correctAnswer": 0,
+    "topic": "Java"
+  },
+  {
+    "id": "java-89",
+    "level": "high",
+    "question": "What is the main purpose of the Java Garbage Collector?",
+    "options": [
+      "Compile Java code",
+      "Automatically reclaim memory from objects that are no longer reachable",
+      "Create objects",
+      "Handle syntax errors"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  },
+  {
+    "id": "java-90",
+    "level": "high",
+    "question": "Which statement about Java threads is correct?",
+    "options": [
+      "Every Java program can have only one thread",
+      "`start()` begins a new thread of execution, while directly calling `run()` does not",
+      "`run()` always creates a new thread",
+      "Threads cannot run concurrently"
+    ],
+    "correctAnswer": 1,
+    "topic": "Java"
+  }
+]

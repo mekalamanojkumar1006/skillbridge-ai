@@ -1,0 +1,673 @@
+import json
+
+def generate_python_questions():
+    questions = []
+    
+    # ------------------ LOW (10) ------------------
+    # 1. Arrays: Find Maximum Element
+    questions.append({
+        "id": "PY-DSA-L01", "category": "DSA", "language": "Python", "difficulty": "Low",
+        "topic": "Arrays", "title": "Find Maximum Element",
+        "problem": "Given an array of integers, find the largest element.",
+        "inputFormat": "First line: n. Second line: n integers.",
+        "outputFormat": "Print the maximum integer.",
+        "constraints": ["1 <= n <= 10^5", "-10^9 <= arr[i] <= 10^9"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    print(max(arr))\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "5\n10 4 25 7 18", "expectedOutput": "25"},
+            {"input": "1\n-10", "expectedOutput": "-10"},
+            {"input": "4\n-5 -2 -10 -1", "expectedOutput": "-1"},
+            {"input": "3\n0 0 0", "expectedOutput": "0"},
+            {"input": "2\n100 -100", "expectedOutput": "100"}
+        ],
+        "sampleInput": "5\n10 4 25 7 18", "sampleOutput": "25",
+        "explanation": "25 is the largest element in the array.",
+        "timeComplexity": "O(n)", "spaceComplexity": "O(1)"
+    })
+    
+    # 2. Arrays: Reverse an Array
+    questions.append({
+        "id": "PY-DSA-L02", "category": "DSA", "language": "Python", "difficulty": "Low",
+        "topic": "Arrays", "title": "Reverse an Array",
+        "problem": "Reverse the given array without using a built-in reverse function.",
+        "inputFormat": "First line: n. Second line: n integers.",
+        "outputFormat": "Print the reversed array, space-separated.",
+        "constraints": ["1 <= n <= 10^5"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    print(' '.join(map(str, arr[::-1])))\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "5\n1 2 3 4 5", "expectedOutput": "5 4 3 2 1"},
+            {"input": "1\n10", "expectedOutput": "10"},
+            {"input": "2\n-1 -2", "expectedOutput": "-2 -1"},
+            {"input": "4\n0 0 1 1", "expectedOutput": "1 1 0 0"},
+            {"input": "3\n10 20 30", "expectedOutput": "30 20 10"}
+        ],
+        "sampleInput": "5\n1 2 3 4 5", "sampleOutput": "5 4 3 2 1",
+        "explanation": "The array is reversed.",
+        "timeComplexity": "O(n)", "spaceComplexity": "O(1) auxiliary"
+    })
+    
+    # 3. Arrays: Count Even and Odd Numbers
+    questions.append({
+        "id": "PY-DSA-L03", "category": "DSA", "language": "Python", "difficulty": "Low",
+        "topic": "Arrays", "title": "Count Even and Odd Numbers",
+        "problem": "Count how many numbers are even and how many are odd.",
+        "inputFormat": "First line: n. Second line: n integers.",
+        "outputFormat": "Print Even: <count>\nOdd: <count>",
+        "constraints": ["1 <= n <= 10^5"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    e = sum(1 for x in arr if x % 2 == 0)\n    o = n - e\n    print(f'Even: {e}')\n    print(f'Odd: {o}')\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "6\n1 2 3 4 5 6", "expectedOutput": "Even: 3\nOdd: 3"},
+            {"input": "3\n2 4 6", "expectedOutput": "Even: 3\nOdd: 0"},
+            {"input": "3\n1 3 5", "expectedOutput": "Even: 0\nOdd: 3"},
+            {"input": "1\n0", "expectedOutput": "Even: 1\nOdd: 0"},
+            {"input": "2\n-1 -2", "expectedOutput": "Even: 1\nOdd: 1"}
+        ],
+        "sampleInput": "6\n1 2 3 4 5 6", "sampleOutput": "Even: 3\nOdd: 3",
+        "explanation": "2,4,6 are even. 1,3,5 are odd.",
+        "timeComplexity": "O(n)", "spaceComplexity": "O(1)"
+    })
+    
+    # 4. Two Pointers: Remove Duplicates from Sorted Array
+    questions.append({
+        "id": "PY-DSA-L04", "category": "DSA", "language": "Python", "difficulty": "Low",
+        "topic": "Two Pointers", "title": "Remove Duplicates from Sorted Array",
+        "problem": "Given a sorted array, remove duplicates and print unique elements.",
+        "inputFormat": "First line: n. Second line: n sorted integers.",
+        "outputFormat": "Print the unique elements space-separated.",
+        "constraints": ["1 <= n <= 10^5"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    if not arr: return\n    res = [arr[0]]\n    for i in range(1, len(arr)):\n        if arr[i] != arr[i-1]:\n            res.append(arr[i])\n    print(' '.join(map(str, res)))\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "7\n1 1 2 2 3 4 4", "expectedOutput": "1 2 3 4"},
+            {"input": "3\n1 1 1", "expectedOutput": "1"},
+            {"input": "4\n1 2 3 4", "expectedOutput": "1 2 3 4"},
+            {"input": "2\n-1 -1", "expectedOutput": "-1"},
+            {"input": "5\n0 0 0 1 1", "expectedOutput": "0 1"}
+        ],
+        "sampleInput": "7\n1 1 2 2 3 4 4", "sampleOutput": "1 2 3 4",
+        "explanation": "Duplicates removed.",
+        "timeComplexity": "O(n)", "spaceComplexity": "O(n) for result array"
+    })
+    
+    # 5. Searching: Linear Search
+    questions.append({
+        "id": "PY-DSA-L05", "category": "DSA", "language": "Python", "difficulty": "Low",
+        "topic": "Searching", "title": "Linear Search",
+        "problem": "Find the index of a target value. Print -1 if not found.",
+        "inputFormat": "First line: n. Second line: n integers. Third line: target.",
+        "outputFormat": "Print the 0-based index or -1.",
+        "constraints": ["1 <= n <= 10^5"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    target = int(input())\n    try:\n        print(arr.index(target))\n    except ValueError:\n        print(-1)\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "5\n10 20 30 40 50\n30", "expectedOutput": "2"},
+            {"input": "5\n10 20 30 40 50\n100", "expectedOutput": "-1"},
+            {"input": "1\n10\n10", "expectedOutput": "0"},
+            {"input": "3\n-1 -2 -3\n-2", "expectedOutput": "1"},
+            {"input": "4\n0 0 0 0\n0", "expectedOutput": "0"}
+        ],
+        "sampleInput": "5\n10 20 30 40 50\n30", "sampleOutput": "2",
+        "explanation": "30 is at index 2.",
+        "timeComplexity": "O(n)", "spaceComplexity": "O(1)"
+    })
+    
+    # 6. String: Check Palindrome String
+    questions.append({
+        "id": "PY-DSA-L06", "category": "DSA", "language": "Python", "difficulty": "Low",
+        "topic": "Strings", "title": "Check Palindrome String",
+        "problem": "Determine whether a string reads the same forwards and backwards.",
+        "inputFormat": "One string.",
+        "outputFormat": "Print 'Palindrome' or 'Not Palindrome'.",
+        "constraints": ["1 <= len(s) <= 10^4", "String contains only lowercase english letters."],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    s = input().strip()\n    if s == s[::-1]:\n        print('Palindrome')\n    else:\n        print('Not Palindrome')\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "madam", "expectedOutput": "Palindrome"},
+            {"input": "hello", "expectedOutput": "Not Palindrome"},
+            {"input": "a", "expectedOutput": "Palindrome"},
+            {"input": "racecar", "expectedOutput": "Palindrome"},
+            {"input": "ab", "expectedOutput": "Not Palindrome"}
+        ],
+        "sampleInput": "madam", "sampleOutput": "Palindrome",
+        "explanation": "'madam' is the same backwards.",
+        "timeComplexity": "O(n)", "spaceComplexity": "O(n) for string copy"
+    })
+    
+    # 7. Arrays: Find Second Largest
+    questions.append({
+        "id": "PY-DSA-L07", "category": "DSA", "language": "Python", "difficulty": "Low",
+        "topic": "Arrays", "title": "Find Second Largest Element",
+        "problem": "Find the second-largest distinct element in an array.",
+        "inputFormat": "First line: n. Second line: n integers.",
+        "outputFormat": "Print the second largest element.",
+        "constraints": ["2 <= n <= 10^5", "At least two distinct elements exist."],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    distinct = sorted(list(set(arr)))\n    print(distinct[-2])\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "6\n10 5 20 20 8 15", "expectedOutput": "15"},
+            {"input": "2\n1 2", "expectedOutput": "1"},
+            {"input": "3\n-1 -2 -3", "expectedOutput": "-2"},
+            {"input": "4\n10 10 10 9", "expectedOutput": "9"},
+            {"input": "5\n100 50 200 150 200", "expectedOutput": "150"}
+        ],
+        "sampleInput": "6\n10 5 20 20 8 15", "sampleOutput": "15",
+        "explanation": "20 is largest, 15 is second largest distinct.",
+        "timeComplexity": "O(n log n)", "spaceComplexity": "O(n)"
+    })
+    
+    # 8. Arrays: Merge Two Sorted Arrays
+    questions.append({
+        "id": "PY-DSA-L08", "category": "DSA", "language": "Python", "difficulty": "Low",
+        "topic": "Arrays", "title": "Merge Two Sorted Arrays",
+        "problem": "Merge two sorted arrays into one sorted array.",
+        "inputFormat": "First line: n. Second line: n ints. Third line: m. Fourth line: m ints.",
+        "outputFormat": "Print merged array.",
+        "constraints": ["1 <= n, m <= 10^5"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    a = list(map(int, input().split()))\n    m = int(input())\n    b = list(map(int, input().split()))\n    res = []\n    i, j = 0, 0\n    while i < n and j < m:\n        if a[i] <= b[j]:\n            res.append(a[i])\n            i += 1\n        else:\n            res.append(b[j])\n            j += 1\n    res.extend(a[i:])\n    res.extend(b[j:])\n    print(' '.join(map(str, res)))\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "3\n1 3 5\n4\n2 4 6 8", "expectedOutput": "1 2 3 4 5 6 8"},
+            {"input": "1\n1\n1\n2", "expectedOutput": "1 2"},
+            {"input": "2\n2 4\n2\n1 3", "expectedOutput": "1 2 3 4"},
+            {"input": "3\n0 0 0\n2\n0 0", "expectedOutput": "0 0 0 0 0"},
+            {"input": "2\n-5 5\n2\n-10 10", "expectedOutput": "-10 -5 5 10"}
+        ],
+        "sampleInput": "3\n1 3 5\n4\n2 4 6 8", "sampleOutput": "1 2 3 4 5 6 8",
+        "explanation": "Merged.",
+        "timeComplexity": "O(n+m)", "spaceComplexity": "O(n+m)"
+    })
+    
+    # 9. Two Pointers: Move Zeros to End
+    questions.append({
+        "id": "PY-DSA-L09", "category": "DSA", "language": "Python", "difficulty": "Low",
+        "topic": "Two Pointers", "title": "Move Zeros to End",
+        "problem": "Move all zeros to the end while maintaining relative order of non-zero elements.",
+        "inputFormat": "First line: n. Second line: n integers.",
+        "outputFormat": "Print modified array.",
+        "constraints": ["1 <= n <= 10^5"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    ans = [x for x in arr if x != 0]\n    ans.extend([0] * (n - len(ans)))\n    print(' '.join(map(str, ans)))\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "6\n0 1 0 3 12 0", "expectedOutput": "1 3 12 0 0 0"},
+            {"input": "1\n0", "expectedOutput": "0"},
+            {"input": "3\n1 2 3", "expectedOutput": "1 2 3"},
+            {"input": "4\n0 0 1 0", "expectedOutput": "1 0 0 0"},
+            {"input": "5\n-1 0 -2 0 -3", "expectedOutput": "-1 -2 -3 0 0"}
+        ],
+        "sampleInput": "6\n0 1 0 3 12 0", "sampleOutput": "1 3 12 0 0 0",
+        "explanation": "Zeros moved.",
+        "timeComplexity": "O(n)", "spaceComplexity": "O(n)"
+    })
+    
+    # 10. Math/Array: Find Missing Number
+    questions.append({
+        "id": "PY-DSA-L10", "category": "DSA", "language": "Python", "difficulty": "Low",
+        "topic": "Arrays", "title": "Find Missing Number",
+        "problem": "Numbers from 0 to n are given with one number missing. Find it.",
+        "inputFormat": "First line: n. Second line: n-1 distinct integers.",
+        "outputFormat": "Print the missing number.",
+        "constraints": ["1 <= n <= 10^5"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    expected = n * (n + 1) // 2\n    actual = sum(arr)\n    print(expected - actual)\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "5\n3 0 1 4 5", "expectedOutput": "2"},
+            {"input": "1\n0", "expectedOutput": "1"},
+            {"input": "2\n0 1", "expectedOutput": "2"},
+            {"input": "3\n1 2 3", "expectedOutput": "0"},
+            {"input": "4\n0 1 3 4", "expectedOutput": "2"}
+        ],
+        "sampleInput": "5\n3 0 1 4 5", "sampleOutput": "2",
+        "explanation": "2 is missing.",
+        "timeComplexity": "O(n)", "spaceComplexity": "O(1)"
+    })
+
+    # ------------------ MEDIUM (10) ------------------
+    # 1. Hashing: Two Sum
+    questions.append({
+        "id": "PY-DSA-M01", "category": "DSA", "language": "Python", "difficulty": "Medium",
+        "topic": "Hashing", "title": "Two Sum",
+        "problem": "Find two indices whose values add up to the target.",
+        "inputFormat": "First line: n. Second line: n integers. Third line: target.",
+        "outputFormat": "Print the two indices.",
+        "constraints": ["2 <= n <= 10^5"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    nums = list(map(int, input().split()))\n    t = int(input())\n    seen = {}\n    for i, v in enumerate(nums):\n        if t - v in seen:\n            print(seen[t-v], i)\n            return\n        seen[v] = i\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "4\n2 7 11 15\n9", "expectedOutput": "0 1"},
+            {"input": "3\n3 2 4\n6", "expectedOutput": "1 2"},
+            {"input": "2\n3 3\n6", "expectedOutput": "0 1"},
+            {"input": "5\n1 2 3 4 5\n9", "expectedOutput": "3 4"},
+            {"input": "4\n-1 -2 -3 -4\n-7", "expectedOutput": "2 3"}
+        ],
+        "sampleInput": "4\n2 7 11 15\n9", "sampleOutput": "0 1",
+        "explanation": "2+7=9.",
+        "timeComplexity": "O(n)", "spaceComplexity": "O(n)"
+    })
+    
+    # 2. Sliding Window: Longest Substring Without Repeating Characters
+    questions.append({
+        "id": "PY-DSA-M02", "category": "DSA", "language": "Python", "difficulty": "Medium",
+        "topic": "Sliding Window", "title": "Longest Substring Without Repeating Characters",
+        "problem": "Find the length of the longest substring without repeating characters.",
+        "inputFormat": "One string.",
+        "outputFormat": "Print length.",
+        "constraints": ["1 <= len(s) <= 10^5"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    s = input().strip()\n    seen = {}\n    max_len = start = 0\n    for i, c in enumerate(s):\n        if c in seen and seen[c] >= start:\n            start = seen[c] + 1\n        seen[c] = i\n        max_len = max(max_len, i - start + 1)\n    print(max_len)\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "abcabcbb", "expectedOutput": "3"},
+            {"input": "bbbbb", "expectedOutput": "1"},
+            {"input": "pwwkew", "expectedOutput": "3"},
+            {"input": "a", "expectedOutput": "1"},
+            {"input": "abcdef", "expectedOutput": "6"}
+        ],
+        "sampleInput": "abcabcbb", "sampleOutput": "3",
+        "explanation": "'abc' is length 3.",
+        "timeComplexity": "O(n)", "spaceComplexity": "O(min(n, m))"
+    })
+    
+    # 3. Stack: Valid Parentheses
+    questions.append({
+        "id": "PY-DSA-M03", "category": "DSA", "language": "Python", "difficulty": "Medium",
+        "topic": "Stack", "title": "Valid Parentheses",
+        "problem": "Determine if the brackets are valid.",
+        "inputFormat": "One string of brackets.",
+        "outputFormat": "Print 'Valid' or 'Invalid'.",
+        "constraints": ["1 <= len(s) <= 10^4"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    s = input().strip()\n    stack = []\n    pairs = {')': '(', '}': '{', ']': '['}\n    for c in s:\n        if c in pairs.values():\n            stack.append(c)\n        elif c in pairs:\n            if not stack or stack[-1] != pairs[c]:\n                print('Invalid')\n                return\n            stack.pop()\n    print('Valid' if not stack else 'Invalid')\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "{[()]}", "expectedOutput": "Valid"},
+            {"input": "{[(])}", "expectedOutput": "Invalid"},
+            {"input": "()[]{}", "expectedOutput": "Valid"},
+            {"input": "(]", "expectedOutput": "Invalid"},
+            {"input": "((()))", "expectedOutput": "Valid"}
+        ],
+        "sampleInput": "{[()]}", "sampleOutput": "Valid",
+        "explanation": "All close correctly.",
+        "timeComplexity": "O(n)", "spaceComplexity": "O(n)"
+    })
+    
+    # 4. Binary Search
+    questions.append({
+        "id": "PY-DSA-M04", "category": "DSA", "language": "Python", "difficulty": "Medium",
+        "topic": "Binary Search", "title": "Binary Search",
+        "problem": "Given a sorted array, find the target index.",
+        "inputFormat": "First line: n. Second line: n integers. Third line: target.",
+        "outputFormat": "Print index or -1.",
+        "constraints": ["1 <= n <= 10^5"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    t = int(input())\n    l, r = 0, n-1\n    while l <= r:\n        m = (l+r)//2\n        if arr[m] == t:\n            print(m)\n            return\n        elif arr[m] < t:\n            l = m+1\n        else:\n            r = m-1\n    print(-1)\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "6\n1 3 5 7 9 11\n7", "expectedOutput": "3"},
+            {"input": "6\n1 3 5 7 9 11\n2", "expectedOutput": "-1"},
+            {"input": "1\n5\n5", "expectedOutput": "0"},
+            {"input": "2\n1 2\n1", "expectedOutput": "0"},
+            {"input": "3\n-5 -2 0\n-2", "expectedOutput": "1"}
+        ],
+        "sampleInput": "6\n1 3 5 7 9 11\n7", "sampleOutput": "3",
+        "explanation": "O(log n) search.",
+        "timeComplexity": "O(log n)", "spaceComplexity": "O(1)"
+    })
+    
+    # 5. Kadane's: Maximum Subarray Sum
+    questions.append({
+        "id": "PY-DSA-M05", "category": "DSA", "language": "Python", "difficulty": "Medium",
+        "topic": "Dynamic Programming", "title": "Maximum Subarray Sum",
+        "problem": "Find the maximum sum of a contiguous subarray.",
+        "inputFormat": "First line: n. Second line: n integers.",
+        "outputFormat": "Print sum.",
+        "constraints": ["1 <= n <= 10^5"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    best = cur = arr[0]\n    for x in arr[1:]:\n        cur = max(x, cur + x)\n        best = max(best, cur)\n    print(best)\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "9\n-2 1 -3 4 -1 2 1 -5 4", "expectedOutput": "6"},
+            {"input": "1\n-1", "expectedOutput": "-1"},
+            {"input": "5\n1 2 3 4 5", "expectedOutput": "15"},
+            {"input": "4\n-1 -2 -3 -4", "expectedOutput": "-1"},
+            {"input": "3\n1 -3 4", "expectedOutput": "4"}
+        ],
+        "sampleInput": "9\n-2 1 -3 4 -1 2 1 -5 4", "sampleOutput": "6",
+        "explanation": "[4,-1,2,1] = 6",
+        "timeComplexity": "O(n)", "spaceComplexity": "O(1)"
+    })
+    
+    # 6. Arrays: Rotate Array
+    questions.append({
+        "id": "PY-DSA-M06", "category": "DSA", "language": "Python", "difficulty": "Medium",
+        "topic": "Arrays", "title": "Rotate Array",
+        "problem": "Rotate an array to the right by k positions.",
+        "inputFormat": "First line: n. Second line: n integers. Third line: k.",
+        "outputFormat": "Print rotated array.",
+        "constraints": ["1 <= n <= 10^5", "0 <= k <= 10^5"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    k = int(input()) % n\n    if k == 0:\n        print(' '.join(map(str, arr)))\n    else:\n        ans = arr[-k:] + arr[:-k]\n        print(' '.join(map(str, ans)))\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "5\n1 2 3 4 5\n2", "expectedOutput": "4 5 1 2 3"},
+            {"input": "1\n1\n0", "expectedOutput": "1"},
+            {"input": "3\n1 2 3\n4", "expectedOutput": "3 1 2"},
+            {"input": "2\n1 2\n1", "expectedOutput": "2 1"},
+            {"input": "4\n1 2 3 4\n4", "expectedOutput": "1 2 3 4"}
+        ],
+        "sampleInput": "5\n1 2 3 4 5\n2", "sampleOutput": "4 5 1 2 3",
+        "explanation": "Rotated.",
+        "timeComplexity": "O(n)", "spaceComplexity": "O(n)"
+    })
+    
+    # 7. Sorting: Merge Overlapping Intervals
+    questions.append({
+        "id": "PY-DSA-M07", "category": "DSA", "language": "Python", "difficulty": "Medium",
+        "topic": "Sorting", "title": "Merge Overlapping Intervals",
+        "problem": "Merge overlapping intervals.",
+        "inputFormat": "First line: n. Next n lines: start end.",
+        "outputFormat": "Print each merged interval on a new line.",
+        "constraints": ["1 <= n <= 10^4"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    ints = [list(map(int, input().split())) for _ in range(n)]\n    ints.sort()\n    res = [ints[0]]\n    for i in range(1, n):\n        if res[-1][1] >= ints[i][0]:\n            res[-1][1] = max(res[-1][1], ints[i][1])\n        else:\n            res.append(ints[i])\n    for r in res:\n        print(f'{r[0]} {r[1]}')\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "4\n1 3\n2 6\n8 10\n9 12", "expectedOutput": "1 6\n8 12"},
+            {"input": "2\n1 4\n4 5", "expectedOutput": "1 5"},
+            {"input": "1\n1 2", "expectedOutput": "1 2"},
+            {"input": "3\n1 2\n3 4\n5 6", "expectedOutput": "1 2\n3 4\n5 6"},
+            {"input": "2\n1 10\n2 3", "expectedOutput": "1 10"}
+        ],
+        "sampleInput": "4\n1 3\n2 6\n8 10\n9 12", "sampleOutput": "1 6\n8 12",
+        "explanation": "Overlapping intervals merged.",
+        "timeComplexity": "O(n log n)", "spaceComplexity": "O(n)"
+    })
+    
+    # 8. Linked List: Reverse Linked List
+    questions.append({
+        "id": "PY-DSA-M08", "category": "DSA", "language": "Python", "difficulty": "Medium",
+        "topic": "Linked List", "title": "Reverse Linked List",
+        "problem": "Given a singly linked list as an array, reverse it (simulate logic).",
+        "inputFormat": "First line: n. Second line: n integers.",
+        "outputFormat": "Print reversed.",
+        "constraints": ["1 <= n <= 10^5"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    arr = input().split()\n    print(' '.join(arr[::-1]))\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "5\n1 2 3 4 5", "expectedOutput": "5 4 3 2 1"},
+            {"input": "1\n10", "expectedOutput": "10"},
+            {"input": "2\n1 2", "expectedOutput": "2 1"},
+            {"input": "3\n-1 0 1", "expectedOutput": "1 0 -1"},
+            {"input": "4\n9 8 7 6", "expectedOutput": "6 7 8 9"}
+        ],
+        "sampleInput": "5\n1 2 3 4 5", "sampleOutput": "5 4 3 2 1",
+        "explanation": "Simulate.",
+        "timeComplexity": "O(n)", "spaceComplexity": "O(n)"
+    })
+    
+    # 9. Linked List: Detect Linked List Cycle
+    questions.append({
+        "id": "PY-DSA-M09", "category": "DSA", "language": "Python", "difficulty": "Medium",
+        "topic": "Linked List", "title": "Detect Linked List Cycle",
+        "problem": "Determine if cycle exists. Input provides n and index where tail connects.",
+        "inputFormat": "First line: n. Second line: cycle_index.",
+        "outputFormat": "Print 'Cycle' or 'No Cycle'.",
+        "constraints": ["1 <= n <= 10^4"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    c = int(input())\n    if c >= 0 and c < n:\n        print('Cycle')\n    else:\n        print('No Cycle')\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "4\n1", "expectedOutput": "Cycle"},
+            {"input": "4\n-1", "expectedOutput": "No Cycle"},
+            {"input": "2\n0", "expectedOutput": "Cycle"},
+            {"input": "1\n-1", "expectedOutput": "No Cycle"},
+            {"input": "10\n9", "expectedOutput": "Cycle"}
+        ],
+        "sampleInput": "4\n1", "sampleOutput": "Cycle",
+        "explanation": "Simulated input.",
+        "timeComplexity": "O(1)", "spaceComplexity": "O(1)"
+    })
+    
+    # 10. Binary Tree: Level Order Traversal
+    questions.append({
+        "id": "PY-DSA-M10", "category": "DSA", "language": "Python", "difficulty": "Medium",
+        "topic": "Trees", "title": "Level Order Traversal",
+        "problem": "Print tree nodes level by level (array representation).",
+        "inputFormat": "First line: n. Second line: n integers (-1 for null).",
+        "outputFormat": "Print each level on a new line.",
+        "constraints": ["1 <= n <= 1000"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    if not arr or arr[0] == -1: return\n    q = [0]\n    while q:\n        nq = []\n        lv = []\n        for i in q:\n            if arr[i] != -1:\n                lv.append(arr[i])\n                if 2*i+1 < n: nq.append(2*i+1)\n                if 2*i+2 < n: nq.append(2*i+2)\n        if lv: print(' '.join(map(str, lv)))\n        q = nq\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "7\n1 2 3 4 5 6 7", "expectedOutput": "1\n2 3\n4 5 6 7"},
+            {"input": "3\n1 2 -1", "expectedOutput": "1\n2"},
+            {"input": "1\n10", "expectedOutput": "10"},
+            {"input": "5\n1 -1 3 -1 -1", "expectedOutput": "1\n3"},
+            {"input": "7\n1 2 3 -1 -1 6 7", "expectedOutput": "1\n2 3\n6 7"}
+        ],
+        "sampleInput": "7\n1 2 3 4 5 6 7", "sampleOutput": "1\n2 3\n4 5 6 7",
+        "explanation": "Level order.",
+        "timeComplexity": "O(n)", "spaceComplexity": "O(n)"
+    })
+
+    # ------------------ HIGH (10) ------------------
+    # 1. DFS/BFS: Number of Islands
+    questions.append({
+        "id": "PY-DSA-H01", "category": "DSA", "language": "Python", "difficulty": "High",
+        "topic": "Graphs", "title": "Number of Islands",
+        "problem": "Count the number of islands in a 2D grid.",
+        "inputFormat": "First line: r c. Next r lines: grid of 0s and 1s.",
+        "outputFormat": "Print number of islands.",
+        "constraints": ["1 <= r, c <= 300"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "import sys\nsys.setrecursionlimit(20000)\ndef solve():\n    r, c = map(int, input().split())\n    grid = [list(map(int, input().split())) for _ in range(r)]\n    def dfs(i, j):\n        if i<0 or i>=r or j<0 or j>=c or grid[i][j]==0: return\n        grid[i][j] = 0\n        dfs(i+1,j); dfs(i-1,j); dfs(i,j+1); dfs(i,j-1)\n    islands = 0\n    for i in range(r):\n        for j in range(c):\n            if grid[i][j] == 1:\n                islands += 1\n                dfs(i, j)\n    print(islands)\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "4 5\n1 1 0 0 0\n1 1 0 0 0\n0 0 1 0 0\n0 0 0 1 1", "expectedOutput": "3"},
+            {"input": "2 2\n1 0\n0 1", "expectedOutput": "2"},
+            {"input": "1 1\n1", "expectedOutput": "1"},
+            {"input": "3 3\n0 0 0\n0 0 0\n0 0 0", "expectedOutput": "0"},
+            {"input": "3 3\n1 1 1\n1 1 1\n1 1 1", "expectedOutput": "1"}
+        ],
+        "sampleInput": "4 5\n1 1 0 0 0\n1 1 0 0 0\n0 0 1 0 0\n0 0 0 1 1", "sampleOutput": "3",
+        "explanation": "DFS/BFS.",
+        "timeComplexity": "O(r*c)", "spaceComplexity": "O(r*c)"
+    })
+    
+    # 2. Topological Sort: Course Schedule
+    questions.append({
+        "id": "PY-DSA-H02", "category": "DSA", "language": "Python", "difficulty": "High",
+        "topic": "Graphs", "title": "Course Schedule",
+        "problem": "Determine if you can finish all courses given prerequisites.",
+        "inputFormat": "First line: numCourses. Second line: numPrereq. Next lines: pairs.",
+        "outputFormat": "Print True or False.",
+        "constraints": ["1 <= numCourses <= 2000"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    p = int(input())\n    adj = [[] for _ in range(n)]\n    ind = [0]*n\n    for _ in range(p):\n        a,b = map(int, input().split())\n        adj[b].append(a)\n        ind[a]+=1\n    q = [i for i in range(n) if ind[i]==0]\n    cnt = 0\n    while q:\n        curr = q.pop(0)\n        cnt += 1\n        for nei in adj[curr]:\n            ind[nei] -= 1\n            if ind[nei] == 0:\n                q.append(nei)\n    print('True' if cnt == n else 'False')\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "2\n1\n1 0", "expectedOutput": "True"},
+            {"input": "2\n2\n1 0\n0 1", "expectedOutput": "False"},
+            {"input": "1\n0", "expectedOutput": "True"},
+            {"input": "3\n2\n1 0\n2 1", "expectedOutput": "True"},
+            {"input": "3\n3\n1 0\n2 1\n0 2", "expectedOutput": "False"}
+        ],
+        "sampleInput": "2\n1\n1 0", "sampleOutput": "True",
+        "explanation": "Valid topological sort.",
+        "timeComplexity": "O(V+E)", "spaceComplexity": "O(V+E)"
+    })
+
+    # 3. Dijkstra Shortest Path
+    questions.append({
+        "id": "PY-DSA-H03", "category": "DSA", "language": "Python", "difficulty": "High",
+        "topic": "Graphs", "title": "Dijkstra Shortest Path",
+        "problem": "Find shortest path from source to all vertices.",
+        "inputFormat": "V E. Next E lines: u v w. Last line: source.",
+        "outputFormat": "Print shortest distances (space-separated, use -1 for unreachable).",
+        "constraints": ["1 <= V <= 1000"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "import heapq\ndef solve():\n    V, E = map(int, input().split())\n    adj = [[] for _ in range(V)]\n    for _ in range(E):\n        u, v, w = map(int, input().split())\n        adj[u].append((v, w))\n        adj[v].append((u, w))\n    src = int(input())\n    dist = [float('inf')] * V\n    dist[src] = 0\n    pq = [(0, src)]\n    while pq:\n        d, u = heapq.heappop(pq)\n        if d > dist[u]: continue\n        for v, w in adj[u]:\n            if dist[u] + w < dist[v]:\n                dist[v] = dist[u] + w\n                heapq.heappush(pq, (dist[v], v))\n    ans = [x if x != float('inf') else -1 for x in dist]\n    print(' '.join(map(str, ans)))\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "3 3\n0 1 1\n1 2 2\n0 2 4\n0", "expectedOutput": "0 1 3"},
+            {"input": "2 1\n0 1 5\n0", "expectedOutput": "0 5"},
+            {"input": "3 1\n0 1 5\n0", "expectedOutput": "0 5 -1"},
+            {"input": "4 4\n0 1 1\n1 2 1\n2 3 1\n0 3 10\n0", "expectedOutput": "0 1 2 3"},
+            {"input": "1 0\n0", "expectedOutput": "0"}
+        ],
+        "sampleInput": "3 3\n0 1 1\n1 2 2\n0 2 4\n0", "sampleOutput": "0 1 3",
+        "explanation": "Dijkstra algorithm.",
+        "timeComplexity": "O(E log V)", "spaceComplexity": "O(V+E)"
+    })
+
+    # 4. DP: Word Break
+    questions.append({
+        "id": "PY-DSA-H04", "category": "DSA", "language": "Python", "difficulty": "High",
+        "topic": "Dynamic Programming", "title": "Word Break",
+        "problem": "Determine if string can be segmented into dict words.",
+        "inputFormat": "String. N. Next N lines: words.",
+        "outputFormat": "Print True or False.",
+        "constraints": ["1 <= len(s) <= 300"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    s = input().strip()\n    n = int(input())\n    words = set([input().strip() for _ in range(n)])\n    dp = [False] * (len(s) + 1)\n    dp[0] = True\n    for i in range(1, len(s) + 1):\n        for j in range(i):\n            if dp[j] and s[j:i] in words:\n                dp[i] = True\n                break\n    print('True' if dp[-1] else 'False')\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "leetcode\n2\nleet\ncode", "expectedOutput": "True"},
+            {"input": "applepenapple\n2\napple\npen", "expectedOutput": "True"},
+            {"input": "catsandog\n5\ncats\ndog\nsand\nand\ncat", "expectedOutput": "False"},
+            {"input": "a\n1\na", "expectedOutput": "True"},
+            {"input": "ab\n1\na", "expectedOutput": "False"}
+        ],
+        "sampleInput": "leetcode\n2\nleet\ncode", "sampleOutput": "True",
+        "explanation": "DP.",
+        "timeComplexity": "O(n^2)", "spaceComplexity": "O(n)"
+    })
+
+    # 5. DP: Longest Increasing Subsequence
+    questions.append({
+        "id": "PY-DSA-H05", "category": "DSA", "language": "Python", "difficulty": "High",
+        "topic": "Dynamic Programming", "title": "Longest Increasing Subsequence",
+        "problem": "Find the length of the LIS.",
+        "inputFormat": "n. Then n integers.",
+        "outputFormat": "Print length.",
+        "constraints": ["1 <= n <= 2500"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "import bisect\ndef solve():\n    n = int(input())\n    arr = list(map(int, input().split()))\n    sub = []\n    for x in arr:\n        idx = bisect.bisect_left(sub, x)\n        if idx == len(sub):\n            sub.append(x)\n        else:\n            sub[idx] = x\n    print(len(sub))\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "8\n10 9 2 5 3 7 101 18", "expectedOutput": "4"},
+            {"input": "6\n0 1 0 3 2 3", "expectedOutput": "4"},
+            {"input": "7\n7 7 7 7 7 7 7", "expectedOutput": "1"},
+            {"input": "1\n10", "expectedOutput": "1"},
+            {"input": "5\n5 4 3 2 1", "expectedOutput": "1"}
+        ],
+        "sampleInput": "8\n10 9 2 5 3 7 101 18", "sampleOutput": "4",
+        "explanation": "O(N log N) using binary search.",
+        "timeComplexity": "O(n log n)", "spaceComplexity": "O(n)"
+    })
+
+    # 6. DP: 0/1 Knapsack
+    questions.append({
+        "id": "PY-DSA-H06", "category": "DSA", "language": "Python", "difficulty": "High",
+        "topic": "Dynamic Programming", "title": "0/1 Knapsack",
+        "problem": "Maximize value for capacity W.",
+        "inputFormat": "N W. Next line: values. Next line: weights.",
+        "outputFormat": "Print max value.",
+        "constraints": ["1 <= N <= 100", "1 <= W <= 100000"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n, w = map(int, input().split())\n    vals = list(map(int, input().split()))\n    wts = list(map(int, input().split()))\n    dp = [0] * (w + 1)\n    for i in range(n):\n        for j in range(w, wts[i] - 1, -1):\n            dp[j] = max(dp[j], dp[j - wts[i]] + vals[i])\n    print(dp[w])\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "3 50\n60 100 120\n10 20 30", "expectedOutput": "220"},
+            {"input": "2 10\n10 20\n5 10", "expectedOutput": "20"},
+            {"input": "1 5\n100\n10", "expectedOutput": "0"},
+            {"input": "4 10\n10 40 30 50\n5 4 6 3", "expectedOutput": "90"},
+            {"input": "2 100\n1 1\n101 101", "expectedOutput": "0"}
+        ],
+        "sampleInput": "3 50\n60 100 120\n10 20 30", "sampleOutput": "220",
+        "explanation": "Standard knapsack DP.",
+        "timeComplexity": "O(N*W)", "spaceComplexity": "O(W)"
+    })
+
+    # 7. Backtracking: N-Queens
+    questions.append({
+        "id": "PY-DSA-H07", "category": "DSA", "language": "Python", "difficulty": "High",
+        "topic": "Backtracking", "title": "N-Queens",
+        "problem": "Find the number of distinct solutions.",
+        "inputFormat": "n.",
+        "outputFormat": "Print number of solutions.",
+        "constraints": ["1 <= n <= 9"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    def backtrack(r, cols, pos, neg):\n        if r == n: return 1\n        res = 0\n        for c in range(n):\n            if c in cols or (r+c) in pos or (r-c) in neg: continue\n            cols.add(c); pos.add(r+c); neg.add(r-c)\n            res += backtrack(r+1, cols, pos, neg)\n            cols.remove(c); pos.remove(r+c); neg.remove(r-c)\n        return res\n    print(backtrack(0, set(), set(), set()))\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "4", "expectedOutput": "2"},
+            {"input": "1", "expectedOutput": "1"},
+            {"input": "8", "expectedOutput": "92"},
+            {"input": "2", "expectedOutput": "0"},
+            {"input": "3", "expectedOutput": "0"}
+        ],
+        "sampleInput": "4", "sampleOutput": "2",
+        "explanation": "Backtracking.",
+        "timeComplexity": "O(N!)", "spaceComplexity": "O(N)"
+    })
+
+    # 8. Trie Autocomplete
+    questions.append({
+        "id": "PY-DSA-H08", "category": "DSA", "language": "Python", "difficulty": "High",
+        "topic": "Trie", "title": "Trie Autocomplete",
+        "problem": "Count words starting with a prefix.",
+        "inputFormat": "N words. Then prefix.",
+        "outputFormat": "Print count.",
+        "constraints": ["1 <= N <= 1000"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    n = int(input())\n    words = input().split()\n    pref = input().strip()\n    ans = sum(1 for w in words if w.startswith(pref))\n    print(ans)\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "3\napple app application\napp", "expectedOutput": "3"},
+            {"input": "2\nhello world\nhe", "expectedOutput": "1"},
+            {"input": "3\ncat dog car\nc", "expectedOutput": "2"},
+            {"input": "1\na\nb", "expectedOutput": "0"},
+            {"input": "2\nabc abc\na", "expectedOutput": "2"}
+        ],
+        "sampleInput": "3\napple app application\napp", "sampleOutput": "3",
+        "explanation": "Trie or prefix checking.",
+        "timeComplexity": "O(N * L)", "spaceComplexity": "O(N * L)"
+    })
+
+    # 9. Heap: Merge K Sorted Lists
+    questions.append({
+        "id": "PY-DSA-H09", "category": "DSA", "language": "Python", "difficulty": "High",
+        "topic": "Heap", "title": "Merge K Sorted Arrays",
+        "problem": "Merge k sorted arrays into one.",
+        "inputFormat": "First line: k. Next k lines: arrays.",
+        "outputFormat": "Print merged array.",
+        "constraints": ["1 <= k <= 100"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "import heapq\ndef solve():\n    k = int(input())\n    ans = []\n    for _ in range(k):\n        try:\n            ans.extend(list(map(int, input().split())))\n        except: pass\n    ans.sort()\n    print(' '.join(map(str, ans)))\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "3\n1 4 5\n1 3 4\n2 6", "expectedOutput": "1 1 2 3 4 4 5 6"},
+            {"input": "2\n1 2\n3 4", "expectedOutput": "1 2 3 4"},
+            {"input": "1\n5 10", "expectedOutput": "5 10"},
+            {"input": "2\n\n1", "expectedOutput": "1"},
+            {"input": "3\n10\n10\n10", "expectedOutput": "10 10 10"}
+        ],
+        "sampleInput": "3\n1 4 5\n1 3 4\n2 6", "sampleOutput": "1 1 2 3 4 4 5 6",
+        "explanation": "Heap or sort.",
+        "timeComplexity": "O(N log N)", "spaceComplexity": "O(N)"
+    })
+
+    # 10. MST: Minimum Spanning Tree
+    questions.append({
+        "id": "PY-DSA-H10", "category": "DSA", "language": "Python", "difficulty": "High",
+        "topic": "Graphs", "title": "Minimum Spanning Tree",
+        "problem": "Find the weight of the Minimum Spanning Tree.",
+        "inputFormat": "V E. Next E lines: u v w.",
+        "outputFormat": "Print MST weight.",
+        "constraints": ["1 <= V <= 1000"],
+        "starterCode": "def solve():\n    pass\n\nif __name__ == '__main__':\n    solve()",
+        "solution": "def solve():\n    V, E = map(int, input().split())\n    edges = []\n    for _ in range(E):\n        edges.append(list(map(int, input().split())))\n    edges.sort(key=lambda x: x[2])\n    parent = list(range(V))\n    def find(i):\n        if parent[i] == i: return i\n        parent[i] = find(parent[i])\n        return parent[i]\n    def union(i, j):\n        r1, r2 = find(i), find(j)\n        if r1 != r2:\n            parent[r1] = r2\n            return True\n        return False\n    ans = 0\n    for u, v, w in edges:\n        if union(u, v):\n            ans += w\n    print(ans)\n\nif __name__ == '__main__':\n    solve()",
+        "testCases": [
+            {"input": "4 5\n0 1 10\n0 2 6\n0 3 5\n1 3 15\n2 3 4", "expectedOutput": "19"},
+            {"input": "2 1\n0 1 5", "expectedOutput": "5"},
+            {"input": "3 3\n0 1 1\n1 2 2\n0 2 3", "expectedOutput": "3"},
+            {"input": "4 4\n0 1 1\n1 2 1\n2 3 1\n3 0 1", "expectedOutput": "3"},
+            {"input": "1 0", "expectedOutput": "0"}
+        ],
+        "sampleInput": "4 5\n0 1 10\n0 2 6\n0 3 5\n1 3 15\n2 3 4", "sampleOutput": "19",
+        "explanation": "Kruskal's algorithm.",
+        "timeComplexity": "O(E log E)", "spaceComplexity": "O(V)"
+    })
+
+    with open("scratch/db_python.json", "w") as f:
+        json.dump(questions, f, indent=2)
+
+if __name__ == "__main__":
+    generate_python_questions()

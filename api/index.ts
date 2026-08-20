@@ -3921,12 +3921,22 @@ app.get("/api/exams/python/history", checkAuth, async (req: any, res: any) => {
 app.get("/api/exams/python/:level", checkAuth, (req: any, res: any) => {
   try {
     const level = req.params.level.toLowerCase();
+    const topic = req.query.topic;
+    
     if (!["low", "medium", "high"].includes(level)) {
       return res.status(400).json({ error: "Invalid level" });
     }
     
     const allQuestions = getPythonQuestions();
-    const levelQuestions = allQuestions.filter((q: any) => q.level === level);
+    let levelQuestions = allQuestions.filter((q: any) => (q.difficulty || q.level)?.toLowerCase() === level);
+    
+    if (topic && topic !== "All Topics") {
+      levelQuestions = levelQuestions.filter((q: any) => q.topic === topic);
+    }
+    
+    // Randomize and slice to 30 questions
+    levelQuestions.sort(() => 0.5 - Math.random());
+    levelQuestions = levelQuestions.slice(0, 30);
     
     // Strip correct answer for client
     const clientQuestions = levelQuestions.map((q: any) => {
@@ -3950,7 +3960,8 @@ app.post("/api/exams/python/submit", checkAuth, async (req: any, res: any) => {
     }
 
     const allQuestions = getPythonQuestions();
-    const levelQuestions = allQuestions.filter((q: any) => q.level === level);
+    const submittedIds = Object.keys(answers);
+    const relevantQuestions = allQuestions.filter((q: any) => submittedIds.includes(q.id));
     
     let correct = 0;
     let wrong = 0;
@@ -3958,7 +3969,7 @@ app.post("/api/exams/python/submit", checkAuth, async (req: any, res: any) => {
     
     const detailedAnswers: any[] = [];
 
-    levelQuestions.forEach((q: any) => {
+    relevantQuestions.forEach((q: any) => {
       const userAnswer = answers[q.id];
       const isCorrect = userAnswer === q.correctAnswer;
       const isUnanswered = userAnswer === undefined || userAnswer === null;
@@ -3975,11 +3986,12 @@ app.post("/api/exams/python/submit", checkAuth, async (req: any, res: any) => {
         questionId: q.id,
         userAnswer,
         correctAnswer: q.correctAnswer,
+        explanation: q.explanation,
         isCorrect
       });
     });
 
-    const total = levelQuestions.length;
+    const total = relevantQuestions.length;
     const score = correct;
     const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
     
